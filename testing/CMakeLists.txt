@@ -29,7 +29,7 @@ IF(UNIX)
 ENDIF(UNIX) 
 
 # Test that usage prints properly
-ADD_TEST( NAME Print_Usage_Test COMMAND ${EXE_NAME} -u )
+ADD_TEST( NAME Print_Usage_Test COMMAND ${TEST_EXE_NAME} -u "random text")
 
 # Test for folder exist functions
 ADD_TEST( NAME NoFolder_Test COMMAND ${TEST_EXE_NAME} -noFolder ${CMAKE_CURRENT_BINARY_DIR}/test_noFolder )
