@@ -44,7 +44,7 @@ IF(WIN32)
         ${CBICA_Sources}
   )
 ELSE()
-  ADD_LIBRARY( C:\Users\patis\Documents\Projects\CBICA_Toolkit\trunk SHARED
+  ADD_LIBRARY( ${CBICA_LIB_NAME} SHARED
         ${ExtraSources}
         ${CBICA_Headers}
         ${CBICA_Sources}
