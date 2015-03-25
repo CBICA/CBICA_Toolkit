@@ -1,220 +1,719 @@
-/*!
- * \file  sbiaBasicUtilities.cxx
- * \brief Some basic utility functions.
- *
+/**
+\file  cbicaUtilities.cpp
+
+\brief Some basic utility functions.
 
 https://www.cbica.upenn.edu/sbia/software/
 sbia-software@uphs.upenn.edu
 
 Copyright (c) 2015 University of Pennsylvania. All rights reserved.
-See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
+See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
- */
-#pragma once
-
-#include <io.h>
-#include <fstream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <limits.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-
+*/
 #if (_WIN32)
+  #define NOMINMAX
 	#include <direct.h>
   #include <windows.h>
-  #include "windows/dirent.h"
+  #include <conio.h>
+//  #include "windows/dirent.h"
   #include <lmcons.h>
   #define GetCurrentDir _getcwd
   #define WindowsDetected = true
+  static const char  cSeparator  = '\\';
+  static const char* cSeparators = "\\/";
 #else
   #include <dirent.h>
   #include <unistd.h>
   #include <libgen.h>
   #include <limits.h>
+  #include <cstring>
+  #include <cstdlib>
   #define GetCurrentDir getcwd
   #define WindowsDetected = false
+  static const char  cSeparator  = '/';
+  static const char* cSeparators = "/";
 #endif
+
+#include <fstream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <limits.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "cbicaUtilities.h"
 
 namespace cbica
 {
-  /**
-  \brief Check if file exists
+  //====================================== Folder stuff ====================================//
 
-  \param fName String to check
-  \return true if file exists
-  */
   bool fileExists( const std::string &fName )
   {
     std::ifstream file_exists(fName.c_str());
-    if(file_exists.good()) // file exists, then append
+    if( file_exists.good() )
       return true;
     else
       return false;
   }
   
-  /**
-  \brief Check if directory exists
-
-  \param dName String to check
-  \return 1 if directory
-  */
   bool directoryExists( const std::string &dName )
   {
-    struct stat st;
-    stat(dName.c_str(), &st);
+    struct stat info;
     
-    if( st.st_mode & S_IFDIR )
+    if( stat( dName.c_str(), &info ) != 0 )
       return false;
-    else
+    else if( info.st_mode & S_IFDIR )  // S_ISDIR() doesn't exist on windows
       return true;
-  }
-  
-  /**
-  \brief Create a temporary directory
-
-  \param prefix Folder to be created
-  \param retDir Check if prefix == retDir
-
-  \return redir Path of created folder
-  */
-  int createTmpDir(const std::string &prefix,  std::string &retDir)
-  {
-
-    char *tmp;
-#if (_WIN32)
-    _dupenv_s( &tmp, NULL, "SBIA_TMPDIR" );
-#else
-    tmp = getenv ("SBIA_TMPDIR");
-#endif
-  
-    //Build the path
-    char tempPath[FILENAME_MAX];
-    if (tmp==NULL)
-      sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "/tmp");
     else
-      sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", tmp);
-
-#if (_WIN32)
-    strcat_s(tempPath,"/");
-    strcat_s(tempPath,prefix.c_str());
-    strcat_s(tempPath,"_XXXXXX");
-#else
-    strcat(tempPath,"/");
-    strcat(tempPath,prefix.c_str());
-    strcat(tempPath,"_XXXXXX");
-#endif
-
-    int size_tempPath = sizeof(tempPath);
-    if( _mktemp_s(tempPath, size_tempPath) == 0 )
-    {
-      retDir = std::string(tempPath);
-      return 0;
-    }
-    /*
-    char *newDir=_mktemp(tempPath);
-    if (newDir != NULL)
-    {
-      retDir = std::string(newDir);
-      return 0;
-    }
-    */
-    return 1;
+      return false;
+  }
+  
+  bool isFile(const std::string &path)
+  {
+    return cbica::fileExists(path);
   }
 
-  /**
-  \brief Create a directory
+  bool isDir(const std::string &path)
+  {
+    return cbica::directoryExists(path);
+  }
 
-  \param dir_name Name of directory to be created with full path
-  */
-  void createDir( const std::string &dir_name )
+  bool exists(const std::string &path)
+  {
+    struct stat info;
+    
+    if( stat( path.c_str(), &info ) != 0 )
+        return false;
+    else if( info.st_mode & S_IFDIR )  // S_ISDIR() doesn't exist on my windows
+        return true;
+    else
+        return true;
+  }
+
+  bool createTmpDir(std::string &returnDir)
+  {
+    char *tmp;
+    char tempPath[FILENAME_MAX];
+    #if defined(_WIN32)
+      tmp = getenv("USERPROFILE");
+      std::string temp = cbica::replaceString(tmp, "\\", "/");
+      sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
+      strcat_s(tempPath,"/tmp/");
+    #else
+      tmp = std::getenv("HOME");
+      sprintf(tempPath, "%s", tmp);
+      strcat(tempPath,"/tmp/");
+    #endif    
+
+    returnDir = std::string(tempPath);
+    tmp[0] = '\0';
+    tempPath[0] = '\0';
+    //std::cout << "temp_dir: " << returnDir <<std::endl;
+    return createDir(returnDir);
+  }
+
+  bool createDir( const std::string &dir_name )
   {
       //! Pure c++ based directory creation
     #if defined(_WIN32)
       DWORD ftyp = GetFileAttributesA(dir_name.c_str()); // check if directory exists or not
       if (ftyp == INVALID_FILE_ATTRIBUTES)
     	  _mkdir(dir_name.c_str());
+      return true;
     #else
       DIR *pDir;
-      pDir = opendir(dir_name.c_str()) // check if directory exists or not
+      pDir = opendir(dir_name.c_str()); // check if directory exists or not
       if (pDir == NULL)
     	  mkdir(dir_name.c_str(), 0777);
+      return true;
+    #endif
+    return false;
+  }
+
+  bool makeDir(const std::string &dir_name)
+  {
+    return createDir( dir_name );
+  }
+
+  int removeDirectoryRecursively(const std::string &dirname, bool bDeleteSubdirectories = true)
+  {
+    #if defined(_WIN32)
+      bool bSubdirectory = false;       // Flag, indicating whether
+                                        // subdirectories have been found
+      HANDLE hFile;                     // Handle to directory
+      std::string strFilePath;          // Filepath
+      std::string strPattern;           // Pattern
+      WIN32_FIND_DATA FileInformation;  // File information    
+    
+      strPattern = dirname + "\\*.*";
+      hFile = ::FindFirstFile(strPattern.c_str(), &FileInformation);
+      if(hFile != INVALID_HANDLE_VALUE)
+      {
+        do
+        {
+          if(FileInformation.cFileName[0] != '.')
+          {
+            strFilePath.erase();
+            strFilePath = dirname + "\\" + FileInformation.cFileName;
+    
+            if(FileInformation.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            {
+              if(bDeleteSubdirectories)
+              {
+                // Delete subdirectory
+                int iRC = cbica::removeDirectoryRecursively(strFilePath, bDeleteSubdirectories);
+                if(iRC)
+                  return iRC;
+              }
+              else
+                bSubdirectory = true;
+            }
+            else
+            {
+              // Set file attributes
+              if(::SetFileAttributes(strFilePath.c_str(),
+                                     FILE_ATTRIBUTE_NORMAL) == FALSE)
+                return ::GetLastError();
+    
+              // Delete file
+              if(::DeleteFile(strFilePath.c_str()) == FALSE)
+                return ::GetLastError();
+            }
+          }
+        } while(::FindNextFile(hFile, &FileInformation) == TRUE);
+    
+        // Close handle
+        ::FindClose(hFile);
+    
+        DWORD dwError = ::GetLastError();
+        if(dwError != ERROR_NO_MORE_FILES)
+          return dwError;
+        else
+        {
+          if(!bSubdirectory)
+          {
+            // Set directory attributes
+            if(::SetFileAttributes(dirname.c_str(),
+                                   FILE_ATTRIBUTE_NORMAL) == FALSE)
+              return ::GetLastError();
+    
+            // Delete directory
+            if(::RemoveDirectory(dirname.c_str()) == FALSE)
+              return ::GetLastError();
+          }
+        }
+      }
+    
+      return 0;
+    #else   
+      system("rm -r path");
+      return 0;
+    #endif
+      return 0;
+    /*
+    DIR *dir;
+    struct dirent *entry;
+    char path[FILENAME_MAX];
+
+    dir = opendir(dirname.c_str());
+    if (dir == NULL) 
+    {
+      perror("Error opendir()");
+      return false;
+    }
+
+    while ((entry = readdir(dir)) != NULL) 
+    {
+      if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) 
+      {
+        sprintf_s(path, static_cast<size_t>(FILENAME_MAX), "%s/%s", dirname, entry->d_name);
+        if (entry->d_type == DT_DIR) 
+        {
+          removeDirectoryRecursively(path);
+        }
+        //printf("(not really) Deleting: %s\n", path);
+        remove(path);
+      }
+    }
+    closedir(dir);
+    // Now the directory is empty, finally delete the directory itself.
+    //printf("(not really) Deleting: %s\n", dirname);
+    remove(dirname.c_str());
+    return true;
+    */
+  }
+
+  bool removeDir(const std::string &path)
+  {
+    if( removeDirectoryRecursively(path, true) != 0 )
+      return false;
+    return true;
+  }
+  
+  bool deleteDir(const std::string &path)
+  {
+    if( removeDirectoryRecursively(path, true) != 0 )
+      return false;
+    return true;
+    //return removeDirectoryRecursively(path);
+    #if defined(_WIN32)
+      if(_rmdir("FILEPATHHERE") != -1)
+        return true;
+    #else
+      system("rm -r path");
+    #endif
+
+    return false;
+  }
+
+  //======================================== OS stuff ======================================//
+  
+  std::string getFilenameExtension(const std::string &filename)
+  {  
+    unsigned long long last_dot_offset = filename.rfind(L'.');
+    // This assumes your directory separators are either \\ or /
+    //unsigned long long last_dirsep_offset = std::max( filename.rfind(L'\\'), filename.rfind(L'/') );
+    unsigned long long last_dirsep_offset = std::max( filename.find('\\'), filename.find('/') );
+  
+    // no dot = no extension
+    if( last_dot_offset == std::wstring::npos )
+      return "";
+  
+    // directory separator after last dot = extension of directory, not file.
+    // for example, given C:\temp.old\file_that_has_no_extension we should return "" not "old"
+    if( (last_dirsep_offset != std::wstring::npos) && (last_dirsep_offset > last_dot_offset) )
+      return "";
+  
+    return filename.substr( last_dot_offset + 1 );
+  }
+
+  std::string getExecutableName()
+  {
+    #if defined(_WIN32)
+    	//! Initialize pointers to file and user names
+    	char filename[FILENAME_MAX];
+	    GetModuleFileNameA(NULL, filename, FILENAME_MAX);
+	    _splitpath(filename, NULL, NULL, filename, NULL);
+      //_splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
+    #else
+    	//! Initialize pointers to file and user names
+    	char *filename, filename_2[FILENAME_MAX];    
+    	::readlink("/proc/self/exe", filename_2, sizeof(filename_2)-1);
+    	filename = basename(filename_2);
+    #endif
+
+    std::string return_string = std::string(filename);
+    filename[0] = '\0';
+    
+    return return_string;
+  }
+  
+  std::string getFullPath()
+  {
+    #if defined(_WIN32)
+    	//! Initialize pointers to file and user names
+    	char path[FILENAME_MAX];
+	    GetModuleFileNameA(NULL, path, FILENAME_MAX);
+      //_splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
+    #else
+    	//! Initialize pointers to file and user names
+    	char path[PATH_MAX];    
+    	::readlink("/proc/self/exe", path, sizeof(path)-1);
+    #endif
+
+    std::string return_string = std::string(path);
+    path[0] = '\0';
+    
+    return return_string;
+  }
+  
+  std::string getUserName()
+  {
+    #if defined(_WIN32)
+    	//! Initialize pointers to file and user names
+    	char username[FILENAME_MAX];
+    	DWORD username_len = FILENAME_MAX;
+    	GetUserName(username, &username_len);
+    #else
+    	//! Initialize pointers to file and user names
+    	char username[FILENAME_MAX];
+    	size_t username_len = FILENAME_MAX;
+    	getlogin_r(username, username_len);
+    #endif
+      
+    std::string return_string = std::string(username);
+    username[0] = '\0';
+    
+    return return_string;
+  }
+
+  std::string getCWD()
+  {
+    std::string wd;
+    
+    // use c++ convention
+    char* buffer = GetCurrentDir(NULL, 0);
+    
+    if( buffer ) 
+    {
+        wd = buffer;
+        buffer[0] = '\0';
+    }
+    return wd;
+  }
+
+  //! Internal function
+  inline bool issep( char c )
+  {
+    #if defined(_WIN32)
+        return c == '/' || c == '\\';
+    #else
+        return c == '/';
     #endif
   }
 
-  /**
-  \brief Recursively delete a folder and contents
-
-  \param dirname Folder to delete
-
-  \return 0 for success
-  */
-  int removeDirectoryRecursively(const char *dirname)
+  //! Internal function
+  bool isabs( const std::string& path )
   {
-      DIR *dir;
-      struct dirent *entry;
-      char path[FILENAME_MAX];
-
-      dir = opendir(dirname);
-      if (dir == NULL) {
-          perror("Error opendir()");
-          return 1;
-      }
-
-      while ((entry = readdir(dir)) != NULL) {
-          if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
-            sprintf_s(path, static_cast<size_t>(FILENAME_MAX), "%s/%s", dirname, entry->d_name);
-              if (entry->d_type == DT_DIR) {
-                  removeDirectoryRecursively(path);
-              }
-              //printf("(not really) Deleting: %s\n", path);
-              remove(path);
-          }
-
-      }
-      closedir(dir);
-      // Now the directory is empty, finally delete the directory itself.
-      //printf("(not really) Deleting: %s\n", dirname);
-      remove(dirname);
-    
-      return 0;
+    size_t i = 0;
+    #if defined(_WIN32)
+        if (path.size() > 1 && path[1] == ':') i = 2;
+    #endif
+    return i < path.size() && issep(path[i]);
   }
   
-  /**
-  \brief Splits the input file name into its constituents
+  //! Internal function
+  std::string join( const std::string& base, const std::string& path )
+  {
+    if( base.empty() || isabs(path) )  
+      return path;
+    if( issep(base[base.size() - 1]) ) 
+      return (base + path);
 
-  \param dataFile The full file name which is the input
-  \param baseName Overwritten with file name without extension
-  \param extension Overwritten with extension
-  \param path Overwritten with path to file
+    #if defined(_WIN32)
+        return base + '\\' + path;
+    #else
+        return base + '/' + path;
+    #endif
+  }
 
-  \return 0 if successfull
-  */
+  std::string normPath( const std::string &path )
+  {
+    if( path.empty() ) 
+      return "";
+    char drive[3] = {'\0', ':', '\0'};
+    size_t i = 0;
+    #if defined(_WIN32)
+      if( path.size() > 1 && path[1] == ':' ) 
+      {
+        drive[0] = path[0];
+        i = 2;
+      }
+    #endif
+    std::string norm_path = drive;
+    bool abs = issep(path[i]);
+    if( abs ) 
+    {
+      #if defined(_WIN32)
+        while( i <= path.size() && issep(path[i]) ) 
+        {
+          norm_path += cSeparator;
+          i++;
+        }
+      #else
+        norm_path += cSeparator;
+      #endif
+    }
+    std::string current;
+    std::vector<std::string> parts;
+    while( i <= path.size() ) 
+    {
+      if( issep(path[i]) || path[i] == '\0' )
+      {
+        if( current == ".." ) 
+        {
+          if( !abs && (parts.empty() || parts.back() == "..") ) 
+          {
+            parts.push_back(current);
+          } 
+          else if( !parts.empty() )
+          {
+            parts.pop_back();
+          }
+        } 
+        else if( current != "" && current != "." ) 
+        {
+          parts.push_back(current);
+        }
+        current.clear();
+      } 
+      else 
+      {
+        current += path[i];
+      }
+      i++;
+    }
+    for( i = 0; i < parts.size(); i++ ) 
+    {
+      norm_path = join(norm_path, parts[i]);
+    }
+    return norm_path.empty() ? "." : norm_path;
+  }
+
+  std::string normalizePath( const std::string &path )
+  {
+    return normPath(path);
+  }
+
+  //! Internal function
+  std::string absPath(const std::string &path)
+  {
+    return normPath( join(getCWD(),path) );
+  }
+
+  //! Internal function
+  inline void splitDrive( const std::string& path, std::string& drive, std::string& tail )
+  {
+    #if defined(_WIN32)
+      if( path.size() > 1 && path[1] == ':' ) 
+      {
+          tail  = path.substr(2);
+          drive = path[0]; drive += ':';
+      }
+      else
+    #endif
+      {
+        tail  = path;
+        drive = "";
+      }
+  }
+
+  //! Internal function
+  inline std::vector<std::string> splitDrive( const std::string& path )
+  {
+    std::vector<std::string> parts(2, "");
+    splitDrive(path, parts[0], parts[1]);
+    return parts;
+  }
+
+  std::string relPath( const std::string &path, const std::string &base )
+  {
+    // if relative path is given just return it
+    if( !isabs(path) ) 
+      return path;
+    // normalize paths
+    std::string norm_path = normPath(path);
+    std::string norm_base = normPath(join(getCWD(), base));
+    // check if paths are on same drive
+    #if defined(_WIN32)
+      std::string drive = splitDrive(norm_path)[0];
+      std::string base_drive = splitDrive(norm_base)[0];
+      if( drive != base_drive ) 
+      {
+        std::cerr << "Error: Path is on drive " << drive << ", start is on drive " << base_drive;
+      }
+    #endif
+    // find start of first path component in which paths differ
+    std::string::const_iterator b = norm_base.begin();
+    std::string::const_iterator p = norm_path.begin();
+    size_t pos = 0;
+    size_t i   = 0;
+    while( b != norm_base.end() && p != norm_path.end() ) 
+    {
+      if( issep(*p) ) 
+      {
+        if( !issep(*b) ) 
+          break;
+        pos = i;
+      } 
+      else if( *b != *p ) 
+      {
+        break;
+      }
+      b++; p++; i++;
+    }
+    // set pos to i (in this case, the size of one of the paths) if the end
+    // of one path was reached, but the other path has a path separator
+    // at this position, this is required below
+    if( (b != norm_base.end() && issep(*b)) || (p != norm_path.end() && issep(*p)) ) 
+        pos = i;
+    // skip trailing separator of other path if end of one path reached
+    if( b == norm_base.end() && p != norm_path.end() && issep(*p) ) 
+      p++;
+    if( p == norm_path.end() && b != norm_base.end() && issep(*b) ) 
+      b++;
+    // if paths are the same, just return a period (.)
+    //
+    // Thanks to the previous skipping of trailing separators, this condition
+    // handles all of the following cases:
+    //
+    //    base := "/usr/bin"  path := "/usr/bin"
+    //    base := "/usr/bin/" path := "/usr/bin/"
+    //    base := "/usr/bin"  path := "/usr/bin/"
+    //    base := "/usr/bin/" path := "/usr/bin"
+    if( b == norm_base.end() && p == norm_path.end() ) 
+      return ".";
+    // otherwise, pos is the index of the last slash for which both paths
+    // were identical; hence, everything that comes after in the original
+    // path is preserved and for each following component in the base path
+    // a "../" is prepended to the relative path
+    std::string rel_path;
+    // truncate base path with a separator as for each "*/" path component,
+    // a "../" will be prepended to the relative path
+    if( b != norm_base.end() && !issep(norm_base[norm_base.size() - 1]) ) 
+    {
+      // attention: This operation may invalidate the iterator b!
+      //            Therefore, remember position of iterator and get a new one.
+      size_t pos = b - norm_base.begin();
+      norm_base += cSeparator;
+      b = norm_base.begin() + pos;
+    }
+    while( b != norm_base.end() ) 
+    {
+      if( issep(*b) ) 
+      {
+        rel_path += "..";
+        rel_path += cSeparator;
+      }
+      b++;
+    }
+    if( pos + 1 < norm_path.size() ) 
+      rel_path += norm_path.substr(pos + 1);
+    // remove trailing path separator
+    if( issep(rel_path[rel_path.size() - 1]) ) 
+    {
+        rel_path.erase(rel_path.size() - 1);
+    }
+    return rel_path;
+  }
+
+  std::string realPath( const std::string &path )
+  {
+    std::string curr_path = join(getCWD(), path);
+    #if defined(_WIN32)
+	  // nothing extra required
+    #else
+      char *actualPath = realpath(const_cast<char *>(curr_path.c_str()), NULL);
+      curr_path = std::string(actualPath);
+/*
+      // use stringstream and std::getline() to split absolute path at slashes (/)
+      std::stringstream ss(curr_path);
+      curr_path.clear();
+      std::string fname;
+      std::string prev_path;
+      std::string next_path;
+      char slash;
+      ss >> slash; // root slash
+      while( getline(ss, fname, '/') ) 
+      {
+        // current absolute path
+        curr_path += '/';
+        curr_path += fname;
+        // if current path is a symbolic link, follow it
+        if( isLink(curr_path) ) 
+        {
+          // for safety reasons, restrict the depth of symbolic links followed
+          for( unsigned int i = 0; i < 100; i++ ) 
+          {
+		    char *buffer=NULL, *newbuf=NULL;
+            size_t buflen = 256;
+            for(;;)
+            {
+              newbuf = reinterpret_cast<char*>(realloc(buffer, buflen * sizeof(char)) );
+              if( !newbuf )
+                break;
+              buffer = newbuf;
+              int n = ::newlink(path.c_str(), buffer, buflen);
+              if( n<0 )
+                break;
+              if( static_cast<size_t>(n)<buflen )
+              {
+                buffer[n] = '\0';
+                next_path = buffer;
+                break;
+              }
+              buflen+=256;
+            }
+            free(buffer);
+            //next_path = os::readlink(curr_path);
+            if( next_path.empty() ) 
+            {
+              // if real path could not be determined because of permissions
+              // or invalid path, return the original path
+              break;
+            } 
+            else 
+            {
+              curr_path = join(prev_path, next_path);
+              if( !isLink(next_path) ) 
+                break;
+            }
+          }
+          // if real path could not be determined with the given maximum number
+          // of loop iterations (endless cycle?) or one of the symbolic links
+          // could not be read, just return original path as absolute path
+          if( isLink(next_path) ) 
+            return absPath(path);
+        }
+        // memorize previous path used as base for abspath()
+        prev_path = curr_path;
+      }
+*/
+    #endif
+    // normalize path after all symbolic links were resolved
+    return normPath(curr_path);
+  }
+
+  bool isLink(const std::string &path)
+  {
+    #if defined(_WIN32)
+      std::cout << "Windows doesn't support ways to distinguish between hard and soft links.\n";
+      return false;
+    #else
+      struct stat info;
+      if (lstat(path.c_str(), &info) != 0) 
+        return false;
+      return S_ISLNK(info.st_mode);
+    #endif
+  }
+
+  bool makeSymbolicLink(const std::string &input_fileName, const std::string &ouput_fileName)
+  {
+    #if defined(_WIN32)
+      return CreateSymbolicLink(input_fileName.c_str(), ouput_fileName.c_str(), NULL);
+    #else
+    if( symlink(input_fileName.c_str(), ouput_fileName.c_str()) == 0 )
+      return true;
+    else 
+      return false;
+    #endif
+  }
+  //====================================== String stuff ====================================//
+
   int splitFileName( const std::string &dataFile, std::string &path,
      std::string &baseName, std::string &extension )
   {
     #if defined(_WIN32)
     	//! Initialize pointers to file and user names
-      char basename[MAX_PATH], ext[MAX_PATH], path_name[MAX_PATH];
-      _splitpath_s(dataFile.c_str(), NULL, NULL, path_name, NULL, basename, NULL, ext, NULL);
+      char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX];
+	    _splitpath(dataFile.c_str(), NULL, path_name, basename_var, ext);
+      //_splitpath_s(dataFile.c_str(), NULL, NULL, path_name, NULL, basename, NULL, ext, NULL);
     #else
     	//! Initialize pointers to file and user names
-    	char *basename, *ext, *path_name;
-      path_name = dirname(dataFile);
-    	basename = basename(dataFile);
-      ext = strrchr(dataFile);
+    	char *basename_var, *ext, *path_name;
+      path_name = dirname( const_cast<char *>(dataFile.c_str()) );
+    	basename_var = basename(path_name);
+      ext = strrchr(const_cast<char *>(dataFile.c_str()), '.');
     #endif
       
     path = std::string(path_name);
-    baseName = std::string(basename);
+    baseName = std::string(basename_var);
     extension = std::string(ext);
 
     path_name[0] = '\0';
-    basename[0] = '\0';
+    basename_var[0] = '\0';
     ext[0] = '\0';
+
     /*
     extension = "";
     baseName = "";
@@ -255,53 +754,41 @@ namespace cbica
     return EXIT_SUCCESS;
   }
 
-  /**
-  \brief Get the name of the Executable which is calling the function
-
-  \return exe name
-  */
-  std::string getExeName()
+  void stringSplit( std::string &str, const std::string &delim, std::vector<std::string> results )
   {
-    #if defined(_WIN32)
-    	//! Initialize pointers to file and user names
-    	char filename[MAX_PATH];
-      _splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
-    #else
-    	//! Initialize pointers to file and user names
-    	char *filename, filename_2[PATH_MAX];    
-    	::readlink("/proc/self/exe", filename_2, sizeof(filename_2)-1);
-    	filename = basename(filename_2);
-    #endif
-
-    std::string return_string = std::string(filename);
-    filename[0] = '\0';
-    
-    return return_string;
-  }
-  
-  /**
-  \brief Get the name of the user who is calling the function
-
-  \return user name
-  */
-  std::string getUserName()
-  {
-    #if defined(_WIN32)
-    	//! Initialize pointers to file and user names
-    	char username[MAX_PATH];
-    	DWORD username_len = MAX_PATH;
-    	GetUserName(username, &username_len);
-    #else
-    	//! Initialize pointers to file and user names
-    	char username[PATH_MAX];
-    	size_t username_len = PATH_MAX;
-    	getlogin_r(username, username_len);
-    #endif
+    int cutAt;
+    while( (cutAt = static_cast<int>(str.find_first_of(delim))) != static_cast<int>(str.npos) )
+    {
+      if(cutAt > 0)
+        (results).push_back(str.substr(0,cutAt));
       
-    std::string return_string = std::string(username);
-    username[0] = '\0';
-    
+      str = str.substr(cutAt+1);
+    }
+    if(str.length() > 0)
+      (results).push_back(str);
+  }
+
+  std::string replaceString( const std::string &entireString, 
+                                    const std::string &toReplace, 
+                                    const std::string &replaceWith )
+  {
+    std::string return_string = entireString;
+    for( size_t pos = 0; ; pos += replaceWith.length() ) 
+    {
+    pos = return_string.find( toReplace, pos );
+      if( pos == std::string::npos ) 
+        break;
+      
+      return_string.erase( pos, toReplace.length() );
+      return_string.insert( pos, replaceWith );
+    }
     return return_string;
+    /*
+    if( entireString.length() < toReplace.length() )
+      std::cerr << "Length of string to search < length of string to replace. Please check.\n";
+
+    return(return_string.replace(entireString.find(toReplace), toReplace.length(), replaceWith));
+    */
   }
 
 }

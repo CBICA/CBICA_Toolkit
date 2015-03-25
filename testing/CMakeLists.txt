@@ -58,31 +58,3 @@ ADD_TEST( NAME LoggerClass_Test COMMAND ${TEST_EXE_NAME} -logging "testing_phras
 # Test for CmdParser class
 ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "random")
 
-
-## Tests for ITK classes
-IF( BUILD_CBICA_ITK_CLASSES )
-  
-  FILE( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/testing/itk_tests )
-  SET( ITK_TEST_EXE_NAME Test_ITK_Classes )
-  INCLUDE(${USE_ITK_FILE})
-  ADD_EXECUTABLE( ${ITK_TEST_EXE_NAME} ItkFunctionTests.cxx ${MainSources} )
-  TARGET_LINK_LIBRARIES( 
-  	${ITK_TEST_EXE_NAME}
-  	${ITK_LIBRARIES}
-  )
-  TARGET_LINK_LIBRARIES(
-  	${TEST_EXE_NAME}
-  	${ITK_LIBRARIES}
-  )
-  
-  # Test for the imageInfo class
-  ADD_TEST( NAME ItkImageInfoClass_Test COMMAND ${ITK_TEST_EXE_NAME} -itkImageInfo "${PROJECT_SOURCE_DIR}/testing/nifti1/1.nii")
-
-ENDIF( BUILD_CBICA_ITK_CLASSES )
-
-#MESSAGE( STATUS "Current binary dir :: " ${CMAKE_CURRENT_BINARY_DIR} )
-# Second test is to test itk reading
-#FILE( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/testing/ITK_READ_TEST )
-
-#ADD_TEST( NAME CBICA_Tk_Test_2 COMMAND CBICA_Toolkit -v )
-	#--t ${PROJECT_SOURCE_DIR}/testing/nifti1/1.nii )

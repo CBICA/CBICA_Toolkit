@@ -30,4 +30,8 @@ AUTHORS
   The authors of this software are:
 
   - Sarthak Pati
-  - 
+  - Drew Parker
+  - Meng-Kang Hsieh 
+  - Martin Rozycki
+  - Jimit Doshi
+  - Guray Erus
