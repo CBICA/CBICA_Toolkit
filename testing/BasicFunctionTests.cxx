@@ -138,8 +138,6 @@ int main(int argc, char** argv)
       std::string fName = dirName + std::string("log.txt");
     
       cbica::Logging logger( fName, argv[2] );
-      //logger.Write();
-      //logger.~Logging();
       std::ifstream logFile;
       logFile.open(fName);
       std::string content;
@@ -156,6 +154,26 @@ int main(int argc, char** argv)
       #endif
       if( content.find(userName) != std::string::npos )
         return EXIT_SUCCESS;    
+    }
+
+    else if( (std::string( "-symbolic").compare(argv[2]) == 0) ||
+             (std::string("--symbolic").compare(argv[2]) == 0) )
+    {
+      std::string dirName;
+      cbica::createTmpDir(dirName);
+      std::string fName = dirName + std::string("log.txt");
+      std::string fName_sym = dirName + std::string("log_sym.txt");
+      cbica::Logging logger( fName, argv[3] );
+
+      #if defined(_WIN32)
+       // do nothing as Windows doesn't support symbolic linkage creatation for non-admins
+      #else
+        cbica::makeSymbolicLink(fName, fName_sym);
+        if( !cbica::isLink(fName_sym) )
+          return EXIT_FAILURE;
+      #endif // defined(WIN_32)
+      
+      cbica::deleteDir(dirName);
     }
   }
   catch( int e )

@@ -17,6 +17,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
   #include <conio.h>
 //  #include "windows/dirent.h"
   #include <lmcons.h>
+  #include <Shlobj.h>
   #define GetCurrentDir _getcwd
   #define WindowsDetected = true
   static const char  cSeparator  = '\\';
@@ -667,7 +668,7 @@ namespace cbica
   bool isLink(const std::string &path)
   {
     #if defined(_WIN32)
-      std::cout << "Windows doesn't support ways to distinguish between hard and soft links.\n";
+      std::cerr << "Windows doesn't support ways to distinguish between hard and soft links.\n";
       return false;
     #else
       struct stat info;
@@ -677,10 +678,26 @@ namespace cbica
     #endif
   }
 
+  bool isSymbolicLink(const std::string &path)
+  {
+    return isLink(path);
+  }
+
   bool makeSymbolicLink(const std::string &input_fileName, const std::string &ouput_fileName)
   {
     #if defined(_WIN32)
-      return CreateSymbolicLink(input_fileName.c_str(), ouput_fileName.c_str(), NULL);
+      if( IsUserAnAdmin() )
+      {
+        if( CreateSymbolicLink(input_fileName.c_str(), ouput_fileName.c_str(), 0) != 0 )
+          return true;
+        else
+          return false;
+      }
+      else
+      {
+        std::cerr << "Windows doesn't let non-admins create soft links.\n";
+        return true;
+      }
     #else
     if( symlink(input_fileName.c_str(), ouput_fileName.c_str()) == 0 )
       return true;

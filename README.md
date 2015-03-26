@@ -13,12 +13,12 @@
   See https://www.cbica.upenn.edu/sbia/software/license.html or COPYING file.
 
 <b> Authors: </b><br>
-  Sarthak – primary dev, integration of everything <br>
-	Drew – DTI algos <br>
+  Sarthak – primary developer, integration of everything <br>
+	Drew    – DTI algorithms <br>
 	Michael – sort + rename <br>
-	Martin – sort + rename <br>
-	Jimit – python wraps <br>
-	Guray – Overall testing <br>
+	Martin  – sort + rename <br>
+	Jimit   – Overall testing <br>
+	Guray   – Overall testing <br>
 
 
 ===============
@@ -30,14 +30,9 @@ Windows x64 and Linux (CentOS6) x64.
 
 All the functions are standalone in nature; i.e., they are header-only and can be exported individually for use/distribution in projects.
 
-Currently, the Toolkit has been tested to be working on Windows x64 using MS Visual Studio 2012 while linking against ITK/4.4.2 built with options
+Currently, the Toolkit has been tested to be working on Windows x64 using MS Visual Studio 2012 while linking against ITK/4.7.0 built with options
 specified in SBIA internal Wiki (https://sbia-wiki.uphs.upenn.edu/wiki/index.php/Third-party_Software#ITK).
 
-<b>TO DO:</b>
-- Compatibility with ITK/4.7.1
-- Individual executables for functions to make Python wrapping easier
-
-[Request a new function via eLog.]
 
 ==========
 2. INSTALL    
@@ -52,6 +47,7 @@ specified in SBIA internal Wiki (https://sbia-wiki.uphs.upenn.edu/wiki/index.php
 - Doxygen (for documentation only)
 - GIT (for superbuild system only) -- ?
 - ITK 4.7.0 (required for ITK based classes) - check cmake/ExternalITK for parameters
+- SWIG (required for Python Wrapping) [tested on 3.0.0-3.0.4]
 
 Make sure all dependencies are met before proceeding with install.
 
@@ -118,39 +114,40 @@ The test executables (if any) are generated into the binary directory by default
 
 Folder/File:
 
-- <b>fileExists</b>: check if specified file exists or not
-- <b>directoryExists</b>: check if specified directory exists or not
-- <b>createTmpDir</b>: creates a temporary directory
-- <b>createDir</b>: creates a directory
-- <b>makeDir</b>: wrap for <code>createDir</code>
-- <b>removeDirectoryRecursively</b>: removes a directory and all its contents
-- <b>removeDir</b>: wrap for <code>removeDirectoryRecursively</code>
-- <b>deleteDir</b>: wrap for <code>removeDirectoryRecursively</code>
+- <b>fileExists</b>: Check if specified file exists or not
+- <b>directoryExists</b>: Check if specified directory exists or not
+- <b>createTmpDir</b>: Creates a temporary directory
+- <b>createDir</b>: Creates a directory
+- <b>makeDir</b>: Wrap for <code>createDir</code>
+- <b>removeDirectoryRecursively</b>: Removes a directory and all its contents
+- <b>removeDir</b>: Wrap for <code>removeDirectoryRecursively</code>
+- <b>deleteDir</b>: Wrap for <code>removeDirectoryRecursively</code>
 
 OS:
 
-- <b>getFilenameExtension</b>: get the extension of the supplied file name
-- <b>getExecutableName</b>: get current executable name
-- <b>getFullPath</b>: get path of current executable
-- <b>getUserName</b>: get current user name
-- <b>getCWD</b>: get current working directory
-- <b>normPath</b>: Wrap of python's "os.path.normpath"--Normalize a pathname by collapsing redundant separators and up-level references
+- <b>getFilenameExtension</b>: Get the extension of the supplied file name
+- <b>getExecutableName</b>: Get current executable name
+- <b>getFullPath</b>: Get path of current executable
+- <b>getUserName</b>: Get current user name
+- <b>getCWD</b>: Get current working directory
+- <b>normPath</b>: Reimplementation of python's "os.path.normpath"--Normalize a pathname by collapsing redundant separators and up-level references
 - <b>normalizePath</b>: Wrap for normPath
-- <b>relPath</b>: Wrap for python's "os.path.relpath"--Return a relative filepath to path
-- <b>realPath</b>: Wrap of python's "os.path.realpath"--Return the canonical path of the specified filename
-- <b>isFile</b>: Wrap for python's "os.path.isfile"--Return True if path is an existing regular file
-- <b>isDir</b>: Wrap of python's "os.path.isdir"--Return True if path is an existing directory
-- <b>exists</b>: Wrap of python's "os.path.exists"--Return True if path exists and false for broken symbolic links
-- <b>isLink</b>: Wrap of python's "os.path.islink"--Return True if path refers to a directory entry that is a symbolic link
+- <b>relPath</b>: Reimplementation for python's "os.path.relpath"--Return a relative filepath to path
+- <b>realPath</b>: Reimplementation of python's "os.path.realpath"--Return the canonical path of the specified filename
+- <b>isFile</b>: Reimplementation for python's "os.path.isfile"--Return True if path is an existing regular file
+- <b>isDir</b>: Reimplementation of python's "os.path.isdir"--Return True if path is an existing directory
+- <b>exists</b>: Reimplementation of python's "os.path.exists"--Return True if path exists and false for broken symbolic links
+- <b>isLink</b>: Reimplementation of python's "os.path.islink"--Return True if path refers to a directory entry that is a symbolic link
+- <b>isSymbolicLink</b>: Wrap for <code>isLink</code>
 - <b>makeSymbolicLink</b>: Make a symbolic link of a file
 
 String:
 
-- <b>findInVector</b>: checks for an element in a vector and returns true or false along with its position in vector (-1 if not found)
-- <b>splitFileName</b>: splits a supplied file name between path, base file name and extension
-- <b>convertString</b>: convert a character to its corresponding ASCII code
-- <b>stringSplit</b>: split the supplied string with the deliminator and store results in a vector
-- <b>replaceString</b>: replaces specified string with another string in a larger input string
+- <b>findInVector</b>: Checks for an element in a vector and returns true or false along with its position in vector (-1 if not found)
+- <b>splitFileName</b>: Splits a supplied file name between path, base file name and extension
+- <b>convertString</b>: Convert a character to its corresponding ASCII code
+- <b>stringSplit</b>: Split the supplied string with the deliminator and store results in a vector
+- <b>replaceString</b>: Replaces specified string with another string in a larger input string
 
 TO DO:
 
@@ -166,11 +163,11 @@ TO DO:
 
 - <b>CmdParser</b>: Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file.
 
-	addParameter		: add parameters one by one<br>
-	compareParamter	: compare added parameters with command line input<br>
-	getDescription	: get description for a particular added parameter<br>
-	echoUsage			  : give usage of the executable<br>
-	echoVersion			: give version details of the executable<br>
+	addParameter		: Add parameters one by one<br>
+	compareParamter	: Compare added parameters with command line input<br>
+	getDescription	: Get description for a particular added parameter<br>
+	echoUsage			  : Give usage of the executable<br>
+	echoVersion			: Give version details of the executable<br>
 
 TO DO:
 

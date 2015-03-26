@@ -43,10 +43,10 @@ namespace cbica
   /**
   \brief Return True if path is an existing regular file 
   
-  Wrap for python's "os.path.isfile": This follows symbolic links, 
+  Reimplementation for python's "os.path.isfile": This follows symbolic links, 
   so both islink() and isfile() can be true for the same path.
   
- [Wrap of cbica::fileExists()]
+  [Wrap of cbica::fileExists()]
 
   \param path Filename of file to check
 
@@ -57,7 +57,7 @@ namespace cbica
   /**
   \brief Return True if path is an existing directory
   
-  Wrap of python's "os.path.isdir": This follows symbolic links, 
+  Reimplementation of python's "os.path.isdir": This follows symbolic links, 
   so both islink() and isdir() can be true for the same path.
   
   [Wrap of cbica::directoryExists()]
@@ -71,7 +71,7 @@ namespace cbica
   /**
   \brief Return True if path exists and false for broken symbolic links 
   
-  Wrap of python's "os.path.exists": On some platforms, this function may return False 
+  Reimplementation of python's "os.path.exists": On some platforms, this function may return False 
   if permission is not granted to execute os.stat() on the requested file, even if the 
   path physically exists.
 
@@ -165,7 +165,9 @@ namespace cbica
   std::string getUserName();
   
   /**
-  \brief Get the current working directory [wrap for getcwd()]
+  \brief Get the current working directory 
+  
+  [Wrap for cbica::getcwd()]
 
   \return Current working directory
   */
@@ -174,7 +176,7 @@ namespace cbica
   /**
   \brief Normalize a pathname by collapsing redundant separators and up-level references
 
-  Wrap of python's "os.path.normpath": Normalize a pathname by collapsing redundant separators 
+  Reimplementation of python's "os.path.normpath": Normalize a pathname by collapsing redundant separators 
   and up-level references so that A//B, A/B/, A/./B and A/foo/../B all become A/B. This string 
   manipulation may change the meaning of a path that contains symbolic links. On Windows, it 
   converts forward slashes to backward slashes.
@@ -186,14 +188,20 @@ namespace cbica
   std::string normPath(const std::string &path);
   
   /**
-  \brief Wrap for normPath
+  \brief Normalize a pathname by collapsing redundant separators and up-level references
+  
+  [Wrap for cbica::normPath()]
+  
+  \param path Path to normalize
+
+  \return std::string Normalized path
   */
   std::string normalizePath(const std::string &path);  
   
   /**
   \brief Return a relative filepath to path
 
-  Wrap for python's "os.path.relpath": Return a relative filepath to path either from the 
+  Reimplementation for python's "os.path.relpath": Return a relative filepath to path either from the 
   current directory or from an optional start directory. This is a path computation: the 
   filesystem is not accessed to confirm the existence or nature of path or start.
 
@@ -207,7 +215,7 @@ namespace cbica
   /**
   \brief Return the canonical path of the specified filename
   
-  Wrap of python's "os.path.realpath": Return the canonical path of the specified 
+  Reimplementation of python's "os.path.realpath": Return the canonical path of the specified 
   filename, eliminating any symbolic links encountered in the path (if they are 
   supported by the operating system).
 
@@ -220,7 +228,7 @@ namespace cbica
   /**
   \brief Return True if path refers to a directory entry that is a symbolic link
   
-  Wrap of python's "os.path.islink": Always False if symbolic links are not 
+  Reimplementation of python's "os.path.islink": Always False if symbolic links are not 
   supported by the python runtime.
 
   \param path Path to check
@@ -228,6 +236,17 @@ namespace cbica
   \return True if path is symbolic link
   */
   bool isLink(const std::string &path);
+
+  /**
+  \brief Check if path refers to a symbolic entry
+
+  [Wrap of cbica::isLink()]
+
+  \param path Path to check
+
+  \return True if path is symbolic link
+  */
+  bool isSymbolicLink(const std::string &path);
 
   /**
   \brief Make a symbolic link from file to another
