@@ -696,7 +696,7 @@ namespace cbica
       else
       {
         std::cerr << "Windows doesn't let non-admins create soft links.\n";
-        return true;
+        return false;
       }
     #else
     if( symlink(input_fileName.c_str(), ouput_fileName.c_str()) == 0 )
