@@ -29,4 +29,3 @@ SET( @PACKAGE_NAME@_LIBRARIES ${@PACKAGE_NAME@_LIBRARY} )
 
 # absolute path of project use file
 SET( @PACKAGE_NAME@_USE_FILE "${CMAKE_CURRENT_LIST_DIR}/@PACKAGE_NAME@Use.cmake" )
-

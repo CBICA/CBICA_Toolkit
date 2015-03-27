@@ -34,7 +34,7 @@ SET( CBICA_Sources
 	cbicaCmdParser.cpp
 )
 
-INSTALL(FILES ${CBICA_Headers} DESTINATION ${RELEASE_ID}/include)
+INSTALL(FILES ${CBICA_Headers} DESTINATION include)
 
 # build static lib for Windows and shared lib for Unix: why?
 IF(WIN32)
@@ -68,5 +68,5 @@ ENDIF(UNIX)
 # install the library
 INSTALL( 
 	TARGETS ${CBICA_LIB_NAME} 
-	DESTINATION ${RELEASE_ID}/lib 
+	DESTINATION lib 
 )
