@@ -253,8 +253,39 @@ namespace cbica
 
   \param input_fileName Input file name for which symbolic link needs to be created
   \param output_fileName Output file name which is the symbolic link for input_fileName
+
+  \return True if symbolic link successfully created
   */
   bool makeSymbolicLink(const std::string &input_fileName, const std::string &ouput_fileName);
+
+  /**
+  \brief Sets the environment variable
+
+  \param variable_name Name of the Variable
+  \param variable_value Value of variable_name
+
+  \return True if successful
+  */
+  bool setEnvironmentVariable(const std::string &variable_name, const std::string &variable_value);
+  
+  /**
+  \brief Sets the environment variable
+
+  \param variable_name Name of the Variable
+  \param variable_value Value of variable_name
+
+  \return True if successful
+  */
+  bool setEnvironmentVariable(const std::string &variable_name, const int &variable_value);
+
+  /**
+  \brief Delete the environment variable
+
+  \param variable_name Name of the Variable
+
+  \return True if successful
+  */
+  bool deleteEnvironmentVariable(const std::string &variable_name);
 
   //====================================== String stuff ====================================//
     
@@ -293,6 +324,23 @@ namespace cbica
                              const std::string &toReplace, 
                              const std::string &replaceWith );
   
+  /**
+  \brief Convert const char* to char*
+
+  \param input constant std::string
+
+  \return character pointer
+  */
+  char* constCharToChar(const std::string &input);
+
+  /**
+  \brief Convert const char* to char*
+
+  \param input constant character pointer
+
+  \return character pointer
+  */
+  char* constCharToChar(const char *input);
 
   //==================================== Template stuff ==================================//
 
@@ -351,5 +399,5 @@ namespace cbica
 
     return return_vector;
   }
-
+  
 };

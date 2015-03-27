@@ -41,6 +41,9 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <exception>
+#include <typeinfo>
+#include <stdexcept>
 
 #include "cbicaUtilities.h"
 
@@ -211,37 +214,6 @@ namespace cbica
       return 0;
     #endif
       return 0;
-    /*
-    DIR *dir;
-    struct dirent *entry;
-    char path[FILENAME_MAX];
-
-    dir = opendir(dirname.c_str());
-    if (dir == NULL) 
-    {
-      perror("Error opendir()");
-      return false;
-    }
-
-    while ((entry = readdir(dir)) != NULL) 
-    {
-      if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) 
-      {
-        sprintf_s(path, static_cast<size_t>(FILENAME_MAX), "%s/%s", dirname, entry->d_name);
-        if (entry->d_type == DT_DIR) 
-        {
-          removeDirectoryRecursively(path);
-        }
-        //printf("(not really) Deleting: %s\n", path);
-        remove(path);
-      }
-    }
-    closedir(dir);
-    // Now the directory is empty, finally delete the directory itself.
-    //printf("(not really) Deleting: %s\n", dirname);
-    remove(dirname.c_str());
-    return true;
-    */
   }
 
   bool removeDir(const std::string &path)
@@ -705,6 +677,36 @@ namespace cbica
       return false;
     #endif
   }
+
+  bool setEnvironmentVariable(const std::string &variable_name, const std::string &variable_value)
+  {
+    std::string totalVariable = variable_name + "=" + variable_value;
+    try
+    {
+      #if defined(_WIN32)
+        int test = _putenv(totalVariable.c_str());
+      #else
+        putenv(cbica::constCharToChar(totalVariable));
+      #endif
+    }
+    catch(const std::exception &e)
+    {
+      std::cerr << "Exception caught: " << e.what() << std::endl;
+      return false;
+    }
+
+    return true;
+  }
+  
+  bool setEnvironmentVariable(const std::string &variable_name, const int &variable_value)
+  {
+    return cbica::setEnvironmentVariable(variable_name, std::to_string(variable_value));
+  }
+  
+  bool deleteEnvironmentVariable(const std::string &variable_name)
+  {
+    return cbica::setEnvironmentVariable(variable_name, "");
+  }
   //====================================== String stuff ====================================//
 
   int splitFileName( const std::string &dataFile, std::string &path,
@@ -806,6 +808,18 @@ namespace cbica
 
     return(return_string.replace(entireString.find(toReplace), toReplace.length(), replaceWith));
     */
+  }
+  
+  char* constCharToChar(const std::string &input)
+  {
+    char *s = new char[input.size()+1];
+    std::strcpy(s, input.c_str());
+    return s;
+  }
+
+  char* constCharToChar( const char *input )
+  {
+    return cbica::constCharToChar(std::string(input));
   }
 
 }

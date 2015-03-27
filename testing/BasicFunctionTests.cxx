@@ -15,6 +15,9 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
 #include <stdlib.h>
 #include <string>
 #include <algorithm>
+#include <exception>
+#include <typeinfo>
+#include <stdexcept>
 
 #define TEST_DATA "/nifit1/"
 
@@ -156,14 +159,14 @@ int main(int argc, char** argv)
         return EXIT_SUCCESS;    
     }
 
-    else if( (std::string( "-symbolic").compare(argv[2]) == 0) ||
-             (std::string("--symbolic").compare(argv[2]) == 0) )
+    else if( (std::string( "-symbolic").compare(argv[1]) == 0) ||
+             (std::string("--symbolic").compare(argv[1]) == 0) )
     {
       std::string dirName;
       cbica::createTmpDir(dirName);
       std::string fName = dirName + std::string("log.txt");
       std::string fName_sym = dirName + std::string("log_sym.txt");
-      cbica::Logging logger( fName, argv[3] );
+      cbica::Logging logger( fName, argv[2] );
 
       #if defined(_WIN32)
        // do nothing as Windows doesn't support symbolic linkage creatation for non-admins
@@ -175,10 +178,31 @@ int main(int argc, char** argv)
       
       cbica::deleteDir(dirName);
     }
+
+    else if( (std::string( "-envName").compare(argv[1]) == 0) ||
+             (std::string("--envName").compare(argv[1]) == 0) )
+    {
+      std::string random_variable = "RANDOM_VAR", random_val = "VAL";
+      int val = 1;
+
+      if( !cbica::setEnvironmentVariable(random_variable, random_val) )
+        return EXIT_FAILURE;
+      std::string value = getenv(random_variable.c_str());
+      if( value != random_val )
+        return EXIT_FAILURE;
+      cbica::deleteEnvironmentVariable(random_variable);
+      if( !cbica::setEnvironmentVariable(random_variable, val) )
+        return EXIT_FAILURE;
+      value = getenv(random_variable.c_str());
+      if( value != random_val )
+        return EXIT_FAILURE;
+      cbica::deleteEnvironmentVariable(random_variable);
+    }
+
   }
-  catch( int e )
+  catch( std::exception &e )
   {
-    std::cout << "An exception occured. Number: " << e << NEWLINE;
+    std::cout << "An exception occured. Number: " << e.what() << NEWLINE;
     return EXIT_FAILURE;
   }
 
