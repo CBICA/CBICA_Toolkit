@@ -194,7 +194,7 @@ int main(int argc, char** argv)
       if( !cbica::setEnvironmentVariable(random_variable, val) )
         return EXIT_FAILURE;
       value = getenv(random_variable.c_str());
-      if( value != random_val )
+      if( value != std::to_string(val) )
         return EXIT_FAILURE;
       cbica::deleteEnvironmentVariable(random_variable);
     }
