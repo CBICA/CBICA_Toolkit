@@ -114,6 +114,8 @@ namespace cbica
   private:
     //! Executable name
     std::string m_exeName;
+    //! Version
+    std::string m_version;
 
     //! The parameters are stored as tuples. description_line2 is empty if not initialized
     std::vector< std::tuple< std::string,std::string,std::string,std::string, int > > m_parameters;
@@ -130,6 +132,8 @@ namespace cbica
     //! Max length of parameters for echoUsage()
     int m_maxLength;
 
+    //! Get max length
     bool checkMaxLen;
+    inline void getMaxLength();
   };
 }

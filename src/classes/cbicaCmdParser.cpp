@@ -31,6 +31,11 @@ namespace cbica
   CmdParser::CmdParser()
   {
     m_exeName = PROJECT_NAME;
+#ifdef PROJECT_VERSION
+    m_version = PROJECT_VERSION;
+#else
+    m_version = 0.1.0;
+#endif
     m_maxLength = 0;
     checkMaxLen = false;
   }
@@ -38,6 +43,20 @@ namespace cbica
   CmdParser::~CmdParser()
   {
 
+  }
+
+  inline void CmdParser::getMaxLength()
+  {
+    for( int i=0; i<m_parameters.size(); ++i )
+    {
+      //m_laconicParamters.push_back( std::make_tuple(std::get<0>(m_parameters[i]), i) );
+      m_laconicParamters.push_back( std::get<0>(m_parameters[i]) );
+      m_verboseParamters.push_back( std::make_tuple(std::get<1>(m_parameters[i]), i) );
+      if( m_maxLength < std::get<4>(m_parameters[i]) )
+        m_maxLength = std::get<4>(m_parameters[i]);
+    }
+    //m_maxLength += 6;
+    checkMaxLen = true;
   }
   
   void CmdParser::addParameter( const std::string &laconic, const std::string &verbose, 
@@ -63,35 +82,25 @@ namespace cbica
   {
     if(!checkMaxLen)
     {
-      for( int i=0; i<m_parameters.size(); ++i )
-      {
-        //m_laconicParamters.push_back( std::make_tuple(std::get<0>(m_parameters[i]), i) );
-        m_laconicParamters.push_back( std::get<0>(m_parameters[i]) );
-        m_verboseParamters.push_back( std::make_tuple(std::get<1>(m_parameters[i]), i) );
-        if( m_maxLength < std::get<4>(m_parameters[i]) )
-          m_maxLength = std::get<4>(m_parameters[i]);
-      }
-      m_maxLength += 6;
-      checkMaxLen = true;
+      getMaxLength();
     }
-    std::cout << "Executable Name: " << PROJECT_NAME << "\n\n" << "Usage:\n\n";
+    std::cout << "Executable Name: " << m_exeName << " v" << m_version
+      << "\n\n" << "Usage:\n\n";
     for( int i=0; i<m_parameters.size(); ++i )
     {
       std::string spaces;
-      for( int n=0; n<m_maxLength-std::get<4>(m_parameters[i])-4; n++)
+      for( int n=0; n<m_maxLength-std::get<4>(m_parameters[i])/*-4*/; n++)
         spaces.append(" ");
 
-      if( std::get<3>(m_parameters[i]) == "blank" )
-        std::cout << "[" << std::get<0>(m_parameters[i]) << ", " << std::get<1>(m_parameters[i]) << 
-        "]" << spaces << std::get<2>(m_parameters[i]) << NEWLINE;
-      else
+      std::cout << "[" << std::get<0>(m_parameters[i]) << ", " << std::get<1>(m_parameters[i]) << spaces <<
+      "]  " << std::get<2>(m_parameters[i]) << NEWLINE;
+
+      if( std::get<3>(m_parameters[i]) != "blank" )
       {
         std::string spaces_2;
-        for( int n=0; n<m_maxLength; n++)
+        for( int n=0; n<m_maxLength+6; n++)
           spaces_2.append(" ");
-        std::cout << "[" << std::get<0>(m_parameters[i]) << ", " << std::get<1>(m_parameters[i]) << 
-          "]" << spaces << std::get<2>(m_parameters[i]) << NEWLINE <<
-          spaces_2 << std::get<3>(m_parameters[i]) << NEWLINE;
+        std::cout << spaces_2 << std::get<3>(m_parameters[i]) << NEWLINE;
       }
     }
   }
@@ -99,7 +108,7 @@ namespace cbica
   void CmdParser::echoVersion()
   {
     std::cout << "Executable Name: " << m_exeName << "\n\n" << "Version: " <<
-      PROJECT_VERSION << NEWLINE;
+      m_version << NEWLINE;
   }
 
   bool CmdParser::compareParamter( const std::string &inputParamToCheck, 
@@ -107,16 +116,7 @@ namespace cbica
   {
     if(!checkMaxLen)
     {
-      for( int i=0; i<m_parameters.size(); ++i )
-      {
-        //m_laconicParamters.push_back( std::make_tuple(std::get<0>(m_parameters[i]), i) );
-        m_laconicParamters.push_back( std::get<0>(m_parameters[i]) );
-        m_verboseParamters.push_back( std::make_tuple(std::get<1>(m_parameters[i]), i) );
-        if( m_maxLength < std::get<4>(m_parameters[i]) )
-          m_maxLength = std::get<4>(m_parameters[i]);
-      }
-      m_maxLength += 6;
-      checkMaxLen = true;
+      getMaxLength();
     }
     if( inputParamToCheck == execParamToCheck )
       return true;
@@ -125,12 +125,12 @@ namespace cbica
       std::string inputCheck, execCheck;
       const int minLength = std::min(inputParamToCheck.length(), inputParamToCheck.length());
 
-      if( inputParamToCheck.length()==minLength )
+      if( inputParamToCheck.length()<minLength )
         inputCheck = "-" + inputParamToCheck;
       else
         inputCheck = inputParamToCheck;
 
-      if( execParamToCheck.length()==minLength )
+      if( execParamToCheck.length()<minLength )
         execCheck = "-" + execParamToCheck;
       else
         execCheck = execParamToCheck;
@@ -152,16 +152,7 @@ namespace cbica
   {
     if(!checkMaxLen)
     {
-      for( int i=0; i<m_parameters.size(); ++i )
-      {
-        //m_laconicParamters.push_back( std::make_tuple(std::get<0>(m_parameters[i]), i) );
-        m_laconicParamters.push_back( std::get<0>(m_parameters[i]) );
-        m_verboseParamters.push_back( std::make_tuple(std::get<1>(m_parameters[i]), i) );
-        if( m_maxLength < std::get<4>(m_parameters[i]) )
-          m_maxLength = std::get<4>(m_parameters[i]);
-      }
-      m_maxLength += 6;
-      checkMaxLen = true;
+      getMaxLength();
     }
     std::string inputCheck;
     
