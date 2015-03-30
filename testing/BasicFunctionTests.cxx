@@ -42,17 +42,17 @@ int main(int argc, char** argv)
     if( (std::string( "-cmdParser").compare(argv[2]) == 0) || 
         (std::string("--cmdParser").compare(argv[2]) == 0) )
     {
-      cbica::CmdParser parser;
+      cbica::CmdParser parser = cbica::CmdParser(argc, argv);
       parser.setExeName("BasicFunctionTests");
       parser.addParameter("1p", "firstParam", "first parameter");
       parser.addParameter("2p", "secondParam", "second parameter", "more description");
 
-      if( !parser.compareParamter("1p", "-1p") )
+      if( !parser.compareParamter("1p").first )
         return EXIT_FAILURE;
     
-      if( !parser.compareParamter("2p", "-2p") )
+      if( !parser.compareParamter("2p").first )
         return EXIT_FAILURE;
-
+    
       if( parser.getDescription("1p") == "" )
         return EXIT_FAILURE;
     

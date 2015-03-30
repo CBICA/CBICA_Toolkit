@@ -15,10 +15,16 @@ parser.addParameter("-h","--help", "gets help from Justice League");
 parser.addParameter("-m","--marvel", "prefer Marvel instead");
 
 // compare and do something if true
-if( parser.compareParamter(argv[2], "u") )
+if( parser.compareParamter("u").first )
 {
   parser.echoUsage();
   int u_test = 0;
+}
+
+int m_position = parser.compareParamter("m").second
+if (m_position > 0)
+{
+  doSomethingWithFile(m_position+1)
 }
 </code>
 
@@ -48,15 +54,21 @@ namespace cbica
   public:
     /**
     \brief The Constructor
+
+    \param argc The "argc" from executable
+    \param argv The "argv" from executable
     */
-    explicit CmdParser(/*const std::string &exe_name*/);
+    explicit CmdParser(const int argc, char **argv);
     
     /**
     \brief The Constructor
 
+    \param argc The "argc" from executable
+    \param argv The "argv" from executable
+
     \param exe_name Name of the executable
     */
-    explicit CmdParser(const std::string &exe_name);
+    explicit CmdParser(const int argc, char **argv, const std::string &exe_name);
     /**
     \brief The Destructor
     */
@@ -100,8 +112,11 @@ namespace cbica
 
     /**
     \brief Check ONLY for laconic paramters
+
+    \return True if parameter found
+    \return Position of parameter in argv else -1
     */
-    bool compareParamter(const std::string &inputParamToCheck, const std::string &execParamToCheck);
+    std::pair<bool, int> compareParamter(const std::string &execParamToCheck);
 
     /**
     \brief Get the description analogous with the paramter
@@ -116,6 +131,11 @@ namespace cbica
     std::string m_exeName;
     //! Version
     std::string m_version;
+
+    //! CMD variable
+    int m_argc;
+    //! CMD variable
+    char ** m_argv;
 
     //! The parameters are stored as tuples. description_line2 is empty if not initialized
     std::vector< std::tuple< std::string,std::string,std::string,std::string, int > > m_parameters;

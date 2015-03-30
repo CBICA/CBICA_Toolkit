@@ -21,14 +21,22 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 namespace cbica
 {
-  CmdParser::CmdParser(const std::string &exe_name)
+  CmdParser::CmdParser(const int argc, char **argv, const std::string &exe_name)
   {
+#ifdef PROJECT_VERSION
+    m_version = PROJECT_VERSION;
+#else
+    m_version = 0.1.0;
+#endif    
     m_exeName = exe_name;
     m_maxLength = 0;
     checkMaxLen = false;
+
+    m_argc = argc;
+    m_argv = argv;
   }
   
-  CmdParser::CmdParser()
+  CmdParser::CmdParser(const int argc, char **argv)
   {
     m_exeName = PROJECT_NAME;
 #ifdef PROJECT_VERSION
@@ -38,6 +46,9 @@ namespace cbica
 #endif
     m_maxLength = 0;
     checkMaxLen = false;
+
+    m_argc = argc;
+    m_argv = argv;
   }
 
   CmdParser::~CmdParser()
@@ -111,15 +122,22 @@ namespace cbica
       m_version << NEWLINE;
   }
 
-  bool CmdParser::compareParamter( const std::string &inputParamToCheck, 
-                                   const std::string &execParamToCheck )
+  std::pair<bool, int> CmdParser::compareParamter( /*const std::string &inputParamToCheck,*/ 
+                                   const std::string &execParamToCheck
+                                   )
   {
+    for (int i = 1; i < m_argc; i++)
+    {
+      std::string inputParamToCheck = m_argv[i];
     if(!checkMaxLen)
     {
       getMaxLength();
     }
     if( inputParamToCheck == execParamToCheck )
-      return true;
+    {
+      //argv_position = i;
+      return std::make_pair(true, i);
+    }
     else
     {
       std::string inputCheck, execCheck;
@@ -135,7 +153,11 @@ namespace cbica
       else
         execCheck = execParamToCheck;
     
-      return (inputCheck == execCheck);
+      if( inputCheck == execCheck )
+      {
+        //argv_position = i;
+      return std::make_pair(true, i);
+      }
 
       /*// implement if developer plans to add verbose paramters to compare
       else if( paramToCheck.length()==2 )
@@ -146,6 +168,8 @@ namespace cbica
       }
       */
     }
+    }
+      return std::make_pair(false, -1);
   }
 
   std::string CmdParser::getDescription(const std::string &parameter )
