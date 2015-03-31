@@ -709,7 +709,7 @@ namespace cbica
   }
   //====================================== String stuff ====================================//
 
-  int splitFileName( const std::string &dataFile, std::string &path,
+  bool splitFileName( const std::string &dataFile, std::string &path,
      std::string &baseName, std::string &extension )
   {
     #if defined(_WIN32)
@@ -770,7 +770,11 @@ namespace cbica
       std::cerr << "Can't find extension!!!!" << std::endl;  
       return EXIT_FAILURE;
     }*/
-    return EXIT_SUCCESS;
+    
+    if (baseName == "")
+      return false;
+    else
+      return true;
   }
 
   void stringSplit( std::string &str, const std::string &delim, std::vector<std::string> results )

@@ -299,7 +299,7 @@ namespace cbica
 
   \return 0 if successfull
   */
-  int splitFileName( const std::string &dataFile, std::string &path,
+  bool splitFileName( const std::string &dataFile, std::string &path,
                      std::string &baseName, std::string &extension );
   
   /**
