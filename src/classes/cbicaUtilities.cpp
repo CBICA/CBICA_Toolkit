@@ -729,6 +729,8 @@ namespace cbica
     baseName = std::string(basename_var);
     extension = std::string(ext);
 
+    extension = replaceString(extension, ".", "");
+
     path_name[0] = '\0';
     basename_var[0] = '\0';
     ext[0] = '\0';

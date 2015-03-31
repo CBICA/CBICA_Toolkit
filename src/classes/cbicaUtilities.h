@@ -294,10 +294,10 @@ namespace cbica
 
   \param dataFile The full file name which is the input
   \param baseName Overwritten with file name without extension
-  \param extension Overwritten with extension
+  \param extension Overwritten with extension without '.'
   \param path Overwritten with path to file
 
-  \return 0 if successfull
+  \return True if successfull
   */
   bool splitFileName( const std::string &dataFile, std::string &path,
                      std::string &baseName, std::string &extension );
