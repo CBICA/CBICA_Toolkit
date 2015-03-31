@@ -141,6 +141,25 @@ int main(int argc, char** argv)
       std::string fName = dirName + std::string("log.txt");
     
       cbica::Logging logger( fName, argv[2] );
+
+      if (!cbica::fileExists(fName))
+      {
+        return EXIT_FAILURE;
+      }
+
+      std::string fileName, extName, baseName, path;
+      if (cbica::splitFileName(fName, path, baseName, extName))
+      {
+        if (extName == "txt")
+        {
+          int blah = 1;      
+        }
+        else
+          return EXIT_FAILURE;
+      }
+      else
+        return EXIT_FAILURE;
+
       std::ifstream logFile;
       logFile.open(fName);
       std::string content;

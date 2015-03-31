@@ -55,6 +55,9 @@ ADD_TEST( NAME TempFolder_Test COMMAND ${TEST_EXE_NAME} -makeTempDir "random")
 # Test for Logger class
 ADD_TEST( NAME LoggerClass_Test COMMAND ${TEST_EXE_NAME} -logging "testing_phrase")
 
+# Test for String functions
+ADD_TEST( NAME StringFunctions_Test COMMAND ${TEST_EXE_NAME} -logging "testing_phrase")
+
 # Test for CmdParser class
 ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "random")
 
