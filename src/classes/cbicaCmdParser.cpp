@@ -21,7 +21,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 namespace cbica
 {
-  CmdParser::CmdParser(const int argc, char **argv, const std::string &exe_name)
+  CmdParser::CmdParser(int argc, char **argv, const std::string &exe_name)
   {
 #ifdef PROJECT_VERSION
     m_version = PROJECT_VERSION;
@@ -36,7 +36,7 @@ namespace cbica
     m_argv = argv;
   }
   
-  CmdParser::CmdParser(const int argc, char **argv)
+  CmdParser::CmdParser(int argc, char **argv)
   {
     m_exeName = PROJECT_NAME;
 #ifdef PROJECT_VERSION
@@ -141,7 +141,7 @@ namespace cbica
     else
     {
       std::string inputCheck, execCheck;
-      const int minLength = std::min(inputParamToCheck.length(), inputParamToCheck.length());
+      const int minLength = static_cast<int>( std::min(inputParamToCheck.length(), inputParamToCheck.length()) );
 
       if( inputParamToCheck.length()<minLength )
         inputCheck = "-" + inputParamToCheck;
@@ -203,7 +203,7 @@ namespace cbica
       std::find(m_laconicParamters.begin(), m_laconicParamters.end(), inputCheck) ;
     if( iterator !=  m_laconicParamters.end() )
     {
-      position = iterator - m_laconicParamters.begin();
+      position = static_cast<int>(iterator - m_laconicParamters.begin());
       if( std::get<3>(m_parameters[position]) == "blank" )
         return std::get<2>(m_parameters[position]);
       else
