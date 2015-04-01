@@ -30,7 +30,7 @@ namespace cbica
   \param fName Filename to check
   \return True if file exists
   */
-  bool fileExists (const std::string &fName);
+  bool fileExists( const std::string &fName );
   
   /**
   \brief Check if directory exists
@@ -38,7 +38,7 @@ namespace cbica
   \param dName String to check
   \return True if directory exists
   */
-  bool directoryExists (const std::string &dName);
+  bool directoryExists( const std::string &dName );
   
   /**
   \brief Return True if path is an existing regular file 
@@ -52,7 +52,7 @@ namespace cbica
 
   \return True if path is an existing regular file
   */
-  bool isFile(const std::string &path);
+  bool isFile( const std::string &path );
   
   /**
   \brief Return True if path is an existing directory
@@ -66,7 +66,7 @@ namespace cbica
 
   \return True of path is an existing directory
   */
-  bool isDir(const std::string &path);
+  bool isDir( const std::string &path );
     
   /**
   \brief Return True if path exists and false for broken symbolic links 
@@ -79,7 +79,7 @@ namespace cbica
 
   \return True if path is valid and false for broken symbolic links
   */
-  bool exists(const std::string &path);
+  bool exists( const std::string &path );
   
   /**
   \brief Create a temporary directory
@@ -88,7 +88,34 @@ namespace cbica
 
   \return True if success
   */
-  bool createTmpDir(std::string &returnDir);
+  bool createTmpDir( std::string &returnDir );
+  
+  /**
+  \brief Create a temporary directory
+
+  Wrap for createTmpDir()
+
+  \return True if success
+  */
+  bool createTemporaryDirectory( std::string &returnDir );
+  
+  /**
+  \brief Create a temporary directory
+
+  Wrap for createTmpDir()
+
+  \return True if success
+  */
+  bool makeTemporaryDirectory( std::string &returnDir );
+  
+  /**
+  \brief Create a temporary directory
+
+  Wrap for createTmpDir()
+
+  \return True if success
+  */
+  bool makeTempDir( std::string &returnDir );
   
   /**
   \brief Create a directory
@@ -97,14 +124,14 @@ namespace cbica
 
   \return True if success
   */
-  bool createDir (const std::string &dir_name);
+  bool createDir( const std::string &dir_name );
   
   /**
   \brief Create a directory
   
   \param dir_name Name of directory to be created with full path
   */
-  bool makeDir (const std::string &dir_name);
+  bool makeDir( const std::string &dir_name );
   
   /**
   \brief Recursively delete a folder and contents [internal function]
@@ -113,7 +140,7 @@ namespace cbica
 
   \return true for success
   */
-  int removeDirectoryRecursively(const std::string &dirname, bool bDeleteSubdirectories);
+  int removeDirectoryRecursively( const std::string &dirname, bool bDeleteSubdirectories );
   
   /**
   \brief Delete a folder and contents
@@ -122,7 +149,7 @@ namespace cbica
 
   \return true for success
   */
-  bool removeDir (const std::string &path);
+  bool removeDir( const std::string &path );
   
   /**
   \brief Delete a folder and contents
@@ -131,7 +158,7 @@ namespace cbica
 
   \return true for success
   */
-  bool deleteDir (const std::string &path);
+  bool deleteDir( const std::string &path );
     
   /**
   \brief Gets the extension of the supplied file name
@@ -141,7 +168,7 @@ namespace cbica
   \param filename The input filename
   \return std::string which has the file extension
   */
-  std::string getFilenameExtension(const std::string &filename);
+  std::string getFilenameExtension( const std::string &filename );
   
   /**
   \brief Get the name of the Executable which is calling the function
@@ -185,7 +212,7 @@ namespace cbica
 
   \return std::string Normalized path
   */
-  std::string normPath(const std::string &path);
+  std::string normPath( const std::string &path );
   
   /**
   \brief Normalize a pathname by collapsing redundant separators and up-level references
@@ -196,7 +223,7 @@ namespace cbica
 
   \return std::string Normalized path
   */
-  std::string normalizePath(const std::string &path);  
+  std::string normalizePath( const std::string &path );  
   
   /**
   \brief Return a relative filepath to path
@@ -210,7 +237,7 @@ namespace cbica
 
   \return Relative filepath to path either from current directory or from an optional start dir
   */
-  std::string relPath(const std::string &path, const std::string &base);
+  std::string relPath( const std::string &path, const std::string &base );
 
   /**
   \brief Return a relative filepath to path
@@ -222,7 +249,7 @@ namespace cbica
   
   \return Relative filepath to path either from current directory or from an optional start dir
   */
-  std::string relativePath(const std::string &path, const std::string &base);
+  std::string relativePath( const std::string &path, const std::string &base );
   
   /**
   \brief Return the canonical path of the specified filename
@@ -235,7 +262,7 @@ namespace cbica
 
   \return canonical path of path
   */
-  std::string realPath(const std::string &path);
+  std::string realPath( const std::string &path );
   
   /**
   \brief Return True if path refers to a directory entry that is a symbolic link
@@ -247,7 +274,7 @@ namespace cbica
 
   \return True if path is symbolic link
   */
-  bool isLink(const std::string &path);
+  bool isLink( const std::string &path );
 
   /**
   \brief Check if path refers to a symbolic entry
@@ -258,7 +285,7 @@ namespace cbica
 
   \return True if path is symbolic link
   */
-  bool isSymbolicLink(const std::string &path);
+  bool isSymbolicLink( const std::string &path );
 
   /**
   \brief Make a symbolic link from file to another
@@ -268,7 +295,7 @@ namespace cbica
 
   \return True if symbolic link successfully created
   */
-  bool makeSymbolicLink(const std::string &input_fileName, const std::string &ouput_fileName);
+  bool makeSymbolicLink( const std::string &input_fileName, const std::string &ouput_fileName );
 
   /**
   \brief Sets the environment variable
@@ -278,7 +305,7 @@ namespace cbica
 
   \return True if successful
   */
-  bool setEnvironmentVariable(const std::string &variable_name, const std::string &variable_value);
+  bool setEnvironmentVariable( const std::string &variable_name, const std::string &variable_value );
   
   /**
   \brief Sets the environment variable
@@ -288,7 +315,7 @@ namespace cbica
 
   \return True if successful
   */
-  bool setEnvironmentVariable(const std::string &variable_name, const int &variable_value);
+  bool setEnvironmentVariable( const std::string &variable_name, const int &variable_value );
 
   /**
   \brief Delete the environment variable
@@ -297,7 +324,7 @@ namespace cbica
 
   \return True if successful
   */
-  bool deleteEnvironmentVariable(const std::string &variable_name);
+  bool deleteEnvironmentVariable( const std::string &variable_name );
 
   //====================================== String stuff ====================================//
     
@@ -343,7 +370,7 @@ namespace cbica
 
   \return character pointer
   */
-  char* constCharToChar(const std::string &input);
+  char* constCharToChar( const std::string &input );
 
   /**
   \brief Convert const char* to char*
@@ -352,7 +379,7 @@ namespace cbica
 
   \return character pointer
   */
-  char* constCharToChar(const char *input);
+  char* constCharToChar( const char *input );
 
   //==================================== Template stuff ==================================//
 

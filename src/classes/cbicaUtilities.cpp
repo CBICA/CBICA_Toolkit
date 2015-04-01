@@ -115,6 +115,21 @@ namespace cbica
     //std::cout << "temp_dir: " << returnDir <<std::endl;
     return createDir(returnDir);
   }
+  
+  bool createTemporaryDirectory( std::string &returnDir )
+  {
+    return createTmpDir(returnDir);
+  }
+
+  bool makeTemporaryDirectory( std::string &returnDir )
+  {
+    return createTmpDir(returnDir);
+  }
+
+  bool makeTempDir( std::string &returnDir )
+  {
+    return createTmpDir(returnDir);
+  }
 
   bool createDir( const std::string &dir_name )
   {
