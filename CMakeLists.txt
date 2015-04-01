@@ -1,3 +1,15 @@
+##############################################################################
+# \file  CMakeLists.txt
+#
+# \brief Build configuration for Code/Source directory.
+#
+# https://www.cbica.upenn.edu/sbia/software/
+# sbia-software@uphs.upenn.edu
+# 
+# Copyright (c) 2015 University of Pennsylvania. All rights reserved.
+# See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
+##############################################################################
+
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
 SET( PROJECT_NAME CBICA_Toolkit ) # change project name here

@@ -1,12 +1,15 @@
 ##############################################################################
 # \file  CMakeLists.txt
+#
 # \brief Build configuration for Code/Source directory.
 #
-# Copyright (c) 2011 University of Pennsylvania. All rights reserved.
-# See COPYING file or https://www.rad.upenn.edu/sbia/software/license.html.
-#
-# Contact: SBIA Group <sbia-software at uphs.upenn.edu>
+# https://www.cbica.upenn.edu/sbia/software/
+# sbia-software@uphs.upenn.edu
+# 
+# Copyright (c) 2015 University of Pennsylvania. All rights reserved.
+# See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 ##############################################################################
+
 SET( ExtraSources )
 
 SET( CBICA_LIB_NAME CBICA_Toolkit CACHE INTERNAL "Name of CBICA Toolkit")
