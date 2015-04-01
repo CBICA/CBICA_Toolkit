@@ -560,6 +560,11 @@ namespace cbica
     return rel_path;
   }
 
+  std::string relativePath(const std::string &path, const std::string &base)
+  {
+    return relPath(path, base);
+  }
+
   std::string realPath( const std::string &path )
   {
     std::string curr_path = join(getCWD(), path);

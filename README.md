@@ -112,7 +112,7 @@ The test executables (if any) are generated into the binary directory by default
 3.1 Basic Functions
 -------------------
 
-Folder/File:
+Folder/File operations:
 
 - <b>fileExists</b>: Check if specified file exists or not
 - <b>directoryExists</b>: Check if specified directory exists or not
@@ -123,31 +123,42 @@ Folder/File:
 - <b>removeDir</b>: Wrap for <code>removeDirectoryRecursively</code>
 - <b>deleteDir</b>: Wrap for <code>removeDirectoryRecursively</code>
 
-OS:
+OS operations:
 
 - <b>getFilenameExtension</b>: Get the extension of the supplied file name
 - <b>getExecutableName</b>: Get current executable name
 - <b>getFullPath</b>: Get path of current executable
 - <b>getUserName</b>: Get current user name
 - <b>getCWD</b>: Get current working directory
-- <b>normPath</b>: Reimplementation of python's "os.path.normpath"--Normalize a pathname by collapsing redundant separators and up-level references
 - <b>normalizePath</b>: Wrap for normPath
-- <b>relPath</b>: Reimplementation for python's "os.path.relpath"--Return a relative filepath to path
-- <b>realPath</b>: Reimplementation of python's "os.path.realpath"--Return the canonical path of the specified filename
-- <b>isFile</b>: Reimplementation for python's "os.path.isfile"--Return True if path is an existing regular file
-- <b>isDir</b>: Reimplementation of python's "os.path.isdir"--Return True if path is an existing directory
-- <b>exists</b>: Reimplementation of python's "os.path.exists"--Return True if path exists and false for broken symbolic links
-- <b>isLink</b>: Reimplementation of python's "os.path.islink"--Return True if path refers to a directory entry that is a symbolic link
+- <b>relativePath</b>: Wrap for relPath
+- <b>realPath</b>: Reimplementation of python's "os.path.realpath"
+- <b>exists</b>: Reimplementation of python's "os.path.exists"
+- <b>isLink</b>: Reimplementation of python's "os.path.islink"
 - <b>isSymbolicLink</b>: Wrap for <code>isLink</code>
 - <b>makeSymbolicLink</b>: Make a symbolic link of a file
+- <b>setEnvironmentVariable</b>: Sets the environment variable
+- <b>deleteEnvironmentVariable</b>: Delete the environment variable
 
-String:
+Python re-implementations: 
 
-- <b>findInVector</b>: Checks for an element in a vector and returns true or false along with its position in vector (-1 if not found)
+- <b>isFile</b>: Reimplementation of "os.path.isfile"--Return True if path is an existing regular file
+- <b>isDir</b>: Reimplementation of "os.path.isdir"--Return True if path is an existing directory
+- <b>relPath</b>: Reimplementation of "os.path.relpath"--Return a relative filepath to path
+- <b>realPath</b>: Reimplementation of "os.path.realpath"--Return the canonical path of the specified filename
+- <b>exists</b>: Reimplementation of "os.path.exists"--Return True if path exists and false for broken symbolic links
+- <b>isLink</b>: Reimplementation of "os.path.islink"--Return True if path refers to a directory entry that is a symbolic link
+- <b>normPath</b>: Reimplementation of "os.path.normpath"--Normalize a pathname by collapsing redundant separators and up-level references
+
+String operations:
+
 - <b>splitFileName</b>: Splits a supplied file name between path, base file name and extension
-- <b>convertString</b>: Convert a character to its corresponding ASCII code
 - <b>stringSplit</b>: Split the supplied string with the deliminator and store results in a vector
 - <b>replaceString</b>: Replaces specified string with another string in a larger input string
+- <b>constCharToChar</b>: Converts from "const char*" to "char*"
+- <b>findInVector</b>: Checks for an element in a vector and returns true or false along with its position in vector (-1 if not found)
+- <b>convertString</b>: Convert a character to its corresponding ASCII code
+- <b>convertCharacter</b>: Convert first character to integer, double, unsigned int, etc.
 
 TO DO:
 

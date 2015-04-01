@@ -211,6 +211,18 @@ namespace cbica
   \return Relative filepath to path either from current directory or from an optional start dir
   */
   std::string relPath(const std::string &path, const std::string &base);
+
+  /**
+  \brief Return a relative filepath to path
+  
+  Wrap of cbica::relPath()
+  
+  \param path Path to check
+  \param base Base file name
+  
+  \return Relative filepath to path either from current directory or from an optional start dir
+  */
+  std::string relativePath(const std::string &path, const std::string &base);
   
   /**
   \brief Return the canonical path of the specified filename
