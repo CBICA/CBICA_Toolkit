@@ -185,16 +185,8 @@ TO DO:
 
 [Request a new function via eLog.]
 
------------------
-3.3 ITK Classes
------------------
-
-
-
-[Request a new function via eLog.]
-
 ===========
 4 LICENSING
 ===========
 
-  See https://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
+  See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
