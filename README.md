@@ -6,11 +6,11 @@
   3600 Market Street, Suite 380 <br>
   Philadelphia, PA 19104 <br>
 
-  Web:   https://www.cbica.upenn.edu/sbia/ <br>
+  Web:   www.cbica.upenn.edu/sbia/ <br>
   Email: sbia-software at uphs.upenn.edu
 
   Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
-  See https://www.cbica.upenn.edu/sbia/software/license.html or COPYING file.
+  See www.cbica.upenn.edu/sbia/software/license.html or COPYING file.
 
 <b> Authors: </b><br>
   Sarthak – primary developer, integration of everything <br>
@@ -189,4 +189,4 @@ TO DO:
 4 LICENSING
 ===========
 
-  See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
+  See www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
