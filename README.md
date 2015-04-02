@@ -1,24 +1,26 @@
 \mainpage CBICA Toolkit
 
-  Section of Biomedical Image Analysis <br>
-  Department of Radiology <br>
-  University of Pennsylvania <br>
-  3600 Market Street, Suite 380 <br>
-  Philadelphia, PA 19104 <br>
+Section of Biomedical Image Analysis <br>
+Department of Radiology <br>
+University of Pennsylvania <br>
+3600 Market Street, Suite 380 <br>
+Philadelphia, PA 19104 <br>
 
-  Web:   www.cbica.upenn.edu/sbia/ <br>
-  Email: sbia-software at uphs.upenn.edu
+<pre>
+Web  : http://www.cbica.upenn.edu/sbia/
+Email: <a href="mailto:sbia-software@uphs.upenn.edu">sbia-software at uphs.upenn.edu</a> 
+</pre>
 
-  Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
-  See www.cbica.upenn.edu/sbia/software/license.html or COPYING file.
+Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
+See http://www.cbica.upenn.edu/sbia/software/license.html or COPYING file.
 
 <b> Authors: </b><br>
-  Sarthak – primary developer, integration of everything <br>
-	Drew    – DTI algorithms <br>
-	Michael – sort + rename <br>
-	Martin  – sort + rename <br>
-	Jimit   – Overall testing <br>
-	Guray   – Overall testing <br>
+Sarthak – primary developer, integration of everything <br>
+Drew    – DTI algorithms <br>
+Michael – sort + rename <br>
+Martin  – sort + rename <br>
+Jimit   – Overall testing <br>
+Guray   – Overall testing <br>
 
 
 ===============
@@ -189,4 +191,4 @@ TO DO:
 4 LICENSING
 ===========
 
-  See www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
+  See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
