@@ -350,7 +350,7 @@ namespace cbica
     return wd;
   }
 
-  //! Internal function
+  //! Check for separators [Internal_Function]
   inline bool issep( char c )
   {
     #if defined(_WIN32)
@@ -360,7 +360,7 @@ namespace cbica
     #endif
   }
 
-  //! Internal function
+  //! Check for absolute path [Internal_Function]
   bool isabs( const std::string& path )
   {
     size_t i = 0;
@@ -370,7 +370,7 @@ namespace cbica
     return i < path.size() && issep(path[i]);
   }
   
-  //! Internal function
+  //! Joins separators based on OS [Internal_Function]
   std::string join( const std::string& base, const std::string& path )
   {
     if( base.empty() || isabs(path) )  
@@ -453,13 +453,13 @@ namespace cbica
     return normPath(path);
   }
 
-  //! Internal function
+  //! Absolute path [Internal_Function]
   std::string absPath(const std::string &path)
   {
     return normPath( join(getCWD(),path) );
   }
 
-  //! Internal function
+  //! Split Drive name from path [Internal_Function]
   inline void splitDrive( const std::string& path, std::string& drive, std::string& tail )
   {
     #if defined(_WIN32)
@@ -476,7 +476,7 @@ namespace cbica
       }
   }
 
-  //! Internal function
+  //! Split Drive name from path [Internal_Function]
   inline std::vector<std::string> splitDrive( const std::string& path )
   {
     std::vector<std::string> parts(2, "");
@@ -727,6 +727,7 @@ namespace cbica
   {
     return cbica::setEnvironmentVariable(variable_name, "");
   }
+
   //====================================== String stuff ====================================//
 
   bool splitFileName( const std::string &dataFile, std::string &path,
