@@ -393,22 +393,23 @@ namespace cbica
   \param position Last position of found element in vector (-1) if not found
   
   \return True if found
+  \return Position if found (-1) if not
   */
   template<typename TContainerType>
-  bool findInVector( std::vector<TContainerType> &vector_to_search_in, 
+  std::pair<bool, int> findInVector( std::vector<TContainerType> &vector_to_search_in, 
                      TContainerType &element_to_search_for, int position )
   {
-    position = -1;
+    int position = -1;
     //std::vector<int>::const_iterator
     typename std::vector<TContainerType>::const_iterator iterator = 
       std::find(vector_to_search_in.begin(), vector_to_search_in.end(), element_to_search_for);
     if( iterator !=  vector_to_search_in.end() )
     {
       position = iterator - vector_to_search_in.begin();
-      return true;
+      return std::make_pair(true, position);
     }
     else
-      return false;
+      return std::make_pair(false, position);
   }
 
   /**
