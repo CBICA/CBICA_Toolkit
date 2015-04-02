@@ -47,8 +47,6 @@ specified in SBIA internal Wiki (https://sbia-wiki.uphs.upenn.edu/wiki/index.php
 - C++ complier (MSVC/12, GCC/4.9.2)
 - CMake 2.8.12.1
 - Doxygen (for documentation only)
-- GIT (for superbuild system only) -- ?
-- ITK 4.7.0 (required for ITK based classes) - check cmake/ExternalITK for parameters
 - SWIG (required for Python Wrapping) [tested on 3.0.0-3.0.4]
 
 Make sure all dependencies are met before proceeding with install.
