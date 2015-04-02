@@ -3,31 +3,6 @@
 
 \brief Declaration of the cbicaCmdParser class. Does simple command line parsing
 
-This is a pure c++ implementation. An example of usage is shown below:
-
-<code>
-// Executable name is automaticall picked up by the @PROJECT_NAME@ tag from the CMakeLists file
-cbica::CmdParser parser();
-
-// add paramters to the variable
-parser.addParameter("-u","--usage", "prints usage", "second line");
-parser.addParameter("-h","--help", "gets help from Justice League");
-parser.addParameter("-m","--marvel", "prefer Marvel instead");
-
-// compare and do something if true
-if( parser.compareParamter("u").first )
-{
-  parser.echoUsage();
-  int u_test = 0;
-}
-
-int m_position = parser.compareParamter("m").second
-if (m_position > 0)
-{
-  doSomethingWithFile(m_position+1)
-}
-</code>
-
 https://www.cbica.upenn.edu/sbia/software/
 sbia-software@uphs.upenn.edu
 
@@ -49,6 +24,39 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 namespace cbica
 {
+  /**
+  \class CmdParser
+
+  \brief Simple command line parsing
+
+  This is a pure c++ implementation. Executable name and project version are picked up automatically
+  from the main CMakeLists file. Only the executable name can be modified in this class.
+  
+  An example of usage is shown below:
+  
+  \verbatim
+  cbica::CmdParser parser = cbica::CmdParser(argc, argv); // OR,  
+  //cbica::CmdParser parser = cbica::CmdParser(argc, argv, "exe_name"); 
+  
+  // add paramters to the variable
+  parser.addParameter("-u","--usage", "prints usage", "second line"); 
+  parser.addParameter("-h","--help", "gets help from Justice League"); 
+  parser.addParameter("-m","--marvel", "nope, I prefer Marvel"); 
+  
+  // compare and do something if true 
+  if( parser.compareParamter("u").first ) 
+  { 
+    parser.echoUsage(); 
+    return EXIT_SUCCESS;
+  }
+  
+  int m_position = parser.compareParamter("m").second;
+  if (m_position > 0) 
+  { 
+    doSomethingWithFile( m_position+1 );
+  } 
+  \endverbatim
+  */
   class CmdParser
   {
   public:
