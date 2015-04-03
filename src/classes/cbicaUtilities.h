@@ -397,7 +397,7 @@ namespace cbica
   */
   template<typename TContainerType>
   std::pair<bool, int> findInVector( std::vector<TContainerType> &vector_to_search_in, 
-                     TContainerType &element_to_search_for, int position )
+                     TContainerType &element_to_search_for )
   {
     int position = -1;
     //std::vector<int>::const_iterator
