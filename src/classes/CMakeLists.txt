@@ -3,11 +3,11 @@
 #
 # \brief Build configuration for Code/Source directory.
 #
-# https://www.cbica.upenn.edu/sbia/software/
+# http://www.cbica.upenn.edu/sbia/software/
 # sbia-software@uphs.upenn.edu
 # 
 # Copyright (c) 2015 University of Pennsylvania. All rights reserved.
-# See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
+# See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 ##############################################################################
 
 SET( ExtraSources )

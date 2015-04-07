@@ -3,11 +3,11 @@
 
 \brief Some basic utility functions.
 
-https://www.cbica.upenn.edu/sbia/software/
+http://www.cbica.upenn.edu/sbia/software/ <br>
 sbia-software@uphs.upenn.edu
 
-Copyright (c) 2015 University of Pennsylvania. All rights reserved.
-See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
+Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 
 */
 #if (_WIN32)

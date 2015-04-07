@@ -3,11 +3,11 @@
 
 \brief Declaration of the CmdParser class
 
-https://www.cbica.upenn.edu/sbia/software/
+http://www.cbica.upenn.edu/sbia/software/ <br>
 sbia-software@uphs.upenn.edu
 
-Copyright (c) 2015 University of Pennsylvania. All rights reserved.
-See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
+Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 
 */
 #pragma once
@@ -77,13 +77,14 @@ namespace cbica
     \param exe_name Name of the executable
     */
     explicit CmdParser(const int argc, char **argv, const std::string &exe_name);
+
     /**
     \brief The Destructor
     */
     virtual ~CmdParser();
 
     /**
-
+    \brief Set a custom executable name
     */
     void setExeName(const std::string exeName){m_exeName = exeName;};
 

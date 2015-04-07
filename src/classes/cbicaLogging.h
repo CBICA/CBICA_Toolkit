@@ -3,11 +3,11 @@
 
 \brief Declaration of the Logging class
 
-https://www.cbica.upenn.edu/sbia/software/
+http://www.cbica.upenn.edu/sbia/software/ <br>
 sbia-software@uphs.upenn.edu
 
-Copyright (c) 2015 University of Pennsylvania. All rights reserved.
-See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
+Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 
 */
 #include <iostream>
@@ -34,7 +34,7 @@ namespace cbica
 	{
 	public:
 		/**
-    \brief The Constructor
+    \brief Actual Constructor
 
     \param file_name_with_path The file onto which the log file is to be written
     \param FreeText_input Free text which the user wants to be present in the log
@@ -42,14 +42,14 @@ namespace cbica
 		explicit Logging(const std::string file_name, const std::string FreeText_input);
 		
 		/**
-    \brief The Constructor without any free text input
+    \brief Actual Constructor
 
     \param file_name_with_path The file onto which the log file is to be written
     */
 		explicit Logging(const std::string file_name);
 		
 		/**
-    \brief The Constructor without any free text input or file name
+    \brief Default constructor
 
     Just used to keep a track of the user name and executable run at a particular time.
     */
@@ -59,14 +59,14 @@ namespace cbica
 		virtual ~Logging();
 	
     /**
-		/brief Function to call to write to log file without any free text
+		\brief Function to call to write to log file without any free text
     
     \param FreeText_input Free text which the user wants to be present in the log
     */
 		void Write(const std::string FreeText_input);
     
     /**
-		/brief Function to call to write to log file
+		\brief Function to call to write to log file
     */
 		void Write();
     
