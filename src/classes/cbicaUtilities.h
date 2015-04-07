@@ -1,5 +1,5 @@
 /**
-\file  cbiaUtilities.h
+\file  cbicaUtilities.h
 
 \brief Some basic utility functions.
 

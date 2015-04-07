@@ -1,5 +1,5 @@
 /**
-\file  cbicaMarcos.h
+\file  cbicaMacros.h
 
 \brief Contains common macros to be used
 

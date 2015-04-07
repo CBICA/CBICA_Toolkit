@@ -1,7 +1,7 @@
 /**
 \file  cbicaCmdParser.cpp
 
-\brief Implementation file for cbicaCmdParser class.
+\brief Implementation file for CmdParser class.
 
 https://www.cbica.upenn.edu/sbia/software/
 sbia-software@uphs.upenn.edu

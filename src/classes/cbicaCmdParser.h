@@ -1,7 +1,7 @@
 /**
 \file  cbicaCmdParser.h
 
-\brief Declaration of the cbicaCmdParser class. Does simple command line parsing
+\brief Declaration of the CmdParser class
 
 https://www.cbica.upenn.edu/sbia/software/
 sbia-software@uphs.upenn.edu
@@ -41,7 +41,7 @@ namespace cbica
   // add paramters to the variable
   parser.addParameter("-u","--usage", "prints usage", "second line"); 
   parser.addParameter("-h","--help", "gets help from Justice League"); 
-  parser.addParameter("-m","--marvel", "nope, I prefer Marvel"); 
+  parser.addParameter("-m","--marvel", "nope, I prefer The Avengers"); 
   
   // compare and do something if true 
   if( parser.compareParamter("u").first ) 

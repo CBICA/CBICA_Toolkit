@@ -1,7 +1,7 @@
 /**
 \file  cbicaLogging.h
 
-\brief Logging class
+\brief Declaration of the Logging class
 
 https://www.cbica.upenn.edu/sbia/software/
 sbia-software@uphs.upenn.edu
