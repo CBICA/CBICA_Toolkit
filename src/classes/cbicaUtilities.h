@@ -336,7 +336,7 @@ namespace cbica
   \param extension Overwritten with extension without '.'
   \param path Overwritten with path to file
 
-  \return True if successfull
+  \return True if successful
   */
   bool splitFileName( const std::string &dataFile, std::string &path,
                      std::string &baseName, std::string &extension );
@@ -397,7 +397,7 @@ namespace cbica
   */
   template<typename TContainerType>
   std::pair<bool, int> findInVector( std::vector<TContainerType> &vector_to_search_in, 
-                     TContainerType &element_to_search_for )
+                     TContainerType element_to_search_for )
   {
     int position = -1;
     //std::vector<int>::const_iterator
@@ -415,7 +415,7 @@ namespace cbica
   /**
   \brief Convert first character to integer, double, unsigned int, etc.
   
-  \param input_string Input character to be convereted
+  \param input_string Input character to be converted
   \return Templated to the type of return required
   */
   template<typename TConvertType>
@@ -427,7 +427,7 @@ namespace cbica
   /**
   \brief Convert entire string to integer, double, unsigned int, etc.
   
-  \param input_string Input character to be convereted
+  \param input_string Input character to be converted
   \return Templated vector to the type of return required
   */
   template<typename TConvertType>
