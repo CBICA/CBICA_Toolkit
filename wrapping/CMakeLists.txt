@@ -125,28 +125,32 @@ SET_TARGET_PROPERTIES(${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAM
 #Module are always place in the library destination
 #but for poor win32 user I decided to place them
 # right next to the other dlls
-#IF(NOT GDCM_INSTALL_NO_LIBRARIES)
+#IF(NOT CBICA_INSTALL_NO_LIBRARIES)
 #  INSTALL_SWIG_MODULE(${CBICA_PYTHON_IMPLEMENTATION_NAME} Python)
 #  # the python file is not a dev file, but part of the cbica module...
   
-  EXECUTE_PROCESS( COMMAND python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()" 
-					OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+EXECUTE_PROCESS( COMMAND python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()" 
+                 OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE  )
   
-  INSTALL(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/cbicaToolkit.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/cbica.py
-    DESTINATION ${PYTHON_SITE_PACKAGES} 
-	COMPONENT PythonModule
-  )
+SET( CBICA_PYTHON_INSTALL_DIR ${PYTHON_SITE_PACKAGES} CACHE STRING "Install location of CBICA_Toolkit.PY" )
+
+INSTALL(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/cbicaToolkit.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/cbica.py
+  DESTINATION ${CBICA_PYTHON_INSTALL_DIR} 
+  COMPONENT PythonModule
+)
+
 #ENDIF()
 
 ## Testing of Python module
 # Test that will try to load any class in the target language: python
 # it make sure swig was not broken accidentally
 #IF(BUILD_TESTING)
-#  ADD_PYTHON_TEST(TestWrapPython TestWrap.py ${GDCM_SOURCE_DIR}/Source)
-#  IF(GDCM_DOCUMENTATION)
-#    ADD_PYTHON_TEST(TestDoxy2SWIGPython doxy2swig.py ${GDCM_BINARY_DIR}/Utilities/doxygen/xml/index.xml ${GDCM_BINARY_DIR}/generated_docstrings.i)
+#  ADD_PYTHON_TEST(TestWrapPython TestWrap.py ${CBICA__SOURCE_DIR}/src)
+#  IF(BUILD_DOCUMENTATION)
+#    ADD_PYTHON_TEST(TestDoxy2SWIGPython doxy2swig.py ${CBICA_BINARY_DIR}/Utilities/doxygen/xml/index.xml ${CBICA_BINARY_DIR}/generated_docstrings.i)
 #  ENDIF()
 #ENDIF()
 
