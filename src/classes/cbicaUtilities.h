@@ -19,6 +19,7 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 #include <sstream>
 #include <stdexcept>
 #include <iterator>
+#include <type_traits>
 
 namespace cbica
 {  
@@ -439,5 +440,61 @@ namespace cbica
 
     return return_vector;
   }
+
+#if (_MSC_VER >= 1800) || GCC
+  /**
+  \brief Base for compareEqual(...)
+  */
+  template <typename A, typename B>
+  inline bool compareEqual( const A x, const B y )
+  {
+    return (x == y);
+  }
+
+  /**
+  \brief Compare if equal for multiple inputs
+  */
+  template <typename A, typename B, typename... Others>
+  bool compareEqual( const A x, const B y, Others const ... args )
+  {
+    return (x == y) && compareEqual( y, args... );
+  }
   
+  /**
+  \brief Base for compareGreater(...)
+  */
+  template <typename A, typename B>
+  inline bool compareGreater( const A x, const B y )
+  {
+    return (x > y);
+  }
+
+  /**
+  \brief Compare if greater for multiple inputs
+  */
+  template <typename A, typename B, typename... Others>
+  bool compareGreater( const A x, const B y, Others const ... args )
+  {
+    return (x > y) && compareGreater( y, args... );
+  }
+  
+  /**
+  \brief Base for compareLesser(...)
+  */
+  template <typename A, typename B>
+  inline bool compareLesser( const A x, const B y )
+  {
+    return (x < y);
+  }
+
+  /**
+  \brief Compare if greater for multiple inputs
+  */
+  template <typename A, typename B, typename... Others>
+  bool compareLesser( const A x, const B y, Others const ... args )
+  {
+    return (x < y) && compareLesser( y, args... );
+  }
+  
+#endif
 };
