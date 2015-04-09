@@ -441,7 +441,7 @@ namespace cbica
     return return_vector;
   }
 
-#if (_MSC_VER >= 1800) || GCC
+#if (_MSC_VER >= 1800) || __GXX_EXPERIMENTAL_CXX0X__
   /**
   \brief Base for compareEqual(...)
   */

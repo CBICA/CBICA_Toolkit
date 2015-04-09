@@ -130,19 +130,15 @@ int main(int argc, char** argv)
       std::string return_dir;
       if( !cbica::createTmpDir(return_dir) )
         return EXIT_FAILURE;
-     cbica::deleteDir(return_dir);
+      cbica::deleteDir(return_dir);
     }
 
     else if( (std::string( "-logging").compare(argv[1]) == 0) ||
              (std::string("--logging").compare(argv[1]) == 0) )
     {
-
-      std::string dirName, fName;
+      std::string dirName;
       cbica::createTmpDir(dirName);
-	if ( (std::string(1, dirName.back()) != "/") )
-		fName = dirName + std::string("/log.txt");
-	else
-		fName = dirName + std::string("log.txt");
+      std::string fName = dirName + std::string("log.txt");
     
       cbica::Logging logger( fName, argv[2] );
 
@@ -151,16 +147,12 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
       }
 
-	std::cout << "Checked for fileExists.\n";
       std::string fileName, extName, baseName, path;
       if (cbica::splitFileName(fName, path, baseName, extName))
       {
-	std::cout << extName << "\n";
-	std::cout << baseName << "\n";
-	
         if (extName == "txt")
         {
-          int blah = 1;      
+          //int blah = 1;      
         }
         else
           return EXIT_FAILURE;
@@ -175,7 +167,7 @@ int main(int argc, char** argv)
         while( !logFile.eof() )
           logFile >> content;
       logFile.close();
-      //cbica::deleteDir(dirName);
+      cbica::deleteDir(dirName);
     
       #if defined(_WIN32)
         std::string userName = getenv("USERNAME");

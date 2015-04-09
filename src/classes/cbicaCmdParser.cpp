@@ -58,7 +58,7 @@ namespace cbica
 
   inline void CmdParser::getMaxLength()
   {
-    for( int i=0; i<m_parameters.size(); ++i )
+    for( unsigned int i=0; i<m_parameters.size(); ++i )
     {
       //m_laconicParamters.push_back( std::make_tuple(std::get<0>(m_parameters[i]), i) );
       m_laconicParamters.push_back( std::get<0>(m_parameters[i]) );
@@ -97,7 +97,7 @@ namespace cbica
     }
     std::cout << "Executable Name: " << m_exeName << " v" << m_version
       << "\n\n" << "Usage:\n\n";
-    for( int i=0; i<m_parameters.size(); ++i )
+    for( unsigned int i=0; i<m_parameters.size(); ++i )
     {
       std::string spaces;
       for( int n=0; n<m_maxLength-std::get<4>(m_parameters[i])/*-4*/; n++)
@@ -141,7 +141,7 @@ namespace cbica
     else
     {
       std::string inputCheck, execCheck;
-      const int minLength = static_cast<int>( std::min(inputParamToCheck.length(), inputParamToCheck.length()) );
+      const unsigned int minLength = static_cast<unsigned int>( std::min(inputParamToCheck.length(), inputParamToCheck.length()) );
 
       if( inputParamToCheck.length()<minLength )
         inputCheck = "-" + inputParamToCheck;
