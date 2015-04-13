@@ -28,7 +28,17 @@ namespace cbica
   This automatically generates a machine-parseable log specified by the file name. The user also has the option 
   of submitting free text to be put along with the log. The generated log is in the format show below:
 
-  <CODE><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name>;<free text></CODE>
+  <code><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name>;<free text></code>
+
+  Usage:
+  \verbatim
+  cbica::Logging logger( "file_name.txt", "randomness is highly underrated" ); // the file has already been written at this point and can be viewed
+  ...
+  // more code
+  ...
+  logger.Write( "'I accept chaos, I'm not sure whether it accepts me' - Bob Dylan" ); // writes to file_name.txt
+  \endverbatim
+
   */
 	class Logging
 	{

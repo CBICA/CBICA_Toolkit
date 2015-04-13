@@ -61,14 +61,20 @@ can be customized. To use the Python class, make sure your Python executable has
 An example under UNIX using CMake command line:
 
 Go to the <b>build</b> directory:<br>
-<code>cd build</code>
+\verbatim
+cd build
+\endverbatim
 
 Run CMake (note you can use <code>ccmake ../</code> to configure the installation directory):<br>
-<code>cmake ../</code>
+\verbatim
+cmake ../
+\endverbatim
 
 Build and install:<br>
-<code>make 
-make install</code>
+\verbatim
+make 
+make install
+\endverbatim
 
 ----------------------------
 2.3 Generating documentation
@@ -175,12 +181,13 @@ TO DO:
 
 - <b>CmdParser</b>: Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file.
 
-	addParameter		: Add parameters one by one<br>
-	compareParamter	: Compare added parameters with command line input<br>
-	getDescription	: Get description for a particular added parameter<br>
-	echoUsage			  : Give usage of the executable<br>
-	echoVersion			: Give version details of the executable<br>
-
+  Available functions: 
+	- addParameter		: Add parameters one by one
+	- compareParamter	: Compare added parameters with command line input
+	- getDescription	: Get description for a particular added parameter
+	- echoUsage			  : Give usage of the executable
+	- echoVersion			: Give version details of the executable
+  
 TO DO:
 
 
@@ -199,12 +206,12 @@ For CPP library
 
 In your project, add the following your CMakeLists file:
 
-<code>
+\verbatim
 FIND_PACKAGE( CBICA_Toolkit REQUIRED )
 INCLUDE_DIRECTORIES( ${CBICA_Toolkit_INCLUDE_DIR} )
 ADD_EXECUTABLE( CBICA_Toolkit_Test ${PROJECT_SOURCE_DIR}/src/main.cxx )
 TARGET_LINK_LIBRARIES( CBICA_Toolkit_Test ${CBICA_Toolkit_LIBRARY} )
-</code>
+\endverbatim
 
 Now you can access all functions available in CBICA_Toolkit.
 
@@ -214,11 +221,11 @@ For Python library
 
 If you have installed Python classes to the directory <code>/home/xyz/libraries/cbica_toolkit</code>, just do:
 
-<code>
+\verbatim
 import sys
 sys.path.append("/home/xyz/libraries/cbica_toolkit")
 import cbicaToolkit
-</code>
+\endverbatim
 
 Then use the toolkit as any other library.
 
