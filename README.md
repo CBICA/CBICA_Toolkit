@@ -55,7 +55,8 @@ Make sure all dependencies are met before proceeding with install.
 2.2 Generating standalone executables
 -------------------------------------
 
-Use CMake to generate files for the compiler in use (MSVC/GCC) and then run accordingly.
+Use CMake to generate files for the compiler in use (MSVC/GCC) and then run accordingly. The installation directory for both Python and CPP classes
+can be customized. To use the Python class, make sure your Python executable has the install path in its find modules path.
 
 An example under UNIX using CMake command line:
 
@@ -185,8 +186,45 @@ TO DO:
 
 [Request a new function via eLog.]
 
+
+=======
+4 Usage
+=======
+
+Ensure you have completed the installation as described in Section 2.
+
+---------------
+For CPP library
+---------------
+
+In your project, add the following your CMakeLists file:
+
+<code>
+FIND_PACKAGE( CBICA_Toolkit REQUIRED )
+INCLUDE_DIRECTORIES( ${CBICA_Toolkit_INCLUDE_DIR} )
+ADD_EXECUTABLE( CBICA_Toolkit_Test ${PROJECT_SOURCE_DIR}/src/main.cxx )
+TARGET_LINK_LIBRARIES( CBICA_Toolkit_Test ${CBICA_Toolkit_LIBRARY} )
+</code>
+
+Now you can access all functions available in CBICA_Toolkit.
+
+------------------
+For Python library
+------------------
+
+If you have installed Python classes to the directory <code>/home/xyz/libraries/cbica_toolkit</code>, just do:
+
+<code>
+import sys
+sys.path.append("/home/xyz/libraries/cbica_toolkit")
+import cbicaToolkit
+</code>
+
+Then use the toolkit as any other library.
+
+
 ===========
-4 LICENSING
+5 LICENSING
 ===========
 
   See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
