@@ -223,11 +223,6 @@ int main(int argc, char** argv)
     {
       std::string currentDir;
       currentDir = cbica::getCWD();
-      currentDir = cbica::replaceString(currentDir, "\\", "/");
-      if (currentDir[currentDir.length()-1] != '/')
-      {
-        currentDir.append("/");
-      }
 
       std::vector<std::string> fileList = cbica::filesInDirectory(currentDir);
       if (fileList.size() == 0)

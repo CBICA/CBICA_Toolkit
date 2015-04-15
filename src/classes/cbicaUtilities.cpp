@@ -339,16 +339,22 @@ namespace cbica
 
   std::string getCWD()
   {
-    std::string wd;
+    std::string wd = "";
     
     // use c++ convention
     char* buffer = GetCurrentDir(NULL, 0);
     
     if( buffer ) 
     {
-        wd = buffer;
-        buffer[0] = '\0';
+      wd = buffer;
+      buffer[0] = '\0';
     }
+    wd = replaceString(wd, "\\", "/");
+    if (wd[wd.length()-1] != '/')
+    {
+      wd.append("/");
+    }
+
     return wd;
   }
 
@@ -728,10 +734,15 @@ namespace cbica
   std::vector< std::string > filesInDirectory( const std::string &dirName )
   {
     std::vector< std::string > allFiles;
+    std::string dirName_wrap = dirName;
+    if (dirName_wrap[dirName_wrap.length()-1] != '/')
+    {
+      dirName_wrap.append("/");
+    }
     #if defined(_WIN32)
     {
-      std::string tempDirName = dirName + "*.*";
-      char* search_path = cbica::constCharToChar(tempDirName.c_str());
+      dirName_wrap.append("*.*");
+      char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
       WIN32_FIND_DATA fd; 
       HANDLE hFind = ::FindFirstFile(search_path, &fd); 
       if(hFind != INVALID_HANDLE_VALUE) 
