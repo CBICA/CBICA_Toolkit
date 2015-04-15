@@ -210,12 +210,31 @@ int main(int argc, char** argv)
       if( value != random_val )
         return EXIT_FAILURE;
       cbica::deleteEnvironmentVariable(random_variable);
-      if( !cbica::setEnvironmentVariable(random_variable, val) )
+      if( !cbica::setEnvironmentVariable(random_variable, std::to_string(val)) )
         return EXIT_FAILURE;
       value = getenv(random_variable.c_str());
       if( value != std::to_string(val) )
         return EXIT_FAILURE;
       cbica::deleteEnvironmentVariable(random_variable);
+    }
+    
+    else if( (std::string( "-dirSearch").compare(argv[1]) == 0) ||
+             (std::string("--dirSearch").compare(argv[1]) == 0) )
+    {
+      std::string currentDir;
+      currentDir = cbica::getCWD();
+      currentDir = cbica::replaceString(currentDir, "\\", "/");
+      if (currentDir[currentDir.length()-1] != '/')
+      {
+        currentDir.append("/");
+      }
+
+      std::vector<std::string> fileList = cbica::filesInDirectory(currentDir);
+      if (fileList.size() == 0)
+      {
+        return EXIT_FAILURE;
+      }
+
     }
 
   }

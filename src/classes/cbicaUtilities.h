@@ -19,7 +19,7 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 #include <sstream>
 #include <stdexcept>
 #include <iterator>
-#include <type_traits>
+//#include <type_traits>
 
 namespace cbica
 {  
@@ -309,16 +309,6 @@ namespace cbica
   bool setEnvironmentVariable( const std::string &variable_name, const std::string &variable_value );
   
   /**
-  \brief Sets the environment variable
-
-  \param variable_name Name of the Variable
-  \param variable_value Value of variable_name
-
-  \return True if successful
-  */
-  bool setEnvironmentVariable( const std::string &variable_name, const int &variable_value );
-
-  /**
   \brief Delete the environment variable
 
   \param variable_name Name of the Variable
@@ -326,6 +316,13 @@ namespace cbica
   \return True if successful
   */
   bool deleteEnvironmentVariable( const std::string &variable_name );
+
+  /**
+  \brief Extract all file names in supplied directory
+
+  \return Vector of file names
+  */
+  std::vector< std::string > filesInDirectory( const std::string &dirName );
 
   //====================================== String stuff ====================================//
     

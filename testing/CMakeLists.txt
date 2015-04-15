@@ -66,3 +66,6 @@ ADD_TEST( NAME SymbolicLink_Test COMMAND ${TEST_EXE_NAME} -symbolic "random")
 
 # Test for Environment Variables
 ADD_TEST( NAME EnvironmentVar_Test COMMAND ${TEST_EXE_NAME} -envName "random")
+
+# Test for Directory search
+ADD_TEST( NAME DirSearch_Test COMMAND ${TEST_EXE_NAME} -dirSearch "random")

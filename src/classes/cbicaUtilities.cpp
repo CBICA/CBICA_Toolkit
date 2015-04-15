@@ -19,7 +19,7 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
   #include <lmcons.h>
   #include <Shlobj.h>
   #define GetCurrentDir _getcwd
-  #define WindowsDetected = true
+  bool WindowsDetected = true;
   static const char  cSeparator  = '\\';
   static const char* cSeparators = "\\/";
 #else
@@ -29,8 +29,10 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
   #include <limits.h>
   #include <cstring>
   #include <cstdlib>
+  #include <sys/types.h>
+  #include <errno.h>
   #define GetCurrentDir getcwd
-  #define WindowsDetected = false
+  bool WindowsDetected = false;
   static const char  cSeparator  = '/';
   static const char* cSeparators = "/";
 #endif
@@ -718,14 +720,52 @@ namespace cbica
     return true;
   }
   
-  bool setEnvironmentVariable(const std::string &variable_name, const int &variable_value)
-  {
-    return cbica::setEnvironmentVariable(variable_name, std::to_string(variable_value));
-  }
-  
   bool deleteEnvironmentVariable(const std::string &variable_name)
   {
     return cbica::setEnvironmentVariable(variable_name, "");
+  }
+
+  std::vector< std::string > filesInDirectory( const std::string &dirName )
+  {
+    std::vector< std::string > allFiles;
+    #if defined(_WIN32)
+    {
+      std::string tempDirName = dirName + "*.*";
+      char* search_path = cbica::constCharToChar(tempDirName.c_str());
+      WIN32_FIND_DATA fd; 
+      HANDLE hFind = ::FindFirstFile(search_path, &fd); 
+      if(hFind != INVALID_HANDLE_VALUE) 
+      { 
+        do 
+        { 
+          if(! (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+          {
+            allFiles.push_back(fd.cFileName);
+          }
+        } while(::FindNextFile(hFind, &fd)); 
+        ::FindClose(hFind); 
+      } 
+      return allFiles;
+
+    }
+    #else
+    {
+      DIR *dp;
+      struct dirent *dirp;
+      if((dp  = opendir(dirName.c_str())) == NULL) 
+      {
+        std::cerr << "Error(" << errno << ") occurred while opening directory '" << 
+          dirName << "'\n";
+      }
+      
+      while ((dirp = readdir(dp)) != NULL) 
+      {
+        allFiles.push_back(std::string(dirp->d_name));
+      }
+      closedir(dp);
+      return allFiles;
+    }
+    #endif
   }
 
   //====================================== String stuff ====================================//
@@ -734,18 +774,18 @@ namespace cbica
      std::string &baseName, std::string &extension )
   {
 	std::cout << dataFile << "\n";
-    #if defined(_WIN32)
-    	//! Initialize pointers to file and user names
-      char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX];
-	    _splitpath(dataFile.c_str(), NULL, path_name, basename_var, ext);
-      //_splitpath_s(dataFile.c_str(), NULL, NULL, path_name, NULL, basename, NULL, ext, NULL);
-    #else
-    	//! Initialize pointers to file and user names
-    	char *basename_var, *ext, *path_name;
-      path_name = dirname( constCharToChar(dataFile.c_str()) );
-    	basename_var = basename(path_name);
-      ext = strrchr(constCharToChar(dataFile.c_str()), '.');
-    #endif
+  #if defined(_WIN32)
+  	//! Initialize pointers to file and user names
+    char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX];
+    _splitpath(dataFile.c_str(), NULL, path_name, basename_var, ext);
+    //_splitpath_s(dataFile.c_str(), NULL, NULL, path_name, NULL, basename, NULL, ext, NULL);
+  #else
+  	//! Initialize pointers to file and user names
+  	char *basename_var, *ext, *path_name;
+    path_name = dirname( constCharToChar(dataFile.c_str()) );
+  	basename_var = basename(path_name);
+    ext = strrchr(constCharToChar(dataFile.c_str()), '.');
+  #endif
     	
 	std::cout << dataFile << "\n";
 	std::cout << path_name << "\n";
