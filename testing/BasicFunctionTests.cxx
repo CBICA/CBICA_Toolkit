@@ -39,8 +39,8 @@ int main(int argc, char** argv)
       buff[0] = '\0';
     }
   
-    if( (std::string( "-cmdParser").compare(argv[2]) == 0) || 
-        (std::string("--cmdParser").compare(argv[2]) == 0) )
+    if( (std::string( "-cmdParser").compare(argv[1]) == 0) || 
+        (std::string("--cmdParser").compare(argv[1]) == 0) )
     {
       cbica::CmdParser parser = cbica::CmdParser(argc, argv);
       parser.setExeName("BasicFunctionTests");
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
       cbica::Logging logger( fName, argv[2] );
 
       #if defined(_WIN32)
-       // do nothing as Windows doesn't support symbolic linkage creatation for non-admins
+       // do nothing as Windows doesn't support symbolic linkage creation for non-admins
       #else
         cbica::makeSymbolicLink(fName, fName_sym);
         if( !cbica::isLink(fName_sym) )
@@ -235,7 +235,7 @@ int main(int argc, char** argv)
   }
   catch( std::exception &e )
   {
-    std::cout << "An exception occured. Number: " << e.what() << NEWLINE;
+    std::cout << "An exception occurred. Number: " << e.what() << NEWLINE;
     return EXIT_FAILURE;
   }
 

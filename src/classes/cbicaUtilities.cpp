@@ -784,7 +784,6 @@ namespace cbica
   bool splitFileName( const std::string &dataFile, std::string &path,
      std::string &baseName, std::string &extension )
   {
-	std::cout << dataFile << "\n";
   #if defined(_WIN32)
   	//! Initialize pointers to file and user names
     char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX];
@@ -797,27 +796,15 @@ namespace cbica
   	basename_var = basename(path_name);
     ext = strrchr(constCharToChar(dataFile.c_str()), '.');
   #endif
-    	
-	std::cout << dataFile << "\n";
-	std::cout << path_name << "\n";
-	std::cout << basename_var << "\n";
-	std::cout << ext << "\n";  
-    
+
     path = std::string(path_name);
     baseName = std::string(basename_var);
     extension = std::string(ext);
-
-	std::cout << "path: " << path << "\n";
-	std::cout << "base: " << baseName << "\n";
-
-	extension = replaceString(extension, ".", "");
-
-	std::cout << "extension: " << extension << "\n";
-
+    
     path_name[0] = '\0';
     basename_var[0] = '\0';
     ext[0] = '\0';
-
+    
     /*
     extension = "";
     baseName = "";

@@ -56,6 +56,16 @@ namespace cbica
 
   }
 
+  inline void copyrightNotice()
+  {
+    std::cout << 
+      "\n=========================================================================\n" <<
+      "Contact: sbia-software@uphs.upenn.edu\n\n" <<
+      "Copyright (c) 2015 University of Pennsylvania. All rights reserved.\n" <<
+      "See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html" <<
+      "\n=========================================================================\n";
+  }
+
   inline void CmdParser::getMaxLength()
   {
     for( unsigned int i=0; i<m_parameters.size(); ++i )
@@ -114,12 +124,16 @@ namespace cbica
         std::cout << spaces_2 << std::get<3>(m_parameters[i]) << NEWLINE;
       }
     }
+
+    copyrightNotice();
   }
 
   void CmdParser::echoVersion()
   {
-    std::cout << "Executable Name: " << m_exeName << "\n\n" << "Version: " <<
+    std::cout << "Executable Name: " << m_exeName << "\n" << "        Version: " <<
       m_version << NEWLINE;
+
+    copyrightNotice();
   }
 
   std::pair<bool, int> CmdParser::compareParamter( /*const std::string &inputParamToCheck,*/ 
