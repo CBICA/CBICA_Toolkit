@@ -62,7 +62,7 @@ ENDIF ()
 ### Python wrapping
 SET( BUILD_PYTHON_WRAP OFF CACHE BOOL "Do you want to wrap classes (needs SWIG 3.0.4)? Ensure build option matches Python lib build." )
 IF( BUILD_PYTHON_WRAP )
-  IF(MSVC & BUILD_PYTHON_WRAP)
+  IF(MSVC)
     SET(CMAKE_CONFIGURATION_TYPES Release CACHE TYPE INTERNAL FORCE)
     MESSAGE( STATUS "NOTE: Building package in ${CMAKE_CONFIGURATION_TYPES} mode(s) only." )
   ENDIF()
