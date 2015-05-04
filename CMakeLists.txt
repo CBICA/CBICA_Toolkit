@@ -31,11 +31,14 @@ ADD_DEFINITIONS( -DPROJECT_VERSION_MAJOR="${PROJECT_VERSION_MAJOR}" )
 ADD_DEFINITIONS( -DPROJECT_VERSION_MINOR="${PROJECT_VERSION_MINOR}" )
 
 ## Super build
-INCLUDE( ${CMAKE_SOURCE_DIR}/cmake/Superbuild.cmake )
+#INCLUDE( ${CMAKE_SOURCE_DIR}/cmake/Superbuild.cmake )
 
 # Find all *.h and *.cpp files in a folder -> useful when the application is purely command line based
 SET( SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/src )
 SET( BASIC_CLASS_DIRECTORY ${SOURCE_DIRECTORY}/classes )
+
+SET( SOURCE_DIRECTORY  ${PROJECT_SOURCE_DIR}/src CACHE STRING "Source Directory" FORCE )
+SET( BASIC_CLASS_DIRECTORY  ${SOURCE_DIRECTORY}/classes CACHE STRING "Source Directory" FORCE )
 
 ADD_SUBDIRECTORY( ${BASIC_CLASS_DIRECTORY} )
 
@@ -59,8 +62,9 @@ ENDIF ()
 ### Python wrapping
 SET( BUILD_PYTHON_WRAP OFF CACHE BOOL "Do you want to wrap classes (needs SWIG 3.0.4)? Ensure build option matches Python lib build." )
 IF( BUILD_PYTHON_WRAP )
-  IF(WIN32)
-    MESSAGE( STATUS "If Python has not been built on Debug mode (i.e., pythonXX_d.lib is NOT present), then only build library in Release." )
+  IF(MSVC)
+    SET(CMAKE_CONFIGURATION_TYPES Release CACHE TYPE INTERNAL FORCE)
+    MESSAGE( STATUS "NOTE: Building package in ${CMAKE_CONFIGURATION_TYPES} mode(s) only." )
   ENDIF()
   ADD_SUBDIRECTORY( wrapping )
 ENDIF ()
