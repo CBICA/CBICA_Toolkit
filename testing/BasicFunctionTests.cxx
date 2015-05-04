@@ -3,11 +3,11 @@
 
 \brief File for testing the basic classes.
 
-https://www.cbica.upenn.edu/sbia/software/
+http://www.cbica.upenn.edu/sbia/software/
 sbia-software@uphs.upenn.edu
 
 Copyright (c) 2015 University of Pennsylvania. All rights reserved.
-See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
+See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html.
 
 */
 #include <iostream>
@@ -150,7 +150,7 @@ int main(int argc, char** argv)
       std::string fileName, extName, baseName, path;
       if (cbica::splitFileName(fName, path, baseName, extName))
       {
-        if (extName == "txt")
+        if (extName == ".txt")
         {
           //int blah = 1;      
         }
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
       cbica::Logging logger( fName, argv[2] );
 
       #if defined(_WIN32)
-       // do nothing as Windows doesn't support symbolic linkage creation for non-admins
+       // do nothing as Windows doesn't support symbolic linkage creatation for non-admins
       #else
         cbica::makeSymbolicLink(fName, fName_sym);
         if( !cbica::isLink(fName_sym) )
@@ -217,25 +217,11 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
       cbica::deleteEnvironmentVariable(random_variable);
     }
-    
-    else if( (std::string( "-dirSearch").compare(argv[1]) == 0) ||
-             (std::string("--dirSearch").compare(argv[1]) == 0) )
-    {
-      std::string currentDir;
-      currentDir = cbica::getCWD();
-
-      std::vector<std::string> fileList = cbica::filesInDirectory(currentDir);
-      if (fileList.size() == 0)
-      {
-        return EXIT_FAILURE;
-      }
-
-    }
 
   }
   catch( std::exception &e )
   {
-    std::cout << "An exception occurred. Number: " << e.what() << NEWLINE;
+    std::cout << "An exception occured. Number: " << e.what() << NEWLINE;
     return EXIT_FAILURE;
   }
 
