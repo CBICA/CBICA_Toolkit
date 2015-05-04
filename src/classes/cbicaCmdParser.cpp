@@ -143,45 +143,45 @@ namespace cbica
     for (int i = 1; i < m_argc; i++)
     {
       std::string inputParamToCheck = m_argv[i];
-    if(!checkMaxLen)
-    {
-      getMaxLength();
-    }
-    if( inputParamToCheck == execParamToCheck )
-    {
-      //argv_position = i;
-      return std::make_pair(true, i);
-    }
-    else
-    {
-      std::string inputCheck, execCheck;
-      const unsigned int minLength = static_cast<unsigned int>( std::min(inputParamToCheck.length(), inputParamToCheck.length()) );
-
-      if( inputParamToCheck.length()<minLength )
-        inputCheck = "-" + inputParamToCheck;
-      else
-        inputCheck = inputParamToCheck;
-
-      if( execParamToCheck.length()<minLength )
-        execCheck = "-" + execParamToCheck;
-      else
-        execCheck = execParamToCheck;
-    
-      if( inputCheck == execCheck )
+      if(!checkMaxLen)
+      {
+        getMaxLength();
+      }
+      if( inputParamToCheck == execParamToCheck )
       {
         //argv_position = i;
-      return std::make_pair(true, i);
+        return std::make_pair(true, i);
       }
-
-      /*// implement if developer plans to add verbose paramters to compare
-      else if( paramToCheck.length()==2 )
-        toCheck = paramToCheck;
       else
       {
-        m_verboseParamters
+        std::string inputCheck, execCheck;
+        const unsigned int minLength = static_cast<unsigned int>( std::min(inputParamToCheck.length(), inputParamToCheck.length()) );
+
+        if( inputParamToCheck.length()<minLength )
+          inputCheck = "-" + inputParamToCheck;
+        else
+          inputCheck = inputParamToCheck;
+
+        if( execParamToCheck.length()<minLength )
+          execCheck = "-" + execParamToCheck;
+        else
+          execCheck = execParamToCheck;
+    
+        if( inputCheck == execCheck )
+        {
+          //argv_position = i;
+        return std::make_pair(true, i);
+        }
+
+        /*// implement if developer plans to add verbose parameters to compare
+        else if( paramToCheck.length()==2 )
+          toCheck = paramToCheck;
+        else
+        {
+          m_verboseParamters
+        }
+        */
       }
-      */
-    }
     }
       return std::make_pair(false, -1);
   }
