@@ -4,7 +4,7 @@
 
 #include "cbicaUtilities.h"
 #include "cbicaLogging.h"
-#include "cbicaCmdParser.h"
+//#include "cbicaCmdParser.h"
 
 %}
 
@@ -21,5 +21,5 @@
 
 %include "cbicaUtilities.h"
 %include "cbicaLogging.h"
-%include "cbicaCmdParser.h"
+//%include "cbicaCmdParser.h"
 
