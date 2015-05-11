@@ -42,8 +42,8 @@ int main(int argc, char** argv)
     if( (std::string( "-cmdParser").compare(argv[1]) == 0) || 
         (std::string("--cmdParser").compare(argv[1]) == 0) )
     {
-      argv[1] = "1p";
-      argv[2] = "2p";
+      argv[1] = "-firstParam";
+      argv[2] = "-2p";
       cbica::CmdParser parser = cbica::CmdParser(argc, argv);
       parser.setExeName("BasicFunctionTests");
       parser.addParameter("1p", "firstParam", "first parameter");
