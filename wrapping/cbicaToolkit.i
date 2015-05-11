@@ -4,11 +4,11 @@
 
 #include "cbicaUtilities.h"
 #include "cbicaLogging.h"
-//#include "cbicaCmdParser.h"
+//#include "cbicaCmdParser.h" // to include when template support is added to SWIG
 
 %}
 
-// system includes
+/// system includes
 %include stl.i
 %include "std_string.i"
 //%include "std_set.i"
