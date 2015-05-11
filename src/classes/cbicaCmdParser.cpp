@@ -12,8 +12,10 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 */
 #include <type_traits>
 #include <functional>
+#include <cmath>
 
 #include "cbicaCmdParser.h"
+#include "cbicaUtilities.h"
 
 #ifndef PROJECT_VERSION
 #define PROJECT_VERSION "0.0.1"
@@ -68,13 +70,23 @@ namespace cbica
 
   inline void CmdParser::getMaxLength()
   {
+    m_minVerboseLength = 1000;
+    m_maxLaconicLength = 0;
+    m_maxLength = 0;
     for( unsigned int i=0; i<m_parameters.size(); ++i )
     {
-      //m_laconicParamters.push_back( std::make_tuple(std::get<0>(m_parameters[i]), i) );
       m_laconicParamters.push_back( std::get<0>(m_parameters[i]) );
-      m_verboseParamters.push_back( std::make_tuple(std::get<1>(m_parameters[i]), i) );
+      m_verboseParamters.push_back( std::get<1>(m_parameters[i]) );
+      
       if( m_maxLength < std::get<4>(m_parameters[i]) )
         m_maxLength = std::get<4>(m_parameters[i]);
+      
+      if (m_minVerboseLength > m_verboseParamters[i].length())
+        m_minVerboseLength = m_verboseParamters[i].length();
+      
+      if (m_maxLaconicLength < m_laconicParamters[i].length())
+        m_maxLaconicLength = m_laconicParamters[i].length();
+
     }
     //m_maxLength += 6;
     checkMaxLen = true;
@@ -136,54 +148,72 @@ namespace cbica
     copyrightNotice();
   }
 
-  std::pair<bool, int> CmdParser::compareParamter( /*const std::string &inputParamToCheck,*/ 
-                                   const std::string &execParamToCheck
-                                   )
+  inline std::string internal_compare(const std::string &check_string, const int check_length)
   {
+    switch (std::abs(static_cast<int>(check_string.length() - check_length)))
+    {
+    case '1':
+      return ("-" + check_string);
+      break;
+    case '2':
+      return ("--" + check_string);
+      break;
+    default:
+      return (check_string);
+      break;
+    }
+  }
+
+  inline void CmdParser::verbose_check(std::string &input_string)
+  {
+    if (input_string.length() > m_maxLaconicLength)
+    {
+      input_string = cbica::replaceString(input_string, "--", "");
+      input_string = cbica::replaceString(input_string, "-", "");
+      auto it = std::find(m_verboseParamters.begin(), m_verboseParamters.end(), input_string);
+      if (it != m_verboseParamters.end())
+      {
+        input_string = m_laconicParamters[it - m_verboseParamters.begin()];
+      }
+    }
+  }
+
+  std::pair<bool, int> CmdParser::compareParamter( const std::string &execParamToCheck )
+  {
+    if (!checkMaxLen)
+    {
+      getMaxLength();
+    }
+
     for (int i = 1; i < m_argc; i++)
     {
+      std::string execParamToCheck_wrap = execParamToCheck;
       std::string inputParamToCheck = m_argv[i];
-      if(!checkMaxLen)
+      verbose_check(inputParamToCheck);
+      verbose_check(execParamToCheck_wrap);
+
+      if (inputParamToCheck == execParamToCheck_wrap)
       {
-        getMaxLength();
-      }
-      if( inputParamToCheck == execParamToCheck )
-      {
-        //argv_position = i;
         return std::make_pair(true, i);
       }
       else
       {
         std::string inputCheck, execCheck;
-        const unsigned int minLength = static_cast<unsigned int>( std::min(inputParamToCheck.length(), inputParamToCheck.length()) );
+        const unsigned int minLength = static_cast<unsigned int>( std::min(
+          inputParamToCheck.length(), execParamToCheck_wrap.length()) );
 
-        if( inputParamToCheck.length()<minLength )
-          inputCheck = "-" + inputParamToCheck;
-        else
-          inputCheck = inputParamToCheck;
-
-        if( execParamToCheck.length()<minLength )
-          execCheck = "-" + execParamToCheck;
-        else
-          execCheck = execParamToCheck;
-    
+        inputCheck = internal_compare(inputParamToCheck, minLength);
+        execCheck = internal_compare(execParamToCheck_wrap, minLength);
+        
         if( inputCheck == execCheck )
         {
-          //argv_position = i;
-        return std::make_pair(true, i);
+          return std::make_pair(true, i);
         }
 
-        /*// implement if developer plans to add verbose parameters to compare
-        else if( paramToCheck.length()==2 )
-          toCheck = paramToCheck;
-        else
-        {
-          m_verboseParamters
-        }
-        */
       }
     }
-      return std::make_pair(false, -1);
+      
+    return std::make_pair(false, -1);
   }
 
   std::string CmdParser::getDescription(const std::string &parameter )

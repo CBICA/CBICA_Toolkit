@@ -43,18 +43,34 @@ namespace cbica
   parser.addParameter("-h","--help", "gets help from Justice League"); 
   parser.addParameter("-m","--marvel", "nope, I prefer The Avengers"); 
   
+  // required parameters
   // compare and do something if true 
   if( parser.compareParamter("u").first ) 
   { 
     parser.echoUsage(); 
     return EXIT_SUCCESS;
   }
-  
+
+  if( parser.compareParamter("help").first ) 
+  { 
+    parser.echoUsage(); 
+    return EXIT_SUCCESS;
+  }
+
+  else // if required parameters are not present, print usage message and fail
+  {
+    parser.echoUsage();
+    return EXIT_FAILURE;
+  }
+  // end of required parameters 
+
+  // optional parameters 
   int m_position = parser.compareParamter("m").second;
   if (m_position > 0) 
   { 
     doSomethingWithFile( m_position+1 );
   } 
+  // no trailing 'else' required for optional parameters 
   \endverbatim
   */
   class CmdParser
@@ -120,8 +136,9 @@ namespace cbica
     void echoVersion();
 
     /**
-    \brief Check ONLY for laconic paramters
+    \brief Check paramters WITHOUT hyphens
 
+    \param execParamToCheck Which parameter to check
     \return True if parameter found
     \return Position of parameter in argv else -1
     */
@@ -156,7 +173,7 @@ namespace cbica
     std::vector< std::string > m_laconicParamters;
     
     //! Store laconic paramters along with their position in m_paramters
-    std::vector< std::tuple< std::string, int > > m_verboseParamters;
+    std::vector< std::string > m_verboseParamters;
 
     //! Max length of parameters for echoUsage()
     int m_maxLength;
@@ -164,5 +181,8 @@ namespace cbica
     //! Get max length
     bool checkMaxLen;
     inline void getMaxLength();
+    inline void verbose_check(std::string &input_string);
+
+    size_t m_maxLaconicLength, m_minVerboseLength;
   };
 }
