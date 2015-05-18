@@ -44,10 +44,10 @@ specified in SBIA internal Wiki (http://sbia-wiki.uphs.upenn.edu/wiki/index.php/
 2.1 Dependencies
 ----------------
 
-- C++ complier (MSVC/12, GCC/4.9.2)
+- C++ complier (MSVC/11.x, MSVC/12.x, GCC/4.8.1, GCC/4.9.2)
 - CMake 2.8.12.1
 - Doxygen (for documentation only)
-- SWIG (required for Python Wrapping) [tested on 3.0.0-3.0.4]
+- SWIG (required for Python Wrapping) [tested on 3.0.0-3.0.5]
 
 Make sure all dependencies are met before proceeding with install.
 

@@ -138,6 +138,8 @@ namespace cbica
     /**
     \brief Check paramters WITHOUT hyphens
 
+    Checks for both laconic and verbose variants of the specified parameter.
+
     \param execParamToCheck Which parameter to check
     \return True if parameter found
     \return Position of parameter in argv else -1
@@ -147,10 +149,12 @@ namespace cbica
     /**
     \brief Get the description analogous with the paramter
 
+    Searches only using the laconic parameter; restriction placed for performance reasons.
+
     \param paramter Parameter whose description is requested
     \return Description of parameter
     */
-    std::string getDescription(const std::string &parameter );
+    std::string getDescription(const std::string &laconicParameter );
 
   private:
     //! Executable name

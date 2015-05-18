@@ -40,7 +40,7 @@ namespace cbica
   
   CmdParser::CmdParser(int argc, char **argv)
   {
-    m_exeName = PROJECT_NAME;
+    m_exeName = argv[0];
 #ifdef PROJECT_VERSION
     m_version = PROJECT_VERSION;
 #else
@@ -121,19 +121,30 @@ namespace cbica
       << "\n\n" << "Usage:\n\n";
     for( unsigned int i=0; i<m_parameters.size(); ++i )
     {
-      std::string spaces;
-      for( int n=0; n<m_maxLength-std::get<4>(m_parameters[i])/*-4*/; n++)
-        spaces.append(" ");
+      std::string spaces_lac, spaces_verb;
 
-      std::cout << "[" << std::get<0>(m_parameters[i]) << ", " << std::get<1>(m_parameters[i]) << spaces <<
-      "]  " << std::get<2>(m_parameters[i]) << NEWLINE;
+      for (size_t n = 0; n < m_maxLaconicLength - std::get<0>(m_parameters[i]).length(); n++)
+      {
+        spaces_lac.append(" ");
+      }
+      
+      for (int n = 0; n < m_maxLength - std::get<4>(m_parameters[i]) - spaces_lac.length(); n++)
+      {
+        spaces_verb.append(" ");
+      }
+
+      std::cout << "[" << spaces_lac << std::get<0>(m_parameters[i]) << ", " << 
+        std::get<1>(m_parameters[i]) << spaces_verb << "]  " << 
+        std::get<2>(m_parameters[i]) << NEWLINE;
 
       if( std::get<3>(m_parameters[i]) != "blank" )
       {
-        std::string spaces_2;
-        for( int n=0; n<m_maxLength+6; n++)
-          spaces_2.append(" ");
-        std::cout << spaces_2 << std::get<3>(m_parameters[i]) << NEWLINE;
+        std::string spaces_verb_line2;
+        for (int n = 0; n < m_maxLength + 6; n++)
+        {
+          spaces_verb_line2.append(" ");
+        }
+        std::cout << spaces_verb_line2 << std::get<3>(m_parameters[i]) << NEWLINE;
       }
     }
 
@@ -152,10 +163,10 @@ namespace cbica
   {
     switch (std::abs(static_cast<int>(check_string.length() - check_length)))
     {
-    case '1':
+    case 1:
       return ("-" + check_string);
       break;
-    case '2':
+    case 2:
       return ("--" + check_string);
       break;
     default:
@@ -199,7 +210,7 @@ namespace cbica
       else
       {
         std::string inputCheck, execCheck;
-        const unsigned int minLength = static_cast<unsigned int>( std::min(
+        const unsigned int minLength = static_cast<unsigned int>( std::max(
           inputParamToCheck.length(), execParamToCheck_wrap.length()) );
 
         inputCheck = internal_compare(inputParamToCheck, minLength);
@@ -216,45 +227,25 @@ namespace cbica
     return std::make_pair(false, -1);
   }
 
-  std::string CmdParser::getDescription(const std::string &parameter )
+  std::string CmdParser::getDescription(const std::string &laconicParameter)
   {
-    if(!checkMaxLen)
+    if (!checkMaxLen)
     {
       getMaxLength();
     }
-    std::string inputCheck;
-    
-    if( parameter.length()==1 )
-      inputCheck = "-" + parameter;
-    else
-      inputCheck = parameter;
-    /// use cbica::findInVector() when using inside CBICA_Toolkit
-    /*
-    int position;
-    std::string description;
-    if( cbica::findInVector(m_laconicParamters, inputCheck, position)
+
+    int position = cbica::findInVector<std::string>(m_laconicParamters, laconicParameter).second;
+    if (position >= 0)
     {
-      if( std::get<3>(m_parameters[position]) == "blank" )
+      if (std::get<3>(m_parameters[position]) == "blank")
         return std::get<2>(m_parameters[position]);
       else
-        return (std::get<2>(m_parameters[position]) + " " + std::get<3>(m_parameters[position]) );
+        return (std::get<2>(m_parameters[position]) + " " + std::get<3>(m_parameters[position]));
     }
     else
-      return "Invalid Parameter.";
-    */
-    int position = -1;
-    std::vector<std::string>::const_iterator iterator = 
-      std::find(m_laconicParamters.begin(), m_laconicParamters.end(), inputCheck) ;
-    if( iterator !=  m_laconicParamters.end() )
     {
-      position = static_cast<int>(iterator - m_laconicParamters.begin());
-      if( std::get<3>(m_parameters[position]) == "blank" )
-        return std::get<2>(m_parameters[position]);
-      else
-        return (std::get<2>(m_parameters[position]) + " " + std::get<3>(m_parameters[position]) );
-    }
-    else
       return "Invalid Parameter.";
+    }
   }
 
 }
