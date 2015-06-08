@@ -105,25 +105,67 @@ namespace cbica
     void setExeName(const std::string exeName){m_exeName = exeName;};
 
     /**
-    \brief Adding parameters
+    \brief Adding parameters: defaults to optional parameters
 
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param description_line1 The single line of description for parameters
     */
     void addParameter( const std::string &laconic, const std::string &verbose, 
-                                const std::string &description_line1 );
+                       const std::string &description_line1 );
     
     /**
-    \brief Adding parameters
+    \brief Adding parameters: defaults to optional parameters
 
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param description_line1 The first line of description for parameters
     \param description_line2 The second line of description for parameters
     */
-    void addParameter(const std::string &laconic, const std::string &verbose, 
-                      const std::string &description_line1, const std::string &description_line2);
+    void addParameter( const std::string &laconic, const std::string &verbose, 
+                       const std::string &description_line1, const std::string &description_line2);
+
+    /**
+    \brief Adding Optional parameters
+
+    \param laconic The laconic variant
+    \param verbose The verbose variant
+    \param description_line1 The single line of description for parameters
+    */
+    void addOptionalParameter( const std::string &laconic, const std::string &verbose,
+                               const std::string &description_line1);
+
+    /**
+    \brief Adding Optional parameters
+
+    \param laconic The laconic variant
+    \param verbose The verbose variant
+    \param description_line1 The first line of description for parameters
+    \param description_line2 The second line of description for parameters
+    */
+    void addOptionalParameter( const std::string &laconic, const std::string &verbose,
+                               const std::string &description_line1, const std::string &description_line2);
+
+    /**
+    \brief Adding Required parameters
+
+    \param laconic The laconic variant
+    \param verbose The verbose variant
+    \param description_line1 The single line of description for parameters
+    */
+    void addRequiredParameter( const std::string &laconic, const std::string &verbose,
+                               const std::string &description_line1);
+
+    /**
+    \brief Adding Required parameters
+
+    \param laconic The laconic variant
+    \param verbose The verbose variant
+    \param description_line1 The first line of description for parameters
+    \param description_line2 The second line of description for parameters
+    */
+    void addRequiredParameter( const std::string &laconic, const std::string &verbose,
+                               const std::string &description_line1, const std::string &description_line2);
 
     /**
     \brief Display the usage
@@ -178,6 +220,8 @@ namespace cbica
     
     //! Store laconic paramters along with their position in m_paramters
     std::vector< std::string > m_verboseParamters;
+
+    std::vector< std::string > m_optionalParameters, m_requiredParameters;
 
     //! Max length of parameters for echoUsage()
     int m_maxLength;

@@ -88,27 +88,65 @@ namespace cbica
         m_maxLaconicLength = m_laconicParamters[i].length();
 
     }
-    //m_maxLength += 6;
     checkMaxLen = true;
+
+    for (size_t i = 0; i < m_requiredParameters.size(); ++i)
+    {
+      if (!CmdParser::compareParamter(m_requiredParameters[i]).first)
+      {
+        std::cerr << "The required parameter '" << m_requiredParameters[i] << "' with the following description:\n" <<
+          CmdParser::getDescription(m_requiredParameters[i]) << "\nhas not been found in the supplied arguments.\n";
+      }
+    }
   }
-  
+
+  void CmdParser::addOptionalParameter( const std::string &laconic, const std::string &verbose,
+                                        const std::string &description_line1 )
+  {
+    m_optionalParameters.push_back(laconic);
+    m_parameters.push_back(std::make_tuple( laconic, verbose, description_line1, "blank",
+      laconic.length() + verbose.length()));
+  }
+
+  void CmdParser::addOptionalParameter( const std::string &laconic, const std::string &verbose,
+                                        const std::string &description_line1,
+                                        const std::string &description_line2 )
+  {
+    m_optionalParameters.push_back(laconic);
+    m_parameters.push_back(std::make_tuple( laconic, verbose, description_line1, description_line2,
+      laconic.length() + verbose.length()) );
+
+  }
+
+  void CmdParser::addRequiredParameter( const std::string &laconic, const std::string &verbose,
+                                        const std::string &description_line1 )
+  {
+    m_requiredParameters.push_back(laconic);
+    m_parameters.push_back(std::make_tuple(laconic, verbose, description_line1, "blank",
+      laconic.length() + verbose.length()));
+  }
+
+  void CmdParser::addRequiredParameter( const std::string &laconic, const std::string &verbose,
+                                        const std::string &description_line1,
+                                        const std::string &description_line2 )
+  {
+    m_requiredParameters.push_back(laconic);
+    m_parameters.push_back(std::make_tuple(laconic, verbose, description_line1, description_line2,
+      laconic.length() + verbose.length()));
+
+  }
+
   void CmdParser::addParameter( const std::string &laconic, const std::string &verbose, 
                                 const std::string &description_line1 )
   {
-    m_parameters.push_back( std::make_tuple(laconic, verbose, description_line1, "blank",
-                            laconic.length() + verbose.length()) );
-    //std::string test = std::get<0>(m_parameters[0]);
-    //test.append(" ");
+    CmdParser::addOptionalParameter(laconic, verbose, description_line1);
   }
 
   void CmdParser::addParameter( const std::string &laconic, const std::string &verbose, 
                                 const std::string &description_line1, 
                                 const std::string &description_line2 )
   {
-    m_parameters.push_back( std::make_tuple(laconic, verbose, description_line1, description_line2,
-                            laconic.length() + verbose.length()) );
-    //std::string test = std::get<0>(m_parameters[0]);
-    //test.append(" ");
+    CmdParser::addOptionalParameter(laconic, verbose, description_line1, description_line2);
   }
   
   void CmdParser::echoUsage()

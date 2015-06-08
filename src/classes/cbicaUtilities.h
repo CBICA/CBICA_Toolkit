@@ -403,7 +403,7 @@ namespace cbica
       std::find(vector_to_search_in.begin(), vector_to_search_in.end(), element_to_search_for);
     if( iterator !=  vector_to_search_in.end() )
     {
-      position = iterator - vector_to_search_in.begin();
+      position = static_cast<int>(iterator - vector_to_search_in.begin());
       return std::make_pair(true, position);
     }
     else
