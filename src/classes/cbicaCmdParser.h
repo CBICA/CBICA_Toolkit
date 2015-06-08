@@ -36,41 +36,21 @@ namespace cbica
   
   \verbatim
   cbica::CmdParser parser = cbica::CmdParser(argc, argv); // OR,  
-  //cbica::CmdParser parser = cbica::CmdParser(argc, argv, "exe_name"); 
+  //cbica::CmdParser parser = cbica::CmdParser(argc, argv, "exe_name"); // if a different exe_name is desired
   
   // add paramters to the variable
-  parser.addParameter("-u","--usage", "prints usage", "second line"); 
-  parser.addParameter("-h","--help", "gets help from Justice League"); 
-  parser.addParameter("-m","--marvel", "nope, I prefer The Avengers"); 
+  parser.addParameter("u","usage", "prints usage", "second line"); // defaults to optional parameter
+  parser.addRequiredParameter("h","help", "gets help from Justice League"); 
+  parser.addOptionalParameter("m","marvel", "nope, I prefer The Avengers"); 
   
-  // required parameters
-  // compare and do something if true 
-  if( parser.compareParamter("u").first ) 
-  { 
-    parser.echoUsage(); 
-    return EXIT_SUCCESS;
-  }
-
-  if( parser.compareParamter("help").first ) 
-  { 
-    parser.echoUsage(); 
-    return EXIT_SUCCESS;
-  }
-
-  else // if required parameters are not present, print usage message and fail
-  {
-    parser.echoUsage();
-    return EXIT_FAILURE;
-  }
-  // end of required parameters 
-
+  /// checks for required parameters are done internally.
+  
   // optional parameters 
   int m_position = parser.compareParamter("m").second;
   if (m_position > 0) 
   { 
     doSomethingWithFile( m_position+1 );
   } 
-  // no trailing 'else' required for optional parameters 
   \endverbatim
   */
   class CmdParser
