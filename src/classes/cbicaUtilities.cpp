@@ -734,7 +734,7 @@ namespace cbica
   std::vector< std::string > filesInDirectory( const std::string &dirName )
   {
     std::vector< std::string > allFiles;
-    std::string dirName_wrap = dirName;
+    std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
     if (dirName_wrap[dirName_wrap.length()-1] != '/')
     {
       dirName_wrap.append("/");
