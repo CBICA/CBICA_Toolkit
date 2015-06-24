@@ -55,8 +55,8 @@ ELSE()
   )
 ENDIF()
 
-## Add c++11 flag to compilation if GCC is detected under UNIX: how does this translate to MinGW/Cygwin??
-IF(UNIX)
+## Add c++11 flag to compilation if GCC is detected
+IF(CMAKE_COMPILER_IS_GNUCXX)
 	INCLUDE( CheckCXXCompilerFlag )
 	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
@@ -67,7 +67,7 @@ IF(UNIX)
 	ELSE()
 		MESSAGE(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 	ENDIF()
-ENDIF(UNIX) 
+ENDIF(CMAKE_COMPILER_IS_GNUCXX) 
 
 # install the library
 INSTALL( 
