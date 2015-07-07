@@ -784,65 +784,41 @@ namespace cbica
   bool splitFileName( const std::string &dataFile, std::string &path,
      std::string &baseName, std::string &extension )
   {
-  #if defined(_WIN32)
-  	//! Initialize pointers to file and user names
-    char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX];
-    _splitpath(dataFile.c_str(), NULL, path_name, basename_var, ext);
-    //_splitpath_s(dataFile.c_str(), NULL, NULL, path_name, NULL, basename, NULL, ext, NULL);
-  #else
-  	//! Initialize pointers to file and user names
-  	char *basename_var, *ext, *path_name;
-    path_name = dirname( constCharToChar(dataFile.c_str()) );
-  	basename_var = basename(path_name);
-    ext = strrchr(constCharToChar(dataFile.c_str()), '.');
-  #endif
-
-    path = std::string(path_name);
-    baseName = std::string(basename_var);
-    extension = std::string(ext);
-    
-    path_name[0] = '\0';
-    basename_var[0] = '\0';
-    ext[0] = '\0';
-    
-    /*
-    extension = "";
-    baseName = "";
-    path  = "";
-    std::string::size_type extPos = dataFile.rfind(".");
-    if ( extPos != std::string::npos )
+    std::string dataFile_wrap = dataFile;
+    if (dataFile_wrap.find(".nii.gz") != std::string::npos)
     {
-      extension  = dataFile.substr(extPos,dataFile.length() - extPos);
-      std::string tmp = dataFile.substr(0,extPos);
-      std::string::size_type pathPos = dataFile.rfind("/");
-      if ( pathPos != std::string::npos )
-      {
-        path  = tmp.substr(0,pathPos)+"/";
-        baseName = tmp.substr(pathPos,tmp.length()-pathPos);
-      }
-      else
-      {
-         path = "./";
-         baseName = tmp;
-      }
-      // Check if we have a .nii.gz extension
-      extPos = baseName.rfind(".");
-      if ( extPos != std::string::npos )
-      {
-        std::string extension2 = baseName.substr(extPos,baseName.length() - extPos);
-        if (extension2.compare(".nii") == 0)
-        {
-          extension = extension2 + extension;
-          baseName = baseName.substr(0,extPos);
-        }
-      }
+      dataFile_wrap = cbica::replaceString(dataFile_wrap, ".nii.gz", "");
+      extension = ".nii.gz";
+      std::string temp;
+      cbica::splitFileName(dataFile_wrap, path, baseName, temp);
     }
     else
     {
-      std::cerr << "Can't find extension!!!!" << std::endl;  
-      return EXIT_FAILURE;
-    }*/
+      //! Initialize pointers to file and user names
+#if (_MSC_VER >= 1700)
+      char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX], drive_letter[FILENAME_MAX];
+      //_splitpath(dataFile_wrap.c_str(), NULL, path_name, basename_var, ext);
+      _splitpath_s(dataFile.c_str(), drive_letter, FILENAME_MAX, path_name, FILENAME_MAX, basename_var, FILENAME_MAX, ext, FILENAME_MAX);
+      path = std::string(drive_letter) + std::string(path_name);
+      path = cbica::replaceString(path, "\\", "/"); // normalize path for Windows
+#else
+      char *basename_var, *ext, *path_name;
+      path_name = dirname(cbica::constCharToChar(dataFile_wrap.c_str()));
+      basename_var = basename(cbica::constCharToChar(dataFile_wrap.c_str()));
+      ext = strrchr(cbica::constCharToChar(dataFile_wrap.c_str()), '.');
+      path = std::string(path_name);
+#endif
+
+      baseName = std::string(basename_var);
+      extension = std::string(ext);
     
+#if (_MSC_VER >= 1700)
+    path_name[0] = NULL;
+    basename_var[0] = NULL;
+    ext[0] = NULL;
+    drive_letter[0] = NULL;
+#endif
+    }
     if (baseName == "")
       return false;
     else
