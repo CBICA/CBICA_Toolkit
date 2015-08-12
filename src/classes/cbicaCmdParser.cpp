@@ -48,6 +48,7 @@ namespace cbica
     m_maxLength = 0;
     checkMaxLen = false;
     helpRequested = false;
+    m_exampleOfUsage = "";
 
     m_argc = argc;
     m_argv = argv;
@@ -68,6 +69,7 @@ namespace cbica
     m_maxLength = 0;
     checkMaxLen = false;
     helpRequested = false;
+    m_exampleOfUsage = "";
 
     m_argc = argc;
     m_argv = argv;
@@ -273,7 +275,7 @@ namespace cbica
   inline void CmdParser::writeParameters(const std::vector< Parameter > &inputParameters, bool verbose)
   {
     std::string spaces_verb_line2;
-    for (size_t n = 0; n < m_maxLength + 6; n++)
+    for (size_t n = 0; n < m_maxLength + 9; n++)
     {
       spaces_verb_line2.append(" ");
     }
@@ -291,7 +293,7 @@ namespace cbica
         spaces_verb.append(" ");
       }
 
-      std::cout << "[" << spaces_lac << inputParameters[i].laconic << ", " <<
+      std::cout << "[" << spaces_lac << "-" << inputParameters[i].laconic << ", --" <<
         inputParameters[i].verbose << spaces_verb << "]  " <<
         inputParameters[i].descriptionLine1 << NEWLINE;
 
@@ -350,6 +352,17 @@ namespace cbica
     writeParameters(m_requiredParameters, true);
     std::cout << ":::Optional parameters:::\n\n";
     writeParameters(m_optionalParameters, true);
+
+    if (m_exampleOfUsage != "")
+    {
+      std::cout << "For example: \n\n" << 
+#if(WIN32)
+        m_exeName + ".exe" << 
+#else
+        "./" + m_exeName <<
+#endif
+        m_exampleOfUsage << "\n";
+    }
 
     copyrightNotice();
   }
@@ -499,6 +512,16 @@ namespace cbica
     assert(laconicParameter == "" && "Parameter not found in the list of initialized parameters. Please try again.");
 
     return "";
+  }
+
+  void CmdParser::exampleUsage(const std::string &usageOfExe)
+  {
+    m_exampleOfUsage = usageOfExe;
+#if(WIN32)
+    m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, m_exeName + ".exe", "");
+#else
+    m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, "./" + m_exeName, "");
+#endif
   }
 
   void CmdParser::writeConfigFile(const std::string &dirName)

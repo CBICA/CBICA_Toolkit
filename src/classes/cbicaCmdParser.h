@@ -386,11 +386,20 @@ namespace cbica
     */
     void writeConfigFile();
 
+    /**
+    \brief Gives a brief example of how to use the executable
+
+    \param usageOfExe A string which would correspond to the command line usage AFTER the executable has been called
+    */
+    void exampleUsage(const std::string &usageOfExe);
+
   private:
     //! Executable name
     std::string m_exeName;
     //! Version
     std::string m_version;
+
+    std::string m_exampleOfUsage;
 
     //! CMD variable
     int m_argc;
