@@ -21,6 +21,8 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html.
 #include <stdio.h>
 #if(WIN32)
 #include <direct.h>
+#else
+#include <sys/stat.h>
 #endif
 
 #define TEST_DATA "/nifit1/"
