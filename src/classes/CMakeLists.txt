@@ -55,6 +55,11 @@ ELSE()
   )
 ENDIF()
 
+SET( CBICA_Headers  ${CBICA_Headers} CACHE STRING "Basic headers" FORCE )
+SET( CBICA_Sources  ${CBICA_Sources} CACHE STRING "Basic sources" FORCE )
+SET( BASIC_CLASS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Basic classes directory" FORCE )
+SET( BASIC_CLASS_LIBRARY ${CBICA_LIB_NAME} CACHE STRING "Basic classes library" FORCE )
+
 ## Add c++11 flag to compilation if GCC is detected
 IF(CMAKE_COMPILER_IS_GNUCXX)
 	INCLUDE( CheckCXXCompilerFlag )
