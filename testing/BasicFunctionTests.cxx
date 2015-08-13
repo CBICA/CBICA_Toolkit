@@ -249,13 +249,31 @@ int main(int argc, char** argv)
         ) != 0)
         return EXIT_FAILURE;
 
-      if (mkdir(std::string(return_dir + "/random2/").c_str()) != 0)
+      if (mkdir(std::string(return_dir + "/random2/").c_str()
+#if(WIN32)
+
+#else
+        , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+#endif
+        ) != 0)
         return EXIT_FAILURE;
 
-      if (mkdir(std::string(return_dir + "/random3/").c_str()) != 0)
+      if (mkdir(std::string(return_dir + "/random3/").c_str()
+#if(WIN32)
+
+#else
+        , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+#endif
+        ) != 0)
         return EXIT_FAILURE;
 
-      if (mkdir(std::string(return_dir + "random1/random11/").c_str()) != 0)
+      if (mkdir(std::string(return_dir + "random1/random11/").c_str()
+#if(WIN32)
+
+#else
+        , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+#endif
+        ) != 0)
         return EXIT_FAILURE;
 
       if (cbica::subdirectoriesInDirectory(return_dir, true).size() != 4)
