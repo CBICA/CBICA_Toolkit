@@ -19,6 +19,8 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 #include <algorithm>
 #include <vector>
 
+#include "cbicaUtilities.h"
+
 #define NEWLINE "\n"
 
 namespace cbica
@@ -27,6 +29,7 @@ namespace cbica
   \struct Parameter
   \brief Hold individual parameter information
 
+  This is a helper struct for internal usage of CmdParser. It is not meant to be used from a program directly.
   All variables are self-explanatory. Currently, a maxium of five lines of description are supported.
   */
   struct Parameter
@@ -50,7 +53,11 @@ namespace cbica
       descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
       descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
     {
-      length = in_laconic.length() + in_verbose.length();
+      laconic = cbica::replaceString(laconic, "-", "");
+      laconic = cbica::replaceString(laconic, "--", "");
+      verbose = cbica::replaceString(verbose, "-", "");
+      verbose = cbica::replaceString(verbose, "--", "");
+      length = laconic.length() + verbose.length();
     }
 
   };
@@ -120,6 +127,8 @@ namespace cbica
     /**
     \brief Adding parameters: defaults to optional parameters
 
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
+
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param expectedDataType The data type expected for this parameter
@@ -131,6 +140,8 @@ namespace cbica
 
     /**
     \brief Adding parameters: defaults to optional parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -145,6 +156,8 @@ namespace cbica
     /**
     \brief Adding parameters: defaults to optional parameters
 
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
+
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param expectedDataType The data type expected for this parameter
@@ -158,6 +171,8 @@ namespace cbica
 
     /**
     \brief Adding parameters: defaults to optional parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -174,6 +189,8 @@ namespace cbica
 
     /**
     \brief Adding parameters: defaults to optional parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -192,6 +209,8 @@ namespace cbica
     /**
     \brief Adding Optional parameters
 
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
+
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param expectedDataType The data type expected for this parameter
@@ -203,6 +222,8 @@ namespace cbica
 
     /**
     \brief Adding Optional parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -217,6 +238,8 @@ namespace cbica
     /**
     \brief Adding Optional parameters
 
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
+
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param expectedDataType The data type expected for this parameter
@@ -230,6 +253,8 @@ namespace cbica
 
     /**
     \brief Adding Optional parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -246,6 +271,8 @@ namespace cbica
 
     /**
     \brief Adding Optional parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -264,6 +291,8 @@ namespace cbica
     /**
     \brief Adding Required parameters
 
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
+
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param expectedDataType The data type expected for this parameter
@@ -275,6 +304,8 @@ namespace cbica
 
     /**
     \brief Adding Required parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -289,6 +320,8 @@ namespace cbica
     /**
     \brief Adding Required parameters
 
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
+
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param expectedDataType The data type expected for this parameter
@@ -302,6 +335,8 @@ namespace cbica
 
     /**
     \brief Adding Required parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -318,6 +353,8 @@ namespace cbica
 
     /**
     \brief Adding Required parameters
+
+    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
     \param laconic The laconic variant
     \param verbose The verbose variant
@@ -373,7 +410,7 @@ namespace cbica
     /**
     \brief Write the configuration file for the executable for use in the common GUI framework
 
-    Defaults to directory specified in cbica::makeTempDir() if dirName is empty
+    Defaults to directory specified in cbica::makeTempDir() if dirName is empty. The file is always 'EXE_NAME.txt'.
 
     \param dirName The full path of the directory to save the file
     */
@@ -382,7 +419,7 @@ namespace cbica
     /**
     \brief Write the configuration file for the executable for use in the common GUI framework
 
-    File is always written to the directory specified in cbica::makeTempDir()
+    File is always written to the directory specified in cbica::makeTempDir(). The file is always 'EXE_NAME.txt'.
     */
     void writeConfigFile();
 

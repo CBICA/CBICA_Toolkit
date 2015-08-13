@@ -12,7 +12,6 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 */
 #include <functional>
 #include <cmath>
-#include <assert.h>
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
@@ -21,14 +20,11 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 #if (_WIN32)
 #include <io.h>
 #else
-#undef NDEBUG
-#include <cassert>
 #include <unistd.h>
 #endif
 
 
 #include "cbicaCmdParser.h"
-#include "cbicaUtilities.h"
 
 #ifndef PROJECT_VERSION
 #define PROJECT_VERSION "0.0.1"
@@ -125,10 +121,23 @@ namespace cbica
         int tempPos;
         if (!CmdParser::compareParameter(m_requiredParameters[i].laconic, tempPos))
         {
-          std::cout << "The required parameter '" << m_requiredParameters[i].laconic << "' with the following description:\n\n" <<
-            CmdParser::getDescription(m_requiredParameters[i].laconic, false) << "\n\nhas not been found in the supplied arguments.\n";
+          std::cout << "An exemplary usage scenario: \n\n" <<
+#if(WIN32)
+            m_exeName + ".exe" <<
+#else
+            "./" + m_exeName <<
+#endif
+            m_exampleOfUsage << "\n\n";
 
-          assert(tempPos > 0 && "Required parameter not found");
+          std::cout << "The required parameter '" << m_requiredParameters[i].laconic << "' is missing from the command line arguments you provided. See '" <<
+#if(WIN32)
+            m_exeName + ".exe" <<
+#else
+            "./" + m_exeName <<
+#endif
+            " --help' for extended help.\n";
+
+          exit(EXIT_FAILURE);
         }
       }
     }
@@ -175,9 +184,21 @@ namespace cbica
     {
       return;
     }
-    assert(laconic != "" && "Laconic parameter cannot be empty");
-    assert(laconic != "" && "Verbose parameter cannot be empty");
-    assert(description_line1 != "" && "Failure to initialize an empty string as description line 1");
+    if (laconic == "")
+    {
+      std::cerr << "Laconic parameter cannot be empty";
+      exit(EXIT_FAILURE);
+    }
+    if (verbose == "")
+    {
+      std::cerr << "Verbose parameter cannot be empty";
+      exit(EXIT_FAILURE);
+    }
+    if (description_line1 == "")
+    {
+      std::cerr << "Failure to initialize an empty string as description_line1";
+      exit(EXIT_FAILURE);
+    }
 
     m_parameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
     m_optionalParameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
@@ -224,9 +245,21 @@ namespace cbica
     {
       return;
     }
-    assert(laconic != "" && "Laconic parameter cannot be empty");
-    assert(laconic != "" && "Verbose parameter cannot be empty");
-    assert(description_line1 != "" && "Failure to initialize an empty string as description line 1");
+    if (laconic == "")
+    {
+      std::cerr << "Laconic parameter cannot be empty";
+      exit(EXIT_FAILURE);
+    }
+    if (verbose == "")
+    {
+      std::cerr << "Verbose parameter cannot be empty";
+      exit(EXIT_FAILURE);
+    }
+    if (description_line1 == "")
+    {
+      std::cerr << "Failure to initialize an empty string as description_line1";
+      exit(EXIT_FAILURE);
+    }
 
     m_parameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
     m_requiredParameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
@@ -333,7 +366,9 @@ namespace cbica
     std::cout << "Executable Name: " << m_exeName << " v" << m_version
       << "\n\n" << "Usage:\n\n";
 
+    std::cout << "Required parameters:\n\n";
     writeParameters(m_requiredParameters, false);
+    std::cout << "Optional parameters:\n\n";
     writeParameters(m_optionalParameters, false);
 
     copyrightNotice();
@@ -416,10 +451,11 @@ namespace cbica
   {
     bool found = false;
     position = -1;
+    std::string execParamToCheck_wrap = execParamToCheck;
+    verbose_check(execParamToCheck_wrap);
 
     for (int i = 1; i < m_argc; i++)
     {
-      std::string execParamToCheck_wrap = execParamToCheck;
       std::string inputParamToCheck = m_argv[i];
       if ((inputParamToCheck == "usage") || (inputParamToCheck == "-usage") || (inputParamToCheck == "--usage")
         || (inputParamToCheck == "u") || (inputParamToCheck == "-u") || (inputParamToCheck == "--u") ||
@@ -435,7 +471,6 @@ namespace cbica
         getMaxLength();
       }
       verbose_check(inputParamToCheck);
-      verbose_check(execParamToCheck_wrap);
 
       if (inputParamToCheck == execParamToCheck_wrap)
       {
@@ -466,6 +501,11 @@ namespace cbica
 
   std::string CmdParser::getDescription(const std::string &laconicParameter, bool newLine)
   {
+    if (laconicParameter == "")
+    {
+      std::cerr << "Parameter cannot be an empty string. Please try again.\n";
+      exit(EXIT_FAILURE);
+    }
     if (!checkMaxLen)
     {
       getMaxLength();
@@ -509,8 +549,6 @@ namespace cbica
       }
     }
 
-    assert(laconicParameter == "" && "Parameter not found in the list of initialized parameters. Please try again.");
-
     return "";
   }
 
@@ -545,9 +583,17 @@ namespace cbica
     std::string fileName = dirName_wrap + m_exeName + ".txt";
 
 #if (_WIN32)
-    assert(_access(fileName.c_str(), 6) != -1 && "No write permission for the specified config file");
+    if (_access(fileName.c_str(), 6) != -1)
+    {
+      std::cerr << "No write permission for the specified config file.\n";
+      exit(EXIT_FAILURE);
+    }
 #else
-    assert(access(fileName.c_str(), R_OK && W_OK) != 0 && "No write permission for the specified config file");
+    if (access(fileName.c_str(), R_OK && W_OK) != 0)
+    {
+      std::cerr << "No write permission for the specified config file.\n";
+      exit(EXIT_FAILURE);
+    }
 #endif
 
     std::ofstream file;
