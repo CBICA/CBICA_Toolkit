@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CLASS_DIRECTORY}
 	${SOURCE_DIRECTORY}
+  #${CBICA_TOOLKIT_BIN_DIR}
 )
 
 # Done for temporary testing
@@ -13,7 +14,13 @@ FILE( GLOB MainSources
   "${BASIC_CLASS_DIRECTORY}/*.cpp"
 )
 
-ADD_EXECUTABLE( ${TEST_EXE_NAME} BasicFunctionTests.cxx ${MainSources} )
+ADD_EXECUTABLE( 
+  ${TEST_EXE_NAME} 
+  ${CBICA_Headers}
+  ${CBICA_Sources}
+  BasicFunctionTests.cxx 
+)
+#MESSAGE( STATUS "cbica_class name: " ${CBICA_TOOLKIT_NAME} )
 
 IF(UNIX)
 	INCLUDE( CheckCXXCompilerFlag )
@@ -55,9 +62,6 @@ ADD_TEST( NAME TempFolder_Test COMMAND ${TEST_EXE_NAME} -makeTempDir "random")
 # Test for Logger class
 ADD_TEST( NAME LoggerClass_Test COMMAND ${TEST_EXE_NAME} -logging "testing_phrase")
 
-# Test for String functions
-ADD_TEST( NAME StringFunctions_Test COMMAND ${TEST_EXE_NAME} -logging "testing_phrase")
-
 # Test for CmdParser class
 ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "random")
 
@@ -67,5 +71,31 @@ ADD_TEST( NAME SymbolicLink_Test COMMAND ${TEST_EXE_NAME} -symbolic "random")
 # Test for Environment Variables
 ADD_TEST( NAME EnvironmentVar_Test COMMAND ${TEST_EXE_NAME} -envName "random")
 
-# Test for Directory search
-ADD_TEST( NAME DirSearch_Test COMMAND ${TEST_EXE_NAME} -dirSearch "random")
+# Test for temporary folder creation
+ADD_TEST( NAME SubDir_Test COMMAND ${TEST_EXE_NAME} -subDir "random")
+
+IF( (MSVC_VERSION GREATER 1700) OR (UNIX) )
+  # Test for Variadic template
+  ADD_TEST( NAME Variadic_Test COMMAND ${TEST_EXE_NAME} -variadic "random")
+ENDIF()
+
+## Tests for ITK classes
+IF( BUILD_CBICA_ITK_CLASSES )
+  #ADD_SUBDIRECTORY( itk )
+ENDIF( BUILD_CBICA_ITK_CLASSES )
+
+SET_TARGET_PROPERTIES( ${TEST_EXE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY  "${PROJECT_BINARY_DIR}/testing/" )
+SET_TARGET_PROPERTIES( ${TEST_EXE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/testing/" )
+SET_TARGET_PROPERTIES( ${TEST_EXE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG "${PROJECT_BINARY_DIR}/testing/" )
+SET_TARGET_PROPERTIES( ${TEST_EXE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE "${PROJECT_BINARY_DIR}/testing/" )
+
+#execute_process(
+#  COMMAND ${CMAKE_COMMAND} --build "${PROJECT_BINARY_DIR}"
+#                           --target install
+#                           --config "${CONFIGURATION}"
+#  RESULT_VARIABLE failed
+#  )
+
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/testing/" )
+
+#MESSAGE( STATUS "basic test bin dir: ${CMAKE_CURRENT_BINARY_DIR}" )

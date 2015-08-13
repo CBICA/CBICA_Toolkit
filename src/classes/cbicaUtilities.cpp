@@ -166,7 +166,7 @@ namespace cbica
       std::string strPattern;           // Pattern
       WIN32_FIND_DATA FileInformation;  // File information    
     
-      strPattern = dirname + "\\*.*";
+      strPattern = dirname + "/*.*";
       hFile = ::FindFirstFile(strPattern.c_str(), &FileInformation);
       if(hFile != INVALID_HANDLE_VALUE)
       {
@@ -175,7 +175,7 @@ namespace cbica
           if(FileInformation.cFileName[0] != '.')
           {
             strFilePath.erase();
-            strFilePath = dirname + "\\" + FileInformation.cFileName;
+            strFilePath = dirname + "/" + FileInformation.cFileName;
     
             if(FileInformation.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
@@ -227,8 +227,8 @@ namespace cbica
     
       return 0;
     #else   
-      system("rm -r path");
-      return 0;
+    std::string passString = "rm -r " + dirname;
+    system(passString.c_str());
     #endif
       return 0;
   }
@@ -246,14 +246,15 @@ namespace cbica
       return false;
     return true;
     //return removeDirectoryRecursively(path);
-    #if defined(_WIN32)
-      if(_rmdir("FILEPATHHERE") != -1)
-        return true;
+    /*#if defined(_WIN32)
+    if (_rmdir(path.c_str()) == -1)
+      return false;
     #else
-      system("rm -r path");
-    #endif
+    std::string passString = "rm -r " + path;
+    system(passString.c_str());
+    #endif*/
 
-    return false;
+    return true;
   }
 
   //======================================== OS stuff ======================================//
@@ -779,6 +780,66 @@ namespace cbica
     #endif
   }
 
+  std::vector<std::string> subdirectoriesInDirectory(const std::string &dirName, bool recursiveSearch)
+  {
+    std::vector< std::string > allDirectories;
+    std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
+    if (dirName_wrap[dirName_wrap.length() - 1] != '/')
+    {
+      dirName_wrap.append("/");
+    }
+#if defined(_WIN32)
+    dirName_wrap.append("*.*");
+    char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = ::FindFirstFile(search_path, &fd);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+      do
+      {
+        if ((fd.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && (fd.cFileName[0] != '.'))
+        {
+          allDirectories.push_back(std::string(fd.cFileName));
+          if (recursiveSearch)
+          {
+            std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + std::string(fd.cFileName), true);
+            for (size_t i = 0; i < tempVector.size(); i++)
+            {
+              allDirectories.push_back(std::string(fd.cFileName) + "/" + tempVector[i]);
+            }
+          }
+        }
+      } while (FindNextFile(hFind, &fd) != 0);
+      ::FindClose(hFind);
+    }
+    return allDirectories;
+#else
+    DIR *dp;
+    struct dirent *dirp;
+    if ((dp = opendir(dirName.c_str())) == NULL)
+    {
+      std::cerr << "Error(" << errno << ") occurred while opening directory '" << dirName << "'\n";
+    }
+
+    while ((dirp = readdir(dp)) != NULL)
+    {
+      if (recursiveSearch && (dirp->d_type == DT_DIR) && dirp->d_name[0] != '.')
+      {
+        std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + dirp->d_name, true);
+        for (size_t i = 0; i < tempVector.size(); i++)
+          allDirectories.push_back(std::string(dirp->d_name) + "/" + tempVector[i]);
+      }
+
+      if ( (strcmp(dirp->d_name, ".") == 0) || (strcmp(dirp->d_name, "..") == 0) )
+        continue;
+
+      allDirectories.push_back(dirp->d_name);
+    }
+    closedir(dp);
+    return allDirectories;
+#endif
+  }
+
   //====================================== String stuff ====================================//
 
   bool splitFileName( const std::string &dataFile, std::string &path,
@@ -873,5 +934,6 @@ namespace cbica
   {
     return cbica::constCharToChar(std::string(input));
   }
+
 
 }

@@ -18,6 +18,10 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html.
 #include <exception>
 #include <typeinfo>
 #include <stdexcept>
+#include <stdio.h>
+#if(WIN32)
+#include <direct.h>
+#endif
 
 #define TEST_DATA "/nifit1/"
 
@@ -50,20 +54,22 @@ int main(int argc, char** argv)
       
       cbica::CmdParser parser = cbica::CmdParser(i+1, argv);
       parser.setExeName("BasicFunctionTests");
-      parser.addParameter("1p", "firstParam", "first parameter"); // defaults to optional parameters 
-      parser.addRequiredParameter("2p", "secondParam", "second parameter", "more description");
-      parser.addOptionalParameter("3p", "thirdParam", "third parameter - optional");
+      parser.addParameter("1p", "firstParam", "int", "1 to 10", "first parameter"); // defaults to optional parameters 
+      parser.addRequiredParameter("2p", "secondParam", "int", "1 to 10", "second parameter", "description line 2", "description line 3", "description line 4", "description line 5");
+      parser.addOptionalParameter("3p", "thirdParam", "string", "max length = 1024", "third parameter which is optional");
 
-      if( !parser.compareParamter("1p").first )
+      int tempPosition;
+
+      if (!parser.compareParameter("1p", tempPosition))
+        return EXIT_FAILURE;
+
+      if (!parser.compareParameter("2p", tempPosition))
         return EXIT_FAILURE;
     
-      if( !parser.compareParamter("2p").first )
+      if( parser.getDescription("1p", false) == "" )
         return EXIT_FAILURE;
     
-      if( parser.getDescription("1p") == "" )
-        return EXIT_FAILURE;
-    
-      if( parser.getDescription("2p") == "" )
+      if (parser.getDescription("2p", false) == "")
         return EXIT_FAILURE;
     }
 
@@ -225,6 +231,32 @@ int main(int argc, char** argv)
       cbica::deleteEnvironmentVariable(random_variable);
     }
 
+    else if ( (std::string( "-subDir").compare(argv[1]) == 0) ||
+              (std::string("--subDir").compare(argv[1]) == 0) )
+    {
+      std::string return_dir;
+      if (!cbica::createTmpDir(return_dir))
+        return EXIT_FAILURE;
+
+      if (mkdir(std::string(return_dir + "/random1/").c_str()) != 0)
+        return EXIT_FAILURE;
+
+      if (mkdir(std::string(return_dir + "/random2/").c_str()) != 0)
+        return EXIT_FAILURE;
+
+      if (mkdir(std::string(return_dir + "/random3/").c_str()) != 0)
+        return EXIT_FAILURE;
+
+      if (mkdir(std::string(return_dir + "random1/random11/").c_str()) != 0)
+        return EXIT_FAILURE;
+
+      if (cbica::subdirectoriesInDirectory(return_dir, true).size() != 4)
+        return EXIT_FAILURE;
+
+      if (!cbica::deleteDir(return_dir))
+        return EXIT_FAILURE;
+    }
+    
   }
   catch( std::exception &e )
   {

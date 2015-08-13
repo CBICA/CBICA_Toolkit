@@ -117,7 +117,7 @@ namespace cbica
   \return True if success
   */
   bool makeTempDir( std::string &returnDir );
-  
+
   /**
   \brief Create a directory
 
@@ -318,11 +318,19 @@ namespace cbica
   bool deleteEnvironmentVariable( const std::string &variable_name );
 
   /**
-  \brief Extract all file names in supplied directory
+  \brief Find all files inside a directory
 
-  \return Vector of file names
+  \param dirName The directory to do the search in
   */
   std::vector< std::string > filesInDirectory( const std::string &dirName );
+
+  /**
+  \brief Find all sub-directories inside a directory
+
+  \param dirName The directory to do the search in
+  \param recursiveSearch Whether to do a recursive search or on a single level
+  */
+  std::vector<std::string> subdirectoriesInDirectory( const std::string &dirName, bool recursiveSearch );
 
   //====================================== String stuff ====================================//
     
@@ -403,7 +411,7 @@ namespace cbica
       std::find(vector_to_search_in.begin(), vector_to_search_in.end(), element_to_search_for);
     if( iterator !=  vector_to_search_in.end() )
     {
-      position = static_cast<int>(iterator - vector_to_search_in.begin());
+      position = iterator - vector_to_search_in.begin();
       return std::make_pair(true, position);
     }
     else
