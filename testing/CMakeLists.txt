@@ -16,8 +16,7 @@ FILE( GLOB MainSources
 
 ADD_EXECUTABLE( 
   ${TEST_EXE_NAME} 
-  ${CBICA_Headers}
-  ${CBICA_Sources}
+  ${MainSources}
   BasicFunctionTests.cxx 
 )
 #MESSAGE( STATUS "cbica_class name: " ${CBICA_TOOLKIT_NAME} )
