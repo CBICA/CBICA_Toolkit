@@ -425,6 +425,9 @@ namespace cbica
 
     /**
     \brief Gives a brief example of how to use the executable
+    
+    This should not contain any references to the executable name (it is automatically picked up). 
+    It should start directly with the parameters to be put in.
 
     \param usageOfExe A string which would correspond to the command line usage AFTER the executable has been called
     */
