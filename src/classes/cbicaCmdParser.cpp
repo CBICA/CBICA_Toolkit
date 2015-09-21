@@ -555,11 +555,8 @@ namespace cbica
   void CmdParser::exampleUsage(const std::string &usageOfExe)
   {
     m_exampleOfUsage = usageOfExe;
-#if(WIN32)
     m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, m_exeName + ".exe", "");
-#else
     m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, "./" + m_exeName, "");
-#endif
   }
 
   void CmdParser::writeConfigFile(const std::string &dirName)
