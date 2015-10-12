@@ -127,7 +127,7 @@ namespace cbica
 #else
             "./" + m_exeName <<
 #endif
-            " " << m_exampleOfUsage << "\n\n";
+            m_exampleOfUsage << "\n\n";
 
           std::cout << "The required parameter '" << m_requiredParameters[i].laconic << "' is missing from the command line arguments you provided. See '" <<
 #if(WIN32)
@@ -555,8 +555,11 @@ namespace cbica
   void CmdParser::exampleUsage(const std::string &usageOfExe)
   {
     m_exampleOfUsage = usageOfExe;
+#if(WIN32)
     m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, m_exeName + ".exe", "");
+#else
     m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, "./" + m_exeName, "");
+#endif
   }
 
   void CmdParser::writeConfigFile(const std::string &dirName)
