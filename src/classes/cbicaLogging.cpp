@@ -20,6 +20,7 @@ namespace cbica
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
     writing_function(FreeText_input, log_file, timer, exe_name, user_name); 
     log_file.close();
+    localLogging = false;
   }
   
   Logging::Logging(const std::string file_name) 
@@ -28,6 +29,7 @@ namespace cbica
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
     writing_function("", log_file, timer, exe_name, user_name); 
     log_file.close();
+    localLogging = false;
   }
   
   Logging::Logging() 
@@ -36,13 +38,18 @@ namespace cbica
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
     writing_function("", log_file, timer, exe_name, user_name); 
     log_file.close();
+    localLogging = false;
   }
   
   Logging::~Logging() 
   { 
     /*log_file.close();*/ 
   }
-  
+  void Logging::enableLocalLogging()
+  {
+    localLogging = true;
+  }
+
   void Logging::Write(const std::string FreeText_input) 
   { 
     // assumes file exists because constructor write the file once
@@ -91,13 +98,29 @@ namespace cbica
 	
 		// obtain current local date
     time_struct = localtime(&timer_wrap);
-    sprintf( buffer, "%d:%02d:%02d,%02d:%02d:%02d;%s;%s", 
-    	time_struct->tm_year+1900, time_struct->tm_mon+1, time_struct->tm_mday,
-    	time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec,
-    	exe_name_wrap.c_str(), user_name_wrap.c_str() );
+    if (!localLogging)
+    {
+      sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d;%s;%s",
+        time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
+        time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec,
+        exe_name_wrap.c_str(), user_name_wrap.c_str());
+    }
+    else
+    {
+      sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
+        time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
+        time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
+    }
 	
     // write to the file
-		log_file_wrap << buffer << ";" << FreeText_wrap.c_str() << "\n";
+    if (FreeText_wrap != "")
+    {
+      log_file_wrap << buffer << ";" << FreeText_wrap.c_str() << "\n";
+    }
+    else
+    {
+      log_file_wrap << buffer << "\n";
+    }
 	}
 
 }

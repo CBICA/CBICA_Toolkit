@@ -79,6 +79,15 @@ namespace cbica
 		\brief Function to call to write to log file
     */
 		void Write();
+
+    /**
+    \brief Enables local logging
+    
+    The output stamps are of the form:
+
+    <code><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text></code>
+    */
+    void enableLocalLogging();
     
   protected:    
     /**
@@ -122,6 +131,8 @@ namespace cbica
 		//std::string FreeText; 
     //! File path
     std::string file_name_with_path;
+    //! Flag to initialize local logging
+    bool localLogging;
 
 	};
 }
