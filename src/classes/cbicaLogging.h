@@ -10,6 +10,8 @@ Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 
 */
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <memory>
@@ -64,6 +66,13 @@ namespace cbica
     Just used to keep a track of the user name and executable run at a particular time.
     */
 		explicit Logging();
+
+    /**
+    \brief Default constructor
+
+    Just used to keep a track of the user name and executable run at a particular time.
+    */
+    Logging(const Logging &origin);
 
 		//! The Destructor
 		virtual ~Logging();

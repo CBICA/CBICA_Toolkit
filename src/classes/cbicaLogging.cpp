@@ -40,7 +40,12 @@ namespace cbica
     log_file.close();
     localLogging = false;
   }
-  
+
+  Logging::Logging(const Logging &origin)
+  {
+    file_name_with_path = origin.file_name_with_path;
+  }
+
   Logging::~Logging() 
   { 
     /*log_file.close();*/ 
