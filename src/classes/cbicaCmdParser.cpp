@@ -121,21 +121,10 @@ namespace cbica
         int tempPos;
         if (!CmdParser::compareParameter(m_requiredParameters[i].laconic, tempPos))
         {
-          std::cout << "An exemplary usage scenario: \n\n" <<
-#if(WIN32)
-            m_exeName + ".exe" <<
-#else
-            m_exeName <<
-#endif
-            " " << m_exampleOfUsage << "\n\n";
-
           std::cout << "The required parameter '" << m_requiredParameters[i].laconic << "' is missing from the command line arguments you provided. See '" <<
-#if(WIN32)
-            m_exeName + ".exe" <<
-#else
-            m_exeName <<
-#endif
-            " --help' for extended help.\n";
+            m_exeName << " --help' for extended help.\n\n";
+            
+          std::cout << "An exemplary usage scenario: \n\n" << m_exeName << " " << m_exampleOfUsage << "\n\n";
 
           exit(EXIT_FAILURE);
         }
@@ -391,12 +380,7 @@ namespace cbica
     if (m_exampleOfUsage != "")
     {
       std::cout << "For example: \n\n" << 
-#if(WIN32)
-        m_exeName + ".exe" << 
-#else
-        m_exeName <<
-#endif
-        m_exampleOfUsage << "\n";
+        m_exeName << " " << m_exampleOfUsage << "\n";
     }
 
     copyrightNotice();
