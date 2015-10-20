@@ -125,15 +125,15 @@ namespace cbica
 #if(WIN32)
             m_exeName + ".exe" <<
 #else
-            "./" + m_exeName <<
+            m_exeName <<
 #endif
-            m_exampleOfUsage << "\n\n";
+            " " << m_exampleOfUsage << "\n\n";
 
           std::cout << "The required parameter '" << m_requiredParameters[i].laconic << "' is missing from the command line arguments you provided. See '" <<
 #if(WIN32)
             m_exeName + ".exe" <<
 #else
-            "./" + m_exeName <<
+            m_exeName <<
 #endif
             " --help' for extended help.\n";
 
@@ -394,9 +394,9 @@ namespace cbica
 #if(WIN32)
         m_exeName + ".exe" << 
 #else
-        "./" + m_exeName <<
+        m_exeName <<
 #endif
-        " " << m_exampleOfUsage << "\n";
+        m_exampleOfUsage << "\n";
     }
 
     copyrightNotice();
