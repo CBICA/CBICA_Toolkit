@@ -1,12 +1,18 @@
+/**
 
-  Section of Biomedical Image Analysis
-  Department of Radiology
-  University of Pennsylvania
-  3600 Market Street, Suite 380
-  Philadelphia, PA 19104
+\page License 
 
-  Web:   http://www.cbica.upenn.edu/sbia/
-  Email: sbia-software at uphs.upenn.edu
+Section of Biomedical Image Analysis <br>
+Department of Radiology <br>
+University of Pennsylvania <br>
+3700 Hamilton Walk (Richards Building) <br>
+Floor 7 <br>
+Philadelphia, PA 19104 <br>
+
+<pre>
+Web  : http://www.cbica.upenn.edu/sbia/
+Email: <a href="mailto:sbia-software@uphs.upenn.edu">sbia-software at uphs.upenn.edu</a> 
+</pre>
 
 
 
@@ -179,3 +185,5 @@ SBIA Contribution and Software License Agreement ("Agreement")
   of The Commonwealth of Pennsylvania without regard to principles of conflicts
   of law. This Agreement shall supercede and replace any license terms that you
   may have agreed to previously with respect to Software from SBIA.
+  
+*/
