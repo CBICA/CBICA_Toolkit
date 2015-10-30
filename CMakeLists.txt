@@ -14,14 +14,14 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
 SET( PROJECT_NAME CBICA_Toolkit ) # change project name here
 
+PROJECT( ${PROJECT_NAME} )
+
 SET( PROJECT_VERSION_MAJOR "0" ) # change project major version here
 SET( PROJECT_VERSION_MINOR "1" ) # change project minor version here
 SET( PROJECT_VERSION_BUILD "0" ) # change project build version here
 SET( PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_BUILD}" ) 
 SET( RELEASE_ID "${PROJECT_VERSION}" )
 SET( CONTACT_INFO "sbia-software@uphs.upenn.edu" )
-
-PROJECT( ${PROJECT_NAME} )
 
 ADD_DEFINITIONS( -DCONTACT_INFO="${CONTACT_INFO}" )
 ADD_DEFINITIONS( -DPROJECT_NAME="${PROJECT_NAME}" )
@@ -47,17 +47,17 @@ SET( LIBRARY_CONFIG "\"${LIBRARY_CONFIG}\"" )
 
 ### Building the documentation
 ## The following 4 lines are for generation of public documentation
-SET( BUILD_DOCUMENTATION ON CACHE BOOL "Do you want to build Documentation (needs Doxygen)?" )
-IF( BUILD_DOCUMENTATION )
-  ADD_SUBDIRECTORY( docs )
-ENDIF ()
+#SET( BUILD_DOCUMENTATION ON CACHE BOOL "Do you want to build Documentation (needs Doxygen)?" )
+#IF( BUILD_DOCUMENTATION )
+#  ADD_SUBDIRECTORY( docs )
+#ENDIF ()
 
 ## This documentation is for the SBIA website ONLY. Remove these lines AND the "docs_internal" folder before publishing
 ## under "tags".
-#SET( BUILD_DOCUMENTATION_INTERNAL OFF CACHE BOOL "Do you want to build Documentation (Needs Doxygen)." )
-#IF( BUILD_DOCUMENTATION_INTERNAL )
-#    ADD_SUBDIRECTORY( docs_internal )
-#ENDIF ()
+SET( BUILD_DOCUMENTATION_INTERNAL ON CACHE BOOL "Do you want to build Documentation (Needs Doxygen)." )
+IF( BUILD_DOCUMENTATION_INTERNAL )
+    ADD_SUBDIRECTORY( docs_internal )
+ENDIF ()
 
 ### Python wrapping
 SET( BUILD_PYTHON_WRAP OFF CACHE BOOL "Do you want to wrap classes (needs SWIG 3.0.4)? Ensure build option matches Python lib build." )

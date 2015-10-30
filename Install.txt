@@ -1,0 +1,14 @@
+/**
+
+\page Install 
+  
+Quick Summary of Installation
+=============================
+
+  1. Obtain all dependencies.
+
+  2. Run CMake to generate project/make files for the system you are running.
+
+  3. Run make or the project solution.
+
+*/

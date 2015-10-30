@@ -1,28 +1,3 @@
-\mainpage CBICA Toolkit
-
-Section of Biomedical Image Analysis <br>
-Department of Radiology <br>
-University of Pennsylvania <br>
-3600 Market Street, Suite 380 <br>
-Philadelphia, PA 19104 <br>
-
-<pre>
-Web  : http://www.cbica.upenn.edu/sbia/
-Email: <a href="mailto:sbia-software@uphs.upenn.edu">sbia-software at uphs.upenn.edu</a> 
-</pre>
-
-Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
-See http://www.cbica.upenn.edu/sbia/software/license.html or COPYING file.
-
-<b> Authors: </b><br>
-Sarthak – primary developer, integration of everything <br>
-Drew    – DTI algorithms <br>
-Michael – sort + rename <br>
-Martin  – sort + rename <br>
-Jimit   – Overall testing <br>
-Guray   – Overall testing <br>
-
-
 ===============
 1. INTRODUCTION
 ===============
@@ -200,9 +175,9 @@ TO DO:
 
 Ensure you have completed the installation as described in Section 2.
 
----------------
-For CPP library
----------------
+-------------------
+4.1 For CPP library
+-------------------
 
 In your project, add the following your CMakeLists file:
 
@@ -215,9 +190,9 @@ TARGET_LINK_LIBRARIES( CBICA_Toolkit_Test ${CBICA_Toolkit_LIBRARY} )
 
 Now you can access all functions available in CBICA_Toolkit.
 
-------------------
-For Python library
-------------------
+----------------------
+4.2 For Python library
+----------------------
 
 If you have installed Python classes to the directory <code>/home/xyz/libraries/cbica_toolkit</code>, just do:
 
@@ -234,4 +209,5 @@ Then use the toolkit as any other library.
 5 LICENSING
 ===========
 
-  See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
+  See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/License.txt" file.
+ 

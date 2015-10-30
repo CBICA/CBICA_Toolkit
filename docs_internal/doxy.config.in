@@ -461,20 +461,6 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/doxy.log
 # with spaces.
 
 
-INPUT                  =  	@PROJECT_SOURCE_DIR@ \
-								@PROJECT_BINARY_DIR@ \
-									README.md
-									
-
-#USE_MDFILE_AS_MAINPAGE = README.md
-
-# If the value of the INPUT tag contains directories, you can use the 
-# FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
-# and *.h) to filter out the source-files in the directories. If left 
-# blank the following patterns are tested: 
-# *.c *.cc *.cxx *.cpp *.c++ *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx 
-# *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.py
-
 FILE_PATTERNS          = *.cpp \
                          *.cc \
                          *.txx \
@@ -482,7 +468,30 @@ FILE_PATTERNS          = *.cpp \
                          *.hh \
                          *.hpp \
                          *.py \
-                         *.dox
+                         *.dox \
+                         *.md \
+                         *.txt
+
+
+INPUT                  =  	@PROJECT_SOURCE_DIR@ \
+                            @PROJECT_BINARY_DIR@ \
+                            @PROJECT_SOURCE_DIR@/README.md
+                            @PROJECT_SOURCE_DIR@/Install.txt
+                            @PROJECT_SOURCE_DIR@/People.txt
+                            @PROJECT_SOURCE_DIR@/Download.txt
+                            @PROJECT_SOURCE_DIR@/licenses/License.txt
+									
+
+USE_MDFILE_AS_MAINPAGE = README.md
+
+LAYOUT_FILE = @PROJECT_SOURCE_DIR@/docs/DoxygenLayout.xml
+
+# If the value of the INPUT tag contains directories, you can use the 
+# FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
+# and *.h) to filter out the source-files in the directories. If left 
+# blank the following patterns are tested: 
+# *.c *.cc *.cxx *.cpp *.c++ *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx 
+# *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.py
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -687,7 +696,7 @@ HTML_ALIGN_MEMBERS     = YES
 # Microsoft HTML help workshop to generate a compressed HTML help file (.chm) 
 # of the generated HTML documentation.
 
-GENERATE_HTMLHELP      = YES
+GENERATE_HTMLHELP      = NO
 
 # If the GENERATE_HTMLHELP tag is set to YES, the CHM_FILE tag can 
 # be used to specify the file name of the resulting .chm file. You 

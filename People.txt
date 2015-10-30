@@ -1,0 +1,16 @@
+/**
+
+\page People 
+
+
+  The authors of this software are:
+\verbatim
+Sarthak – primary developer, integration of everything <br>
+Drew    – DTI algorithms 
+Michael – sort + rename 
+Martin  – sort + rename 
+Jimit   – Overall testing
+Guray   – Overall testing
+\endverbatim
+
+*/
