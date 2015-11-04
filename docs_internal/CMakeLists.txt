@@ -44,8 +44,6 @@ IF   (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in")
     ${CMAKE_CURRENT_BINARY_DIR}/doxy.config
     @ONLY )
 	#stuff for the web page
-	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doxy_master.css 
-    ${CMAKE_CURRENT_BINARY_DIR}/doxy_master.css COPYONLY )
 	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/basic.css 
     ${CMAKE_CURRENT_BINARY_DIR}/basic.css COPYONLY )
 	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doxygen.css 
