@@ -702,7 +702,7 @@ HTML_EXTRA_STYLESHEET  = sbia.css
 # files. In the HTML_STYLESHEET file, use the file name only. Also note that 
 # the files will be copied as-is; there are no commands or markers available.
 
-HTML_EXTRA_FILES       = style.css basic.css
+HTML_EXTRA_FILES       = style.css basic.css tabs.css screen.css master.css
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. 
 # Doxygen will adjust the colors in the style sheet and background images 
