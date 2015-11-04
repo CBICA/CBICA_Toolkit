@@ -1,0 +1,66 @@
+.tabs, .tabs2, .tabs3 {
+    background-image: none;
+    background-color: #001E62;
+    border-top: 1px solid #464A52;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 30px;
+}
+
+.tabs2 {
+    font-size: 10px;
+}
+.tabs3 {
+    font-size: 9px;
+}
+
+.tablist {
+    margin: 0;
+    padding: 0;
+    display: table;
+}
+
+.tablist li {
+    color: #E7E3D9;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    float: left;
+}
+
+.tablist a {
+    margin: 0;
+    padding: 10px 12px 10px 12px;
+    height: 30px;
+    line-height: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: auto;
+    color: #E7E3D9;
+    text-decoration: none;
+    outline: none;
+    font-family: Georgia, serif;
+    font-size: 80%;
+    font-weight: normal;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: none;
+}
+
+.tabs3 .tablist a {
+    padding: 0 10px;
+}
+
+.tablist a:hover {
+    color: #FFFFFF;
+    background-color: #333366;
+    text-decoration: none;
+    text-shadow: none;
+}
+
+.tablist li.current a {
+    color: #FFFFFF;
+    background-color: #330000;
+    font-weight: bold;
+}
