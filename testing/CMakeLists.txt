@@ -78,6 +78,9 @@ IF( (MSVC_VERSION GREATER 1700) OR (UNIX) )
   ADD_TEST( NAME Variadic_Test COMMAND ${TEST_EXE_NAME} -variadic "random")
 ENDIF()
 
+# Test for CSV Parser
+ADD_TEST( NAME CSVParser_Test COMMAND ${TEST_EXE_NAME} -csvParser ${CMAKE_CURRENT_SOURCE_DIR}/list.csv)
+
 ## Tests for ITK classes
 IF( BUILD_CBICA_ITK_CLASSES )
   #ADD_SUBDIRECTORY( itk )

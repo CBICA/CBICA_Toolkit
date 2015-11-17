@@ -1,0 +1,9 @@
+T1,T2,FL,PD,LABEL,AGE
+C:/Users/patis/test_data/1_t1.nii.gz,C:/Users/patis/test_data/1_t2.nii.gz,C:/Users/patis/test_data/1_fl.nii.gz,C:/Users/patis/test_data/1_pd.nii.gz,1,32
+C:/Users/patis/test_data/2_t1.nii.gz,C:/Users/patis/test_data/2_t2.nii.gz,C:/Users/patis/test_data/2_fl.nii.gz,C:/Users/patis/test_data/2_pd.nii.gz,1,21
+C:/Users/patis/test_data/3_t1.nii.gz,C:/Users/patis/test_data/3_t2.nii.gz,C:/Users/patis/test_data/3_fl.nii.gz,C:/Users/patis/test_data/3_pd.nii.gz,1,12
+C:/Users/patis/test_data/4_t1.nii.gz,C:/Users/patis/test_data/4_t2.nii.gz,C:/Users/patis/test_data/4_fl.nii.gz,C:/Users/patis/test_data/4_pd.nii.gz,1,14
+C:/Users/patis/test_data/5_t1.nii.gz,C:/Users/patis/test_data/5_t2.nii.gz,C:/Users/patis/test_data/5_fl.nii.gz,C:/Users/patis/test_data/5_pd.nii.gz,-1,61
+C:/Users/patis/test_data/6_t1.nii.gz,C:/Users/patis/test_data/6_t2.nii.gz,C:/Users/patis/test_data/6_fl.nii.gz,C:/Users/patis/test_data/6_pd.nii.gz,-1,51
+C:/Users/patis/test_data/7_t1.nii.gz,C:/Users/patis/test_data/7_t2.nii.gz,C:/Users/patis/test_data/7_fl.nii.gz,C:/Users/patis/test_data/7_pd.nii.gz,-1,14
+C:/Users/patis/test_data/8_t1.nii.gz,C:/Users/patis/test_data/8_t2.nii.gz,C:/Users/patis/test_data/8_fl.nii.gz,C:/Users/patis/test_data/8_pd.nii.gz,-1,12

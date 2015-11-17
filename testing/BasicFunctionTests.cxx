@@ -283,6 +283,27 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
     
+    else if( (std::string( "-csvParser").compare(argv[1]) == 0) ||
+             (std::string("--csvParser").compare(argv[1]) == 0) )
+    {
+      std::string csvFileName = argv[2];
+      
+      std::vector< CSVDict > csv_test = cbica::parseCSVFile(argv[2], "T2,FL,T1", "AGE", ",");
+
+      if (csv_test.size() != 8)
+      {
+        return EXIT_FAILURE;      
+      }
+      if (csv_test[0].inputImages.size() != 3)
+      {
+        return EXIT_FAILURE;      
+      }
+      if (csv_test[0].inputLabels.size() != 1)
+      {
+        return EXIT_FAILURE;      
+      }
+    }
+
   }
   catch( std::exception &e )
   {

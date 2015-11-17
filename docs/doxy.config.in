@@ -461,14 +461,7 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/doxy.log
 # with spaces.
 
 
-FILE_PATTERNS          = *.cpp \
-                         *.cc \
-                         *.txx \
-                         *.h \
-                         *.hh \
-                         *.hpp \
-                         *.py \
-                         *.dox \
+FILE_PATTERNS          = *.dox \
                          *.md \
                          *.txt
 
@@ -478,6 +471,7 @@ INPUT                  =  	@PROJECT_SOURCE_DIR@ \
                             @PROJECT_SOURCE_DIR@/Install.txt
                             @PROJECT_SOURCE_DIR@/People.txt
                             @PROJECT_SOURCE_DIR@/Download.txt
+                            @PROJECT_SOURCE_DIR@/Changelog.txt
                             @PROJECT_SOURCE_DIR@/licenses/License.txt
 									
 

@@ -840,6 +840,61 @@ namespace cbica
 #endif
   }
 
+  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim )
+  {
+    std::vector< CSVDict > return_CSVDict;
+    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, delim), inputLabelsVec = stringSplit(inputLabels, delim);
+    std::vector< std::vector< std::string > > returnVector;
+    std::ifstream inFile(csvFileName.c_str());
+    int row = 0;
+    std::vector< size_t > inputColumnIndeces, inputLabelIndeces;
+    for (std::string line; std::getline(inFile, line, '\n');)
+    {
+      CSVDict tempDict;
+      std::vector< std::string > rowVec;
+      line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
+      rowVec = stringSplit(line, delim);
+      
+      // for the first row, record the indeces of the inputColumns and inputLabels
+      if (row == 0)
+      {
+        for (size_t i = 0; i < rowVec.size(); i++)
+        {
+          for (size_t j = 0; j < inputColumnsVec.size(); j++)
+          {
+            if (rowVec[i] == inputColumnsVec[j])
+            {
+              inputColumnIndeces.push_back(i);
+            }
+          }
+          for (size_t j = 0; j < inputLabelsVec.size(); j++)
+          {
+            if (rowVec[i] == inputLabelsVec[j])
+            {
+              inputLabelIndeces.push_back(i);
+            }
+          }
+        }
+      }
+      else
+      {
+        for (size_t i = 0; i < inputColumnIndeces.size(); i++)
+        {
+          tempDict.inputImages.push_back(rowVec[inputColumnIndeces[i]]);
+        }
+        for (size_t i = 0; i < inputLabelIndeces.size(); i++)
+        {
+          double test = std::atof(rowVec[inputLabelIndeces[i]].c_str());
+          tempDict.inputLabels.push_back(std::atof(rowVec[inputLabelIndeces[i]].c_str()));
+        }
+        return_CSVDict.push_back(tempDict);
+      }
+      row++;
+    }
+
+    return return_CSVDict;
+  }
+
   //====================================== String stuff ====================================//
 
   bool splitFileName( const std::string &dataFile, std::string &path,
@@ -886,18 +941,22 @@ namespace cbica
       return true;
   }
 
-  void stringSplit( std::string &str, const std::string &delim, std::vector<std::string> results )
+  std::vector<std::string> stringSplit( const std::string &str, const std::string &delim )
   {
-    int cutAt;
-    while( (cutAt = static_cast<int>(str.find_first_of(delim))) != static_cast<int>(str.npos) )
+    std::vector<std::string> results;
+
+    for (size_t i = 0; i < str.length(); i++)
     {
-      if(cutAt > 0)
-        (results).push_back(str.substr(0,cutAt));
-      
-      str = str.substr(cutAt+1);
+      std::string tempString = "";
+      while ((str[i] != *delim.c_str()) && (i < str.length()))
+      {
+        tempString += str[i];
+        i++;
+      }
+      results.push_back(tempString);
     }
-    if(str.length() > 0)
-      (results).push_back(str);
+
+    return results;
   }
 
   std::string replaceString( const std::string &entireString, 

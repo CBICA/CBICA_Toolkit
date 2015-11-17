@@ -3,9 +3,11 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="Read Me"/>
-    <tab type="user" visible="yes" title="Installation" url="Install.html"/>
-    <tab type="user" visible="yes" title="People" url="People.html"/>
     <tab type="user" visible="yes" title="Download" url="Download.html"/>
+    <tab type="user" visible="yes" title="Installation" url="Install.html"/>
+    <tab type="user" visible="yes" title="Usage" url="Usage.html"/>
+    <tab type="user" visible="yes" title="People" url="People.html"/>
+    <tab type="user" visible="yes" title="Changelog" url="Changelog.html"/>
     <tab type="user" visible="yes" title="License" url="License.html"/>
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="yes" title="" intro=""/>

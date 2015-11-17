@@ -21,6 +21,12 @@ See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
 #include <iterator>
 //#include <type_traits>
 
+struct CSVDict
+{
+  std::vector< std::string > inputImages;
+  std::vector< double > inputLabels;
+};
+
 namespace cbica
 {  
   //======================================== OS stuff ======================================//
@@ -332,6 +338,16 @@ namespace cbica
   */
   std::vector<std::string> subdirectoriesInDirectory( const std::string &dirName, bool recursiveSearch );
 
+  /**
+  \brief Parse the supplied CSV File and obtain Row and Column information. Assumes header information is in first row
+
+  \param csvFileName The full path of the file to parse
+  \param inputColumns The string of input columns which contain the data to be used for further processing
+  \param inputLabels The string of input labels based on which further processing is to be done
+  \param delim The delimiters used in inputColumns and inputLabels
+  \return Vector of Vector of strings: Collection of rows and columns
+  */
+  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim );
   //====================================== String stuff ====================================//
     
   /**
@@ -354,7 +370,7 @@ namespace cbica
   \param delim Deliminator on the basis of which splitting is to be done
   \return results Output in the form of vector of strings
   */
-  void stringSplit( std::string &str, const std::string &delim, std::vector<std::string> results );
+  std::vector<std::string> stringSplit( const std::string &str, const std::string &delim );
   
   /**
   \brief Searches for smaller string in larger string and then replaces it with user-defined input

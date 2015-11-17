@@ -479,6 +479,7 @@ INPUT                  =  	@PROJECT_SOURCE_DIR@ \
                             @PROJECT_SOURCE_DIR@/Install.txt
                             @PROJECT_SOURCE_DIR@/People.txt
                             @PROJECT_SOURCE_DIR@/Download.txt
+                            @PROJECT_SOURCE_DIR@/Changelog.txt
                             @PROJECT_SOURCE_DIR@/licenses/License.txt
 									
 
