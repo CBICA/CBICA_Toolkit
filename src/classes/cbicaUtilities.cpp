@@ -861,6 +861,8 @@ namespace cbica
       std::cerr << "Supplied file name wasn't found.\n";
       exit(EXIT_FAILURE);
     }
+    std::string path, base, ext;
+    splitFileName(csvFileName, path, base, ext);
     std::vector< CSVDict > return_CSVDict;
     std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, delim), inputLabelsVec = stringSplit(inputLabels, delim);
     std::vector< std::vector< std::string > > returnVector;
@@ -899,7 +901,7 @@ namespace cbica
       {
         for (size_t i = 0; i < inputColumnIndeces.size(); i++)
         {
-          tempDict.inputImages.push_back(rowVec[inputColumnIndeces[i]]);
+          tempDict.inputImages.push_back(path + rowVec[inputColumnIndeces[i]]);
         }
         for (size_t i = 0; i < inputLabelIndeces.size(); i++)
         {
@@ -953,6 +955,10 @@ namespace cbica
     ext[0] = NULL;
     drive_letter[0] = NULL;
 #endif
+    if (path[path.length() - 1] != '/')
+    {
+      path += "/";
+    }
     }
     if (baseName == "")
       return false;
