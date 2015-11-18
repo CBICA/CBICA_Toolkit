@@ -3,11 +3,11 @@
 
 \brief Implementation file for CmdParser class.
 
-http://www.cbica.upenn.edu/sbia/software/ <br>
+https://www.cbica.upenn.edu/sbia/software/ <br>
 sbia-software@uphs.upenn.edu
 
 Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
+See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 */
 #include <functional>
@@ -86,7 +86,7 @@ namespace cbica
       "\n=========================================================================\n" <<
       "Contact: sbia-software@uphs.upenn.edu\n\n" <<
       "Copyright (c) 2015 University of Pennsylvania. All rights reserved.\n" <<
-      "See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html" <<
+      "See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html" <<
       "\n=========================================================================\n";
   }
 
