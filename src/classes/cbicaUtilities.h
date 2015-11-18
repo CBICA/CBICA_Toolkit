@@ -170,7 +170,7 @@ namespace cbica
   /**
   \brief Gets the extension of the supplied file name
 
-  Prefer to use "/" as file path deliminators.
+  Prefer to use "/" as file path delimiters.
 
   \param filename The input filename
   \return std::string which has the file extension
@@ -367,7 +367,7 @@ namespace cbica
   \brief Splits the string
   
   \param str String to split
-  \param delim Deliminator on the basis of which splitting is to be done
+  \param delim Delimiter on the basis of which splitting is to be done
   \return results Output in the form of vector of strings
   */
   std::vector<std::string> stringSplit( const std::string &str, const std::string &delim );
