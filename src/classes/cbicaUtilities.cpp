@@ -158,6 +158,11 @@ namespace cbica
 
   int removeDirectoryRecursively(const std::string &dirname, bool bDeleteSubdirectories = true)
   {
+    if (!directoryExists(dirname))
+    {
+      std::cerr << "Supplied directory name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
     #if defined(_WIN32)
       bool bSubdirectory = false;       // Flag, indicating whether
                                         // subdirectories have been found
@@ -260,22 +265,16 @@ namespace cbica
   //======================================== OS stuff ======================================//
   
   std::string getFilenameExtension(const std::string &filename)
-  {  
-    unsigned long long last_dot_offset = filename.rfind(L'.');
-    // This assumes your directory separators are either \\ or /
-    //unsigned long long last_dirsep_offset = std::max( filename.rfind(L'\\'), filename.rfind(L'/') );
-    unsigned long long last_dirsep_offset = std::max( filename.find('\\'), filename.find('/') );
-  
-    // no dot = no extension
-    if( last_dot_offset == std::wstring::npos )
-      return "";
-  
-    // directory separator after last dot = extension of directory, not file.
-    // for example, given C:\temp.old\file_that_has_no_extension we should return "" not "old"
-    if( (last_dirsep_offset != std::wstring::npos) && (last_dirsep_offset > last_dot_offset) )
-      return "";
-  
-    return filename.substr( last_dot_offset + 1 );
+  {
+    if (!fileExists(filename))
+    {
+      std::cerr << "Supplied file name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
+    std::string path, base, extension;
+    splitFileName(filename, path, base, extension);
+    
+    return extension;
   }
 
   std::string getExecutableName()
@@ -686,6 +685,11 @@ namespace cbica
 
   bool makeSymbolicLink(const std::string &input_fileName, const std::string &ouput_fileName)
   {
+    if (!fileExists(input_fileName))
+    {
+      std::cerr << "Supplied file name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
     #if defined(_WIN32)
       if( IsUserAnAdmin() )
       {
@@ -734,6 +738,11 @@ namespace cbica
 
   std::vector< std::string > filesInDirectory( const std::string &dirName )
   {
+    if (!directoryExists(dirName))
+    {
+      std::cerr << "Supplied directory name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
     std::vector< std::string > allFiles;
     std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
     if (dirName_wrap[dirName_wrap.length()-1] != '/')
@@ -782,6 +791,11 @@ namespace cbica
 
   std::vector<std::string> subdirectoriesInDirectory(const std::string &dirName, bool recursiveSearch)
   {
+    if (!directoryExists(dirName))
+    {
+      std::cerr << "Supplied directory name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
     std::vector< std::string > allDirectories;
     std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
     if (dirName_wrap[dirName_wrap.length() - 1] != '/')
@@ -842,6 +856,11 @@ namespace cbica
 
   std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim )
   {
+    if (!fileExists(csvFileName))
+    {
+      std::cerr << "Supplied file name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
     std::vector< CSVDict > return_CSVDict;
     std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, delim), inputLabelsVec = stringSplit(inputLabels, delim);
     std::vector< std::vector< std::string > > returnVector;
