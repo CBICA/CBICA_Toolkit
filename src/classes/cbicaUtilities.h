@@ -339,7 +339,11 @@ namespace cbica
   std::vector<std::string> subdirectoriesInDirectory( const std::string &dirName, bool recursiveSearch );
 
   /**
-  \brief Parse the supplied CSV File and obtain Row and Column information. Assumes header information is in first row
+  \brief Parse the supplied CSV File and obtain Row and Column information. 
+  
+  Assumptions: 
+  1. Header information is in first row
+  2. Full paths of images are given
 
   \param csvFileName The full path of the file to parse
   \param inputColumns The string of input columns which contain the data to be used for further processing
@@ -348,6 +352,22 @@ namespace cbica
   \return Vector of Vector of strings: Collection of rows and columns
   */
   std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim );
+
+  /**
+  \brief Parse the supplied CSV File and obtain Row and Column information. 
+  
+  Assumptions: 
+  1. Header information is in first row
+  2. Paths of images are given relative to the dataDir
+
+  \param dataDir The full path of the directory where the data is present
+  \param csvFileName The full path of the file to parse
+  \param inputColumns The string of input columns which contain the data to be used for further processing
+  \param inputLabels The string of input labels based on which further processing is to be done
+  \param delim The delimiters used in inputColumns and inputLabels
+  \return Vector of Vector of strings: Collection of rows and columns
+  */
+  std::vector< CSVDict > parseCSVFile( const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim );
   //====================================== String stuff ====================================//
     
   /**

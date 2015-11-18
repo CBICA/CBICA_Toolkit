@@ -46,6 +46,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <exception>
 #include <typeinfo>
 #include <stdexcept>
+#include <algorithm>
+#include <string>
 
 #include "cbicaUtilities.h"
 
@@ -65,8 +67,14 @@ namespace cbica
   bool directoryExists( const std::string &dName )
   {
     struct stat info;
+    std::string dName_Wrap = dName;
+
+    if (dName_Wrap[dName_Wrap.length() - 1] == '/')
+    {
+      dName_Wrap.erase(dName_Wrap.end() - 1);
+    }
     
-    if( stat( dName.c_str(), &info ) != 0 )
+    if (stat(dName_Wrap.c_str(), &info) != 0)
       return false;
     else if( info.st_mode & S_IFDIR )  // S_ISDIR() doesn't exist on windows
       return true;
@@ -861,8 +869,6 @@ namespace cbica
       std::cerr << "Supplied file name wasn't found.\n";
       exit(EXIT_FAILURE);
     }
-    std::string path, base, ext;
-    splitFileName(csvFileName, path, base, ext);
     std::vector< CSVDict > return_CSVDict;
     std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, delim), inputLabelsVec = stringSplit(inputLabels, delim);
     std::vector< std::vector< std::string > > returnVector;
@@ -901,7 +907,83 @@ namespace cbica
       {
         for (size_t i = 0; i < inputColumnIndeces.size(); i++)
         {
-          tempDict.inputImages.push_back(path + rowVec[inputColumnIndeces[i]]);
+          if (fileExists(rowVec[inputColumnIndeces[i]]))
+          {
+            tempDict.inputImages.push_back(rowVec[inputColumnIndeces[i]]);
+          }
+          else
+          {
+            std::cerr << "File name in list does not exist. Location: row = " << row << ", col = " << inputColumnIndeces[i] << "\n";
+            exit(EXIT_FAILURE);
+          }
+        }
+        for (size_t i = 0; i < inputLabelIndeces.size(); i++)
+        {
+          double test = std::atof(rowVec[inputLabelIndeces[i]].c_str());
+          tempDict.inputLabels.push_back(std::atof(rowVec[inputLabelIndeces[i]].c_str()));
+        }
+        return_CSVDict.push_back(tempDict);
+      }
+      row++;
+    }
+
+    return return_CSVDict;
+  }
+  
+  std::vector< CSVDict > parseCSVFile( const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim )
+  {
+    if (!fileExists(csvFileName))
+    {
+      std::cerr << "Supplied file name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
+    std::vector< CSVDict > return_CSVDict;
+    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, delim), inputLabelsVec = stringSplit(inputLabels, delim);
+    std::vector< std::vector< std::string > > returnVector;
+    std::ifstream inFile(csvFileName.c_str());
+    int row = 0;
+    std::vector< size_t > inputColumnIndeces, inputLabelIndeces;
+    for (std::string line; std::getline(inFile, line, '\n');)
+    {
+      CSVDict tempDict;
+      std::vector< std::string > rowVec;
+      line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
+      rowVec = stringSplit(line, delim);
+      
+      // for the first row, record the indeces of the inputColumns and inputLabels
+      if (row == 0)
+      {
+        for (size_t i = 0; i < rowVec.size(); i++)
+        {
+          for (size_t j = 0; j < inputColumnsVec.size(); j++)
+          {
+            if (rowVec[i] == inputColumnsVec[j])
+            {
+              inputColumnIndeces.push_back(i);
+            }
+          }
+          for (size_t j = 0; j < inputLabelsVec.size(); j++)
+          {
+            if (rowVec[i] == inputLabelsVec[j])
+            {
+              inputLabelIndeces.push_back(i);
+            }
+          }
+        }
+      }
+      else
+      {
+        for (size_t i = 0; i < inputColumnIndeces.size(); i++)
+        {
+          if (fileExists(dataDir + rowVec[inputColumnIndeces[i]]))
+          {
+            tempDict.inputImages.push_back(dataDir + rowVec[inputColumnIndeces[i]]);
+          }
+          else
+          {
+            std::cerr << "File name in list does not exist. Location: row = " << row << ", col = " << inputColumnIndeces[i] << "\n";
+            exit(EXIT_FAILURE);
+          }
         }
         for (size_t i = 0; i < inputLabelIndeces.size(); i++)
         {
