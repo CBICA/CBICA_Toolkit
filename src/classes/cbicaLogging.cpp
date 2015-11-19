@@ -102,19 +102,37 @@ namespace cbica
 		char buffer[200];
 	
 		// obtain current local date
+#ifdef _WIN32
+    localtime_s(time_struct, &timer_wrap);
+#else
     time_struct = localtime(&timer_wrap);
+#endif
+
     if (!localLogging)
     {
+#ifdef _WIN32
+      sprintf_s(buffer, "%d:%02d:%02d,%02d:%02d:%02d;%s;%s",
+        time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
+        time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec,
+        exe_name_wrap.c_str(), user_name_wrap.c_str());
+#else
       sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d;%s;%s",
         time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
         time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec,
         exe_name_wrap.c_str(), user_name_wrap.c_str());
+#endif
     }
     else
     {
+#ifdef _WIN32
+      sprintf_s(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
+        time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
+        time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
+#else
       sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
         time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
         time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
+#endif
     }
 	
     // write to the file
