@@ -35,8 +35,17 @@ namespace cbica
   Logging::Logging() 
   {	
     file_name_with_path = "";
-  	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    writing_function("", log_file, timer, exe_name, user_name); 
+  	//initialize_class(file_name_with_path, log_file, exe_name, user_name); 
+    //writing_function("", log_file, timer, exe_name, user_name); 
+    //log_file.close();
+    localLogging = false;
+  }
+
+  void Logging::UseNewFile(const std::string &newLogFile)
+  {
+    file_name_with_path = newLogFile;
+    initialize_class(file_name_with_path, log_file, exe_name, user_name);
+    writing_function("", log_file, timer, exe_name, user_name);
     log_file.close();
     localLogging = false;
   }
@@ -57,7 +66,7 @@ namespace cbica
 
   void Logging::Write(const std::string FreeText_input) 
   { 
-    // assumes file exists because constructor write the file once
+    // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
     writing_function(FreeText_input, log_file, timer, exe_name, user_name); 
     log_file.close();
@@ -65,7 +74,7 @@ namespace cbica
   
   void Logging::Write() 
   { 
-    // assumes file exists because constructor write the file once
+    // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
     writing_function("", log_file, timer, exe_name, user_name); 
     log_file.close();

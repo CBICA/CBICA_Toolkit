@@ -74,6 +74,13 @@ namespace cbica
     */
     Logging(const Logging &origin);
 
+    /**
+    \brief Change Logging file after initializing class
+
+    \param newLogFile Path of new log file
+    */
+    void UseNewFile(const std::string &newLogFile);
+
 		//! The Destructor
 		virtual ~Logging();
 	
@@ -94,7 +101,7 @@ namespace cbica
     
     The output stamps are of the form:
 
-    <code><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text></code>
+    <4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text>
     */
     void enableLocalLogging();
     
