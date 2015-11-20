@@ -482,6 +482,21 @@ namespace cbica
     return return_vector;
   }
 
+  /**
+  
+  */
+  template< typename TDataType>
+  std::string toString(const TDataType &input)
+  {
+#if (__GCC__)
+    std::ostringstream ss;
+    ss << input;
+    return ss.str();
+#else
+    return std::to_string(input);
+#endif
+  }
+
 #if (_MSC_VER >= 1800) || __GXX_EXPERIMENTAL_CXX0X__
   /**
   \brief Base for compareEqual(...)
