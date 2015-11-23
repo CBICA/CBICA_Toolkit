@@ -19,7 +19,7 @@ namespace cbica
     consoleLogging = true;
     file_name_with_path = file_name;
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    writing_function(FreeText_input, log_file, timer, exe_name, user_name); 
+    writing_function(FreeText_input, log_file, timer, exe_name, user_name, false); 
     log_file.close();
   }
   
@@ -28,7 +28,7 @@ namespace cbica
     consoleLogging = false;
     file_name_with_path = file_name;
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    writing_function("", log_file, timer, exe_name, user_name); 
+    writing_function("", log_file, timer, exe_name, user_name, false);
     log_file.close();
   }
   
@@ -46,7 +46,7 @@ namespace cbica
     consoleLogging = false;
     file_name_with_path = newLogFile;
     initialize_class(file_name_with_path, log_file, exe_name, user_name);
-    writing_function("", log_file, timer, exe_name, user_name);
+    writing_function("", log_file, timer, exe_name, user_name, false);
     log_file.close();
   }
 
@@ -64,11 +64,19 @@ namespace cbica
     UseNewFile(newLogFile);
   }
 
+  void Logging::WriteError(const std::string FreeText_input)
+  {
+    // assumes file exists because constructor writes the file once
+    log_file.open(file_name_with_path.c_str(), std::ios_base::app);
+    writing_function(FreeText_input, log_file, timer, exe_name, user_name, true);
+    log_file.close();
+  }
+
   void Logging::Write(const std::string FreeText_input) 
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function(FreeText_input, log_file, timer, exe_name, user_name); 
+    writing_function(FreeText_input, log_file, timer, exe_name, user_name, false); 
     log_file.close();
   }
   
@@ -76,7 +84,7 @@ namespace cbica
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function("", log_file, timer, exe_name, user_name); 
+    writing_function("", log_file, timer, exe_name, user_name, false);
     log_file.close();
   }
 
@@ -114,7 +122,7 @@ namespace cbica
 	}
 
 	inline void Logging::writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
-		time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap )
+		time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError )
 	{
 		// obtain current time
 		time(&timer_wrap);
@@ -139,7 +147,14 @@ namespace cbica
 	
     if (consoleLogging)
     {
-      std::cout << std::string(buffer) + FreeText_wrap << "\n";
+      if (isError)
+      {
+        std::cerr << std::string(buffer) + FreeText_wrap << "\n";
+      }
+      else
+      {
+        std::cout << std::string(buffer) + FreeText_wrap << "\n";
+      }
     }
     else
     {

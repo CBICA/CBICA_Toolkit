@@ -84,7 +84,14 @@ namespace cbica
 
 		//! The Destructor
 		virtual ~Logging();
-	
+
+    /**
+    \brief Function to call to write error messages to log file without any free text
+
+    \param FreeText_input Free text which the user wants to be present in the log
+    */
+    void WriteError(const std::string FreeText_input);
+
     /**
 		\brief Function to call to write to log file without any free text
     
@@ -132,7 +139,7 @@ namespace cbica
 	  \param user_name_wrap Wrap for user_name
 	  */
 	  inline void writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
-			time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap );
+			time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError );
 
 
 	private:
