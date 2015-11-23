@@ -41,6 +41,7 @@ namespace cbica
   logger.Write( "'I accept chaos, I'm not sure whether it accepts me' - Bob Dylan" ); // writes to file_name.txt
   \endverbatim
 
+  The class defaults to console logging. Use cbica::Logging::
   */
 	class Logging
 	{
@@ -97,13 +98,13 @@ namespace cbica
 		void Write();
 
     /**
-    \brief Enables local logging
+    \brief Switches between console and text file logging
     
     The output stamps are of the form:
 
     <4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text>
     */
-    void enableLocalLogging();
+    void EnableTextLogging(const std::string &newLogFile);
     
   protected:    
     /**
@@ -148,7 +149,7 @@ namespace cbica
     //! File path
     std::string file_name_with_path;
     //! Flag to initialize local logging
-    bool localLogging;
+    bool consoleLogging;
 
 	};
 }
