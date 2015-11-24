@@ -131,15 +131,13 @@ namespace cbica
 	
 		// obtain current local date
 #ifdef _WIN32
-    localtime_s(time_struct, &timer_wrap);
-#else
+    // struct tm time_info; // check localtime_s() usage
     time_struct = localtime(&timer_wrap);
-#endif
-#ifdef _WIN32
     sprintf_s(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
       time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
       time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
 #else
+    time_struct = localtime(&timer_wrap);
     sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
       time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
       time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
