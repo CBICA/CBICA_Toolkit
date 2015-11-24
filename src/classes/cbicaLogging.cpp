@@ -16,7 +16,7 @@ namespace cbica
 { 
   Logging::Logging(const std::string file_name, const std::string FreeText_input) 
   {
-    consoleLogging = true;
+    consoleLogging = false;
     file_name_with_path = file_name;
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
     writing_function(FreeText_input, log_file, timer, exe_name, user_name, false); 
