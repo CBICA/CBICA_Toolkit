@@ -108,16 +108,16 @@ namespace cbica
   {
     char *tmp;
     char tempPath[FILENAME_MAX];
-    #if defined(_WIN32)
-      tmp = getenv("USERPROFILE");
-      std::string temp = cbica::replaceString(tmp, "\\", "/");
-      sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
-      strcat_s(tempPath,"/tmp/");
-    #else
+#if defined(_WIN32)
+    tmp = getenv("USERPROFILE");
+    std::string temp = cbica::replaceString(tmp, "\\", "/");
+    sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
+    strcat_s(tempPath,"/tmp/");
+#else
       tmp = std::getenv("HOME");
       sprintf(tempPath, "%s", tmp);
       strcat(tempPath,"/tmp/");
-    #endif    
+#endif    
 
     returnDir = std::string(tempPath);
     tmp[0] = '\0';
@@ -864,73 +864,20 @@ namespace cbica
 
   std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim )
   {
-    if (!fileExists(csvFileName))
-    {
-      std::cerr << "Supplied file name wasn't found.\n";
-      exit(EXIT_FAILURE);
-    }
-    std::vector< CSVDict > return_CSVDict;
-    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, delim), inputLabelsVec = stringSplit(inputLabels, delim);
-    std::vector< std::vector< std::string > > returnVector;
-    std::ifstream inFile(csvFileName.c_str());
-    int row = 0;
-    std::vector< size_t > inputColumnIndeces, inputLabelIndeces;
-    for (std::string line; std::getline(inFile, line, '\n');)
-    {
-      CSVDict tempDict;
-      std::vector< std::string > rowVec;
-      line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
-      rowVec = stringSplit(line, delim);
-      
-      // for the first row, record the indeces of the inputColumns and inputLabels
-      if (row == 0)
-      {
-        for (size_t i = 0; i < rowVec.size(); i++)
-        {
-          for (size_t j = 0; j < inputColumnsVec.size(); j++)
-          {
-            if (rowVec[i] == inputColumnsVec[j])
-            {
-              inputColumnIndeces.push_back(i);
-            }
-          }
-          for (size_t j = 0; j < inputLabelsVec.size(); j++)
-          {
-            if (rowVec[i] == inputLabelsVec[j])
-            {
-              inputLabelIndeces.push_back(i);
-            }
-          }
-        }
-      }
-      else
-      {
-        for (size_t i = 0; i < inputColumnIndeces.size(); i++)
-        {
-          if (fileExists(rowVec[inputColumnIndeces[i]]))
-          {
-            tempDict.inputImages.push_back(rowVec[inputColumnIndeces[i]]);
-          }
-          else
-          {
-            std::cerr << "File name in list does not exist. Location: row = " << row << ", col = " << inputColumnIndeces[i] << "\n";
-            exit(EXIT_FAILURE);
-          }
-        }
-        for (size_t i = 0; i < inputLabelIndeces.size(); i++)
-        {
-          double test = std::atof(rowVec[inputLabelIndeces[i]].c_str());
-          tempDict.inputLabels.push_back(std::atof(rowVec[inputLabelIndeces[i]].c_str()));
-        }
-        return_CSVDict.push_back(tempDict);
-      }
-      row++;
-    }
-
-    return return_CSVDict;
+    return parseCSVFile("", csvFileName, inputColumns, inputLabels, delim, false);
   }
-  
+
   std::vector< CSVDict > parseCSVFile( const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim )
+  {
+    return parseCSVFile(dataDir, csvFileName, inputColumns, inputLabels, delim, false);
+  }
+
+  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim, bool checkFile )
+  {
+    return parseCSVFile("", csvFileName, inputColumns, inputLabels, delim, checkFile);
+  }
+
+  std::vector< CSVDict > parseCSVFile( const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim, bool checkFile )
   {
     if (!fileExists(csvFileName))
     {
@@ -975,14 +922,21 @@ namespace cbica
       {
         for (size_t i = 0; i < inputColumnIndeces.size(); i++)
         {
-          if (fileExists(dataDir + rowVec[inputColumnIndeces[i]]))
+          if (!checkFile)
           {
             tempDict.inputImages.push_back(dataDir + rowVec[inputColumnIndeces[i]]);
           }
           else
           {
-            std::cerr << "File name in list does not exist. Location: row = " << row << ", col = " << inputColumnIndeces[i] << "\n";
-            exit(EXIT_FAILURE);
+            if (fileExists(dataDir + rowVec[inputColumnIndeces[i]]))
+            {
+              tempDict.inputImages.push_back(dataDir + rowVec[inputColumnIndeces[i]]);
+            }
+            else
+            {
+              std::cerr << "File name in list does not exist. Location: row = " << row << ", col = " << inputColumnIndeces[i] << "\n";
+              exit(EXIT_FAILURE);
+            }
           }
         }
         for (size_t i = 0; i < inputLabelIndeces.size(); i++)
