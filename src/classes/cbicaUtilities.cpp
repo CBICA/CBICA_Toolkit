@@ -900,9 +900,9 @@ namespace cbica
       // for the first row, record the indeces of the inputColumns and inputLabels
       if (row == 0)
       {
+        size_t labelsCount = 0;
         for (size_t j = 0; j < inputColumnsVec.size(); j++)
         {
-          size_t labelsCount = 0;
           for (size_t i = 0; i < rowVec.size(); i++)
           {
             if (rowVec[i] == inputColumnsVec[j])
@@ -915,6 +915,7 @@ namespace cbica
               {
                 inputLabelIndeces.push_back(i);
                 labelsCount++;
+                i++;
               }
               break;
             }
