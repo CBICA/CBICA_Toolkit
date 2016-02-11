@@ -900,20 +900,23 @@ namespace cbica
       // for the first row, record the indeces of the inputColumns and inputLabels
       if (row == 0)
       {
-        for (size_t i = 0; i < rowVec.size(); i++)
+        for (size_t j = 0; j < inputColumnsVec.size(); j++)
         {
-          for (size_t j = 0; j < inputColumnsVec.size(); j++)
+          size_t labelsCount = 0;
+          for (size_t i = 0; i < rowVec.size(); i++)
           {
             if (rowVec[i] == inputColumnsVec[j])
             {
               inputColumnIndeces.push_back(i);
             }
-          }
-          for (size_t j = 0; j < inputLabelsVec.size(); j++)
-          {
-            if (rowVec[i] == inputLabelsVec[j])
+            while (labelsCount < inputLabelsVec.size())
             {
-              inputLabelIndeces.push_back(i);
+              if (rowVec[i] == inputLabelsVec[labelsCount])
+              {
+                inputLabelIndeces.push_back(i);
+                labelsCount++;
+              }
+              break;
             }
           }
         }
@@ -921,7 +924,7 @@ namespace cbica
       }
       else
       {
-        for (size_t i = 0; i < inputColumnIndeces.size(); i++)
+        for (size_t i = 0; i < inputColumnIndeces.size(); row++, i++)
         {
           if (!checkFile)
           {
@@ -940,14 +943,13 @@ namespace cbica
             }
           }
         }
-        for (size_t i = 0; i < inputLabelIndeces.size(); i++)
+        for (size_t i = 0; i < inputLabelIndeces.size(); row++, i++)
         {
           double test = std::atof(rowVec[inputLabelIndeces[i]].c_str());
           tempDict.inputLabels.push_back(std::atof(rowVec[inputLabelIndeces[i]].c_str()));
         }
         return_CSVDict.push_back(tempDict);
       }
-      row++;
     }
 
     return return_CSVDict;
