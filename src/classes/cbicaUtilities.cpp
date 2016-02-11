@@ -917,6 +917,7 @@ namespace cbica
             }
           }
         }
+        row++;
       }
       else
       {
