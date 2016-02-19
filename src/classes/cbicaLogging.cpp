@@ -19,7 +19,14 @@ namespace cbica
     consoleLogging = false;
     file_name_with_path = file_name;
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    writing_function(FreeText_input, log_file, timer, exe_name, user_name, false); 
+    if (FreeText_input[0] == ' ')
+    {
+      writing_function(FreeText_input, log_file, timer, exe_name, user_name, false);
+    }
+    else
+    {
+      writing_function(" " + FreeText_input, log_file, timer, exe_name, user_name, false);
+    }
     log_file.close();
   }
   
@@ -68,7 +75,14 @@ namespace cbica
   {
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function(FreeText_input, log_file, timer, exe_name, user_name, true);
+    if (FreeText_input[0] == ' ')
+    {
+      writing_function(FreeText_input, log_file, timer, exe_name, user_name, true);
+    }
+    else
+    {
+      writing_function(" " + FreeText_input, log_file, timer, exe_name, user_name, true);
+    }
     log_file.close();
   }
 
@@ -76,7 +90,14 @@ namespace cbica
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function(FreeText_input, log_file, timer, exe_name, user_name, false); 
+    if (FreeText_input[0] == ' ')
+    {
+      writing_function(FreeText_input, log_file, timer, exe_name, user_name, false);
+    }
+    else
+    {
+      writing_function(" " + FreeText_input, log_file, timer, exe_name, user_name, false);
+    }
     log_file.close();
   }
   
@@ -142,7 +163,7 @@ namespace cbica
       time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
       time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
 #endif
-	
+    	
     if (consoleLogging)
     {
       if (isError)
