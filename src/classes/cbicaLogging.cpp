@@ -18,16 +18,10 @@ namespace cbica
   {
     consoleLogging = false;
     file_name_with_path = file_name;
-  	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    if (FreeText_input[0] == ' ')
-    {
-      writing_function(FreeText_input, log_file, timer, exe_name, user_name, false);
-    }
-    else
-    {
-      writing_function(" " + FreeText_input, log_file, timer, exe_name, user_name, false);
-    }
+    initialize_class(file_name_with_path, log_file, exe_name, user_name);
+    writing_function(";" + FreeText_input, log_file, timer, exe_name, user_name);
     log_file.close();
+    append = false;
   }
   
   Logging::Logging(const std::string file_name) 
@@ -35,17 +29,18 @@ namespace cbica
     consoleLogging = false;
     file_name_with_path = file_name;
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    writing_function("", log_file, timer, exe_name, user_name, false);
+    writing_function("", log_file, timer, exe_name, user_name);
     log_file.close();
+    append = false;
   }
   
   Logging::Logging() 
   {	
     file_name_with_path = "";
-  	//initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    //writing_function("", log_file, timer, exe_name, user_name); 
     //log_file.close();
     consoleLogging = true;
+    initialize_class(file_name_with_path, log_file, exe_name, user_name); 
+    writing_function("", log_file, timer, exe_name, user_name); 
   }
 
   void Logging::UseNewFile(const std::string &newLogFile)
@@ -53,8 +48,9 @@ namespace cbica
     consoleLogging = false;
     file_name_with_path = newLogFile;
     initialize_class(file_name_with_path, log_file, exe_name, user_name);
-    writing_function("", log_file, timer, exe_name, user_name, false);
+    writing_function("", log_file, timer, exe_name, user_name);
     log_file.close();
+    append = false;
   }
 
   Logging::Logging(const Logging &origin)
@@ -75,14 +71,7 @@ namespace cbica
   {
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    if (FreeText_input[0] == ' ')
-    {
-      writing_function(FreeText_input, log_file, timer, exe_name, user_name, true);
-    }
-    else
-    {
-      writing_function(" " + FreeText_input, log_file, timer, exe_name, user_name, true);
-    }
+    writing_function(";" + FreeText_input, log_file, timer, exe_name, user_name, true);
     log_file.close();
   }
 
@@ -90,14 +79,7 @@ namespace cbica
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    if (FreeText_input[0] == ' ')
-    {
-      writing_function(FreeText_input, log_file, timer, exe_name, user_name, false);
-    }
-    else
-    {
-      writing_function(" " + FreeText_input, log_file, timer, exe_name, user_name, false);
-    }
+    writing_function(";" + FreeText_input, log_file, timer, exe_name, user_name);
     log_file.close();
   }
   
@@ -105,7 +87,7 @@ namespace cbica
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function("", log_file, timer, exe_name, user_name, false);
+    writing_function("", log_file, timer, exe_name, user_name);
     log_file.close();
   }
 
@@ -143,7 +125,7 @@ namespace cbica
 	}
 
 	inline void Logging::writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
-		time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError )
+		time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError = false )
 	{
 		// obtain current time
 		time(&timer_wrap);
@@ -177,15 +159,7 @@ namespace cbica
     }
     else
     {
-      // write to the file
-      if (FreeText_wrap != "")
-      {
-        log_file_wrap << buffer << ";" << FreeText_wrap.c_str() << "\n";
-      }
-      else
-      {
-        log_file_wrap << buffer << "\n";
-      }
+      log_file_wrap << buffer << FreeText_wrap.c_str() << "\n";
     }
 
 	}

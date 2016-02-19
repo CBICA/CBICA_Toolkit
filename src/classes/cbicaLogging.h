@@ -139,7 +139,7 @@ namespace cbica
 	  \param user_name_wrap Wrap for user_name
 	  */
 	  inline void writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
-			time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError );
+			time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError = false );
 
 
 	private:
