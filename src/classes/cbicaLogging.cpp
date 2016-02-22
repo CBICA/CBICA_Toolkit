@@ -21,7 +21,6 @@ namespace cbica
     initialize_class(file_name_with_path, log_file, exe_name, user_name);
     writing_function(";" + FreeText_input, log_file, timer, exe_name, user_name);
     log_file.close();
-    append = false;
   }
   
   Logging::Logging(const std::string file_name) 
@@ -31,7 +30,6 @@ namespace cbica
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
     writing_function("", log_file, timer, exe_name, user_name);
     log_file.close();
-    append = false;
   }
   
   Logging::Logging() 
@@ -40,7 +38,7 @@ namespace cbica
     //log_file.close();
     consoleLogging = true;
     initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    writing_function("", log_file, timer, exe_name, user_name); 
+    //writing_function("", log_file, timer, exe_name, user_name); 
   }
 
   void Logging::UseNewFile(const std::string &newLogFile)
@@ -48,9 +46,8 @@ namespace cbica
     consoleLogging = false;
     file_name_with_path = newLogFile;
     initialize_class(file_name_with_path, log_file, exe_name, user_name);
-    writing_function("", log_file, timer, exe_name, user_name);
+    //writing_function("", log_file, timer, exe_name, user_name);
     log_file.close();
-    append = false;
   }
 
   Logging::Logging(const Logging &origin)
@@ -105,7 +102,7 @@ namespace cbica
       }
       if (cbica::fileExists(file_name_with_path_wrap))
       {
-        std::cout << "File name '" << file_name_with_path_wrap << "' has been found. Appending.\n";
+        //std::cout << "File name '" << file_name_with_path_wrap << "' has been found. Appending.\n";
         log_file_wrap.open(file_name_with_path_wrap.c_str(), std::ios_base::app); // append to existing file
       }
       else
@@ -125,7 +122,7 @@ namespace cbica
 	}
 
 	inline void Logging::writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
-		time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError = false )
+		time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError )
 	{
 		// obtain current time
 		time(&timer_wrap);
