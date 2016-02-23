@@ -523,7 +523,7 @@ namespace cbica
   template< typename TDataType >
   std::string toString(const TDataType &input)
   {
-#if (__GCC__)
+#if defined(__GNUC__) || defined(__GNUG__)
     std::ostringstream ss;
     ss << input;
     return ss.str();
