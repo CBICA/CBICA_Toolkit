@@ -25,6 +25,11 @@ struct CSVDict
 {
   std::vector< std::string > inputImages;
   std::vector< double > inputLabels;
+
+  //! Default Constructor
+  CSVDict(const std::vector< std::string > &vectorOfImagePaths, const std::vector< double > &vectorOfLabels) :
+    inputImages(vectorOfImagePaths), inputLabels(vectorOfLabels) { };
+
 };
 
 namespace cbica
@@ -339,12 +344,12 @@ namespace cbica
   std::vector<std::string> subdirectoriesInDirectory( const std::string &dirName, bool recursiveSearch );
 
   /**
-  \brief File number of rows in CSV file
+  \brief Find number of rows in CSV file
   */
   size_t numberOfRowsInFile(const std::string &csvFileName, const std::string &delim = "\n");
   
   /**
-  \brief File number of cols in CSV file
+  \brief Find number of cols in CSV file
   */
   size_t numberOfColsInFile(const std::string &csvFileName, const std::string &delim = ",");
 
@@ -355,14 +360,14 @@ namespace cbica
   1. Header information is in first row
   2. Full paths of images are given
 
-  \param csvFileName The full path of the file to parse
+  \param csvFileName The full path of the file to parse, all paths are absolute or relative to current working directory
   \param inputColumns The string of input columns which contain the data to be used for further processing
   \param inputLabels The string of input labels based on which further processing is to be done
   \param checkFile Check the validity of the file; defaults to true
   \param rowsDelimiter The delimiters used to distinguish rows in the file
   \param colsDelimiter The delimiters used to distinguish cols in the file
   \param optionsDelimiter The delimiters used in inputColumns and inputLabel
-  \return Vector of Vector of strings: Collection of rows and columns
+  \return Vector of CSV Dictionary items: Collection of input images are respective labels
   */
   std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, bool checkFile = true, const std::string &rowsDelimiter = "\n", const std::string &colsDelimiter = ",", const std::string &optionsDelimiter = "," );
 
@@ -374,14 +379,14 @@ namespace cbica
   2. Paths of images are given relative to the dataDir
 
   \param dataDir The full path of the directory where the data is present
-  \param csvFileName The full path of the file to parse
+  \param csvFileName The full path of the file to parse and all paths in CSV File are relative to dataDir
   \param inputColumns The string of input columns which contain the data to be used for further processing
   \param inputLabels The string of input labels based on which further processing is to be done
   \param checkFile Check the validity of the file; defaults to true
-  \param rowsDelimiter The delimiters used to distinguish rows in the file
-  \param colsDelimiter The delimiters used to distinguish cols in the file
-  \param optionsDelimiter The delimiters used in inputColumns and inputLabels
-  \return Vector of Vector of strings: Collection of rows and columns
+  \param rowsDelimiter The delimiters used to distinguish rows in the file, default = "\n"
+  \param colsDelimiter The delimiters used to distinguish cols in the file, default = ","
+  \param optionsDelimiter The delimiters used in inputColumns and inputLabels, default = ","
+  \return Vector of CSV Dictionary items: Collection of input images are respective labels
   */
   std::vector< CSVDict > parseCSVFile(const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, bool checkFile = true, const std::string &rowsDelimiter = "\n", const std::string &colsDelimiter = ",", const std::string &optionsDelimiter = "," );
   

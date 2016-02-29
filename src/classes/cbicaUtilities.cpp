@@ -900,68 +900,76 @@ namespace cbica
     const std::string &inputColumns, const std::string &inputLabels, bool checkFile,
     const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
+    // if CSV file doesn't exist, exit with meaningful message
     if (!fileExists(csvFileName))
     {
       std::cerr << "Supplied file name wasn't found.\n";
       exit(EXIT_FAILURE);
     }
-    std::vector< CSVDict > return_CSVDict;
-    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, optionsDelimiter), inputLabelsVec = stringSplit(inputLabels, optionsDelimiter);
-    std::vector< std::vector< std::string > > returnVector;
-    std::ifstream inFile(csvFileName.c_str());
+
+    // store number of rows in the file - this is used to make the program parallelize-able 
     const size_t numberOfRows = numberOfRowsInFile(csvFileName);
+    
+    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, optionsDelimiter), // columns to consider as images
+      inputLabelsVec = stringSplit(inputLabels, optionsDelimiter); // columns to consider as labels
+    
+    // initialize return dictionary
+    std::vector< CSVDict > return_CSVDict;
     return_CSVDict.resize(numberOfRows - 1);
 
-    std::string line; 
-    std::getline(inFile, line, *constCharToChar(rowsDelimiter));
-    std::vector< size_t > inputColumnIndeces, inputLabelIndeces;
+    std::vector< size_t > inputColumnIndeces, // indeces in the CSV file which correspond to images
+      inputLabelIndeces; // indeces in the CSV file which correspond to labels
+
     inputColumnIndeces.resize(inputColumnsVec.size());
     inputLabelIndeces.resize(inputLabelsVec.size());
 
-    std::vector< std::string > rowVec;
-    line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
-    rowVec = stringSplit(line, colsDelimiter);
-    size_t labelsCount = 0;
+    std::vector< std::vector < std::string > > allRows; // store the entire data of the CSV file as a vector of colums and rows (vector< rows <cols> >)
 
-    // populate information about which indeces to store for data and labels from first row
-    for (size_t i = 0; i < rowVec.size(); i++)
+    std::ifstream inFile(csvFileName.c_str());
+
+    for (size_t i = 0; i < numberOfRows; i++)
+    {
+      std::string line;
+      std::getline(inFile, line, *constCharToChar(rowsDelimiter));
+      line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
+      allRows.push_back(stringSplit(line, colsDelimiter));
+    }
+
+    inFile.close(); // at this point, the entire data from the CSV file has been read and stored in allRows
+
+    // populate information about which indeces to store for data and labels from first row (rowCounter = 0)
+    for (size_t i = 0; i < allRows[0].size(); i++)
     {
       for (size_t j = 0; j < inputColumnsVec.size(); j++)
       {
-        inputColumnIndeces[j] = std::find(rowVec.begin(), rowVec.end(), inputColumnsVec[j]) - rowVec.begin();
+        inputColumnIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputColumnsVec[j]) - allRows[0].begin();
       }
       for (size_t j = 0; j < inputLabelsVec.size(); j++)
       {
-        inputLabelIndeces[j] = std::find(rowVec.begin(), rowVec.end(), inputLabelsVec[j]) - rowVec.begin();
+        inputLabelIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputLabelsVec[j]) - allRows[0].begin();
       }
     }
 
-    // start storing data
-    ////made parallel for efficiency
-    //int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
-    //threads > numberOfRows ? threads = numberOfRows - 1 : threads = threads;
-    //#pragma omp parallel for num_threads(threads)
-    for (int rowCounter = 1; rowCounter < numberOfRows; rowCounter++)
+    // organize the data
+    int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
+    // if the total number of rows in CSV file are less than the available number of threads on machine (happens for testing),
+    // use only the number of rows where meaningful data is present - this avoids extra thread overhead
+    threads > numberOfRows ? threads = numberOfRows - 1 : threads = threads; 
+#pragma omp parallel for num_threads(threads)
+    for (int rowCounter = 1; rowCounter < allRows.size(); rowCounter++)
     {
-      CSVDict tempDict;
-      line.clear();
-      rowVec.clear();
-      std::getline(inFile, line, *constCharToChar(rowsDelimiter));
-      line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
-      rowVec = stringSplit(line, colsDelimiter);
-
-      tempDict.inputImages.resize(inputColumnIndeces.size());
-      for (size_t i = 0; i < inputColumnIndeces.size(); /*rowCounter++,*/ i++)
+      return_CSVDict[rowCounter - 1].inputImages.resize(inputColumnIndeces.size()); // pre-initialize size to ensure thread-safety
+      for (size_t i = 0; i < inputColumnIndeces.size(); i++)
       {
-        if (!checkFile)
+        if (!checkFile) // this case should only be used for testing purposes
         {
-          tempDict.inputImages[i] = dataDir + rowVec[inputColumnIndeces[i]];
+          return_CSVDict[rowCounter - 1].inputImages[i] = dataDir + allRows[rowCounter][inputColumnIndeces[i]];
         }
         else
         {
-          if (fileExists(dataDir + rowVec[inputColumnIndeces[i]]))
+          if (fileExists(dataDir + allRows[rowCounter][inputColumnIndeces[i]]))
           {
-            tempDict.inputImages[i] = dataDir + rowVec[inputColumnIndeces[i]];
+            return_CSVDict[rowCounter - 1].inputImages[i] = dataDir + allRows[rowCounter][inputColumnIndeces[i]];
           }
           else
           {
@@ -970,13 +978,12 @@ namespace cbica
           }
         }
       }
-
-      tempDict.inputLabels.resize(inputLabelIndeces.size());
-      for (size_t i = 0; i < inputLabelIndeces.size(); /*rowCounter++,*/ i++)
+      
+      return_CSVDict[rowCounter - 1].inputLabels.resize(inputLabelIndeces.size()); // pre-initialize size to ensure thread-safety
+      for (size_t i = 0; i < inputLabelIndeces.size(); i++)
       {
-        tempDict.inputLabels[i] = std::atof(rowVec[inputLabelIndeces[i]].c_str());
+        return_CSVDict[rowCounter - 1].inputLabels[i] = std::atof(allRows[rowCounter][inputLabelIndeces[i]].c_str());
       }
-      return_CSVDict[rowCounter - 1] = tempDict;
     }
 
     return return_CSVDict;
