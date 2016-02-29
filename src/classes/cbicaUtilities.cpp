@@ -3,6 +3,8 @@
 
 \brief Some basic utility functions.
 
+Dependecies: OpenMP
+
 https://www.cbica.upenn.edu/sbia/software/ <br>
 sbia-software@uphs.upenn.edu
 
@@ -48,6 +50,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <stdexcept>
 #include <algorithm>
 #include <string>
+#include <omp.h>
 
 #include "cbicaUtilities.h"
 
@@ -861,15 +864,30 @@ namespace cbica
     return allDirectories;
 #endif
   }
-
-  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim )
+  
+  size_t numberOfRowsInFile(const std::string &csvFileName, const std::string &delim)
   {
-    return parseCSVFile("", csvFileName, inputColumns, inputLabels, delim, false);
+    std::ifstream inFile(csvFileName.c_str());
+
+    // new lines will be skipped     
+    inFile.unsetf(std::ios_base::skipws);
+    
+    // count the newlines with an algorithm specialized for counting
+    return std::count(std::istream_iterator<char>(inFile), std::istream_iterator<char>(), *constCharToChar(delim));
   }
 
-  std::vector< CSVDict > parseCSVFile( const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim )
+  size_t numberOfColsInFile(const std::string &csvFileName, const std::string & delim)
   {
-    return parseCSVFile(dataDir, csvFileName, inputColumns, inputLabels, delim, false);
+    std::vector< std::string > rowVec;
+    //std::ifstream inFile(csvFileName.c_str());
+    //std::string line;
+    //std::getline(inFile, line, '\n');
+    //line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
+    //
+    //// read a single row
+    //rowVec = stringSplit(line, delim);
+    
+    return rowVec.size();
   }
 
   std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim, bool checkFile )
@@ -888,69 +906,74 @@ namespace cbica
     std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, delim), inputLabelsVec = stringSplit(inputLabels, delim);
     std::vector< std::vector< std::string > > returnVector;
     std::ifstream inFile(csvFileName.c_str());
-    int row = 0;
+    const size_t numberOfRows = numberOfRowsInFile(csvFileName);
+    return_CSVDict.resize(numberOfRows - 1);
+
+    std::string line; 
+    std::getline(inFile, line, '\n');
     std::vector< size_t > inputColumnIndeces, inputLabelIndeces;
-    for (std::string line; std::getline(inFile, line, '\n');)
+    inputColumnIndeces.resize(inputColumnsVec.size());
+    inputLabelIndeces.resize(inputLabelsVec.size());
+
+    std::vector< std::string > rowVec;
+    line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
+    rowVec = stringSplit(line, delim);
+    size_t labelsCount = 0;
+
+    // populate information about which indeces to store for data and labels from first row
+    for (size_t i = 0; i < rowVec.size(); i++)
+    {
+      for (size_t j = 0; j < inputColumnsVec.size(); j++)
+      {
+        inputColumnIndeces[j] = std::find(rowVec.begin(), rowVec.end(), inputColumnsVec[j]) - rowVec.begin();
+      }
+      for (size_t j = 0; j < inputLabelsVec.size(); j++)
+      {
+        inputLabelIndeces[j] = std::find(rowVec.begin(), rowVec.end(), inputLabelsVec[j]) - rowVec.begin();
+      }
+    }
+
+    // start storing data
+    ////made parallel for efficiency
+    //int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
+    //threads > numberOfRows ? threads = numberOfRows - 1 : threads = threads;
+    //#pragma omp parallel for num_threads(threads)
+    for (int rowCounter = 1; rowCounter < numberOfRows; rowCounter++)
     {
       CSVDict tempDict;
-      std::vector< std::string > rowVec;
+      line.clear();
+      rowVec.clear();
+      std::getline(inFile, line, *constCharToChar(delim));
       line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
       rowVec = stringSplit(line, delim);
-      
-      // for the first row, record the indeces of the inputColumns and inputLabels
-      if (row == 0)
+
+      tempDict.inputImages.resize(inputColumnIndeces.size());
+      for (size_t i = 0; i < inputColumnIndeces.size(); /*rowCounter++,*/ i++)
       {
-        size_t labelsCount = 0;
-        for (size_t j = 0; j < inputColumnsVec.size(); j++)
+        if (!checkFile)
         {
-          for (size_t i = 0; i < rowVec.size(); i++)
-          {
-            if (rowVec[i] == inputColumnsVec[j])
-            {
-              inputColumnIndeces.push_back(i);
-            }
-            while (labelsCount < inputLabelsVec.size())
-            {
-              if (rowVec[i] == inputLabelsVec[labelsCount])
-              {
-                inputLabelIndeces.push_back(i);
-                labelsCount++;
-                i++;
-              }
-              break;
-            }
-          }
+          tempDict.inputImages[i] = dataDir + rowVec[inputColumnIndeces[i]];
         }
-        row++;
-      }
-      else
-      {
-        for (size_t i = 0; i < inputColumnIndeces.size(); row++, i++)
+        else
         {
-          if (!checkFile)
+          if (fileExists(dataDir + rowVec[inputColumnIndeces[i]]))
           {
-            tempDict.inputImages.push_back(dataDir + rowVec[inputColumnIndeces[i]]);
+            tempDict.inputImages[i] = dataDir + rowVec[inputColumnIndeces[i]];
           }
           else
           {
-            if (fileExists(dataDir + rowVec[inputColumnIndeces[i]]))
-            {
-              tempDict.inputImages.push_back(dataDir + rowVec[inputColumnIndeces[i]]);
-            }
-            else
-            {
-              std::cerr << "File name in list does not exist. Location: row = " << row << ", col = " << inputColumnIndeces[i] << "\n";
-              exit(EXIT_FAILURE);
-            }
+            std::cerr << "File name in list does not exist. Location: row = " << rowCounter << ", col = " << inputColumnIndeces[i] << "\n";
+            exit(EXIT_FAILURE);
           }
         }
-        for (size_t i = 0; i < inputLabelIndeces.size(); row++, i++)
-        {
-          double test = std::atof(rowVec[inputLabelIndeces[i]].c_str());
-          tempDict.inputLabels.push_back(std::atof(rowVec[inputLabelIndeces[i]].c_str()));
-        }
-        return_CSVDict.push_back(tempDict);
       }
+
+      tempDict.inputLabels.resize(inputLabelIndeces.size());
+      for (size_t i = 0; i < inputLabelIndeces.size(); /*rowCounter++,*/ i++)
+      {
+        tempDict.inputLabels[i] = std::atof(rowVec[inputLabelIndeces[i]].c_str());
+      }
+      return_CSVDict[rowCounter - 1] = tempDict;
     }
 
     return return_CSVDict;
