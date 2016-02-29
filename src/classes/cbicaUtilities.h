@@ -358,11 +358,13 @@ namespace cbica
   \param csvFileName The full path of the file to parse
   \param inputColumns The string of input columns which contain the data to be used for further processing
   \param inputLabels The string of input labels based on which further processing is to be done
-  \param delim The delimiters used in inputColumns and inputLabels
-  \param checkFile Check the validity of the file; defaults to false
+  \param checkFile Check the validity of the file; defaults to true
+  \param rowsDelimiter The delimiters used to distinguish rows in the file
+  \param colsDelimiter The delimiters used to distinguish cols in the file
+  \param optionsDelimiter The delimiters used in inputColumns and inputLabel
   \return Vector of Vector of strings: Collection of rows and columns
   */
-  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim, bool checkFile );
+  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, bool checkFile = true, const std::string &rowsDelimiter = "\n", const std::string &colsDelimiter = ",", const std::string &optionsDelimiter = "," );
 
   /**
   \brief Parse the supplied CSV File and obtain Row and Column information. 
@@ -375,11 +377,13 @@ namespace cbica
   \param csvFileName The full path of the file to parse
   \param inputColumns The string of input columns which contain the data to be used for further processing
   \param inputLabels The string of input labels based on which further processing is to be done
-  \param delim The delimiters used in inputColumns and inputLabels
   \param checkFile Check the validity of the file; defaults to true
+  \param rowsDelimiter The delimiters used to distinguish rows in the file
+  \param colsDelimiter The delimiters used to distinguish cols in the file
+  \param optionsDelimiter The delimiters used in inputColumns and inputLabels
   \return Vector of Vector of strings: Collection of rows and columns
   */
-  std::vector< CSVDict > parseCSVFile( const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim, bool checkFile = true );
+  std::vector< CSVDict > parseCSVFile(const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, bool checkFile = true, const std::string &rowsDelimiter = "\n", const std::string &colsDelimiter = ",", const std::string &optionsDelimiter = "," );
   
 
   //====================================== String stuff ====================================//

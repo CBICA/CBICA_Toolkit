@@ -890,12 +890,15 @@ namespace cbica
     return rowVec.size();
   }
 
-  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim, bool checkFile )
+  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, 
+    bool checkFile, const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
-    return parseCSVFile("", csvFileName, inputColumns, inputLabels, delim, checkFile);
+    return parseCSVFile("", csvFileName, inputColumns, inputLabels, checkFile, rowsDelimiter, colsDelimiter, optionsDelimiter);
   }
 
-  std::vector< CSVDict > parseCSVFile( const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, const std::string &delim, bool checkFile )
+  std::vector< CSVDict > parseCSVFile(const std::string &dataDir, const std::string &csvFileName, 
+    const std::string &inputColumns, const std::string &inputLabels, bool checkFile,
+    const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
     if (!fileExists(csvFileName))
     {
@@ -903,21 +906,21 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     std::vector< CSVDict > return_CSVDict;
-    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, delim), inputLabelsVec = stringSplit(inputLabels, delim);
+    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, optionsDelimiter), inputLabelsVec = stringSplit(inputLabels, optionsDelimiter);
     std::vector< std::vector< std::string > > returnVector;
     std::ifstream inFile(csvFileName.c_str());
     const size_t numberOfRows = numberOfRowsInFile(csvFileName);
     return_CSVDict.resize(numberOfRows - 1);
 
     std::string line; 
-    std::getline(inFile, line, '\n');
+    std::getline(inFile, line, *constCharToChar(rowsDelimiter));
     std::vector< size_t > inputColumnIndeces, inputLabelIndeces;
     inputColumnIndeces.resize(inputColumnsVec.size());
     inputLabelIndeces.resize(inputLabelsVec.size());
 
     std::vector< std::string > rowVec;
     line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
-    rowVec = stringSplit(line, delim);
+    rowVec = stringSplit(line, colsDelimiter);
     size_t labelsCount = 0;
 
     // populate information about which indeces to store for data and labels from first row
@@ -943,9 +946,9 @@ namespace cbica
       CSVDict tempDict;
       line.clear();
       rowVec.clear();
-      std::getline(inFile, line, *constCharToChar(delim));
+      std::getline(inFile, line, *constCharToChar(rowsDelimiter));
       line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
-      rowVec = stringSplit(line, delim);
+      rowVec = stringSplit(line, colsDelimiter);
 
       tempDict.inputImages.resize(inputColumnIndeces.size());
       for (size_t i = 0; i < inputColumnIndeces.size(); /*rowCounter++,*/ i++)
