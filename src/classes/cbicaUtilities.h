@@ -23,13 +23,27 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 struct CSVDict
 {
+  //! Contains input image file names
   std::vector< std::string > inputImages;
+
+  //! Contains Labels that correspond to each file
   std::vector< double > inputLabels;
 
-  //! Default Constructor
-  CSVDict(const std::vector< std::string > &vectorOfImagePaths, const std::vector< double > &vectorOfLabels) :
-    inputImages(vectorOfImagePaths), inputLabels(vectorOfLabels) { };
+  //! Contructor
+  CSVDict(CSVDict &origin) :
+    inputImages(origin.inputImages), inputLabels(origin.inputLabels)
+  { };
 
+  //! Contructor
+  CSVDict()
+  {
+    inputImages.resize(0);
+    inputLabels.resize(0);
+  }
+    
+  //! Contructor
+  CSVDict(const std::vector< std::string > &inputImagesVector, const std::vector< double > &inputLabelVector) :
+    inputImages(inputImagesVector), inputLabels(inputLabelVector) {};
 };
 
 namespace cbica
