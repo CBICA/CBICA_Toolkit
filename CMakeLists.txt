@@ -3,46 +3,96 @@
 #
 # \brief Build configuration for Code/Source directory.
 #
-# http://www.cbica.upenn.edu/sbia/software/
+# https://www.cbica.upenn.edu/sbia/software/
 # sbia-software@uphs.upenn.edu
 # 
 # Copyright (c) 2015 University of Pennsylvania. All rights reserved.
-# See COPYING file or http://www.cbica.upenn.edu/sbia/software/license.html
+# See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 ##############################################################################
 
-CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
+CMAKE_MINIMUM_REQUIRED( VERSION 3.0 )
 
-SET( PROJECT_NAME CBICA_Toolkit ) # change project name here
+SET( 
+  PROJECT_NAME CBICA-TK_Trunk # change this for branches, etc.
+  VERSION 0.0.2 ) # change project name here
 
-PROJECT( ${PROJECT_NAME} )
-
-SET( PROJECT_VERSION_MAJOR "0" ) # change project major version here
-SET( PROJECT_VERSION_MINOR "1" ) # change project minor version here
-SET( PROJECT_VERSION_BUILD "0" ) # change project build version here
-SET( PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_BUILD}" ) 
 SET( RELEASE_ID "${PROJECT_VERSION}" )
 SET( CONTACT_INFO "sbia-software@uphs.upenn.edu" )
+
+PROJECT( ${PROJECT_NAME} )
 
 ADD_DEFINITIONS( -DCONTACT_INFO="${CONTACT_INFO}" )
 ADD_DEFINITIONS( -DPROJECT_NAME="${PROJECT_NAME}" )
 ADD_DEFINITIONS( -DRELEASE_ID="${PROJECT_VERSION}" )
 ADD_DEFINITIONS( -DPROJECT_VERSION="${PROJECT_VERSION}" )
-ADD_DEFINITIONS( -DPROJECT_VERSION_MAJOR="${PROJECT_VERSION_MAJOR}" )
-ADD_DEFINITIONS( -DPROJECT_VERSION_MINOR="${PROJECT_VERSION_MINOR}" )
+ADD_DEFINITIONS( -DBUILD_CBICA_ITK=0 )
+
+SET( BUILD_TESTING TRUE CACHE BOOL "Build testing" )
 
 ## Super build
-#INCLUDE( ${CMAKE_SOURCE_DIR}/cmake/Superbuild.cmake )
+SET( BUILD_ITK OFF CACHE BOOL "Do you want to build ITK from source (needs Git)?" )
+IF( BUILD_ITK )
+  INCLUDE( ${CMAKE_SOURCE_DIR}/cmake/Superbuild.cmake )
+ENDIF()
+
+#SET( Boost_FIND_QUIETLY TRUE )
+#SET( Boost_USE_MULTITHREADED TRUE )
+#SET( Boost_USE_STATIC FALSE )
+#FIND_PACKAGE( Boost REQUIRED 
+#	COMPONENTS program_options
+#	)
+#ADD_DEFINITIONS("-DHAS_BOOST")
+#LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+
 
 # Find all *.h and *.cpp files in a folder -> useful when the application is purely command line based
 SET( SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/src )
 SET( BASIC_CLASS_DIRECTORY ${SOURCE_DIRECTORY}/classes )
 
-SET( SOURCE_DIRECTORY  ${PROJECT_SOURCE_DIR}/src CACHE STRING "Source Directory" FORCE )
-SET( BASIC_CLASS_DIRECTORY  ${SOURCE_DIRECTORY}/classes CACHE STRING "Source Directory" FORCE )
-
 ADD_SUBDIRECTORY( ${BASIC_CLASS_DIRECTORY} )
 
-GET_TARGET_PROPERTY( LIBRARY_CONFIG CBICA_Classes LOCATION )
+# Done for temporary testing
+FILE( GLOB 
+  MainSources
+  "${SOURCE_DIRECTORY}/*.h"
+  "${SOURCE_DIRECTORY}/*.cpp"
+  "${BASIC_CLASS_DIRECTORY}/*.h"
+  "${BASIC_CLASS_DIRECTORY}/*.cpp"
+)
+
+## Do you want to build the ITK classes as well?
+SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.7.0+)?" )
+
+ADD_DEFINITIONS( -DBUILD_CBICA_ITK_CLASSES="${${BUILD_CBICA_ITK_CLASSES}}" )
+IF( BUILD_CBICA_ITK_CLASSES )
+
+	#ADD_DEFINITIONS( -DBUILD_CBICA_ITK=1 )	
+	FIND_PACKAGE( ITK REQUIRED )
+	#INCLUDE(${USE_ITK_FILE})
+	#SET( ITK_CLASS_DIRECTORY ${SOURCE_DIRECTORY}/classes/itk )
+  #ADD_SUBDIRECTORY( ${SOURCE_DIRECTORY}/classes/itk )
+	# Done for temporary testing
+	#FILE( GLOB CBICAITKSources
+	#    "${ITK_CLASS_DIRECTORY}/*.h"
+	#    "${ITK_CLASS_DIRECTORY}/*.cpp"
+	#)
+  
+  #SET( MainSources ${MainSources} ${ITK_Class_Headers} ${ITK_Class_Sources} )
+
+ENDIF( BUILD_CBICA_ITK_CLASSES ) 
+
+# If Windows is detected, add getopt for command line parsing. Will be deprecated in favor of cbica::CmdParser
+IF( WIN32 )
+	SET( MainSources
+		${MainSources}
+		${SOURCE_DIRECTORY}/windows/getopt.h
+		${SOURCE_DIRECTORY}/windows/getopt.cpp
+		${SOURCE_DIRECTORY}/windows/dirent.h
+	)
+ENDIF( WIN32 )
+
+SET( INCLUDE_DIR_CONFIG "\"${PROJECT_SOURCE_DIR}/src/classes\"" )
+#GET_TARGET_PROPERTY( LIBRARY_CONFIG CBICA_Classes LOCATION )
 SET( LIBRARY_CONFIG "\"${LIBRARY_CONFIG}\"" )
 
 ### Building the documentation
@@ -52,25 +102,70 @@ IF( BUILD_DOCUMENTATION )
   ADD_SUBDIRECTORY( docs )
 ENDIF ()
 
-## This documentation is for the SBIA website ONLY. Remove these lines AND the "docs_internal" folder before publishing
-## under "tags".
-#SET( BUILD_DOCUMENTATION_INTERNAL ON CACHE BOOL "Do you want to build Documentation (Needs Doxygen)." )
-#IF( BUILD_DOCUMENTATION_INTERNAL )
-#    ADD_SUBDIRECTORY( docs_internal )
-#ENDIF ()
-
 ### Python wrapping
 SET( BUILD_PYTHON_WRAP OFF CACHE BOOL "Do you want to wrap classes (needs SWIG 3.0.4)? Ensure build option matches Python lib build." )
 IF( BUILD_PYTHON_WRAP )
-  IF(MSVC)
-    SET(CMAKE_CONFIGURATION_TYPES Release CACHE TYPE INTERNAL FORCE)
-    MESSAGE( STATUS "NOTE: Building package in ${CMAKE_CONFIGURATION_TYPES} mode(s) only." )
+  IF(WIN32)
+    MESSAGE( STATUS "If Python has not been built on Debug mode (i.e., pythonXX_d.lib is NOT present), then only build library in Release." )
   ENDIF()
   ADD_SUBDIRECTORY( wrapping )
 ENDIF ()
 
+## This documentation is for the SBIA website ONLY. Remove these lines AND the "docs_internal" folder before publishing
+## under "tags".
+#SET( BUILD_DOCUMENTATION_INTERNAL OFF CACHE BOOL "Do you want to build Documentation (Needs Doxygen)." )
+#IF( BUILD_DOCUMENTATION_INTERNAL )
+#    ADD_SUBDIRECTORY( docs_internal )
+#ENDIF ()
+
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${BASIC_CLASS_DIRECTORY}
+	${SOURCE_DIRECTORY}
+	#${Boost_INCLUDE_DIRS}
+)
+
+## Keep all executables in a single directory
+#IF( WIN32 )
+#	SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/executable )
+#	SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/executable )
+#ELSE( WIN32 )
+#	SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/executable )
+#ENDIF( WIN32 )
+
+SET( EXE_NAME ${PROJECT_NAME} CACHE STRING "Executable name" FORCE)
+
+#ADD_EXECUTABLE( 
+#	${EXE_NAME} 
+#	${MainSources} 
+#	${SOURCE_DIRECTORY}/main.cxx
+#)
+
+## Add c++11 flag to compilation if GCC is detected under UNIX: how does this translate to MinGW/Cygwin??
+IF(UNIX)
+	INCLUDE( CheckCXXCompilerFlag )
+	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+	IF( COMPILER_SUPPORTS_CXX11 )
+		SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	ELSEIF(COMPILER_SUPPORTS_CXX0X )
+		SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+	ELSE()
+		MESSAGE(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+	ENDIF()
+ENDIF(UNIX) 
+
+## Link libraries
+#IF( BUILD_CBICA_ITK_CLASSES )
+#	TARGET_LINK_LIBRARIES( 
+#		${EXE_NAME} 
+#		${ITK_LIBRARIES}
+#	)
+#ENDIF( BUILD_CBICA_ITK_CLASSES )
+
 ## Installation (optional)
-#SET_TARGET_PROPERTIES( ${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE )
+#SET_TARGET_PROPERTIES( ${EXE_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE )
 
 SET( PACKAGE_NAME ${PROJECT_NAME} )
 
@@ -87,7 +182,7 @@ SET( INSTALL_DIR_CONFIG "${CMAKE_INSTALL_PREFIX}" CACHE INTERNAL "Install locati
 
 #SET( INCLUDE_DIR_CONFIG "\"\${CMAKE_CURRENT_LIST_DIR}/include\"" )
 SET( INCLUDE_DIR_CONFIG "\"${INSTALL_DIR_CONFIG}/include/\"" )
-GET_TARGET_PROPERTY( LIBRARY_CONFIG ${PROJECT_NAME} LOCATION )
+#GET_TARGET_PROPERTY( LIBRARY_CONFIG ${PROJECT_NAME} LOCATION )
 GET_FILENAME_COMPONENT( LIBRARY_CONFIG "${LIBRARY_CONFIG}" NAME )
 SET( LIBRARY_CONFIG "\"${INSTALL_DIR_CONFIG}/lib/${LIBRARY_CONFIG}\"" )
 
@@ -111,9 +206,10 @@ INSTALL(
   DESTINATION ${INSTALL_DIR_CONFIG}
 )
 
+
 ## Build test(s)
 SET( BUILD_TESTING TRUE CACHE BOOL "Build testing" )
 IF( BUILD_TESTING )
 	ENABLE_TESTING()
-	ADD_SUBDIRECTORY( testing )
+	#ADD_SUBDIRECTORY( testing )
 ENDIF( BUILD_TESTING )

@@ -16,6 +16,9 @@ FIND_PACKAGE( SWIG REQUIRED )
 MARK_AS_ADVANCED( SWIG_DIR SWIG_EXECUTABLE SWIG_VERSION )
 INCLUDE( ${SWIG_USE_FILE} )
 
+FIND_PACKAGE( ITK REQUIRED )
+INCLUDE( ${ITK_USE_FILE} )
+
 #
 # Do not cover this lib
 #
@@ -26,18 +29,21 @@ CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/.NoDartCoverage
 # Note:
 # python -c "from struct import pack; print  pack('5b', (41*len('99')), pow(8,2)+20, 4900**0.5, range(78)[-1], 10)"
 
+INCLUDE_DIRECTORIES(
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${BASIC_CLASS_DIRECTORY}
+  ${ITK_CLASS_DIRECTORY}
+	${SOURCE_DIRECTORY}
+	${PYTHON_INCLUDE_DIR}
+  ${ITK_INCLUDE_DIRS}
+)
+
 FIND_PACKAGE( PythonInterp REQUIRED )
 FIND_PACKAGE( PythonLibs REQUIRED )
 # TODO Need to check consistency python interp and python libs...
 MARK_AS_ADVANCED( PYTHON_LIBRARY PYTHON_INCLUDE_DIR )
 
-INCLUDE_DIRECTORIES(
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${BASIC_CLASS_DIRECTORY}
-	${SOURCE_DIRECTORY}
-	${PYTHON_INCLUDE_DIR}
-)
 
 ## Check if this is required or not
 # Lamest excuse ever:
@@ -83,14 +89,19 @@ SWIG_ADD_MODULE(${CBICA_PYTHON_IMPLEMENTATION_NAME} python cbicaToolkit.i
 #cbicaToolkit.cxx
 #gdcmPythonFilter.cxx
 )
-SWIG_LINK_LIBRARIES(${CBICA_PYTHON_IMPLEMENTATION_NAME} ${CBICA_LIB_NAME} )
+
+SWIG_LINK_LIBRARIES(
+  ${CBICA_PYTHON_IMPLEMENTATION_NAME} 
+  ${ITK_CLASS_LIBRARY}
+  ${BASIC_CLASS_LIBRARY}
+)
 
 # Apparently on my UNIX, python module (/usr/lib/pyshared/pythonX.Y/*/*.so) do not explicitely
 # link to python libraries...Leave default to always link to python libraries since
 # this is required at least on Apple & Win32, but leave the option to advanced user to explicitely
 # refuse linking to python libs (set GDCM_NO_PYTHON_LIBS_LINKING to ON):
 #if(NOT GDCM_NO_PYTHON_LIBS_LINKING)
-  SWIG_LINK_LIBRARIES(${CBICA_PYTHON_IMPLEMENTATION_NAME} ${PYTHON_LIBRARY})
+  SWIG_LINK_LIBRARIES(${CBICA_PYTHON_IMPLEMENTATION_NAME} ${PYTHON_LIBRARY} ${ITK_LIBRARIES})
 #endif()
 SET_PROPERTY(TARGET ${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAME} PROPERTY NO_SONAME 1)
 
@@ -102,11 +113,8 @@ SET_PROPERTY(TARGET ${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAME}
 # Windows: .dll is no longer supported as a filename extension for extension modules.
 # .pyd is now the only filename extension that will be searched for.
 # </quote>
-
-SET( CBICA_PYTHON_INSTALL_NAME ${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAME} )
 IF(WIN32 AND NOT CYGWIN)
   SET_TARGET_PROPERTIES(${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAME} PROPERTIES SUFFIX ".pyd")
-  SET( CBICA_PYTHON_INSTALL_NAME "${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAME}.pyd")
   # shared libs on windows needs to be fully resolved
   SWIG_LINK_LIBRARIES(${CBICA_PYTHON_IMPLEMENTATION_NAME} ${PYTHON_LIBRARIES})
 ENDIF()
@@ -127,44 +135,28 @@ SET_TARGET_PROPERTIES(${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAM
 #Module are always place in the library destination
 #but for poor win32 user I decided to place them
 # right next to the other dlls
-#IF(NOT CBICA_INSTALL_NO_LIBRARIES)
+#IF(NOT GDCM_INSTALL_NO_LIBRARIES)
 #  INSTALL_SWIG_MODULE(${CBICA_PYTHON_IMPLEMENTATION_NAME} Python)
 #  # the python file is not a dev file, but part of the cbica module...
   
-
-EXECUTE_PROCESS( COMMAND python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()" 
-                 OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE  )
+  EXECUTE_PROCESS( COMMAND python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()" 
+					OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
   
-SET( CBICA_PYTHON_INSTALL_DIR ${PYTHON_SITE_PACKAGES} CACHE STRING "Install location of CBICA_Toolkit Python" )
-MESSAGE( STATUS "For custom location of CBICA_Toolkit Python, ensure that the path is present in PYTHONPATH environment variable." )
-
-IF( WIN32 )
   INSTALL(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${CBICA_PYTHON_IMPLEMENTATION_NAME}.py
-    ${CMAKE_CURRENT_BINARY_DIR}/Release/${CBICA_PYTHON_INSTALL_NAME}
-    ${CMAKE_CURRENT_BINARY_DIR}/Release/${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAME}.lib
-    DESTINATION ${CBICA_PYTHON_INSTALL_DIR} 
-    COMPONENT PythonModule
+    ${CMAKE_CURRENT_BINARY_DIR}/cbicaToolkit.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/cbica.py
+    DESTINATION ${PYTHON_SITE_PACKAGES} 
+	COMPONENT PythonModule
   )
-ELSE()
-  INSTALL(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${CBICA_PYTHON_IMPLEMENTATION_NAME}.py
-    ${CMAKE_CURRENT_BINARY_DIR}/${SWIG_MODULE_${CBICA_PYTHON_IMPLEMENTATION_NAME}_REAL_NAME}.so
-    DESTINATION ${CBICA_PYTHON_INSTALL_DIR} 
-    COMPONENT PythonModule
-  )
-ENDIF()
-  
-
 #ENDIF()
 
 ## Testing of Python module
 # Test that will try to load any class in the target language: python
 # it make sure swig was not broken accidentally
 #IF(BUILD_TESTING)
-#  ADD_PYTHON_TEST(TestWrapPython TestWrap.py ${CBICA__SOURCE_DIR}/src)
-#  IF(BUILD_DOCUMENTATION)
-#    ADD_PYTHON_TEST(TestDoxy2SWIGPython doxy2swig.py ${CBICA_BINARY_DIR}/Utilities/doxygen/xml/index.xml ${CBICA_BINARY_DIR}/generated_docstrings.i)
+#  ADD_PYTHON_TEST(TestWrapPython TestWrap.py ${GDCM_SOURCE_DIR}/Source)
+#  IF(GDCM_DOCUMENTATION)
+#    ADD_PYTHON_TEST(TestDoxy2SWIGPython doxy2swig.py ${GDCM_BINARY_DIR}/Utilities/doxygen/xml/index.xml ${GDCM_BINARY_DIR}/generated_docstrings.i)
 #  ENDIF()
 #ENDIF()
 

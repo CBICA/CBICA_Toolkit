@@ -38,7 +38,7 @@ IF( ${USE_VTK} )
 ENDIF()
 
 # Automatic ITK build and link
-OPTION( USE_ITK "Use ITK v4.4.2" OFF )
+OPTION( USE_ITK "Use ITK v4.4.2" ON )
 IF( ${USE_ITK} )
 	FIND_PACKAGE( ITK REQUIRED )
 	IF( NOT ITK_DIR )

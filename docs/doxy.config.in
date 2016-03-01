@@ -229,23 +229,23 @@ SUBGROUPING            = YES
 # Private class members and static file members will be hidden unless 
 # the EXTRACT_PRIVATE and EXTRACT_STATIC tags are set to YES
 
-EXTRACT_ALL            = NO
+EXTRACT_ALL            = YES
 
 # If the EXTRACT_PRIVATE tag is set to YES all private members of a class 
 # will be included in the documentation.
 
-EXTRACT_PRIVATE        = NO
+EXTRACT_PRIVATE        = YES
 
 # If the EXTRACT_STATIC tag is set to YES all static members of a file 
 # will be included in the documentation.
 
-EXTRACT_STATIC         = NO
+EXTRACT_STATIC         = YES
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs) 
 # defined locally in source files will be included in the documentation. 
 # If set to NO only classes defined in header files are included.
 
-EXTRACT_LOCAL_CLASSES  = NO
+EXTRACT_LOCAL_CLASSES  = YES
 
 # This flag is only useful for Objective-C code. When set to YES local 
 # methods, which are defined in the implementation section but not in 
@@ -461,23 +461,12 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/doxy.log
 # with spaces.
 
 
-FILE_PATTERNS          = *.dox \
-                         *.md \
-                         *.txt
-
 INPUT                  =  	@PROJECT_SOURCE_DIR@ \
-                            @PROJECT_BINARY_DIR@ \
-                            @PROJECT_SOURCE_DIR@/README.md
-                            @PROJECT_SOURCE_DIR@/Install.txt
-                            @PROJECT_SOURCE_DIR@/People.txt
-                            @PROJECT_SOURCE_DIR@/Download.txt
-                            @PROJECT_SOURCE_DIR@/Changelog.txt
-                            @PROJECT_SOURCE_DIR@/licenses/License.txt
+								@PROJECT_BINARY_DIR@ \
+									README.md
 									
 
-USE_MDFILE_AS_MAINPAGE = README.md
-
-LAYOUT_FILE = @PROJECT_SOURCE_DIR@/docs/DoxygenLayout.xml
+#USE_MDFILE_AS_MAINPAGE = README.md
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -485,6 +474,15 @@ LAYOUT_FILE = @PROJECT_SOURCE_DIR@/docs/DoxygenLayout.xml
 # blank the following patterns are tested: 
 # *.c *.cc *.cxx *.cpp *.c++ *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx 
 # *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.py
+
+FILE_PATTERNS          = *.cpp \
+                         *.cc \
+                         *.txx \
+                         *.h \
+                         *.hh \
+                         *.hpp \
+                         *.py \
+                         *.dox
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -574,7 +572,7 @@ FILTER_SOURCE_FILES    = NO
 # Note: To get rid of all source code in the generated output, make sure also 
 # VERBATIM_HEADERS is set to NO.
 
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER         = YES
 
 # Setting the INLINE_SOURCES tag to YES will include the body 
 # of functions and classes directly in the documentation.
@@ -689,7 +687,7 @@ HTML_ALIGN_MEMBERS     = YES
 # Microsoft HTML help workshop to generate a compressed HTML help file (.chm) 
 # of the generated HTML documentation.
 
-GENERATE_HTMLHELP      = NO
+GENERATE_HTMLHELP      = YES
 
 # If the GENERATE_HTMLHELP tag is set to YES, the CHM_FILE tag can 
 # be used to specify the file name of the resulting .chm file. You 
@@ -1257,4 +1255,4 @@ DOT_CLEANUP            = YES
 # used. If set to NO the values of all tags below this one will be ignored.
 
 # JW SEARCHENGINE           = NO
-SEARCHENGINE           = YES
+SEARCHENGINE           = no

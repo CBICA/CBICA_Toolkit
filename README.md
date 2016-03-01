@@ -1,3 +1,28 @@
+\mainpage CBICA Toolkit
+
+Section of Biomedical Image Analysis <br>
+Department of Radiology <br>
+University of Pennsylvania <br>
+3600 Market Street, Suite 380 <br>
+Philadelphia, PA 19104 <br>
+
+<pre>
+Web  : http://www.cbica.upenn.edu/sbia/
+Email: <a href="mailto:sbia-software@uphs.upenn.edu">sbia-software at uphs.upenn.edu</a> 
+</pre>
+
+Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
+See http://www.cbica.upenn.edu/sbia/software/license.html or COPYING file.
+
+<b> Authors: </b><br>
+Sarthak – primary developer, integration of everything <br>
+Drew    – DTI algorithms <br>
+Michael – sort + rename <br>
+Martin  – sort + rename <br>
+Jimit   – Overall testing <br>
+Guray   – Overall testing <br>
+
+
 ===============
 1. INTRODUCTION
 ===============
@@ -7,9 +32,14 @@ Windows x64 and Linux (CentOS6) x64.
 
 All the functions are standalone in nature; i.e., they are header-only and can be exported individually for use/distribution in projects.
 
-Currently, the Toolkit has been tested to be working on Windows x64 using MS Visual Studio 2012 while linking against ITK/4.7.0 built with options
+Currently, the Toolkit has been tested to be working on Windows x64 using MS Visual Studio 2012 while linking against ITK/4.4.2 built with options
 specified in SBIA internal Wiki (http://sbia-wiki.uphs.upenn.edu/wiki/index.php/Third-party_Software#ITK).
 
+<b>TO DO:</b>
+- Compatibility with ITK/4.7.1
+- Individual executables for functions to make Python wrapping easier
+
+[Request a new function via eLog.]
 
 ==========
 2. INSTALL    
@@ -19,10 +49,11 @@ specified in SBIA internal Wiki (http://sbia-wiki.uphs.upenn.edu/wiki/index.php/
 2.1 Dependencies
 ----------------
 
-- C++ complier (MSVC/11.x, MSVC/12.x, GCC/4.8.1, GCC/4.9.2)
+- C++ complier (MSVC/12, GCC/4.9.2)
 - CMake 2.8.12.1
 - Doxygen (for documentation only)
-- SWIG (required for Python Wrapping) [tested on 3.0.0-3.0.5]
+- GIT (for superbuild system only) -- ?
+- ITK 4.7.0 (required for ITK based classes) - check cmake/ExternalITK for parameters
 
 Make sure all dependencies are met before proceeding with install.
 
@@ -155,7 +186,7 @@ TO DO:
 <CODE><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name></CODE>
 
 - <b>CmdParser</b>: Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file.
-
+  
   Available functions: 
 	- addParameter		: Add parameters one by one
 	- compareParamter	: Compare added parameters with command line input
@@ -168,46 +199,82 @@ TO DO:
 
 [Request a new function via eLog.]
 
+-----------------
+3.3 ITK Classes
+-----------------
 
-=======
-4 Usage
-=======
+- <b>ImageInfo</b>: obtains the data regarding spacing and dimensions of specified image in 
+<code>itk::ImageIOBase</code>; look in class documentation for details.
 
-Ensure you have completed the installation as described in Section 2.
+  Available functions: 
+	- getImageIOBase		  : Get the ImageIOBase class wrapped around a smart pointer<br>
+	- getImageDimensions	: Get the dimensions<br>
+	- getImageSpacings	  : Get the spacings<br>
 
--------------------
-4.1 For CPP library
--------------------
+- <b>CommonHolder</b>: Common interface class for all algorithmic classes.
+  
+- <b>ComputeAverageMap</b>: Computes the average of a series of images and writes the output. Set input files as a vector of strings
+and the output directory in the constructor itself.
 
-In your project, add the following your CMakeLists file:
+- <b>ComputeDtiScalars</b>: Computes and saves the specified scalar image for an image. Input image and output (director/file) are 
+specified in the constructor.
+  
+  Available options: 
+  - FA   : FA images
+  - EIG  : Eigensystem images
+  - GEO  : Geoemtric features
+  - SKEW : Tensor Skewness
+  - KURT : Tensor kurtosis
+  - RADAX: Radial and Axial diffusivity
+  - GORDR: Gordon's R measures
+  - GORDK: Gordon's K measures
+  - ALL  : All of the above (default)
+  
+- <b>ComputeVarianceMap</b>: Computes the variance and saves the output for a single image (can be changed easily by modifying
+the class to be more in line with ComputeAverageMap).
 
-\verbatim
-FIND_PACKAGE( CBICA_Toolkit REQUIRED )
-INCLUDE_DIRECTORIES( ${CBICA_Toolkit_INCLUDE_DIR} )
-ADD_EXECUTABLE( CBICA_Toolkit_Test ${PROJECT_SOURCE_DIR}/src/main.cxx )
-TARGET_LINK_LIBRARIES( CBICA_Toolkit_Test ${CBICA_Toolkit_LIBRARY} )
-\endverbatim
+NOTE: There are a lot of back-end classes which have been implemented for compatibility between itk versions. 
+These are not meant to be for standalone usage.
 
-Now you can access all functions available in CBICA_Toolkit.
+TO DO:
+- dti Stuff
 
-----------------------
-4.2 For Python library
-----------------------
+[Request a new function via eLog.]
 
-If you have installed Python classes to the directory <code>/home/xyz/libraries/cbica_toolkit</code>, just do:
 
-\verbatim
-import sys
-sys.path.append("/home/xyz/libraries/cbica_toolkit")
-import cbicaToolkit
-\endverbatim
+=======================
+4 Developer Information
+=======================
 
-Then use the toolkit as any other library.
+If you want to write a class which works with the CBICA Toolkit, please make sure you follow the set guidelines of the code. A brief summary:
+
+<b>
+For basic classes:
+</b>
+- As of now, there is no "default" interface (since functionality differs so wildly).
+- Make sure your class is well documented and a basic usage example is provided in the documentation (see cbica::CmdParser or cbica::Logging for examples)
+- Let's say your class' header file is <code>cbicaXYZ.h</code>, add it to the list of headers in <code>itk_dev/src/classes/CMakeLists.txt</code>
+(also add all other applicable files under headers or sources - this process of manual addition is intentional and in line with CMake guidelines).
+- Include <code>cbicaITK_XYZ.h</code> in the test executable <code>itk_dev/src/classes/testing/BasicFunctionTests.cxx</code> and write a specific test 
+and debug the class as required (suggested method is to hard code the path for debugging).
+
+    
+<b>
+For ITK classes:
+</b>
+
+- If you are writing a class which takes a file as input, make sure you inherit from the cbica::CommonHolder class, which has a lot of pre-defined
+functionality and also a basic default interface.
+- Let's say your class' header file is <code>cbicaITK_XYZ.h</code>, add it to the list of headers in <code>itk_dev/src/classes/itk/CMakeLists.txt</code>
+(also add all other applicable files under headers or sources - this process of manual addition is intentional and in line with CMake guidelines).
+- Include <code>cbicaITK_XYZ.h</code> in the test executable <code>itk_dev/src/classes/itk/testing/ItkFunctionTests.cxx</code> and write a specific test 
+and debug the class as required (suggested method is to hard code the path for debugging).
+
+Please adhere to the package structure.
 
 
 ===========
 5 LICENSING
 ===========
 
-  See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/License.txt" file.
- 
+  See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
