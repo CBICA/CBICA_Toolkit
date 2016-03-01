@@ -2,6 +2,14 @@
 
 \page Usage
 
-This is to show how ice cream is made.
+This library is designed to be called from another CPP project.
+
+These are mostly header-only functions with dependecies on <code>cbicaUtilities</code>.
+
+Developers' note:
+
+To use this, just go through the documentation and take the headers which are useful for your application. 
+
+For instance, if you need Command line parsing, just take cbicaCmdParser (.h and .cpp) and its specific dependency, i.e., cbicaUtilities (.h and .cpp) and integrate into your project's compilation.
 
 */
