@@ -374,6 +374,13 @@ namespace cbica
   std::vector< std::string > filesInDirectory( const std::string &dirName );
 
   /**
+  \brief Find all subdirectories inside a directory
+
+  \param dirName The directory to do the search in
+  */
+	std::vector<std::string> subdirectoriesInDirectory(const std::string &dirName);
+  
+  /**
   \brief Find all sub-directories inside a directory
 
   \param dirName The directory to do the search in

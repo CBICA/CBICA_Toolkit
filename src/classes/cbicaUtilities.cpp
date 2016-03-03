@@ -826,6 +826,65 @@ namespace cbica
     #endif
   }
 
+  std::vector<std::string> subdirectoriesInDirectory(const std::string &dirName)
+	{
+		std::vector< std::string > allDirectories;
+		std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
+		if (dirName_wrap[dirName_wrap.length() - 1] != '/')
+		{
+			dirName_wrap.append("/");
+		}
+		#if defined(_WIN32)
+		{
+			dirName_wrap.append("*.*");
+			char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
+			WIN32_FIND_DATA fd;
+			HANDLE hFind = ::FindFirstFile(search_path, &fd);
+			if (hFind != INVALID_HANDLE_VALUE)
+			{
+				do
+				{
+					if ((fd.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY
+						&& (fd.cFileName[0] != '.'))
+					{
+						allDirectories.push_back(fd.cFileName);
+					}
+				} while (FindNextFile(hFind, &fd) != 0);
+				::FindClose(hFind);
+			}
+			return allDirectories;
+
+		}
+		#else
+		{
+			DIR *dp;
+			struct dirent *dirp;
+			if ((dp = opendir(dirName.c_str())) == NULL)
+			{
+				std::cerr << "Error(" << errno << ") occurred while opening directory '" <<
+					dirName << "'\n";
+			}
+
+			while ((dirp = readdir(dp)) != NULL)
+			{
+				struct stat st;
+
+				if(strcmp(dent->d_name, ".") == 0 || strcmp(dirp->d_name, "..") == 0)
+					continue;
+
+				if (fstatat(dirfd(srcdir), dirp->d_name, &st, 0) < 0)
+					continue;
+
+				if (S_ISDIR(st.st_mode)) 
+					allDirectories.push_back(dirp->d_name);
+			}
+			closedir(dp);
+			return allDirectories;
+		}
+		#endif
+	}
+
+  
   std::vector<std::string> subdirectoriesInDirectory(const std::string &dirName, bool recursiveSearch)
   {
     if (!directoryExists(dirName))
