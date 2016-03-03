@@ -374,19 +374,12 @@ namespace cbica
   std::vector< std::string > filesInDirectory( const std::string &dirName );
 
   /**
-  \brief Find all subdirectories inside a directory
-
-  \param dirName The directory to do the search in
-  */
-	std::vector<std::string> subdirectoriesInDirectory(const std::string &dirName);
-  
-  /**
   \brief Find all sub-directories inside a directory
 
   \param dirName The directory to do the search in
   \param recursiveSearch Whether to do a recursive search or on a single level
   */
-  std::vector<std::string> subdirectoriesInDirectory( const std::string &dirName, bool recursiveSearch );
+  std::vector<std::string> subdirectoriesInDirectory( const std::string &dirName, bool recursiveSearch = false );
 
   /**
   \brief Find number of rows in CSV file
