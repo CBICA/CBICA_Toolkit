@@ -596,11 +596,30 @@ namespace cbica
 #if defined(__GNUC__) && (__GNUC__ < 5)
 namespace std
 {
-  template <typename DataType>
-  int round(const DataType &input)
+  /**
+  \brief Scenario for GCC 4.x
+  */
+  int round(const float &input)
   {
     int returnValue;
-    const DataType inputWrap = abs(input);
+    const float inputWrap = abs(input);
+    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
+
+    if (input < 0)
+    {
+      returnValue = -(returnValue);
+    }
+
+    return returnValue;
+  }
+  
+  /**
+  \brief Scenario for GCC 4.x
+  */
+  int round(const double &input)
+  {
+    int returnValue;
+    const double inputWrap = abs(input);
     inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
 
     if (input < 0)
