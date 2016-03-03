@@ -275,6 +275,19 @@ namespace cbica
 
   //======================================== OS stuff ======================================//
   
+  std::string getFilenameBase(const std::string &filename)
+	{
+    if (!fileExists(filename))
+    {
+      std::cerr << "Supplied file name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
+    std::string path, base, ext;
+    splitFileName(filename, path, base, ext);
+    
+    return base;
+	}
+	
   std::string getFilenameExtension(const std::string &filename)
   {
     if (!fileExists(filename))
@@ -282,10 +295,23 @@ namespace cbica
       std::cerr << "Supplied file name wasn't found.\n";
       exit(EXIT_FAILURE);
     }
-    std::string path, base, extension;
-    splitFileName(filename, path, base, extension);
+    std::string path, base, ext;
+    splitFileName(filename, path, base, ext);
     
-    return extension;
+    return ext;
+  }
+
+  std::string getFilenamePath(const std::string &filename)
+  {
+    if (!fileExists(filename))
+    {
+      std::cerr << "Supplied file name wasn't found.\n";
+      exit(EXIT_FAILURE);
+    }
+    std::string path, base, ext;
+    splitFileName(filename, path, base, ext);
+    
+    return path;
   }
 
   std::string getExecutableName()

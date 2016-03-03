@@ -186,17 +186,40 @@ namespace cbica
   \return true for success
   */
   bool deleteDir( const std::string &path );
-    
-  /**
-  \brief Gets the extension of the supplied file name
+   
+	/**
+	\brief Gets the extension of the supplied file name using splitFileName()
 
-  Prefer to use "/" as file path delimiters.
+	Prefer to use "/" as file path deliminators.
+
+	\param filename The input filename
+  \param checkFile Checks existence of file using fileExists
+	\return std::string which has the file extension
+	*/
+	std::string getFilenameExtension(const std::string &filename, bool checkFile = true);
+
+  /**
+  \brief Gets the base of the supplied file name using splitFileName()
+
+  Prefer to use "/" as file path deliminators.
 
   \param filename The input filename
+  \param checkFile Checks existence of file using fileExists
   \return std::string which has the file extension
   */
-  std::string getFilenameExtension( const std::string &filename );
-  
+  std::string getFilenameBase(const std::string &filename, bool checkFile = true);
+
+  /**
+  \brief Gets the path of the supplied file name using splitFileName()
+
+  Prefer to use "/" as file path deliminators.
+
+  \param filename The input filename
+  \param checkFile Checks existence of file using fileExists
+  \return std::string which has the file extension
+  */
+  std::string getFilenamePath(const std::string &filename, bool checkFile = true);
+
   /**
   \brief Get the name of the Executable which is calling the function
 
