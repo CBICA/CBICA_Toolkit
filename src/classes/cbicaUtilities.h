@@ -19,6 +19,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <sstream>
 #include <stdexcept>
 #include <iterator>
+#include <math.h>
 //#include <type_traits>
 
 struct CSVDict
@@ -591,3 +592,23 @@ namespace cbica
   
 #endif
 };
+
+#if defined(__GNUC__) && (__GNUC__ < 5)
+namespace std
+{
+  template <typename DataType>
+  int round(const DataType &input)
+  {
+    int returnValue;
+    const DataType inputWrap = abs(input);
+    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
+
+    if (input < 0)
+    {
+      returnValue = -(returnValue);
+    }
+
+    return returnValue;
+  }
+};
+#endif
