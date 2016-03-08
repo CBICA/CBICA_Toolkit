@@ -622,7 +622,7 @@ namespace std
   /**
   \brief Scenario for GCC 4.x
   */
-  int round(const float &input)
+  inline int round(const float &input)
   {
     int returnValue;
     const float inputWrap = abs(input);
@@ -639,10 +639,27 @@ namespace std
   /**
   \brief Scenario for GCC 4.x
   */
-  int round(const double &input)
+  inline int round(const double &input)
   {
     int returnValue;
     const double inputWrap = abs(input);
+    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
+
+    if (input < 0)
+    {
+      returnValue = -(returnValue);
+    }
+
+    return returnValue;
+  }
+  
+  /**
+  \brief Scenario for GCC 4.x
+  */
+  inline int round(const long int &input)
+  {
+    int returnValue;
+    const long int inputWrap = abs(input);
     inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
 
     if (input < 0)
