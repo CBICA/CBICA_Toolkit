@@ -675,12 +675,20 @@ namespace cbica
     case itk::ImageIOBase::FLOAT:
       {
         std::cout << "Writing image(s) in directory: " << m_outputDir << "\n";
-        bool success = runner<float, float, 3>(m_inputFiles[0], m_outputBaseNames[0], m_extension, m_parameters);
+        if( !runner<float, float, 3>(m_inputFiles[0], m_outputBaseNames[0], m_extension, m_parameters) )
+        {
+          std::cerr << "Runner failed.\n";
+          exit(EXIT_FAILURE);
+        }
       }
     case itk::ImageIOBase::DOUBLE:
       {
         std::cout << "Writing image(s) in directory: " << m_outputDir << "\n";
-        bool success = runner<double, float, 3>(m_inputFiles[0], m_outputBaseNames[0], m_extension, m_parameters);
+        if( !runner<double, float, 3>(m_inputFiles[0], m_outputBaseNames[0], m_extension, m_parameters) )
+        {
+          std::cerr << "Runner failed.\n";
+          exit(EXIT_FAILURE);
+        }
       }
     default:
       {

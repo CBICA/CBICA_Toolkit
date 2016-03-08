@@ -17,13 +17,12 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 	#include <direct.h>
   #include <windows.h>
   #include <conio.h>
-//  #include "windows/dirent.h"
   #include <lmcons.h>
   #include <Shlobj.h>
   #define GetCurrentDir _getcwd
   bool WindowsDetected = true;
   static const char  cSeparator  = '\\';
-  static const char* cSeparators = "\\/";
+//  static const char* cSeparators = "\\/";
 #else
   #include <dirent.h>
   #include <unistd.h>
@@ -36,7 +35,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
   #define GetCurrentDir getcwd
   bool WindowsDetected = false;
   static const char  cSeparator  = '/';
-  static const char* cSeparators = "/";
+//  static const char* cSeparators = "/";
 #endif
 
 #include <fstream>
@@ -980,9 +979,9 @@ namespace cbica
     int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
     // if the total number of rows in CSV file are less than the available number of threads on machine (happens for testing),
     // use only the number of rows where meaningful data is present - this avoids extra thread overhead
-    threads > numberOfRows ? threads = static_cast<int>(numberOfRows - 1) : threads = threads; 
+    threads > static_cast<int>(numberOfRows) ? threads = static_cast<int>(numberOfRows - 1) : threads = threads; 
 #pragma omp parallel for num_threads(threads)
-    for (int rowCounter = 1; rowCounter < allRows.size(); rowCounter++)
+    for (size_t rowCounter = 1; rowCounter < allRows.size(); rowCounter++)
     {
       return_CSVDict[rowCounter - 1].inputImages.resize(inputColumnIndeces.size()); // pre-initialize size to ensure thread-safety
       for (size_t i = 0; i < inputColumnIndeces.size(); i++)

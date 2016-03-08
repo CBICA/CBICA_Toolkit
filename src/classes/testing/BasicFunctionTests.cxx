@@ -49,10 +49,10 @@ int main(int argc, char** argv)
         (std::string("--cmdParser").compare(argv[1]) == 0) )
     {
       int i = 0;
-      argv[++i] = "-1p";
-      argv[++i] = "1";
-      argv[++i] = "--secondParam";
-      argv[++i] = "2";
+      argv[++i] = (char *)"-1p";
+      argv[++i] = (char *)"1";
+      argv[++i] = (char *)"--secondParam";
+      argv[++i] = (char *)"2";
       
       cbica::CmdParser parser = cbica::CmdParser(i+1, argv);
       parser.setExeName("BasicFunctionTests");

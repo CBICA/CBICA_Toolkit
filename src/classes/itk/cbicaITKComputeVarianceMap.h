@@ -116,11 +116,11 @@ namespace cbica
     template <typename PixelType,unsigned int Dimension>
     void computeVarianceRunner( std::vector<std::string> inpFiles, std::string outputFile )
     {    
-      bool isScalar;
+      /*bool isScalar;
       if ( m_pixelType == itk::ImageIOBase::SCALAR )
         isScalar = true;
       else
-        isScalar = false;
+        isScalar = false;*/
     
       // typedefs
       typedef typename itk::Image< PixelType,  Dimension >   InputImageType;
@@ -132,7 +132,7 @@ namespace cbica
       
       // Lets hold on to all the readers?
       typename std::vector< ReaderPointerType > readers;
-      for (int i=0; i<inpFiles.size() ;i++)
+      for (size_t i=0; i<inpFiles.size() ;i++)
       {
         typename ReaderType::Pointer reader = ReaderType::New();
         itk::NiftiImageIO::Pointer imageIOr = itk::NiftiImageIO::New();

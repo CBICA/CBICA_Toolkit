@@ -43,7 +43,7 @@ namespace cbica
     m_IOComponentType_asString = m_itkImageIOBase->GetComponentTypeAsString(m_IOComponentType);
     m_pixelType_asString = m_itkImageIOBase->GetPixelTypeAsString(m_pixelType);
 
-    for (int i = 0; i<m_itkImageIOBase->GetNumberOfDimensions(); i++)
+    for (size_t i = 0; i<m_itkImageIOBase->GetNumberOfDimensions(); i++)
     {
       m_spacings.push_back(m_itkImageIOBase->GetSpacing(i));
       m_size.push_back(m_itkImageIOBase->GetDimensions(i));
