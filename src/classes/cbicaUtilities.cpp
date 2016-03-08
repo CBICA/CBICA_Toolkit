@@ -8,6 +8,8 @@ Dependecies: OpenMP
 https://www.cbica.upenn.edu/sbia/software/ <br>
 sbia-software@uphs.upenn.edu
 
+\author Sarthak Pati
+
 Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
@@ -22,7 +24,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
   #define GetCurrentDir _getcwd
   bool WindowsDetected = true;
   static const char  cSeparator  = '\\';
-//  static const char* cSeparators = "\\/";
+  static const char* cSeparators = "\\/";
 #else
   #include <dirent.h>
   #include <unistd.h>
@@ -35,7 +37,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
   #define GetCurrentDir getcwd
   bool WindowsDetected = false;
   static const char  cSeparator  = '/';
-//  static const char* cSeparators = "/";
+  static const char* cSeparators = "/";
 #endif
 
 #include <fstream>
@@ -274,12 +276,15 @@ namespace cbica
 
   //======================================== OS stuff ======================================//
   
-  std::string getFilenameBase(const std::string &filename)
-	{
-    if (!fileExists(filename))
+  std::string getFilenameBase(const std::string &filename, bool checkFile)
+  {
+    if (checkFile)
     {
-      std::cerr << "Supplied file name wasn't found.\n";
-      exit(EXIT_FAILURE);
+      if (!fileExists(filename))
+      {
+        std::cerr << "Supplied file name wasn't found.\n";
+        exit(EXIT_FAILURE);
+      }
     }
     std::string path, base, ext;
     splitFileName(filename, path, base, ext);
@@ -287,12 +292,15 @@ namespace cbica
     return base;
 	}
 	
-  std::string getFilenameExtension(const std::string &filename)
+  std::string getFilenameExtension(const std::string &filename, bool checkFile)
   {
-    if (!fileExists(filename))
+    if (checkFile)
     {
-      std::cerr << "Supplied file name wasn't found.\n";
-      exit(EXIT_FAILURE);
+      if (!fileExists(filename))
+      {
+        std::cerr << "Supplied file name wasn't found.\n";
+        exit(EXIT_FAILURE);
+      }
     }
     std::string path, base, ext;
     splitFileName(filename, path, base, ext);
@@ -300,12 +308,15 @@ namespace cbica
     return ext;
   }
 
-  std::string getFilenamePath(const std::string &filename)
+  std::string getFilenamePath(const std::string &filename, bool checkFile)
   {
-    if (!fileExists(filename))
+    if (checkFile)
     {
-      std::cerr << "Supplied file name wasn't found.\n";
-      exit(EXIT_FAILURE);
+      if (!fileExists(filename))
+      {
+        std::cerr << "Supplied file name wasn't found.\n";
+        exit(EXIT_FAILURE);
+      }
     }
     std::string path, base, ext;
     splitFileName(filename, path, base, ext);
@@ -979,9 +990,9 @@ namespace cbica
     int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
     // if the total number of rows in CSV file are less than the available number of threads on machine (happens for testing),
     // use only the number of rows where meaningful data is present - this avoids extra thread overhead
-    threads > static_cast<int>(numberOfRows) ? threads = static_cast<int>(numberOfRows - 1) : threads = threads; 
+    threads > numberOfRows ? threads = static_cast<int>(numberOfRows - 1) : threads = threads; 
 #pragma omp parallel for num_threads(threads)
-    for (size_t rowCounter = 1; rowCounter < allRows.size(); rowCounter++)
+    for (int rowCounter = 1; rowCounter < allRows.size(); rowCounter++)
     {
       return_CSVDict[rowCounter - 1].inputImages.resize(inputColumnIndeces.size()); // pre-initialize size to ensure thread-safety
       for (size_t i = 0; i < inputColumnIndeces.size(); i++)
