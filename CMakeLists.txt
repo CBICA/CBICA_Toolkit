@@ -10,11 +10,12 @@
 # See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 ##############################################################################
 
-CMAKE_MINIMUM_REQUIRED( VERSION 3.0 )
+CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
 SET( 
   PROJECT_NAME CBICA-TK_Trunk # change this for branches, etc.
-  VERSION 0.0.2 ) # change project name here
+  #VERSION 0.0.2 
+  ) # change project name here
 
 SET( RELEASE_ID "${PROJECT_VERSION}" )
 SET( CONTACT_INFO "sbia-software@uphs.upenn.edu" )
@@ -50,6 +51,10 @@ SET( SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/src )
 SET( BASIC_CLASS_DIRECTORY ${SOURCE_DIRECTORY}/classes )
 
 ADD_SUBDIRECTORY( ${BASIC_CLASS_DIRECTORY} )
+
+FIND_PACKAGE(OpenMP REQUIRED)
+SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
 
 # Done for temporary testing
 FILE( GLOB 
@@ -143,18 +148,18 @@ SET( EXE_NAME ${PROJECT_NAME} CACHE STRING "Executable name" FORCE)
 #)
 
 ## Add c++11 flag to compilation if GCC is detected under UNIX: how does this translate to MinGW/Cygwin??
-IF(UNIX)
-	INCLUDE( CheckCXXCompilerFlag )
-	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-	IF( COMPILER_SUPPORTS_CXX11 )
-		SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	ELSEIF(COMPILER_SUPPORTS_CXX0X )
-		SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-	ELSE()
-		MESSAGE(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-	ENDIF()
-ENDIF(UNIX) 
+IF(CMAKE_COMPILER_IS_GNUCXX)
+	#INCLUDE( CheckCXXCompilerFlag )
+	#CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+	#CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+	#IF( COMPILER_SUPPORTS_CXX11 )
+	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	#ELSEIF(COMPILER_SUPPORTS_CXX0X )
+	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+	#ELSE()
+	#	MESSAGE(ERROR " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+	#ENDIF()
+ENDIF(CMAKE_COMPILER_IS_GNUCXX) 
 
 ## Link libraries
 #IF( BUILD_CBICA_ITK_CLASSES )

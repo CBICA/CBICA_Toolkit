@@ -19,7 +19,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <sstream>
 #include <stdexcept>
 #include <iterator>
-#include <math.h>
+#include <cmath>
 //#include <type_traits>
 
 struct CSVDict
@@ -31,7 +31,7 @@ struct CSVDict
   std::vector< double > inputLabels;
 
   //! Contructor
-  CSVDict(CSVDict &origin) :
+  CSVDict(const CSVDict &origin) :
     inputImages(origin.inputImages), inputLabels(origin.inputLabels)
   { };
 

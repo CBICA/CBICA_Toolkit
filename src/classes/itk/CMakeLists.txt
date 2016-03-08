@@ -21,10 +21,8 @@ FIND_PACKAGE(ITK REQUIRED)
 INCLUDE( ${ITK_USE_FILE} )
 
 FIND_PACKAGE(OpenMP REQUIRED)
-IF(OPENMP_FOUND)
-  SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
-  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
-ENDIF()
+SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
 
 SET( ITK_Class_Headers 
   ${CMAKE_CURRENT_SOURCE_DIR}/../cbicaUtilities.h
@@ -79,35 +77,16 @@ SET(CMAKE_DEBUG_POSTFIX "d")
 
 ## Add c++11 flag to compilation if GCC is detected under UNIX: how does this translate to MinGW/Cygwin??
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  
-  ## string search
-  #string(SUBSTRING <string> <begin> <length> <output variable>)
-  #MESSAGE( STATUS "cxx_flags: ${CMAKE_CXX_FLAGS}" )
-  #string(REPLACE " " ";" FLAGS ${CMAKE_CXX_FLAGS})
-  #MESSAGE( STATUS "flags: ${FLAGS}" )
-  #FOREACH( flag ${FLAGS} )
-  #  MESSAGE( STATUS "current flag == ${flag}" )
-  #  IF( ${flag} STREQUAL "-ftemplate-depth-50" )
-  #    MESSAGE( STATUS "FOUND!" )
-  #  ENDIF()
-  #ENDFOREACH()
-  #SET( CMAKE_CXX_FLAGS "-ftemplate-depth=900 -Wall -Wno-deprecated -msse2" )
-  #MESSAGE( STATUS "flags: ${CMAKE_CXX_FLAGS}")
-  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=900" )
-	#INCLUDE( CheckCXXCompilerFlag )
+  	#INCLUDE( CheckCXXCompilerFlag )
 	#CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 	#CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 	#IF( COMPILER_SUPPORTS_CXX11 )
-	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ftemplate-depth=900" )
+	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 	#ELSEIF(COMPILER_SUPPORTS_CXX0X )
-	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 	#ELSE()
-	#	MESSAGE(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+	#	MESSAGE(ERROR " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 	#ENDIF()
-  
-  #MESSAGE( STATUS "flags: ${CMAKE_CXX_FLAGS}")
-  
-  #SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ftemplate-depth=900 -fdiagnostics-color=always" )
 ENDIF(CMAKE_COMPILER_IS_GNUCXX) 
 
 FIND_PACKAGE( OpenCV 3.0 ) # this is required for the cbica::vectorizeImage function defined in cbicaITKUtilities
