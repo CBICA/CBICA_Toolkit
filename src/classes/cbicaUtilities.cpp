@@ -992,7 +992,7 @@ namespace cbica
     // use only the number of rows where meaningful data is present - this avoids extra thread overhead
     threads > static_cast<int>(numberOfRows) ? threads = static_cast<int>(numberOfRows - 1) : threads = threads; 
 #pragma omp parallel for num_threads(threads)
-    for (int rowCounter = 1; rowCounter < allRows.size(); rowCounter++)
+    for (size_t rowCounter = 1; rowCounter < allRows.size(); rowCounter++)
     {
       return_CSVDict[rowCounter - 1].inputImages.resize(inputColumnIndeces.size()); // pre-initialize size to ensure thread-safety
       for (size_t i = 0; i < inputColumnIndeces.size(); i++)
