@@ -21,7 +21,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <sstream>
 #include <stdexcept>
 #include <iterator>
-#include <cmath>
+#include <math.h>
 //#include <type_traits>
 
 /**
@@ -663,6 +663,22 @@ namespace std
 
   //! std::to_string wrap for GCC
   std::string to_string(const int &input)
+  {
+    std::ostringstream ss;
+    ss << input;
+    return ss.str();
+  }
+
+  //! std::to_string wrap for GCC
+  std::string to_string(const unsigned int &input)
+  {
+    std::ostringstream ss;
+    ss << input;
+    return ss.str();
+  }
+
+  //! std::to_string wrap for GCC
+  std::string to_string(const size_t &input)
   {
     std::ostringstream ss;
     ss << input;
