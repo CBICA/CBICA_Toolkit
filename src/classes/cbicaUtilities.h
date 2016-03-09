@@ -662,7 +662,7 @@ namespace std
   }
 
   //! std::to_string wrap for GCC
-  std::string to_string(const int &input)
+  inline std::string to_string(const int &input)
   {
     std::ostringstream ss;
     ss << input;
@@ -670,7 +670,7 @@ namespace std
   }
 
   //! std::to_string wrap for GCC
-  std::string to_string(const unsigned int &input)
+  inline std::string to_string(const unsigned int &input)
   {
     std::ostringstream ss;
     ss << input;
@@ -678,7 +678,7 @@ namespace std
   }
 
   //! std::to_string wrap for GCC
-  std::string to_string(const size_t &input)
+  inline std::string to_string(const size_t &input)
   {
     std::ostringstream ss;
     ss << input;
@@ -686,7 +686,7 @@ namespace std
   }
 
   //! std::to_string wrap for GCC
-  std::string to_string(const long int &input)
+  inline std::string to_string(const long int &input)
   {
     std::ostringstream ss;
     ss << input;
@@ -694,7 +694,7 @@ namespace std
   }
 
   //! std::to_string wrap for GCC
-  std::string to_string(const double &input)
+  inline std::string to_string(const double &input)
   {
     std::ostringstream ss;
     ss << input;
@@ -702,7 +702,7 @@ namespace std
   }
 
   //! std::to_string wrap for GCC
-  std::string to_string(const float &input)
+  inline std::string to_string(const float &input)
   {
     std::ostringstream ss;
     ss << input;
