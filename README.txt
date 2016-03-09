@@ -128,17 +128,26 @@ The test executables (if any) are generated into the binary directory by default
 Folder/File operations:
 
 - <b>fileExists</b>: Check if specified file exists or not
+- <b>isFile</b>: Wrap of <code>fileExists</code>
 - <b>directoryExists</b>: Check if specified directory exists or not
+- <b>isDir</b>: Wrap of <code>directoryExists</code>
 - <b>createTmpDir</b>: Creates a temporary directory
+- <b>createTemporaryDirectory</b>: Wrap of <code>createTmpDir</code>
+- <b>makeTemporaryDirectory</b>: Wrap of <code>createTmpDir</code>
 - <b>createDir</b>: Creates a directory
 - <b>makeDir</b>: Wrap for <code>createDir</code>
 - <b>removeDirectoryRecursively</b>: Removes a directory and all its contents
 - <b>removeDir</b>: Wrap for <code>removeDirectoryRecursively</code>
 - <b>deleteDir</b>: Wrap for <code>removeDirectoryRecursively</code>
+- <b>numberOfRowsInFile</b>: Number of rows in CSV file
+- <b>numberOfColsInFile</b>: Number of cols in CSV file
+- <b>parseCSVFile</b>: Parse a list CSV file which contains file names and labels
 
 OS operations:
 
-- <b>getFilenameExtension</b>: Get the extension of the supplied file name
+- <b>getFilenameExtension</b>: Get the extension of the supplied file name. Wrap of <code>splitFileName</code>
+- <b>getFilenameBase</b>: Get the extension of the supplied file name. Wrap of <code>splitFileName</code>
+- <b>getFilenamePath</b>: Get the extension of the supplied file name. Wrap of <code>splitFileName</code>
 - <b>getExecutableName</b>: Get current executable name
 - <b>getFullPath</b>: Get path of current executable
 - <b>getUserName</b>: Get current user name
@@ -146,12 +155,13 @@ OS operations:
 - <b>normalizePath</b>: Wrap for normPath
 - <b>relativePath</b>: Wrap for relPath
 - <b>realPath</b>: Reimplementation of python's "os.path.realpath"
-- <b>exists</b>: Reimplementation of python's "os.path.exists"
 - <b>isLink</b>: Reimplementation of python's "os.path.islink"
 - <b>isSymbolicLink</b>: Wrap for <code>isLink</code>
 - <b>makeSymbolicLink</b>: Make a symbolic link of a file
 - <b>setEnvironmentVariable</b>: Sets the environment variable
 - <b>deleteEnvironmentVariable</b>: Delete the environment variable
+- <b>filesInDirectory</b>: Find all files in the first level of directory
+- <b>subdirectoriesInDirectory</b>: Find all directories. Recursive turned off by default.
 
 Python re-implementations: 
 
@@ -173,6 +183,18 @@ String operations:
 - <b>convertString</b>: Convert a character to its corresponding ASCII code
 - <b>convertCharacter</b>: Convert first character to integer, double, unsigned int, etc.
 
+MISC:
+
+- <b>compareEqual</b>: Compare if multiple inputs are equal
+- <b>compareGreater</b>: Compare if first input is greater than rest
+- <b>compareLesser</b>: Compare if first input is lesser than rest
+
+
+STD Overrides (these are present for GCC < 5):
+
+- <b>round</b>: std::round wrap
+- <b>to_string</b>: std::round wrap
+
 TO DO:
 
 
@@ -182,17 +204,33 @@ TO DO:
 3.2 Basic Classes
 -------------------
 
-- <b>Logging</b>: A logging class for internal use. Generated log is in the format: <br>
+* <b>Logging</b>: A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file.
+
+Generated log is in the format: <br>
 <CODE><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name></CODE>
 
-- <b>CmdParser</b>: Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file.
+Available functions:
+
+** <b>EnableTextLogging</b>: Switches from console to specific text file
+** <b>Write</b>: Writes free text to console/file as std::cout
+** <b>WriteError</b>: Writes free text to console/file as std::cerr - used for error reporting
+** <b>UseNewFile</b>: Change Logging file after initializing class
+
+
+* <b>CmdParser</b>: Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file. It picks up exe name using getExecutableName() but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file).
   
-  Available functions: 
-	- addParameter		: Add parameters one by one
-	- compareParamter	: Compare added parameters with command line input
-	- getDescription	: Get description for a particular added parameter
-	- echoUsage			  : Give usage of the executable
-	- echoVersion			: Give version details of the executable
+Available functions: 
+
+** <b>addRequiredParameter</b>: Add required parameter (no '-' is necessary) - exception is thrown if a required parameter is missing
+** <b>addOptionalParameter</b>: Add optional parameter (no '-' is necessary)
+** <b>addParameter</b>: Defaults to addOptionalParameter()
+** <b>compareParameter</b>: Check if specific parameter is present in the argv
+** <b>getDescription</b>: Get description of the specific parameter 
+** <b>exampleUsage</b>: Add an example usage which comes up in echoHelp()
+** <b>setExeName</b>: Set a custom executable name
+** <b>writeConfigFile</b>: Writes a machine readable configuration file for the executable
+** <b>echoUsage</b>: Based on the parameters added, it automatically constructs an echoUsage() console output which includes contact information and copyright details
+** <b>echoHelp</b>: Based on the parameters added, it automatically constructs an echoHelp() console output which includes contact information and copyright details
   
 TO DO:
 
@@ -203,34 +241,34 @@ TO DO:
 3.3 ITK Classes
 -----------------
 
-- <b>ImageInfo</b>: obtains the data regarding spacing and dimensions of specified image in 
+* <b>ImageInfo</b>: obtains the data regarding spacing and dimensions of specified image in 
 <code>itk::ImageIOBase</code>; look in class documentation for details.
 
-  Available functions: 
-	- getImageIOBase		  : Get the ImageIOBase class wrapped around a smart pointer<br>
-	- getImageDimensions	: Get the dimensions<br>
-	- getImageSpacings	  : Get the spacings<br>
+Available functions: 
+** <b>getImageIOBase</b>: Get the ImageIOBase class wrapped around a smart pointer<br>
+** <b>getImageDimensions</b>: Get the dimensions<br>
+** <b>getImageSpacings</b>: Get the spacings<br>
 
-- <b>CommonHolder</b>: Common interface class for all algorithmic classes.
+* <b>CommonHolder</b>: Common interface class for all algorithmic classes.
   
-- <b>ComputeAverageMap</b>: Computes the average of a series of images and writes the output. Set input files as a vector of strings
+* <b>ComputeAverageMap</b>: Computes the average of a series of images and writes the output. Set input files as a vector of strings
 and the output directory in the constructor itself.
 
-- <b>ComputeDtiScalars</b>: Computes and saves the specified scalar image for an image. Input image and output (director/file) are 
+* <b>ComputeDtiScalars</b>: Computes and saves the specified scalar image for an image. Input image and output (director/file) are 
 specified in the constructor.
   
-  Available options: 
-  - FA   : FA images
-  - EIG  : Eigensystem images
-  - GEO  : Geoemtric features
-  - SKEW : Tensor Skewness
-  - KURT : Tensor kurtosis
-  - RADAX: Radial and Axial diffusivity
-  - GORDR: Gordon's R measures
-  - GORDK: Gordon's K measures
-  - ALL  : All of the above (default)
+Available options: 
+** FA   : FA images
+** EIG  : Eigensystem images
+** GEO  : Geoemtric features
+** SKEW : Tensor Skewness
+** KURT : Tensor kurtosis
+** RADAX: Radial and Axial diffusivity
+** GORDR: Gordon's R measures
+** GORDK: Gordon's K measures
+** ALL  : All of the above (default)
   
-- <b>ComputeVarianceMap</b>: Computes the variance and saves the output for a single image (can be changed easily by modifying
+* <b>ComputeVarianceMap</b>: Computes the variance and saves the output for a single image (can be changed easily by modifying
 the class to be more in line with ComputeAverageMap).
 
 NOTE: There are a lot of back-end classes which have been implemented for compatibility between itk versions. 
