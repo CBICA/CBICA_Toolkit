@@ -24,7 +24,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
   #define GetCurrentDir _getcwd
   bool WindowsDetected = true;
   static const char  cSeparator  = '\\';
-  static const char* cSeparators = "\\/";
+//  static const char* cSeparators = "\\/";
 #else
   #include <dirent.h>
   #include <unistd.h>
@@ -37,7 +37,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
   #define GetCurrentDir getcwd
   bool WindowsDetected = false;
   static const char  cSeparator  = '/';
-  static const char* cSeparators = "/";
+//  static const char* cSeparators = "/";
 #endif
 
 #include <fstream>
