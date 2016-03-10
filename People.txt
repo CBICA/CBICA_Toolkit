@@ -18,8 +18,8 @@ SOFTWARE AUTHORS
     <td>DTI algorithms</td>		
   </tr>
   <tr text-align="top">
-    <td width="15%">Martin</td>
-    <td>Sort + Rename</td>		
+    <td width="15%">Saima</td>
+    <td>DICOM handling</td>		
   </tr>
   <tr text-align="top">
     <td width="15%">Jimit</td>
