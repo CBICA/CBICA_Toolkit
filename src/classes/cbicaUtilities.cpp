@@ -1031,32 +1031,67 @@ namespace cbica
      std::string &baseName, std::string &extension )
   {
     std::string dataFile_wrap = dataFile;
-    if (dataFile_wrap.find(".nii.gz") != std::string::npos)
+    std::vector< std::string > compressionFormats = { ".gz", ".bz", ".zip", ".bz2" };
+    
+    // check for compression formats
+    for (size_t i = 0; i < compressionFormats.size(); i++)
     {
-      dataFile_wrap = cbica::replaceString(dataFile_wrap, ".nii.gz", "");
-      extension = ".nii.gz";
-      std::string temp;
-      cbica::splitFileName(dataFile_wrap, path, baseName, temp);
+      if (dataFile_wrap.find(compressionFormats[i]) != std::string::npos)
+      {
+        dataFile_wrap = cbica::replaceString(dataFile_wrap, compressionFormats[i], "");
+        std::string tempExt;
+        cbica::splitFileName(dataFile_wrap, path, baseName, tempExt);
+        extension = tempExt + compressionFormats[i];
+      }
+    }
+      //! Initialize pointers to file and user names
+#if (_MSC_VER >= 1700)
+    char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX], drive_letter[FILENAME_MAX];
+    //_splitpath(dataFile_wrap.c_str(), NULL, path_name, basename_var, ext);
+    _splitpath_s(dataFile.c_str(), drive_letter, FILENAME_MAX, path_name, FILENAME_MAX, basename_var, FILENAME_MAX, ext, FILENAME_MAX);
+#else
+    char *basename_var, *ext, *path_name;
+    path_name = dirname(cbica::constCharToChar(dataFile_wrap.c_str()));
+    basename_var = basename(cbica::constCharToChar(dataFile_wrap.c_str()));
+    ext = strrchr(cbica::constCharToChar(dataFile_wrap.c_str()), '.');
+#endif
+
+    //path sanity check
+    if (path_name == NULL)
+    {
+      std::cerr << "No filename path has been detected.\n";
+      exit(EXIT_FAILURE);
     }
     else
     {
-      //! Initialize pointers to file and user names
-#if (_MSC_VER >= 1700)
-      char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX], drive_letter[FILENAME_MAX];
-      //_splitpath(dataFile_wrap.c_str(), NULL, path_name, basename_var, ext);
-      _splitpath_s(dataFile.c_str(), drive_letter, FILENAME_MAX, path_name, FILENAME_MAX, basename_var, FILENAME_MAX, ext, FILENAME_MAX);
-      path = std::string(drive_letter) + std::string(path_name);
-      path = cbica::replaceString(path, "\\", "/"); // normalize path for Windows
-#else
-      char *basename_var, *ext, *path_name;
-      path_name = dirname(cbica::constCharToChar(dataFile_wrap.c_str()));
-      basename_var = basename(cbica::constCharToChar(dataFile_wrap.c_str()));
-      ext = strrchr(cbica::constCharToChar(dataFile_wrap.c_str()), '.');
-      path = std::string(path_name);
+      path = 
+#ifdef _WIN32
+        std::string(drive_letter) + 
 #endif
+        std::string(path_name);
+    }
+    path = cbica::replaceString(path, "\\", "/"); // normalize path for Windows
 
+    //base name sanity check
+    if (basename_var == NULL)
+    {
+      std::cerr << "No filename base has been detected.\n";
+      exit(EXIT_FAILURE);
+    }
+    else
+    {
       baseName = std::string(basename_var);
+    }
+
+    //extension sanity check
+    if (ext == NULL)
+    {
+      extension = "";
+    }
+    else
+    {
       extension = std::string(ext);
+    }
     
 #if (_MSC_VER >= 1700)
     path_name[0] = NULL;
@@ -1068,11 +1103,8 @@ namespace cbica
     {
       path += "/";
     }
-    }
-    if (baseName == "")
-      return false;
-    else
-      return true;
+    
+    return true;
   }
 
   std::vector<std::string> stringSplit( const std::string &str, const std::string &delim )
