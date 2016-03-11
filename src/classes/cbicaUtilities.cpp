@@ -1031,7 +1031,11 @@ namespace cbica
      std::string &baseName, std::string &extension )
   {
     std::string dataFile_wrap = dataFile;
-    std::vector< std::string > compressionFormats = { ".gz", ".bz", ".zip", ".bz2" };
+    std::vector< std::string > compressionFormats;
+    compressionFormats.push_back(".gz");
+    compressionFormats.push_back(".bz");
+    compressionFormats.push_back(".zip");
+    compressionFormats.push_back(".bz2");
     
     // check for compression formats
     for (size_t i = 0; i < compressionFormats.size(); i++)
