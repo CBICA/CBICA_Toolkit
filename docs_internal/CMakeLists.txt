@@ -85,9 +85,6 @@ IF   (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in")
 			CONFIGURE_FILE(${CMAKE_MODULE_PATH}/doxy.config.in 
 			${CMAKE_CURRENT_BINARY_DIR}/doxy.config
 			@ONLY )
-			CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../README.md 
-			${CMAKE_CURRENT_BINARY_DIR}/README.md
-			@ONLY )
 			SET(DOXY_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
 		ELSE (EXISTS "${CMAKE_MODULE_PATH}/doxy.config.in")
 			# failed completely...

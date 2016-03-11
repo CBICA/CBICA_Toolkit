@@ -43,9 +43,6 @@ IF   (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in")
 	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in 
     ${CMAKE_CURRENT_BINARY_DIR}/doxy.config
     @ONLY )
-	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../README.md 
-    ${CMAKE_CURRENT_BINARY_DIR}/README.md
-    @ONLY )
 	
 	# use (configured) doxy.config from (out of place) BUILD tree:
 	SET(DOXY_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
@@ -60,9 +57,6 @@ IF   (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in")
 			#MESSAGE(STATUS "configured ${CMAKE_CMAKE_MODULE_PATH}/doxy.config.in --> ${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
 			CONFIGURE_FILE(${CMAKE_MODULE_PATH}/doxy.config.in 
 			${CMAKE_CURRENT_BINARY_DIR}/doxy.config
-			@ONLY )
-			CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../README.md 
-			${CMAKE_CURRENT_BINARY_DIR}/README.md
 			@ONLY )
 			SET(DOXY_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
 		ELSE (EXISTS "${CMAKE_MODULE_PATH}/doxy.config.in")
