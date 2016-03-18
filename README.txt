@@ -3,7 +3,7 @@
 Section of Biomedical Image Analysis <br>
 Department of Radiology <br>
 University of Pennsylvania <br>
-3600 Market Street, Suite 380 <br>
+3700 Hamilton Walk, Floor 7 <br>
 Philadelphia, PA 19104 <br>
 
 <pre>
@@ -241,8 +241,7 @@ TO DO:
 3.3 ITK Classes
 -----------------
 
-* <b>ImageInfo</b>: obtains the data regarding spacing and dimensions of specified image in 
-<code>itk::ImageIOBase</code>; look in class documentation for details.
+* <b>ImageInfo</b>: obtains the data regarding spacing and dimensions of specified image in <code>itk::ImageIOBase</code>; look in class documentation for details.
 
 Available functions: 
 ** <b>getImageIOBase</b>: Get the ImageIOBase class wrapped around a smart pointer<br>
@@ -251,11 +250,9 @@ Available functions:
 
 * <b>CommonHolder</b>: Common interface class for all algorithmic classes.
   
-* <b>ComputeAverageMap</b>: Computes the average of a series of images and writes the output. Set input files as a vector of strings
-and the output directory in the constructor itself.
+* <b>ComputeAverageMap</b>: Computes the average of a series of images and writes the output. Set input files as a vector of strings and the output directory in the constructor itself.
 
-* <b>ComputeDtiScalars</b>: Computes and saves the specified scalar image for an image. Input image and output (director/file) are 
-specified in the constructor.
+* <b>ComputeDtiScalars</b>: Computes and saves the specified scalar image for an image. Input image and output (director/file) are specified in the constructor.
   
 Available options: 
 ** FA   : FA images
@@ -268,9 +265,14 @@ Available options:
 ** GORDK: Gordon's K measures
 ** ALL  : All of the above (default)
   
-* <b>ComputeVarianceMap</b>: Computes the variance and saves the output for a single image (can be changed easily by modifying
-the class to be more in line with ComputeAverageMap).
+* <b>ComputeVarianceMap</b>: Computes the variance and saves the output for a single image (can be changed easily by modifying the class to be more in line with ComputeAverageMap).
 
+* <b>DtiRecon</b>: Reconstruction of DTI image
+  
+* <b>ITKUtilities</b>: Functions to make handling of images easier:
+** <b>VectorizeImages</b>: Vectorize a set of images in either column or row major format
+** <b>CreateMaskIndeces</b>
+  
 NOTE: There are a lot of back-end classes which have been implemented for compatibility between itk versions. 
 These are not meant to be for standalone usage.
 
