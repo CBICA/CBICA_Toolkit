@@ -107,6 +107,13 @@ IF( BUILD_DOCUMENTATION )
   ADD_SUBDIRECTORY( docs )
 ENDIF ()
 
+## This documentation is for the SBIA website ONLY. Remove these lines AND the "docs_internal" folder before publishing
+## under "tags".
+#SET( BUILD_DOCUMENTATION_INTERNAL OFF CACHE BOOL "Do you want to build Documentation (Needs Doxygen)." )
+#IF( BUILD_DOCUMENTATION_INTERNAL )
+#    ADD_SUBDIRECTORY( docs_internal )
+#ENDIF ()
+
 ### Python wrapping
 SET( BUILD_PYTHON_WRAP OFF CACHE BOOL "Do you want to wrap classes (needs SWIG 3.0.4)? Ensure build option matches Python lib build." )
 IF( BUILD_PYTHON_WRAP )
@@ -115,13 +122,6 @@ IF( BUILD_PYTHON_WRAP )
   ENDIF()
   ADD_SUBDIRECTORY( wrapping )
 ENDIF ()
-
-## This documentation is for the SBIA website ONLY. Remove these lines AND the "docs_internal" folder before publishing
-## under "tags".
-#SET( BUILD_DOCUMENTATION_INTERNAL OFF CACHE BOOL "Do you want to build Documentation (Needs Doxygen)." )
-#IF( BUILD_DOCUMENTATION_INTERNAL )
-#    ADD_SUBDIRECTORY( docs_internal )
-#ENDIF ()
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_BINARY_DIR}
