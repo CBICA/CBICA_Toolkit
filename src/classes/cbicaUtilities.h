@@ -661,6 +661,36 @@ namespace std
     return returnValue;
   }
 
+  //! std::round wrap for GCC
+  inline int round(const unsigned int &input)
+  {
+    int returnValue;
+    const unsigned int inputWrap = abs(input);
+    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
+
+    if (input < 0)
+    {
+      returnValue = -(returnValue);
+    }
+
+    return returnValue;
+  }
+
+  //! std::round wrap for GCC
+  inline int round(const short &input)
+  {
+    int returnValue;
+    const short inputWrap = abs(input);
+    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
+
+    if (input < 0)
+    {
+      returnValue = -(returnValue);
+    }
+
+    return returnValue;
+  }
+
   //! std::to_string wrap for GCC
   inline std::string to_string(const int &input)
   {
@@ -708,6 +738,6 @@ namespace std
     ss << input;
     return ss.str();
   }
-
+  
 };
 #endif
