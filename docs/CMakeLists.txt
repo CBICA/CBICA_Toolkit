@@ -29,7 +29,7 @@ ENDIF (CMAKE_BUILD_TOOL MATCHES "(msdev|devenv)")
 # we need latex for doxygen because of the formulas
 FIND_PACKAGE(LATEX)
 IF    (NOT LATEX_COMPILER)
-  MESSAGE(STATUS "latex command LATEX_COMPILER not found but usually required. You will probably get warnings and user inetraction on doxy run.")
+  MESSAGE(STATUS "latex command LATEX_COMPILER not found but usually required. You will probably get warnings and user interaction on doxy run.")
 ENDIF (NOT LATEX_COMPILER)
 IF    (NOT MAKEINDEX_COMPILER)
   MESSAGE(STATUS "makeindex command MAKEINDEX_COMPILER not found but usually required.")
@@ -57,6 +57,9 @@ IF   (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in")
 			#MESSAGE(STATUS "configured ${CMAKE_CMAKE_MODULE_PATH}/doxy.config.in --> ${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
 			CONFIGURE_FILE(${CMAKE_MODULE_PATH}/doxy.config.in 
 			${CMAKE_CURRENT_BINARY_DIR}/doxy.config
+			@ONLY )
+			CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../README.md 
+			${CMAKE_CURRENT_BINARY_DIR}/README.md
 			@ONLY )
 			SET(DOXY_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
 		ELSE (EXISTS "${CMAKE_MODULE_PATH}/doxy.config.in")
@@ -117,11 +120,20 @@ IF    (WIN32)
   # MESSAGE(SEND_ERROR "HTML_HELP_COMPILER=${HTML_HELP_COMPILER}")
 ENDIF (WIN32) 
 
-###copy the html files into doc on install
-#~ IF    (UNIX)
-  #~ FILE(GLOB htmlFiles "${CMAKE_CURRENT_BINARY_DIR}/html/*")
-  #~ INSTALL(FILES ${htmlFiles} DESTINATION "doc/${PROJECT_NAME}_${PROJECT_VERSION}/html" )
- 
-  #~ FILE(GLOB latexFiles "${CMAKE_CURRENT_BINARY_DIR}/latex/*")
-  #~ INSTALL(FILES ${latexFiles} DESTINATION "doc/${PROJECT_NAME}_${PROJECT_VERSION}/latex" )
- 
+ADD_CUSTOM_COMMAND( 
+  TARGET doc
+  POST_BUILD
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/latex
+  COMMAND make 
+  #OUTPUT refman.pdf
+)
+
+SET( PDF_FILE "${CMAKE_CURRENT_BINARY_DIR}/latex/refman.pdf")
+
+IF(EXISTS ${PDF_FILE})
+  CONFIGURE_FILE( 
+    ${PDF_FILE}
+    ${PROJECT_BINARY_DIR}/${PROJECT_NAME}_Documentation.pdf
+    COPYONLY
+  )
+ENDIF()

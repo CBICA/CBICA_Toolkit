@@ -1,0 +1,152 @@
+/**
+
+\page Installation Installation Guidelines
+
+The following steps describe the whole procedure to build and install CBICATk. 
+
+# 1. Dependencies
+
+Before building the CBICA Toolkit (CBICATk), the following software libraries are required to be installed. <strong>Please note</strong> that to build in Windows, CMake needs to be used an appropriate compiler (Win32 or Win64 version of Visual Studio is recommended). The selected solution platform is needed to match with dependent libraries.
+
+<table border="0">
+	<tr>
+    <td width="10%"><strong>Package</strong></td>      
+	  <td width="10%"><strong>Version</strong></td>      
+    <td width="80%"><strong>Description</strong></td>  
+	</tr>
+	<tr>
+		<td>Archiver</td>
+		<td></td>
+		<td>(<a href="http://www.7-zip.org/">7-zip</a> for Windows, gzip for Linux)</td>
+	</tr>
+	<tr>
+		<td>C++ compiler</td>
+		<td></td>
+		<td>(MSVC/11.x, MSVC/12.x, GCC/4.8.1, GCC/4.9.2)</td>
+	</tr>
+	<tr>
+		<td><a href="http://www.cmake.org/">CMake</a></td>
+		<td>2.8.4 or higher</td>
+		<td>To compile and build CBICATk and its dependencies</td>
+	</tr>
+	<tr>
+		<td><a href="http://www.itk.org/ITK/resources/software.html">ITK</a></td>
+		<td>4.7 or higher</td>
+		<td>Build VTK before proceeding to compile ITK. Instructions to compile ITK are given <a href="http://www.itk.org/Wiki/ITK/Configuring_and_Building">here</a>. During CMake configuration, enable the <b>Module_ITKVtkGlue</b> flag</td>
+	</tr>
+	<tr>
+		<td><a href="opencv.org/downloads.html">OpenCV</a></td>
+		<td>3.0 or higher</td>
+		<td>All machine learning algorithms. This generally comes pre-compiled; if not found for your system, steps similar to those done for VTK and ITK can be done.</td>
+	</tr>
+	<tr>
+		<td><a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a></td>
+		<td></td>
+		<td>[OPTIONAL] For documentation only</td>
+	</tr>
+</table>
+
+Ensure all dependencies are met before proceeding. 
+
+# 2. Build
+
+Please follow commands below in a shell/terminal (e.g., <a href="http://www.gnu.org/software/bash/">Bash</a>). They will configure and build CBICATk using <a href="http://www.gnu.org/software/make/">GNU Make</a>. The main CMake configuration file (CMakeLists.txt) is located in the root directory of the package.
+
+## 2.1 Extract source files and create the build directory
+
+\verbatim
+tar xzf CBICATk-${version}-source.tar.gz
+mkdir CBICATk-${version}-build
+cd CBICATk-${version}-build
+\endverbatim
+[Note: In Windows, an appropriate compression program (e.g., <a href="http://www.7-zip.org/">7-zip</a>) might be used to extract the files.]
+
+## 2.2  Run CMake to configure the build tree
+
+\verbatim
+cmake ../CBICATk-${version}-source
+\endverbatim
+Use the CMake variable CMAKE_INSTALL_PREFIX to specify the installation
+directory, as in:
+\verbatim
+cmake -DCMAKE_INSTALL_PREFIX=/opt/software/geodesic ../CBICATk-${version}-source
+\endverbatim
+
+For <b>Windows</b>, open CMake-GUI and select <code>CBICATk-${version}-source</code> as the "source" directory and select <code>CBICATk-${version}-build</code> as the "build" directory. Click on "Configure" and select the appropriate C++ compiler. If there weren't any configuration errors, click "Generate".
+
+CMake should be able to find ITK and OpenCV libraries if they are specified in the <code>$PATH</code> variable in your environment. If you have custom installation directories, then ensure that they have been added to the <code>$PATH</code> variable or point the variables <b>ITK_DIR</b>, <b>VTK_DIR</b> and <b>QT_QMAKE_EXECUTABLE</b> to the appropriate paths (for ITK, point it to the directory where <code>ITKConfig.cmake</code> is present, which would be the build or installation directory). If you are using a bash shell, it can be done using the following command:
+
+\verbatim
+cmake -DITKDIR=${path_to_custom_ITK_build_dir} -DVTK_DIR=${path_to_custom_VTK_build_dir} -DQT_QMAKE_EXECUTABLE=${path_to_custom_qt_installation}
+\endverbatim
+
+This step will generate platform-specific project files (for example, Make file for GCC and Visual Studio solution file for MSVC).
+
+Some of the options that can be set are:
+
+<table border="0">
+	<tr>
+		<td>BUILD_DOCUMENTATION</td>
+		<td>Builds the documentation from scratch</td>
+	</tr>
+	<tr>
+		<td>BUILD_TESTING</td>
+		<td>Enables unit testing</td>
+	</tr>
+	<tr>
+		<td>CMAKE_INSTALL_PREFIX</td>
+		<td>Path where the project will be installed</td>
+	</tr>
+	<tr>
+		<td>PACKAGE_PROJECT</td>
+		<td>Create installer for project</td>
+	</tr>
+</table>
+
+## 2.3 Compile the project
+
+\verbatim
+make
+\endverbatim
+
+For <b>Windows</b>, you should launch the generated solution file of Visual Studio (by default, only <code>Release</code> version of the code will be compiled - if this needs to be changed, it can be done so by editing the variable <code>CMAKE_CONFIGURATION_TYPE</code> during the CMake configuration step), and then build solution.
+
+## 2.3 [OPTIONAL] Compile the documentation
+
+To build the documentation from scratch, the <code>BUILD_DOCUMENTATION</code> option in the CMake configuration needs to be enabled.
+
+\verbatim
+make doc
+\endverbatim
+
+For <b>Windows</b>, build the <b>doc</b> project in the loaded solution.
+
+## 2.4 [OPTIONAL] Test 
+
+To perform tests, the <code>BUILD_TESTING</code> option in the CMake configuration needs to be enabled.
+
+\verbatim
+make test
+\endverbatim
+
+For <b>Windows</b>, you should build the <b>RUN_TESTS</b> project.
+
+In case of failing tests, re-run the tests, but this time by executing <a href="http://www.cmake.org/cmake/help/v2.8.8/ctest.html">CTest</a> directly with the '-V' option to enable verbose output and redirect the output to a text file, as in the example below (works for both Windows and Linux on the command line or shell):
+
+\verbatim
+ctest -V >& CBICATk-test.log
+\endverbatim
+
+And send the file <b>CBICATk-test.log</b> as attachment of the issue report to <mailto:sbia-software@uphs.upenn.edu>.
+
+## 2.4 [OPTIONAL] Install 
+
+\verbatim
+make install
+\endverbatim
+
+For <b>Windows</b>, you should build the <b>INSTALL</b> project.
+
+Upon the success of the above compilation and build process, CBICATk is installed into the directory specified by the <code>CMAKE_INSTALL_PREFIX</code>, which was set during step 2.2 above.
+
+*/

@@ -23,9 +23,9 @@ SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
 
 # If Windows is detected, add getopt for command line parsing
 IF( WIN32 )
-	SET( WinHeaders ${PROJECT_SOURCE_DIR}/src )
-	SET( ExtraSources ${ExtraSources} ${WinHeaders}/windows/dirent.h )
-	INCLUDE_DIRECTORIES( ${WinHeaders} )
+	#SET( WinHeaders ${PROJECT_SOURCE_DIR}/src )
+	#SET( ExtraSources ${ExtraSources} ${WinHeaders}/windows/dirent.h )
+	#INCLUDE_DIRECTORIES( ${WinHeaders} )
 ENDIF( WIN32 )
 
 # select all headers. it is manual addition for the explicit reason of view-ability (can be made automatic in a future build)

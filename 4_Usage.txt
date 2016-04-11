@@ -1,6 +1,6 @@
 /**
 
-\page Usage
+\page Usage Interaction Details
 
 This library is designed to be called from another CPP project.
 

@@ -1,42 +1,16 @@
-\mainpage CBICA Toolkit
+/**
 
-Section of Biomedical Image Analysis <br>
-Department of Radiology <br>
-University of Pennsylvania <br>
-3700 Hamilton Walk, Floor 7 <br>
-Philadelphia, PA 19104 <br>
-
-<pre>
-Web  : http://www.cbica.upenn.edu/sbia/
-Email: <a href="mailto:sbia-software@uphs.upenn.edu">sbia-software at uphs.upenn.edu</a> 
-</pre>
-
-Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
-See http://www.cbica.upenn.edu/sbia/software/license.html or COPYING file.
-
-<b> Authors: </b><br>
-Sarthak – primary developer, integration of everything <br>
-Drew    – DTI algorithms <br>
-Michael – sort + rename <br>
-Martin  – sort + rename <br>
-Jimit   – Overall testing <br>
-Guray   – Overall testing <br>
-
-
-===============
-1. INTRODUCTION
-===============
+\mainpage Overview
 
 This project provides a common interface for some popular functions/methods used in the CBICA research center. It is actively maintained and tested on
 Windows x64 and Linux (CentOS6) x64. 
 
 All the functions are standalone in nature; i.e., they are header-only and can be exported individually for use/distribution in projects.
 
-Currently, the Toolkit has been tested to be working on Windows x64 using MS Visual Studio 2012 while linking against ITK/4.4.2 built with options
+Currently, the Toolkit has been tested to be working on Windows x64 using MS Visual Studio 2012 while linking against ITK/4.7.1 built with options
 specified in SBIA internal Wiki (http://sbia-wiki.uphs.upenn.edu/wiki/index.php/Third-party_Software#ITK).
 
 <b>TO DO:</b>
-- Compatibility with ITK/4.7.1
 - Individual executables for functions to make Python wrapping easier
 
 [Request a new function via eLog.]
@@ -127,21 +101,76 @@ The test executables (if any) are generated into the binary directory by default
 
 Folder/File operations:
 
-- <b>fileExists</b>: Check if specified file exists or not
-- <b>isFile</b>: Wrap of <code>fileExists</code>
-- <b>directoryExists</b>: Check if specified directory exists or not
-- <b>isDir</b>: Wrap of <code>directoryExists</code>
-- <b>createTmpDir</b>: Creates a temporary directory
-- <b>createTemporaryDirectory</b>: Wrap of <code>createTmpDir</code>
-- <b>makeTemporaryDirectory</b>: Wrap of <code>createTmpDir</code>
-- <b>createDir</b>: Creates a directory
-- <b>makeDir</b>: Wrap for <code>createDir</code>
-- <b>removeDirectoryRecursively</b>: Removes a directory and all its contents
-- <b>removeDir</b>: Wrap for <code>removeDirectoryRecursively</code>
-- <b>deleteDir</b>: Wrap for <code>removeDirectoryRecursively</code>
-- <b>numberOfRowsInFile</b>: Number of rows in CSV file
-- <b>numberOfColsInFile</b>: Number of cols in CSV file
-- <b>parseCSVFile</b>: Parse a list CSV file which contains file names and labels
+<table border="0">
+	<tr>
+    <td table border="1" width="35%"><strong>Function</strong></td>
+	  <td table border="1" width="100%"><strong>Description</strong></td>
+	</tr>
+	<tr>
+    <td bgcolor="#000000" height="1"><img src="docs/images/test.png" height="1" alt=""></td>
+    <td bgcolor="#000000" height="1"><img src="docs/images/test.png" height="1" alt=""></td>
+	</tr>
+	<tr>
+		<td><b>fileExists</b></td>
+		<td>Check if specified file exists or not</td>
+	</tr>
+	<tr>
+		<td><b>isFile</b></td>
+		<td>Wrap of <code>fileExists</code></td>
+	</tr>
+	<tr>
+		<td><b>directoryExists</b></td>
+		<td>Check if specified directory exists or not</td>
+	</tr>
+	<tr>
+		<td><b>isDir</b></td>
+		<td>Wrap of <code>directoryExists</code></td>
+	</tr>
+	<tr>
+		<td><b>createTemporaryDirectory</b></td>
+		<td>Creates a temporary directory</td>
+	</tr>
+	<tr>
+		<td><b>makeTemporaryDirectory</b></td>
+		<td>Wrap of<code>createTemporaryDirectory</code></td>
+	</tr>
+	<tr>
+		<td><b>createTmpDir</b></td>
+		<td>Wrap of<code>createTemporaryDirectory</code></td>
+	</tr>
+	<tr>
+		<td><b>createDir</b></td>
+		<td>Creates a directory</td>
+	</tr>
+	<tr>
+		<td><b>makeDir</b></td>
+		<td>Wrap for <code>createDir</code></td>
+	</tr>
+	<tr>
+		<td><b>removeDirectoryRecursively</b></td>
+		<td>Removes a directory and all its contents recursively</td>
+	</tr>
+	<tr>
+		<td><b>removeDir</b></td>
+		<td>Wrap for <code>removeDirectoryRecursively</code></td>
+	</tr>
+	<tr>
+		<td><b>deleteDir</b></td>
+		<td>Wrap for <code>removeDirectoryRecursively</code></td>
+	</tr>
+	<tr>
+		<td><b>numberOfRowsInFile</b></td>
+		<td>Number of rows in CSV file</td>
+	</tr>
+	<tr>
+		<td><b>numberOfColsInFile</b></td>
+		<td>Number of cols in CSV file</td>
+	</tr>
+	<tr>
+		<td><b>parseCSVFile</b></td>
+		<td>Parse a list CSV file which contains file names and labels</td>
+	</tr>
+</table>
 
 OS operations:
 
@@ -318,3 +347,5 @@ Please adhere to the package structure.
 ===========
 
   See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
+  
+*/

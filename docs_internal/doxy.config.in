@@ -17,7 +17,8 @@
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
 # by quotes) that should identify the project.
 
-PROJECT_NAME           = "@PROJECT_NAME@"
+#PROJECT_NAME           = "@PROJECT_NAME@"
+PROJECT_NAME           = "@PROJECT_NAME_EXTENDED@"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. 
 # This could be handy for archiving the generated documentation or 
@@ -462,12 +463,12 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/doxy.log
 
 
 FILE_PATTERNS          = *.dox \
-                         *.md \
                          *.txt
 
 
 INPUT                  =  	@PROJECT_SOURCE_DIR@ \
                             @PROJECT_BINARY_DIR@ \
+                            @PROJECT_SOURCE_DIR@/licenses/
                             #@PROJECT_SOURCE_DIR@/README.txt
                             #@PROJECT_SOURCE_DIR@/Download.txt
                             #@PROJECT_SOURCE_DIR@/Installation.txt
@@ -477,8 +478,6 @@ INPUT                  =  	@PROJECT_SOURCE_DIR@ \
                             #@PROJECT_SOURCE_DIR@/Changelog.txt
                             #@PROJECT_SOURCE_DIR@/License.txt
 									
-
-USE_MDFILE_AS_MAINPAGE = README.md
 
 LAYOUT_FILE = @PROJECT_SOURCE_DIR@/docs/DoxygenLayout.xml
 
@@ -541,7 +540,7 @@ EXAMPLE_RECURSIVE      = YES
 # directories that contain image that are included in the documentation (see 
 # the \image command).
 
-IMAGE_PATH             = 
+IMAGE_PATH             = @PROJECT_SOURCE_DIR@/docs/images
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should 
 # invoke to filter for each input file. Doxygen will invoke the filter program 
@@ -777,7 +776,7 @@ TREEVIEW_WIDTH         = 250
 # If the GENERATE_LATEX tag is set to YES (the default) Doxygen will 
 # generate Latex output.
 
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. 
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
