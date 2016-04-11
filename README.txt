@@ -15,101 +15,28 @@ specified in SBIA internal Wiki (http://sbia-wiki.uphs.upenn.edu/wiki/index.php/
 
 [Request a new function via eLog.]
 
-==========
-2. INSTALL    
-==========
+---
 
-----------------
-2.1 Dependencies
-----------------
+# 1. Installation
 
-- C++ complier (MSVC/12, GCC/4.9.2)
-- CMake 2.8.12.1
-- Doxygen (for documentation only)
-- GIT (for superbuild system only) -- ?
-- ITK 4.7.0 (required for ITK based classes) - check cmake/ExternalITK for parameters
+## Requirements
 
-Make sure all dependencies are met before proceeding with install.
+- CMake (for project configuration)
+- C++ compiler
+- ITK (for ITK-based classes)
+- OpenCV (for classes that do machine learning)
 
--------------------------------------
-2.2 Generating standalone executables
--------------------------------------
+See the <a href="Installation.html">Installation Page</a> for details.
 
-Use CMake to generate files for the compiler in use (MSVC/GCC) and then run accordingly. The installation directory for both Python and CPP classes
-can be customized. To use the Python class, make sure your Python executable has the install path in its find modules path.
+---
 
-An example under UNIX using CMake command line:
+# 2. Available Functions and Classes
 
-Go to the <b>build</b> directory:<br>
-\verbatim
-cd build
-\endverbatim
+## 2.1 Basic Functions
 
-Run CMake (note you can use <code>ccmake ../</code> to configure the installation directory):<br>
-\verbatim
-cmake ../
-\endverbatim
-
-Build and install:<br>
-\verbatim
-make 
-make install
-\endverbatim
-
-----------------------------
-2.3 Generating documentation
-----------------------------
-
-Generate the project files. Then follow appropriate instructions:
-
-2.3.1 For Internal use (integrates with SBIA website):
-
-Enable the option <b>BUILD_DOCUMENTATION_INTERNAL</b> while running cmake.<br>
-UNIX: <code>make doc_internal</code><br>
-WINDOWS: Build the <code>doc_internal</code> project.
-
-The documentation is generated into the binary directory by default (<code>"BIN_DIR/doc_internal/"</code>) and it required Doxygen to run.
-
-<b>NOTE:</b> The folder <code>"docs_internal"</code> should be never be present in a tag. It is for internal use only.
-
-2.3.1 For External use (to be published along with source code):
-
-Enable the option <b>BUILD_DOCUMENTATION</b> while running cmake.<br>
-UNIX: <code>make doc</code><br>
-WINDOWS: Build the <code>doc</code> project.
-
-The documentation is generated into the binary directory by default (<code>"BIN_DIR/docs/"</code>) and it required Doxygen to run.
-
------------
-2.4 Testing
------------
-
-After generating project files, run the following commands:<br>
-UNIX: <code>make tests</code><br>
-WINDOWS: Build the <code>RUN_TESTS</code> project.
-
-The test executables (if any) are generated into the binary directory by default (<code>"BIN_DIR/testing/"</code>).
-
-
-==============================
-3. AVAILABLE FUNCTIONS/CLASSES    
-==============================
-
--------------------
-3.1 Basic Functions
--------------------
-
-Folder/File operations:
+### 2.1.1 Folder/File operations
 
 <table border="0">
-	<tr>
-    <td table border="1" width="35%"><strong>Function</strong></td>
-	  <td table border="1" width="100%"><strong>Description</strong></td>
-	</tr>
-	<tr>
-    <td bgcolor="#000000" height="1"><img src="docs/images/test.png" height="1" alt=""></td>
-    <td bgcolor="#000000" height="1"><img src="docs/images/test.png" height="1" alt=""></td>
-	</tr>
 	<tr>
 		<td><b>fileExists</b></td>
 		<td>Check if specified file exists or not</td>
@@ -172,138 +99,365 @@ Folder/File operations:
 	</tr>
 </table>
 
-OS operations:
+### 2.1.2 OS operations
 
-- <b>getFilenameExtension</b>: Get the extension of the supplied file name. Wrap of <code>splitFileName</code>
-- <b>getFilenameBase</b>: Get the extension of the supplied file name. Wrap of <code>splitFileName</code>
-- <b>getFilenamePath</b>: Get the extension of the supplied file name. Wrap of <code>splitFileName</code>
-- <b>getExecutableName</b>: Get current executable name
-- <b>getFullPath</b>: Get path of current executable
-- <b>getUserName</b>: Get current user name
-- <b>getCWD</b>: Get current working directory
-- <b>normalizePath</b>: Wrap for normPath
-- <b>relativePath</b>: Wrap for relPath
-- <b>realPath</b>: Reimplementation of python's "os.path.realpath"
-- <b>isLink</b>: Reimplementation of python's "os.path.islink"
-- <b>isSymbolicLink</b>: Wrap for <code>isLink</code>
-- <b>makeSymbolicLink</b>: Make a symbolic link of a file
-- <b>setEnvironmentVariable</b>: Sets the environment variable
-- <b>deleteEnvironmentVariable</b>: Delete the environment variable
-- <b>filesInDirectory</b>: Find all files in the first level of directory
-- <b>subdirectoriesInDirectory</b>: Find all directories. Recursive turned off by default.
+<table border="0">
+	<tr>
+		<td><b>getFilenamePath</b></td>
+		<td>Get the path of the supplied file name (uses <code>splitFileName</code>)</td>
+	</tr>
+	<tr>
+		<td><b>getFilenameBase</b></td>
+		<td>Get the base of the supplied file name (uses <code>splitFileName</code>)</td>
+	</tr>
+	<tr>
+		<td><b>getFilenameExtension</b></td>
+		<td>Get the extension of the supplied file name (uses <code>splitFileName</code>)</td>
+	</tr>
+	<tr>
+		<td><b>getExecutableName</b></td>
+		<td>Get current executable name</td>
+	</tr>
+	<tr>
+		<td><b>getFullPath</b></td>
+		<td>Get full path of current executable</td>
+	</tr>
+	<tr>
+		<td><b>getUserName</b></td>
+		<td>Get current user name</td>
+	</tr>
+	<tr>
+		<td><b>getCWD</b></td>
+		<td>Get current working directory</td>
+	</tr>
+	<tr>
+		<td><b>normalizePath</b></td>
+		<td>Wrap for <code>normPath</code></td>
+	</tr>
+	<tr>
+		<td><b>relativePath</b></td>
+		<td>Wrap for <code>relPath</code></td>
+	</tr>
+	<tr>
+		<td><b>realPath</b></td>
+		<td>Reimplementation of python's <code>os.path.realpath</code></td>
+	</tr>
+	<tr>
+		<td><b>isLink</b></td>
+		<td>Reimplementation of python's <code>os.path.islink</code></td>
+	</tr>
+	<tr>
+		<td><b>isSymbolicLink</b></td>
+		<td>Wrap for <code>islink</code></td>
+	</tr>
+	<tr>
+		<td><b>makeSymbolicLink</b></td>
+		<td>Make a symbolic link of a file</td>
+	</tr>
+	<tr>
+		<td><b>setEnvironmentVariable</b></td>
+		<td>Sets the environment variable</td>
+	</tr>
+	<tr>
+		<td><b>deleteEnvironmentVariable</b></td>
+		<td>Delete the environment variable</td>
+	</tr>
+	<tr>
+		<td><b>filesInDirectory</b></td>
+		<td>Find all files in the specified directory (recursion available)</td>
+	</tr>
+	<tr>
+		<td><b>subdirectoriesInDirectory</b></td>
+		<td>Find all directories - recursive turned off by default</td>
+	</tr>
+</table>
 
-Python re-implementations: 
+### 2.1.3 Python re-implementations
 
-- <b>isFile</b>: Reimplementation of "os.path.isfile"--Return True if path is an existing regular file
-- <b>isDir</b>: Reimplementation of "os.path.isdir"--Return True if path is an existing directory
-- <b>relPath</b>: Reimplementation of "os.path.relpath"--Return a relative filepath to path
-- <b>realPath</b>: Reimplementation of "os.path.realpath"--Return the canonical path of the specified filename
-- <b>exists</b>: Reimplementation of "os.path.exists"--Return True if path exists and false for broken symbolic links
-- <b>isLink</b>: Reimplementation of "os.path.islink"--Return True if path refers to a directory entry that is a symbolic link
-- <b>normPath</b>: Reimplementation of "os.path.normpath"--Normalize a pathname by collapsing redundant separators and up-level references
+<table border="0">
+	<tr>
+		<td><b>isFile</b></td>
+		<td>Return True if path is an existing regular file</td>
+	</tr>
+	<tr>
+		<td><b>isDir</b></td>
+		<td>Return True if path is an existing directory</td>
+	</tr>
+	<tr>
+		<td><b>relPath</b></td>
+		<td>Return a relative filepath to path</td>
+	</tr>
+	<tr>
+		<td><b>realPath</b></td>
+		<td>Return the canonical path of the specified filename</td>
+	</tr>
+	<tr>
+		<td><b>exists</b></td>
+		<td>Return True if path exists and false for broken symbolic links</td>
+	</tr>
+	<tr>
+		<td><b>exists</b></td>
+		<td>Return True if path refers to a directory entry that is a symbolic link</td>
+	</tr>
+	<tr>
+		<td><b>normPath</b></td>
+		<td>Normalize a pathname by collapsing redundant separators and up-level references</td>
+	</tr>
+</table>
 
-String operations:
+### 2.1.4 String operations
 
-- <b>splitFileName</b>: Splits a supplied file name between path, base file name and extension
-- <b>stringSplit</b>: Split the supplied string with the deliminator and store results in a vector
-- <b>replaceString</b>: Replaces specified string with another string in a larger input string
-- <b>constCharToChar</b>: Converts from "const char*" to "char*"
-- <b>findInVector</b>: Checks for an element in a vector and returns true or false along with its position in vector (-1 if not found)
-- <b>convertString</b>: Convert a character to its corresponding ASCII code
-- <b>convertCharacter</b>: Convert first character to integer, double, unsigned int, etc.
+<table border="0">
+	<tr>
+		<td><b>splitFileName</b></td>
+		<td>Splits a supplied file name between path, base file name and extension</td>
+	</tr>
+	<tr>
+		<td><b>stringSplit</b></td>
+		<td>Split the supplied string with the deliminator and store results in a vector</td>
+	</tr>
+	<tr>
+		<td><b>replaceString</b></td>
+		<td>Replaces specified string with another string in a larger input string</td>
+	</tr>
+	<tr>
+		<td><b>constCharToChar</b></td>
+		<td>Converts from <code>const char*</code> to <code>char*</code></td>
+	</tr>
+	<tr>
+		<td><b>findInVector</b></td>
+		<td>Checks for an element in a vector and returns true or false along with its position in vector (-1 if not found)</td>
+	</tr>
+	<tr>
+		<td><b>convertString</b></td>
+		<td>Convert a character to its corresponding ASCII code</td>
+	</tr>
+	<tr>
+		<td><b>convertCharacter</b></td>
+		<td>Convert first character to integer, double, unsigned int, etc.</td>
+	</tr>
+</table>
 
-MISC:
+### 2.1.5 Miscellaneous 
 
-- <b>compareEqual</b>: Compare if multiple inputs are equal
-- <b>compareGreater</b>: Compare if first input is greater than rest
-- <b>compareLesser</b>: Compare if first input is lesser than rest
+<table border="0">
+	<tr>
+		<td><b>compareEqual</b></td>
+		<td>Compare if multiple inputs are equal</td>
+	</tr>
+	<tr>
+		<td><b>compareGreater</b></td>
+		<td>Compare if first input is greater than rest</td>
+	</tr>
+	<tr>
+		<td><b>compareLesser</b></td>
+		<td>Compare if first input is smaller than rest</td>
+	</tr>
+</table>
 
+### 2.1.6 STD Wraps (these are present for GCC < 5)
 
-STD Overrides (these are present for GCC < 5):
+<table border="0">
+	<tr>
+		<td><b>round</b></td>
+		<td>std::round</td>
+	</tr>
+	<tr>
+		<td><b>to_string</b></td>
+		<td>std::to_string</td>
+	</tr>
+</table>
 
-- <b>round</b>: std::round wrap
-- <b>to_string</b>: std::round wrap
-
-TO DO:
-
+### 2.1.6 TO DO:
 
 [Request a new function via eLog.]
 
--------------------
-3.2 Basic Classes
--------------------
 
-* <b>Logging</b>: A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file.
+## 2.2 Basic Classes
+
+### 2.2.1 Logging
+
+A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file.
 
 Generated log is in the format: <br>
 <CODE><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name></CODE>
 
-Available functions:
+#### Available functions:
 
-** <b>EnableTextLogging</b>: Switches from console to specific text file
-** <b>Write</b>: Writes free text to console/file as std::cout
-** <b>WriteError</b>: Writes free text to console/file as std::cerr - used for error reporting
-** <b>UseNewFile</b>: Change Logging file after initializing class
+<table border="0">
+	<tr>
+		<td><b>EnableTextLogging</b></td>
+		<td>Switches from console to specific text file</td>
+	</tr>
+	<tr>
+		<td><b>Write</b></td>
+		<td>Writes free text to console/file as std::cout</td>
+	</tr>
+	<tr>
+		<td><b>WriteError</b></td>
+		<td>Writes free text to console/file as std::cerr - used for error reporting</td>
+	</tr>
+	<tr>
+		<td><b>UseNewFile</b></td>
+		<td>Change Logging file after initializing class</td>
+	</tr>
+</table>
 
+### 2.2.2 CmdParser
 
-* <b>CmdParser</b>: Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file. It picks up exe name using getExecutableName() but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file).
+Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file. It picks up exe name using getExecutableName() but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file).
   
-Available functions: 
+#### Available functions: 
 
-** <b>addRequiredParameter</b>: Add required parameter (no '-' is necessary) - exception is thrown if a required parameter is missing
-** <b>addOptionalParameter</b>: Add optional parameter (no '-' is necessary)
-** <b>addParameter</b>: Defaults to addOptionalParameter()
-** <b>compareParameter</b>: Check if specific parameter is present in the argv
-** <b>getDescription</b>: Get description of the specific parameter 
-** <b>exampleUsage</b>: Add an example usage which comes up in echoHelp()
-** <b>setExeName</b>: Set a custom executable name
-** <b>writeConfigFile</b>: Writes a machine readable configuration file for the executable
-** <b>echoUsage</b>: Based on the parameters added, it automatically constructs an echoUsage() console output which includes contact information and copyright details
-** <b>echoHelp</b>: Based on the parameters added, it automatically constructs an echoHelp() console output which includes contact information and copyright details
-  
-TO DO:
+<table border="0">
+	<tr>
+		<td><b>addRequiredParameter</b></td>
+		<td>Add required parameter (no '-' is necessary) - exception is thrown if a required parameter is missing</td>
+	</tr>
+	<tr>
+		<td><b>addOptionalParameter</b></td>
+		<td>Add optional parameter (no '-' is necessary)</td>
+	</tr>
+	<tr>
+		<td><b>addParameter</b></td>
+		<td>Defaults to <code>addOptionalParameter()</code></td>
+	</tr>
+	<tr>
+		<td><b>compareParameter</b></td>
+		<td>Check if specific parameter is present in the argv</td>
+	</tr>
+	<tr>
+		<td><b>getDescription</b></td>
+		<td>Get description of the specific parameter</td>
+	</tr>
+	<tr>
+		<td><b>exampleUsage</b></td>
+		<td>Add an example usage which comes up in <code>echoHelp()</code></td>
+	</tr>
+	<tr>
+		<td><b>setExeName</b></td>
+		<td>Set a custom executable name</td>
+	</tr>
+	<tr>
+		<td><b>writeConfigFile</b></td>
+		<td> Writes a machine readable configuration file for the executable</td>
+	</tr>
+	<tr>
+		<td><b>echoUsage</b></td>
+		<td> Based on the parameters added, it automatically constructs an <code>echoUsage()</code> console output which includes contact information and copyright details</td>
+	</tr>
+	<tr>
+		<td><b>echoHelp</b></td>
+		<td> Based on the parameters added, it automatically constructs an <code>echoHelp()</code> console output which includes contact information and copyright details. This is supposed to be more verbose than <code>echoUsage()</code></td>
+	</tr>
+</table>
 
+### 2.2.3 TO DO
 
 [Request a new function via eLog.]
 
------------------
-3.3 ITK Classes
------------------
 
-* <b>ImageInfo</b>: obtains the data regarding spacing and dimensions of specified image in <code>itk::ImageIOBase</code>; look in class documentation for details.
+## 2.3 ITK Classes
 
-Available functions: 
-** <b>getImageIOBase</b>: Get the ImageIOBase class wrapped around a smart pointer<br>
-** <b>getImageDimensions</b>: Get the dimensions<br>
-** <b>getImageSpacings</b>: Get the spacings<br>
+### 2.3.1 ImageInfo
 
-* <b>CommonHolder</b>: Common interface class for all algorithmic classes.
-  
-* <b>ComputeAverageMap</b>: Computes the average of a series of images and writes the output. Set input files as a vector of strings and the output directory in the constructor itself.
+Obtains the data regarding spacing and dimensions of specified image in <code>itk::ImageIOBase</code>; look in class documentation for details.
 
-* <b>ComputeDtiScalars</b>: Computes and saves the specified scalar image for an image. Input image and output (director/file) are specified in the constructor.
-  
-Available options: 
-** FA   : FA images
-** EIG  : Eigensystem images
-** GEO  : Geoemtric features
-** SKEW : Tensor Skewness
-** KURT : Tensor kurtosis
-** RADAX: Radial and Axial diffusivity
-** GORDR: Gordon's R measures
-** GORDK: Gordon's K measures
-** ALL  : All of the above (default)
-  
-* <b>ComputeVarianceMap</b>: Computes the variance and saves the output for a single image (can be changed easily by modifying the class to be more in line with ComputeAverageMap).
+#### Available functions: 
 
-* <b>DtiRecon</b>: Reconstruction of DTI image
-  
-* <b>ITKUtilities</b>: Functions to make handling of images easier:
-** <b>VectorizeImages</b>: Vectorize a set of images in either column or row major format
-** <b>CreateMaskIndeces</b>
-  
-NOTE: There are a lot of back-end classes which have been implemented for compatibility between itk versions. 
-These are not meant to be for standalone usage.
+<table border="0">
+	<tr>
+		<td><b>getImageIOBase</b></td>
+		<td>Get the ImageIOBase class wrapped around a smart pointer</td>
+	</tr>
+	<tr>
+		<td><b>getImageDimensions</b></td>
+		<td>Get the dimensions</td>
+	</tr>
+	<tr>
+		<td><b>getImageSpacings</b></td>
+		<td>Get the spacings</td>
+	</tr>
+</table>
+
+### 2.3.2 CommonHolder
+
+Common interface class for all algorithmic classes.
+
+### 2.3.3 ComputeAverageMap
+
+Computes the average of a series of images and writes the output. Set input files as a vector of strings and the output directory in the constructor itself.
+
+### 2.3.4 ComputeDtiScalars
+
+Computes and saves the specified scalar image for an image. Input image and output (director/file) are specified in the constructor.
+
+
+#### Available Options: 
+
+<table border="0">
+	<tr>
+		<td><b>FA</b></td>
+		<td>FA images</td>
+	</tr>
+	<tr>
+		<td><b>EIG</b></td>
+		<td>Eigensystem images</td>
+	</tr>
+	<tr>
+		<td><b>GEO</b></td>
+		<td>Geoemtric features</td>
+	</tr>
+	<tr>
+		<td><b>SKEW</b></td>
+		<td>Tensor Skewness</td>
+	</tr>
+	<tr>
+		<td><b>KURT</b></td>
+		<td>Tensor kurtosis</td>
+	</tr>
+	<tr>
+		<td><b>RADAX</b></td>
+		<td>Radial and Axial diffusivity</td>
+	</tr>
+	<tr>
+		<td><b>GORDR</b></td>
+		<td>Gordon's R measures</td>
+	</tr>
+	<tr>
+		<td><b>GORDK</b></td>
+		<td>Gordon's K measures</td>
+	</tr>
+	<tr>
+		<td><b>ALL</b></td>
+		<td>All of the above (default)</td>
+	</tr>
+</table>
+
+### 2.3.5 ComputeVarianceMap
+
+Computes the variance and saves the output for a single image (can be changed easily by modifying the class to be more in line with ComputeAverageMap).
+
+### 2.3.6 DtiRecon
+
+Reconstruction of DTI image
+
+### 2.3.7 ITKUtilities
+
+Functions to make handling of images easier.
+
+<table border="0">
+	<tr>
+		<td><b>VectorizeImages</b></td>
+		<td>Vectorize a set of images in either column or row major format</td>
+	</tr>
+	<tr>
+		<td><b>CreateMaskIndeces</b></td>
+		<td>Eigensystem images</td>
+	</tr>
+</table>
+
+NOTE: There are a lot of back-end classes which have been implemented for compatibility between itk versions. These are not meant to be for standalone usage.
 
 TO DO:
 - dti Stuff
@@ -311,41 +465,23 @@ TO DO:
 [Request a new function via eLog.]
 
 
-=======================
-4 Developer Information
-=======================
+---
 
-If you want to write a class which works with the CBICA Toolkit, please make sure you follow the set guidelines of the code. A brief summary:
+# 3 Developer Information
 
-<b>
-For basic classes:
-</b>
-- As of now, there is no "default" interface (since functionality differs so wildly).
-- Make sure your class is well documented and a basic usage example is provided in the documentation (see cbica::CmdParser or cbica::Logging for examples)
-- Let's say your class' header file is <code>cbicaXYZ.h</code>, add it to the list of headers in <code>itk_dev/src/classes/CMakeLists.txt</code>
-(also add all other applicable files under headers or sources - this process of manual addition is intentional and in line with CMake guidelines).
-- Include <code>cbicaITK_XYZ.h</code> in the test executable <code>itk_dev/src/classes/testing/BasicFunctionTests.cxx</code> and write a specific test 
-and debug the class as required (suggested method is to hard code the path for debugging).
+The CBICATk has a certain code guideline. For details, please see the <a href="ForDevelopers.html">For Developers Page</a>
 
-    
-<b>
-For ITK classes:
-</b>
+---
 
-- If you are writing a class which takes a file as input, make sure you inherit from the cbica::CommonHolder class, which has a lot of pre-defined
-functionality and also a basic default interface.
-- Let's say your class' header file is <code>cbicaITK_XYZ.h</code>, add it to the list of headers in <code>itk_dev/src/classes/itk/CMakeLists.txt</code>
-(also add all other applicable files under headers or sources - this process of manual addition is intentional and in line with CMake guidelines).
-- Include <code>cbicaITK_XYZ.h</code> in the test executable <code>itk_dev/src/classes/itk/testing/ItkFunctionTests.cxx</code> and write a specific test 
-and debug the class as required (suggested method is to hard code the path for debugging).
+# 4 Licensing information
 
-Please adhere to the package structure.
+See the <a href="http://www.cbica.upenn.edu/sbia/software/license.html">SBIA License</a>  or "licences/COPYING" file.
 
+The CBICATk code incorporates 3rd party libraries and toolkits, potentially including but not limited to:
 
-===========
-5 LICENSING
-===========
+- ITK
+- OpenCV
+		
+All rights to these components are subject to the terms and licenses of their respective owners. All trademarks are the property of their respective owners. 
 
-  See http://www.cbica.upenn.edu/sbia/software/license.html or "licences/COPYING" file.
-  
 */

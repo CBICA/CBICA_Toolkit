@@ -2,49 +2,29 @@
 
 \page ForDevelopers For Developers
 
-Here we will provide the technical details of the Cancer and Phenomics Toolkit (CAPTk). This information can be used to integrate new applications into the global framework and also optimize/improve the code. Right now, CAPTk supports <a href="https://isocpp.org/">C++</a> and <a href="https://www.python.org/">Python</a> as the programming languages using which different applications can be written. 
+Here we will provide the technical details of the CBICA Toolkit (CBICATk). This information can be used to integrate new applications into the global framework and also optimize/improve the code. Right now, CBICATk supports <a href="https://isocpp.org/">C++</a> and <a href="https://www.python.org/">Python</a> as the programming languages using which different applications can be written. 
+
+If you want to write a class which works with the CBICA Toolkit, please make sure you follow the set guidelines of the code. A brief summary:
+
+## For basic classes:
+
+- As of now, there is no "default" interface (since functionality differs so wildly).
+- Make sure your class is well documented and a basic usage example is provided in the documentation (see cbica::CmdParser or cbica::Logging for examples)
+- Let's say your class' header file is <code>cbicaXYZ.h</code>, add it to the list of headers in <code>itk_dev/src/classes/CMakeLists.txt</code>
+(also add all other applicable files under headers or sources - this process of manual addition is intentional and in line with CMake guidelines).
+- Include <code>cbicaITK_XYZ.h</code> in the test executable <code>itk_dev/src/classes/testing/BasicFunctionTests.cxx</code> and write a specific test 
+and debug the class as required (suggested method is to hard code the path for debugging).
 
 
-## Technical Information
+## For ITK classes:
 
-<ol type="1">
+- If you are writing a class which takes a file as input, make sure you inherit from the cbica::CommonHolder class, which has a lot of pre-defined
+functionality and also a basic default interface.
+- Let's say your class' header file is <code>cbicaITK_XYZ.h</code>, add it to the list of headers in <code>itk_dev/src/classes/itk/CMakeLists.txt</code>
+(also add all other applicable files under headers or sources - this process of manual addition is intentional and in line with CMake guidelines).
+- Include <code>cbicaITK_XYZ.h</code> in the test executable <code>itk_dev/src/classes/itk/testing/ItkFunctionTests.cxx</code> and write a specific test 
+and debug the class as required (suggested method is to hard code the path for debugging).
 
-  <li>The <b>Graphical Layer</b> is currently written on a <a href="https://download.qt.io/archive/qt/4.8/">Qt4</a> based framework (plans to migrate to Qt5 are well under way) on C++ for speed, stability and extensibility. Qt, thus, becomes the first dependency for compiling CAPTk. Qt was chosen because it is a well-known tool for developing GUI applications both in the academia and also in the industry. </li>  
-  <li>The basic file input/output operations are based on standard <a href="http://www.itk.org/">ITK</a> <a href="http://www.itk.org/Doxygen/html/group__IOFilters.html">I/O</a>, thereby making it the second dependency. ITK was chosen on account of it being an industry and academic standard for developing medical image applications. It also has one of the most vibrant developer and user communities. Currently supported data formats are <a href="http://dicom.nema.org/">DICOM</a> and <a href="http://nifti.nimh.nih.gov/nifti-1">NIFTI</a>. </li>  
-  <li>Rendering the data is done using <a href="http://www.vtk.org/">VTK</a>, making it the third dependency. VTK has been specifically designed for medical image data and it utilizes various hardware rendering techniques which make applications developed on it very fluid. </li>  
-  <li><a href="https://cmake.org/">CMake</a> is used to configure the project. This is the industry standard for cross-platform compilation.</li>  
-  <li>A C++ compiler (we develop on MSVC/12 and GCC/4.9.2). Because, REAL applications are ALWAYS written in C++.</li>  
-  <li>The Python runtime is a requirement to run some of the more annoying applications which some of the PIs didn’t want to change into actual software packages. This in turn meant that the developers had to work around the whims of a few people and add this monstrous thing as a dependency.</li>
-  
-</ol>
-
-
-## Integrating your awesome C++ application into CAPTk
-
-Let’s say the name of your application is <b>yourAwesomeApp</b>. The following steps highlight the steps required for you to integrate your application into CAPTk:
-
-<ul style="list-style-type:disc">
-
-  <li>Input and Output of files is handled by the graphical layer, which takes into account file handling, directory sorting, etc. so you can worry about the important stuff, i.e., your algorithm. </li>
-  <li>We are currently developing actively on MSVC/12 - <a href = "https://www.microsoft.com/en-US/download/details.aspx?id=44914">Visual Studio 2013</a> and GCC/4.9.2. Plans are in motion to migrate to MSVC/14 - <a href = "https://www.visualstudio.com/en-us/products/visual-studio-express-vs.aspx">Visual Studio 2015</a> and GCC/5.x very soon, upon which all <a href="https://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features will be enabled by default. </li>
-  <li>The graphical layer reads DICOM or NIFTI files and passes it on as an <a href="http://www.itk.org/Doxygen/html/classitk_1_1Image.html">ITK-Image</a>. The data type defaults to the same type in which the original image was written. This is done using the <a href="http://www.itk.org/Doxygen/html/classitk_1_1ImageIOBase.html">ITK-ImageIOBase class</a>. </li>
-  <li>Your application should read either a single ITK-Image or a <a href="http://www.cplusplus.com/reference/vector/vector/">vector</a> of ITK-Images and give output in a similar format (either a single ITK-Image or a vector of ITK-Images). </li>
-  <li><b>yourAwesomeApp</b> should be structured as a single class, i.e., a collection of <b>yourAwesomeApp.h</b> and <b>yourAwesomeApp.cpp</b> (ensure that the extensions match up otherwise CMake won’t pick them up as valid applications). Put the class implementation in the following folder - <b>$PROJECT_SOURCE_DIR/src/applications</b> and let CMake pick your application up in the next compilation step. </li>
-  <li>CAPTk is able to handle application-specific dependencies well. For example, if you prefer the SVM implementation of <a href="https://github.com/cjlin1/libsvm">LibSVM</a> rather than that of <a href="http://docs.opencv.org/2.4/modules/ml/doc/support_vector_machines.html">OpenCV</a>, you can simply create a new folder called /yourAwesomeApp_includes under <b>$PROJECT_SOURCE_DIR/src/applications</b> and let CMake take care of the configuration. <b>yourAwesomeApp</b> will see the includes as if it was present in the same folder (i.e., no need to specify folder when including these dependencies). </li>
-
-</ul>
-
-## Integrating your ridiculous Python application into CAPTk
-
-Let’s say the name of your application is <b>learnRealCodingApp</b>. The following steps highlight the steps required for you to integrate your application into CAPTk:
-
-<ul style="list-style-type:disc">
-
-  <li>Input and Output of files is handled by the graphical layer, which takes into account file handling, directory sorting, etc. so you can worry about the important stuff, i.e., your algorithm. </li>
-  <li>For chimeras such as Python, which have no structure and, let’s face it, are a band aid for programmers who have no idea how to write code, the graphical layer writes a NIFTI file (yes, there is disk I/O, yes it is inefficient, yes it is stupid but so is your choice of programming language so just deal with it). </li>
-  <li>Your application should be structured as a single <b>learnRealCodingApp.py</b> script (can be a class or pipeline). This should be present in the <b>$PROJECT_SOURCE_DIR/src/applications/py</b> directory. Your application should also have a file analogous to the <a href="https://pythonhosted.org/an_example_pypi_project/setuptools.html">setup.py</a> file used in Python projects by the name <b>learnRealCodingApp_setup.py</b>.  </li>
-  <li>The Python configuration creates a virtual environment in the <b>$PROJECT_BINARY_DIR/py</b> directory, where all the dependencies are constructed.  </li>
-
-</ul>
+Please adhere to the package structure.
 
 */
