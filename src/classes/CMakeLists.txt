@@ -12,7 +12,7 @@
 
 SET( ExtraSources )
 
-SET( CBICA_LIB_NAME CBICAToolkit_Basic )
+SET( CBICA_LIB_NAME ${PROJECT_NAME}_Basic )
 ADD_DEFINITIONS( -DCBICA_LIB_NAME="${CBICA_LIB_NAME}" )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -85,6 +85,10 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 	#	MESSAGE(ERROR " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 	#ENDIF()
 ENDIF(CMAKE_COMPILER_IS_GNUCXX) 
+
+# keep source files structured as folders for clarity
+SOURCE_GROUP( Basic_Headers FILES ${CBICA_Headers})
+SOURCE_GROUP( Basic_Sources FILES ${CBICA_Sources})
 
 # install the library
 INSTALL(

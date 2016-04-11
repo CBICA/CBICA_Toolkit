@@ -74,10 +74,10 @@ cmake -DCMAKE_INSTALL_PREFIX=/opt/software/geodesic ../CBICATk-${version}-source
 
 For <b>Windows</b>, open CMake-GUI and select <code>CBICATk-${version}-source</code> as the "source" directory and select <code>CBICATk-${version}-build</code> as the "build" directory. Click on "Configure" and select the appropriate C++ compiler. If there weren't any configuration errors, click "Generate".
 
-CMake should be able to find ITK and OpenCV libraries if they are specified in the <code>$PATH</code> variable in your environment. If you have custom installation directories, then ensure that they have been added to the <code>$PATH</code> variable or point the variables <b>ITK_DIR</b>, <b>VTK_DIR</b> and <b>QT_QMAKE_EXECUTABLE</b> to the appropriate paths (for ITK, point it to the directory where <code>ITKConfig.cmake</code> is present, which would be the build or installation directory). If you are using a bash shell, it can be done using the following command:
+CMake should be able to find the dependencies if they are specified in the <code>$PATH</code> variable in your environment. If you have custom installation directories, then ensure that they have been added to the <code>$PATH</code> variable or point the variable(s) <b>${Dependency}_DIR</b> to the appropriate build paths where <code>${Dependency}Config.cmake</code> is/are present (for example, in the case of ITK, point <code>ITK_DIR</code> to the directory where <code>ITKConfig.cmake</code> is present) - this should be either the build directory or the installation directory. If you are using a bash shell, it can be done using the following command:
 
 \verbatim
-cmake -DITKDIR=${path_to_custom_ITK_build_dir} -DVTK_DIR=${path_to_custom_VTK_build_dir} -DQT_QMAKE_EXECUTABLE=${path_to_custom_qt_installation}
+cmake -DITKDIR=${path_to_custom_ITK_build_dir} -DOpenCV_DIR=${path_to_custom_OpenCV_build_dir} CBICATk-${version}-source
 \endverbatim
 
 This step will generate platform-specific project files (for example, Make file for GCC and Visual Studio solution file for MSVC).
@@ -96,10 +96,6 @@ Some of the options that can be set are:
 	<tr>
 		<td>CMAKE_INSTALL_PREFIX</td>
 		<td>Path where the project will be installed</td>
-	</tr>
-	<tr>
-		<td>PACKAGE_PROJECT</td>
-		<td>Create installer for project</td>
 	</tr>
 </table>
 

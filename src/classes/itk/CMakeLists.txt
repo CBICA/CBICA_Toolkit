@@ -11,10 +11,10 @@
 ##############################################################################
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} 
-                     ${CMAKE_CURRENT_SOURCE_DIR}/../../
+                     ${BASIC_CLASS_DIRECTORY}
 )
 
-SET( CBICA_ITK_LIB_NAME CBICAToolkit_ITK )
+SET( CBICA_ITK_LIB_NAME ${PROJECT_NAME}_ITK )
 ADD_DEFINITIONS( -DCBICA_ITK_LIB_NAME="${CBICA_ITK_LIB_NAME}" )
 
 FIND_PACKAGE(ITK REQUIRED)
@@ -62,6 +62,12 @@ SET( ITK_Class_Sources  ${ITK_Class_Sources}        CACHE STRING "ITK sources"  
 SET( ITK_CLASS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "ITK classes directory" FORCE )
 SET( ITK_CLASS_LIBRARY ${CBICA_ITK_LIB_NAME} CACHE STRING "ITK classes library" FORCE )
 
+# keep source files structured as folders for clarity
+SOURCE_GROUP( ITK-Class_Headers FILES ${ITK_Class_Headers})
+SOURCE_GROUP( ITK-Class_Sources FILES ${ITK_Class_Sources})
+SOURCE_GROUP( Basic_Headers FILES ${CBICA_Headers})
+SOURCE_GROUP( Basic_Sources FILES ${CBICA_Sources})
+
 MARK_AS_ADVANCED ( ITK_CLASSES_DIR )
 MARK_AS_ADVANCED ( ITK_Class_Headers )
 MARK_AS_ADVANCED ( ITK_Class_Sources )
@@ -69,7 +75,9 @@ MARK_AS_ADVANCED ( ITK_Class_Sources )
 ADD_LIBRARY( 
   ${CBICA_ITK_LIB_NAME}
   ${ITK_Class_Headers}
-  ${ITK_Class_Sources}  
+  ${ITK_Class_Sources}
+  ${CBICA_Headers}
+  ${CBICA_Sources}
 )
 
 SET(CMAKE_DEBUG_POSTFIX "d")

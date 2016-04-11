@@ -1,25 +1,16 @@
-##############################################################################
-# \file  CMakeLists.txt
-#
-# \brief Build configuration for Code/Source directory.
-#
-# https://www.cbica.upenn.edu/sbia/software/
-# sbia-software@uphs.upenn.edu
-# 
-# Copyright (c) 2015 University of Pennsylvania. All rights reserved.
-# See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
-##############################################################################
+## PARENT CONFIGURATION FILE
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
 SET( 
-  PROJECT_NAME CBICA-TK_Trunk # change this for branches, etc.
+  PROJECT_NAME CBICATk # change this for branches, etc.
   #VERSION 0.0.2 
   ) # change project name here
 
 PROJECT( ${PROJECT_NAME} )
 SET(PROJECT_NAME_EXTENDED "CBICA Toolkit")
 ADD_DEFINITIONS(-DPROJECT_NAME_EXTENDED="${PROJECT_NAME_EXTENDED}")
+ADD_DEFINITIONS(-DPROJECT_NAME="${PROJECT_NAME}")
 SET( PROJECT_VERSION_MAJOR 1)
 SET( PROJECT_VERSION_MINOR 0)
 SET( PROJECT_VERSION_PATCH 0)
@@ -46,10 +37,16 @@ SET(PROJECT_CONTACT "sbia-software@uphs.upenn.edu")
 #ADD_DEFINITIONS("-DHAS_BOOST")
 #LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
+# ensure OpenMP flag is enabled throughout the project 
+FIND_PACKAGE(OpenMP REQUIRED)
+SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
 
 # Find all *.h and *.cpp files in a folder -> useful when the application is purely command line based
 SET( SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/src )
 SET( BASIC_CLASS_DIRECTORY ${SOURCE_DIRECTORY}/classes )
+
+SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ADD_SUBDIRECTORY( ${BASIC_CLASS_DIRECTORY} )
 
@@ -101,19 +98,12 @@ SET( INCLUDE_DIR_CONFIG "\"${PROJECT_SOURCE_DIR}/src/classes\"" )
 #GET_TARGET_PROPERTY( LIBRARY_CONFIG CBICA_Classes LOCATION )
 SET( LIBRARY_CONFIG "\"${LIBRARY_CONFIG}\"" )
 
-### Building the documentation
-## The following 4 lines are for generation of public documentation
+# Building the documentation
 SET( BUILD_DOCUMENTATION ON CACHE BOOL "Do you want to build Documentation (needs Doxygen)?" )
 IF( BUILD_DOCUMENTATION )
   ADD_SUBDIRECTORY( docs )
+  #ADD_SUBDIRECTORY( docs_internal ) # only used for internal documentation 
 ENDIF ()
-
-## This documentation is for the SBIA website ONLY. Remove these lines AND the "docs_internal" folder before publishing
-## under "tags".
-#SET( BUILD_DOCUMENTATION_INTERNAL OFF CACHE BOOL "Do you want to build Documentation (Needs Doxygen)." )
-#IF( BUILD_DOCUMENTATION_INTERNAL )
-#    ADD_SUBDIRECTORY( docs_internal )
-#ENDIF ()
 
 ### Python wrapping
 SET( BUILD_PYTHON_WRAP OFF CACHE BOOL "Do you want to wrap classes (needs SWIG 3.0.4)? Ensure build option matches Python lib build." )
@@ -131,14 +121,6 @@ INCLUDE_DIRECTORIES(
 	${SOURCE_DIRECTORY}
 	#${Boost_INCLUDE_DIRS}
 )
-
-## Keep all executables in a single directory
-#IF( WIN32 )
-#	SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/executable )
-#	SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/executable )
-#ELSE( WIN32 )
-#	SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/executable )
-#ENDIF( WIN32 )
 
 SET( EXE_NAME ${PROJECT_NAME} CACHE STRING "Executable name" FORCE)
 
@@ -161,17 +143,6 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 	#	MESSAGE(ERROR " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 	#ENDIF()
 ENDIF(CMAKE_COMPILER_IS_GNUCXX) 
-
-## Link libraries
-#IF( BUILD_CBICA_ITK_CLASSES )
-#	TARGET_LINK_LIBRARIES( 
-#		${EXE_NAME} 
-#		${ITK_LIBRARIES}
-#	)
-#ENDIF( BUILD_CBICA_ITK_CLASSES )
-
-## Installation (optional)
-#SET_TARGET_PROPERTIES( ${EXE_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE )
 
 SET( PACKAGE_NAME ${PROJECT_NAME} )
 
