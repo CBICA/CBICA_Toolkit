@@ -38,7 +38,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 <table border="0">
 	<tr>
-		<td><b>fileExists</b></td>
+		<td width="200px"><b>fileExists</b></td>
 		<td>Check if specified file exists or not</td>
 	</tr>
 	<tr>
@@ -103,7 +103,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 <table border="0">
 	<tr>
-		<td><b>getFilenamePath</b></td>
+		<td width="200px"><b>getFilenamePath</b></td>
 		<td>Get the path of the supplied file name (uses <code>splitFileName</code>)</td>
 	</tr>
 	<tr>
@@ -176,7 +176,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 <table border="0">
 	<tr>
-		<td><b>isFile</b></td>
+		<td width="200px"><b>isFile</b></td>
 		<td>Return True if path is an existing regular file</td>
 	</tr>
 	<tr>
@@ -209,7 +209,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 <table border="0">
 	<tr>
-		<td><b>splitFileName</b></td>
+		<td width="200px"><b>splitFileName</b></td>
 		<td>Splits a supplied file name between path, base file name and extension</td>
 	</tr>
 	<tr>
@@ -242,7 +242,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 <table border="0">
 	<tr>
-		<td><b>compareEqual</b></td>
+		<td width="200px"><b>compareEqual</b></td>
 		<td>Compare if multiple inputs are equal</td>
 	</tr>
 	<tr>
@@ -259,7 +259,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 <table border="0">
 	<tr>
-		<td><b>round</b></td>
+		<td width="200px"><b>round</b></td>
 		<td>std::round</td>
 	</tr>
 	<tr>
@@ -286,7 +286,7 @@ Generated log is in the format: <br>
 
 <table border="0">
 	<tr>
-		<td><b>EnableTextLogging</b></td>
+		<td width="200px"><b>EnableTextLogging</b></td>
 		<td>Switches from console to specific text file</td>
 	</tr>
 	<tr>
@@ -311,7 +311,7 @@ Universal command line parser. Add parameters, descriptions and call on them fro
 
 <table border="0">
 	<tr>
-		<td><b>addRequiredParameter</b></td>
+		<td width="200px"><b>addRequiredParameter</b></td>
 		<td>Add required parameter (no '-' is necessary) - exception is thrown if a required parameter is missing</td>
 	</tr>
 	<tr>
@@ -367,7 +367,7 @@ Obtains the data regarding spacing and dimensions of specified image in <code>it
 
 <table border="0">
 	<tr>
-		<td><b>getImageIOBase</b></td>
+		<td width="200px"><b>getImageIOBase</b></td>
 		<td>Get the ImageIOBase class wrapped around a smart pointer</td>
 	</tr>
 	<tr>
@@ -397,7 +397,7 @@ Computes and saves the specified scalar image for an image. Input image and outp
 
 <table border="0">
 	<tr>
-		<td><b>FA</b></td>
+		<td width="200px"><b>FA</b></td>
 		<td>FA images</td>
 	</tr>
 	<tr>
@@ -448,7 +448,7 @@ Functions to make handling of images easier.
 
 <table border="0">
 	<tr>
-		<td><b>VectorizeImages</b></td>
+		<td width="200px"><b>VectorizeImages</b></td>
 		<td>Vectorize a set of images in either column or row major format</td>
 	</tr>
 	<tr>
