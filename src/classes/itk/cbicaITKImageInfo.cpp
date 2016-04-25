@@ -12,7 +12,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 */
 #include "cbicaITKImageInfo.h"
 
-#include "classes/cbicaUtilities.h"
+#include "cbicaUtilities.h"
 
 namespace cbica
 {

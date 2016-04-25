@@ -33,14 +33,21 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 namespace cbica
 {
-  CmdParser::CmdParser(int argc, char **argv, const std::string &exe_name)
+  CmdParser::CmdParser(int argc, char **argv, const std::string &exe_name /*= ""*/)
   {
 #ifdef PROJECT_VERSION
     m_version = PROJECT_VERSION;
 #else
     m_version = 0.1.0;
 #endif    
-    m_exeName = exe_name;
+    if (exe_name == "")
+    {
+      m_exeName = cbica::getExecutableName();
+    }
+    else
+    {
+      m_exeName = exe_name;
+    }
     m_maxLength = 0;
     checkMaxLen = false;
     helpRequested = false;
@@ -49,30 +56,9 @@ namespace cbica
     m_argc = argc;
     m_argv = argv;
 
-    m_optionalParameters.push_back(Parameter("u", "usage", "", "", "Prints basic usage message.", "", "", "", ""));
-    m_optionalParameters.push_back(Parameter("h", "help", "", "", "Prints verbose usage information.", "", "", "", ""));
-    m_optionalParameters.push_back(Parameter("v", "version", "", "", "Prints information about software version.", "", "", "", ""));
-  }
-
-  CmdParser::CmdParser(int argc, char **argv)
-  {
-    m_exeName = argv[0];
-#ifdef PROJECT_VERSION
-    m_version = PROJECT_VERSION;
-#else
-    m_version = 0.1.0;
-#endif
-    m_maxLength = 0;
-    checkMaxLen = false;
-    helpRequested = false;
-    m_exampleOfUsage = "";
-
-    m_argc = argc;
-    m_argv = argv;
-
-    m_optionalParameters.push_back(Parameter("u", "usage", "", "", "Prints basic usage message.", "", "", "", ""));
-    m_optionalParameters.push_back(Parameter("h", "help", "", "", "Prints verbose usage information.", "", "", "", ""));
-    m_optionalParameters.push_back(Parameter("v", "version", "", "", "Prints information about software version.", "", "", "", ""));
+    m_optionalParameters.push_back(Parameter("u", "usage", Parameter::Type::NONE, "", "Prints basic usage message.", "", "", "", ""));
+    m_optionalParameters.push_back(Parameter("h", "help", Parameter::Type::NONE, "", "Prints verbose usage information.", "", "", "", ""));
+    m_optionalParameters.push_back(Parameter("v", "version", Parameter::Type::NONE, "", "Prints information about software version.", "", "", "", ""));
   }
 
   CmdParser::~CmdParser()
@@ -132,37 +118,7 @@ namespace cbica
     }
   }
 
-  void CmdParser::addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1)
-  {
-    CmdParser::addOptionalParameter(laconic, verbose, expectedDataType, dataRange, description_line1, "", "", "", "");
-  }
-
-  void CmdParser::addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2)
-  {
-    CmdParser::addOptionalParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, "", "", "");
-  }
-
-  void CmdParser::addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2,
-    const std::string &description_line3)
-  {
-    CmdParser::addOptionalParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, "", "");
-  }
-
-  void CmdParser::addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2,
-    const std::string &description_line3,
-    const std::string &description_line4)
-  {
-    CmdParser::addOptionalParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, "");
-  }
-
-  void CmdParser::addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
+  void CmdParser::addOptionalParameter(const std::string &laconic, const std::string &verbose, const int &expectedDataType, const std::string &dataRange,
     const std::string &description_line1,
     const std::string &description_line2,
     const std::string &description_line3,
@@ -193,37 +149,7 @@ namespace cbica
     m_optionalParameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
   }
 
-  void CmdParser::addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1)
-  {
-    CmdParser::addRequiredParameter(laconic, verbose, expectedDataType, dataRange, description_line1, "", "", "", "");
-  }
-
-  void CmdParser::addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2)
-  {
-    CmdParser::addRequiredParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, "", "", "");
-  }
-
-  void CmdParser::addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2,
-    const std::string &description_line3)
-  {
-    CmdParser::addRequiredParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, "", "");
-  }
-
-  void CmdParser::addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2,
-    const std::string &description_line3,
-    const std::string &description_line4)
-  {
-    CmdParser::addRequiredParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, "");
-  }
-
-  void CmdParser::addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
+  void CmdParser::addRequiredParameter(const std::string &laconic, const std::string &verbose, const int &expectedDataType, const std::string &dataRange,
     const std::string &description_line1,
     const std::string &description_line2,
     const std::string &description_line3,
@@ -254,37 +180,7 @@ namespace cbica
     m_requiredParameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
   }
 
-  void CmdParser::addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1)
-  {
-    CmdParser::addOptionalParameter(laconic, verbose, expectedDataType, dataRange, description_line1);
-  }
-
-  void CmdParser::addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2)
-  {
-    CmdParser::addOptionalParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2);
-  }
-
-  void CmdParser::addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2,
-    const std::string &description_line3)
-  {
-    CmdParser::addOptionalParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3);
-  }
-
-  void CmdParser::addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-    const std::string &description_line1,
-    const std::string &description_line2,
-    const std::string &description_line3,
-    const std::string &description_line4)
-  {
-    CmdParser::addOptionalParameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4);
-  }
-
-  void CmdParser::addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
+  void CmdParser::addParameter(const std::string &laconic, const std::string &verbose, const int &expectedDataType, const std::string &dataRange,
     const std::string &description_line1,
     const std::string &description_line2,
     const std::string &description_line3,
@@ -317,20 +213,20 @@ namespace cbica
 
       std::cout << "[" << spaces_lac << "-" << inputParameters[i].laconic << ", --" <<
         inputParameters[i].verbose << spaces_verb << "]  " <<
-        inputParameters[i].descriptionLine1 << NEWLINE;
+        inputParameters[i].descriptionLine1 << "\n";
 
       if (inputParameters[i].descriptionLine2 != "")
       {
-        std::cout << spaces_verb_line2 << inputParameters[i].descriptionLine2 << NEWLINE;
+        std::cout << spaces_verb_line2 << inputParameters[i].descriptionLine2 << "\n";
         if (inputParameters[i].descriptionLine3 != "")
         {
-          std::cout << spaces_verb_line2 << inputParameters[i].descriptionLine3 << NEWLINE;
+          std::cout << spaces_verb_line2 << inputParameters[i].descriptionLine3 << "\n";
           if (inputParameters[i].descriptionLine4 != "")
           {
-            std::cout << spaces_verb_line2 << inputParameters[i].descriptionLine4 << NEWLINE;
+            std::cout << spaces_verb_line2 << inputParameters[i].descriptionLine4 << "\n";
             if (inputParameters[i].descriptionLine5 != "")
             {
-              std::cout << spaces_verb_line2 << inputParameters[i].descriptionLine5 << NEWLINE;
+              std::cout << spaces_verb_line2 << inputParameters[i].descriptionLine5 << "\n";
             }
           }
         }
@@ -338,11 +234,11 @@ namespace cbica
 
       if (verbose && (inputParameters[i].laconic != "u") && (inputParameters[i].laconic != "h") && (inputParameters[i].laconic != "v"))
       {
-        std::cout << spaces_verb_line2 << "Expected Type  :: " << inputParameters[i].expectedDataType << NEWLINE <<
-          spaces_verb_line2 << "Expected Range :: " << inputParameters[i].dataRange << NEWLINE;
+        std::cout << spaces_verb_line2 << "Expected Type  :: " << inputParameters[i].expectedDataType << "\n" <<
+          spaces_verb_line2 << "Expected Range :: " << inputParameters[i].dataRange << "\n";
       }
 
-      std::cout << NEWLINE; // an extra to keep coherence
+      std::cout << "\n"; // an extra to keep coherence
     }
   }
 
@@ -389,7 +285,7 @@ namespace cbica
   void CmdParser::echoVersion()
   {
     std::cout << "Executable Name: " << m_exeName << "\n" << "        Version: " <<
-      m_version << NEWLINE;
+      m_version << "\n";
 
     copyrightNotice();
   }
@@ -483,8 +379,9 @@ namespace cbica
     return found;
   }
 
-  std::string CmdParser::getDescription(const std::string &laconicParameter, bool newLine)
+  std::string CmdParser::getDescription(const std::string &laconicParameter, bool NewLine = false)
   {
+    bool noMoreChecks = false; // ensures that extra checks are not done for parameters
     if (laconicParameter == "")
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
@@ -497,39 +394,47 @@ namespace cbica
 
     for (size_t i = 0; i < m_requiredParameters.size(); i++)
     {
-      if (m_requiredParameters[i].laconic == laconicParameter)
+      while (!noMoreChecks)
       {
-        if (newLine)
+        if (m_requiredParameters[i].laconic == laconicParameter)
         {
-          return m_requiredParameters[i].descriptionLine1 + "\n" + m_requiredParameters[i].descriptionLine2 + "\n" +
-            m_requiredParameters[i].descriptionLine3 + "\n" + m_requiredParameters[i].descriptionLine4 + "\n" +
-            m_requiredParameters[i].descriptionLine5;
-        }
-        else
-        {
-          return m_requiredParameters[i].descriptionLine1 + " " + m_requiredParameters[i].descriptionLine2 + " " +
-            m_requiredParameters[i].descriptionLine3 + " " + m_requiredParameters[i].descriptionLine4 + " " +
-            m_requiredParameters[i].descriptionLine5;
+          if (NewLine)
+          {
+            return m_requiredParameters[i].descriptionLine1 + "\n" + m_requiredParameters[i].descriptionLine2 + "\n" +
+              m_requiredParameters[i].descriptionLine3 + "\n" + m_requiredParameters[i].descriptionLine4 + "\n" +
+              m_requiredParameters[i].descriptionLine5;
+          }
+          else
+          {
+            return m_requiredParameters[i].descriptionLine1 + " " + m_requiredParameters[i].descriptionLine2 + " " +
+              m_requiredParameters[i].descriptionLine3 + " " + m_requiredParameters[i].descriptionLine4 + " " +
+              m_requiredParameters[i].descriptionLine5;
+          }
+          noMoreChecks = true;
         }
       }
     }
 
     for (size_t i = 0; i < m_optionalParameters.size(); i++)
     {
-      if (m_optionalParameters[i].laconic == laconicParameter)
+      while (!noMoreChecks)
       {
-        if (newLine)
+        if (m_optionalParameters[i].laconic == laconicParameter)
         {
-          return m_optionalParameters[i].descriptionLine1 + "\n" + m_optionalParameters[i].descriptionLine2 + "\n" +
-            m_optionalParameters[i].descriptionLine3 + "\n" + m_optionalParameters[i].descriptionLine4 + "\n" +
-            m_optionalParameters[i].descriptionLine5;
+          if (NewLine)
+          {
+            return m_optionalParameters[i].descriptionLine1 + "\n" + m_optionalParameters[i].descriptionLine2 + "\n" +
+              m_optionalParameters[i].descriptionLine3 + "\n" + m_optionalParameters[i].descriptionLine4 + "\n" +
+              m_optionalParameters[i].descriptionLine5;
+          }
+          else
+          {
+            return m_optionalParameters[i].descriptionLine1 + " " + m_optionalParameters[i].descriptionLine2 + " " +
+              m_optionalParameters[i].descriptionLine3 + " " + m_optionalParameters[i].descriptionLine4 + " " +
+              m_optionalParameters[i].descriptionLine5;
+          }
         }
-        else
-        {
-          return m_optionalParameters[i].descriptionLine1 + " " + m_optionalParameters[i].descriptionLine2 + " " +
-            m_optionalParameters[i].descriptionLine3 + " " + m_optionalParameters[i].descriptionLine4 + " " +
-            m_optionalParameters[i].descriptionLine5;
-        }
+        noMoreChecks = true;
       }
     }
 
@@ -591,7 +496,7 @@ namespace cbica
           m_requiredParameters[i].dataRange << "> " <<
           m_requiredParameters[i].descriptionLine1 + " " + m_requiredParameters[i].descriptionLine2 + " " +
           m_requiredParameters[i].descriptionLine3 + " " + m_requiredParameters[i].descriptionLine4 + " " +
-          m_requiredParameters[i].descriptionLine5 << NEWLINE;
+          m_requiredParameters[i].descriptionLine5 << "\n";
       }
 
       for (size_t i = 0; i < m_optionalParameters.size(); i++)
@@ -600,7 +505,7 @@ namespace cbica
           m_optionalParameters[i].dataRange << "> " <<
           m_optionalParameters[i].descriptionLine1 + " " + m_optionalParameters[i].descriptionLine2 + " " +
           m_optionalParameters[i].descriptionLine3 + " " + m_optionalParameters[i].descriptionLine4 + " " +
-          m_optionalParameters[i].descriptionLine5 << NEWLINE;
+          m_optionalParameters[i].descriptionLine5 << "\n";
       }
     }
 

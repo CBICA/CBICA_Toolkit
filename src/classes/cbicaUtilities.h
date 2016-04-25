@@ -23,9 +23,6 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <iterator>
 #include <cmath>
 
-#if BUILD_CBICA_ITK_CLASSES > 0
-#include "gdcmMD5.h"
-#endif
 //#include <type_traits>
 
 /**
@@ -613,14 +610,12 @@ namespace cbica
 
 #endif
 
-#if BUILD_CBICA_ITK_CLASSES > 0
   /**
   \brief Compute the MD5 checksum for supplied file
 
   This class uses the gdcm::MD5 class and that is a dependency for this function.
   */
   std::string computeMD5Sum(const std::string &fileName);
-#endif
 
 
 };

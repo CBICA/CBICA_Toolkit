@@ -20,10 +20,11 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "itkImage.h"
 #include "itkImageRegionIterator.h"
+#include "gdcmMD5.h"
 
 #include "opencv2/core/core.hpp"
 
-#include "cbicaDefinitions.h"
+//#include "cbicaDefinitions.h"
 
 //typedef itk::Image<double, 3> TImageType;
 
@@ -396,5 +397,13 @@ namespace cbica
     }
 
     return returnVector;
+  }
+
+  std::string computeMD5Sum(const std::string &fileName)
+  {
+    gdcm::MD5 md5Computer;
+    char digStr[_MAX_PATH];
+    md5Computer.ComputeFile(fileName.c_str(), digStr);
+    return std::string(digStr);
   }
 }

@@ -21,8 +21,6 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "cbicaUtilities.h"
 
-#define NEWLINE "\n"
-
 namespace cbica
 {
   /**
@@ -34,6 +32,11 @@ namespace cbica
   */
   struct Parameter
   {
+    enum Type
+    {
+      FILE, DIRECTORY, STRING, INTEGER, FLOAT, BOOLEAN, NONE
+    };
+
     std::string laconic;
     std::string verbose;
     std::string expectedDataType;
@@ -46,10 +49,10 @@ namespace cbica
     size_t length;
 
     //! Constructor with five lines of description
-    Parameter(const std::string &in_laconic, const std::string &in_verbose, const std::string &in_dataType, const std::string &in_dataRange,
+    Parameter(const std::string &in_laconic, const std::string &in_verbose, const int &in_dataType, const std::string &in_dataRange,
       const std::string &in_descriptionLine1, const std::string &in_descriptionLine2, const std::string &in_descriptionLine3,
       const std::string &in_descriptionLine4, const std::string &in_descriptionLine5) :
-      laconic(in_laconic), verbose(in_verbose), expectedDataType(in_dataType), dataRange(in_dataRange),
+      laconic(in_laconic), verbose(in_verbose), /*expectedDataType(in_dataType),*/ dataRange(in_dataRange),
       descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
       descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
     {
@@ -58,6 +61,34 @@ namespace cbica
       verbose = cbica::replaceString(verbose, "-", "");
       verbose = cbica::replaceString(verbose, "--", "");
       length = laconic.length() + verbose.length();
+
+      switch (in_dataType)
+      {
+      case Type::FILE:
+        expectedDataType = "FILE";
+        break;
+      case Type::DIRECTORY:
+        expectedDataType = "DIRECTORY";
+        break;
+      case Type::STRING:
+        expectedDataType = "STRING";
+        break;
+      case Type::INTEGER:
+        expectedDataType = "INTEGER";
+        break;
+      case Type::FLOAT:
+        expectedDataType = "FLOAT";
+        break;
+      case Type::BOOLEAN:
+        expectedDataType = "BOOL";
+        break;
+      case Type::NONE:
+        expectedDataType = "NONE";
+        break;
+      default:
+        expectedDataType = "UNKNOWN";
+        break;
+      }
     }
 
   };
@@ -101,18 +132,9 @@ namespace cbica
 
     \param argc The "argc" from executable
     \param argv The "argv" from executable
+    \param exe_name Name of the executable, defaults to picking up from cbica::getExecutableName()
     */
-    explicit CmdParser(const int argc, char **argv);
-
-    /**
-    \brief The Constructor
-
-    \param argc The "argc" from executable
-    \param argv The "argv" from executable
-
-    \param exe_name Name of the executable
-    */
-    explicit CmdParser(const int argc, char **argv, const std::string &exe_name);
+    explicit CmdParser(const int argc, char **argv, const std::string &exe_name = "");
 
     /**
     \brief The Destructor
@@ -129,15 +151,6 @@ namespace cbica
 
     As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The single line of description for parameter
-    */
-    void addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1);
-
     /**
     \brief Adding parameters: defaults to optional parameters
 
@@ -148,77 +161,14 @@ namespace cbica
     \param expectedDataType The data type expected for this parameter
     \param dataRange The range of data expected for this parameter
     \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
+    \param description_line2 The second line of description for parameter, defaults to a blank string
+    \param description_line3 The third line of description for parameter, defaults to a blank string
+    \param description_line4 The fourth line of description for parameter, defaults to a blank string
+    \param description_line5 The fifth line of description for parameter, defaults to a blank string
     */
-    void addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2);
-
-    /**
-    \brief Adding parameters: defaults to optional parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    */
-    void addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3);
-
-    /**
-    \brief Adding parameters: defaults to optional parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    \param description_line4 The fourth line of description for parameter
-    */
-    void addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3,
-      const std::string &description_line4);
-
-    /**
-    \brief Adding parameters: defaults to optional parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    \param description_line4 The fourth line of description for parameter
-    \param description_line4 The fifth line of description for parameter
-    */
-    void addParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3,
-      const std::string &description_line4, const std::string &description_line5);
-
-    /**
-    \brief Adding Optional parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The single line of description for parameter
-    */
-    void addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1);
+    void addParameter(const std::string &laconic, const std::string &verbose, const int &expectedDataType, const std::string &dataRange,
+      const std::string &description_line1, const std::string &description_line2 = "", const std::string &description_line3 = "",
+      const std::string &description_line4 = "", const std::string &description_line5 = "");
 
     /**
     \brief Adding Optional parameters
@@ -230,77 +180,14 @@ namespace cbica
     \param expectedDataType The data type expected for this parameter
     \param dataRange The range of data expected for this parameter
     \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
+    \param description_line2 The second line of description for parameter, defaults to a blank string
+    \param description_line3 The third line of description for parameter, defaults to a blank string
+    \param description_line4 The fourth line of description for parameter, defaults to a blank string
+    \param description_line5 The fifth line of description for parameter, defaults to a blank string
     */
-    void addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2);
-
-    /**
-    \brief Adding Optional parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    */
-    void addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3);
-
-    /**
-    \brief Adding Optional parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    \param description_line4 The fourth line of description for parameter
-    */
-    void addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3,
-      const std::string &description_line4);
-
-    /**
-    \brief Adding Optional parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    \param description_line4 The fourth line of description for parameter
-    \param description_line5 The fifth line of description for parameter
-    */
-    void addOptionalParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3,
-      const std::string &description_line4, const std::string &description_line5);
-
-    /**
-    \brief Adding Required parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The single line of description for parameter
-    */
-    void addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1);
+    void addOptionalParameter(const std::string &laconic, const std::string &verbose, const int &expectedDataType, const std::string &dataRange,
+      const std::string &description_line1, const std::string &description_line2 = "", const std::string &description_line3 = "",
+      const std::string &description_line4 = "", const std::string &description_line5 = "");
 
     /**
     \brief Adding Required parameters
@@ -312,63 +199,14 @@ namespace cbica
     \param expectedDataType The data type expected for this parameter
     \param dataRange The range of data expected for this parameter
     \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
+    \param description_line2 The second line of description for parameter, defaults to a blank string
+    \param description_line3 The third line of description for parameter, defaults to a blank string
+    \param description_line4 The fourth line of description for parameter, defaults to a blank string
+    \param description_line5 The fifth line of description for parameter, defaults to a blank string
     */
-    void addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2);
-
-    /**
-    \brief Adding Required parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    */
-    void addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3);
-
-    /**
-    \brief Adding Required parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    \param description_line4 The fourth line of description for parameter
-    */
-    void addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3,
-      const std::string &description_line4);
-
-    /**
-    \brief Adding Required parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
-    \param laconic The laconic variant
-    \param verbose The verbose variant
-    \param expectedDataType The data type expected for this parameter
-    \param dataRange The range of data expected for this parameter
-    \param description_line1 The first line of description for parameter
-    \param description_line2 The second line of description for parameter
-    \param description_line3 The third line of description for parameter
-    \param description_line4 The fourth line of description for parameter
-    \param description_line5 The fifth line of description for parameter
-    */
-    void addRequiredParameter(const std::string &laconic, const std::string &verbose, const std::string &expectedDataType, const std::string &dataRange,
-      const std::string &description_line1, const std::string &description_line2, const std::string &description_line3,
-      const std::string &description_line4, const std::string &description_line5);
+    void addRequiredParameter(const std::string &laconic, const std::string &verbose, const int &expectedDataType, const std::string &dataRange,
+      const std::string &description_line1, const std::string &description_line2 = "", const std::string &description_line3 = "",
+      const std::string &description_line4 = "", const std::string &description_line5 = "");
 
     /**
     \brief Display the usage
@@ -402,10 +240,10 @@ namespace cbica
     Searches only using the laconic parameter; restriction placed for performance reasons.
 
     \param parameter Parameter whose description is requested
-    \param newLine Return with "\n" between description lines if true
+    \param "NewLine Return with "\n" between description lines if true, defaults to space between lines
     \return Description of parameter
     */
-    std::string getDescription(const std::string &laconicParameter, bool newLine);
+    std::string getDescription(const std::string &laconicParameter, bool NewLine);
 
     /**
     \brief Write the configuration file for the executable for use in the common GUI framework

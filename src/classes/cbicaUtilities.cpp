@@ -908,7 +908,7 @@ namespace cbica
     // new lines will be skipped     
     inFile.unsetf(std::ios_base::skipws);
     
-    // count the newlines with an algorithm specialized for counting
+    // count the "\n"s with an algorithm specialized for counting
     return std::count(std::istream_iterator<char>(inFile), std::istream_iterator<char>(), *constCharToChar(delim));
   }
 
@@ -1171,15 +1171,14 @@ namespace cbica
     return cbica::constCharToChar(std::string(input));
   }
 
-#if BUILD_CBICA_ITK_CLASSES > 0
   std::string computeMD5Sum(const std::string &fileName)
   {
-    gdcm::MD5 md5Computer;
-    char digStr[_MAX_PATH];
-    md5Computer.ComputeFile(fileName.c_str(), digStr);
-    return std::string(digStr);
+    //gdcm::MD5 md5Computer;
+    //char digStr[_MAX_PATH];
+    //md5Computer.ComputeFile(fileName.c_str(), digStr);
+    //return std::string(digStr);
+    return "";
   }
-#endif
 
 
 }

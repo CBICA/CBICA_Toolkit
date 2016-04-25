@@ -56,9 +56,9 @@ int main(int argc, char** argv)
       
       cbica::CmdParser parser = cbica::CmdParser(i+1, argv);
       parser.setExeName("BasicFunctionTests");
-      parser.addParameter("1p", "firstParam", "int", "1 to 10", "first parameter"); // defaults to optional parameters 
-      parser.addRequiredParameter("2p", "secondParam", "int", "1 to 10", "second parameter", "description line 2", "description line 3", "description line 4", "description line 5");
-      parser.addOptionalParameter("3p", "thirdParam", "string", "max length = 1024", "third parameter which is optional");
+      parser.addParameter("1p", "firstParam", cbica::Parameter::INTEGER, "1 to 10", "first parameter"); // defaults to optional parameters 
+      parser.addRequiredParameter("2p", "secondParam", cbica::Parameter::INTEGER, "1 to 10", "second parameter", "description line 2", "description line 3", "description line 4", "description line 5");
+      parser.addOptionalParameter("3p", "thirdParam", cbica::Parameter::STRING, "max length = 1024", "third parameter which is optional");
 
       int tempPosition;
 
@@ -307,7 +307,7 @@ int main(int argc, char** argv)
   }
   catch( std::exception &e )
   {
-    std::cout << "An exception occured. Number: " << e.what() << NEWLINE;
+    std::cout << "An exception occured. Number: " << e.what() << "\n";
     return EXIT_FAILURE;
   }
 
