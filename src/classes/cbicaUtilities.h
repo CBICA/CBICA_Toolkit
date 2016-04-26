@@ -30,14 +30,16 @@ enum Separator
   Parameter, DataType, DataRange
 };
 
-static std::vector< std::string > SeparatorStrings = { ":", "%", "*" };
+#if defined(__GNUC__)  && (__GNUC__ < 5)
+  static const char *SeparatorStrings[] = { ":", "%", "*" };
+#else
+  static std::vector< std::string > SeparatorStrings = { ":", "%", "*" };
+#endif
 
 static inline std::string getSeparator(int enumVal)
 {
   return SeparatorStrings[enumVal];
 }
-
-const std::string Separator_Parameter = ":", separator_dataType = "%", separator_dataRange = "*";
 
 /**
 \struct CSVDict
