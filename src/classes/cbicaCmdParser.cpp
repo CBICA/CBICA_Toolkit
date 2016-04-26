@@ -234,7 +234,7 @@ namespace cbica
 
       if (verbose && (inputParameters[i].laconic != "u") && (inputParameters[i].laconic != "h") && (inputParameters[i].laconic != "v"))
       {
-        std::cout << spaces_verb_line2 << "Expected Type  :: " << inputParameters[i].expectedDataType << "\n" <<
+        std::cout << spaces_verb_line2 << "Expected Type  :: " << inputParameters[i].dataType_string << "\n" <<
           spaces_verb_line2 << "Expected Range :: " << inputParameters[i].dataRange << "\n";
       }
 
@@ -381,7 +381,7 @@ namespace cbica
 
   std::string CmdParser::getDescription(const std::string &laconicParameter, bool NewLine = false)
   {
-    bool noMoreChecks = false; // ensures that extra checks are not done for parameters
+    int noMoreChecks = 0; // ensures that extra checks are not done for parameters
     if (laconicParameter == "")
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
@@ -392,53 +392,127 @@ namespace cbica
       getMaxLength();
     }
 
-    for (size_t i = 0; i < m_requiredParameters.size(); i++)
+    size_t i = 0;
+    while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
     {
-      while (!noMoreChecks)
+      if (m_requiredParameters[i].laconic == laconicParameter)
       {
-        if (m_requiredParameters[i].laconic == laconicParameter)
+        if (NewLine)
         {
-          if (NewLine)
-          {
-            return m_requiredParameters[i].descriptionLine1 + "\n" + m_requiredParameters[i].descriptionLine2 + "\n" +
-              m_requiredParameters[i].descriptionLine3 + "\n" + m_requiredParameters[i].descriptionLine4 + "\n" +
-              m_requiredParameters[i].descriptionLine5;
-          }
-          else
-          {
-            return m_requiredParameters[i].descriptionLine1 + " " + m_requiredParameters[i].descriptionLine2 + " " +
-              m_requiredParameters[i].descriptionLine3 + " " + m_requiredParameters[i].descriptionLine4 + " " +
-              m_requiredParameters[i].descriptionLine5;
-          }
-          noMoreChecks = true;
+          return m_requiredParameters[i].descriptionLine1 + "\n" + m_requiredParameters[i].descriptionLine2 + "\n" +
+            m_requiredParameters[i].descriptionLine3 + "\n" + m_requiredParameters[i].descriptionLine4 + "\n" +
+            m_requiredParameters[i].descriptionLine5;
         }
+        else
+        {
+          return m_requiredParameters[i].descriptionLine1 + " " + m_requiredParameters[i].descriptionLine2 + " " +
+            m_requiredParameters[i].descriptionLine3 + " " + m_requiredParameters[i].descriptionLine4 + " " +
+            m_requiredParameters[i].descriptionLine5;
+        }
+        noMoreChecks = 1;
       }
+      i++;
     }
 
-    for (size_t i = 0; i < m_optionalParameters.size(); i++)
+    i = 0;
+    while ((i < m_optionalParameters.size()) && (noMoreChecks < 1))
     {
-      while (!noMoreChecks)
+      if (m_optionalParameters[i].laconic == laconicParameter)
       {
-        if (m_optionalParameters[i].laconic == laconicParameter)
+        if (NewLine)
         {
-          if (NewLine)
-          {
-            return m_optionalParameters[i].descriptionLine1 + "\n" + m_optionalParameters[i].descriptionLine2 + "\n" +
-              m_optionalParameters[i].descriptionLine3 + "\n" + m_optionalParameters[i].descriptionLine4 + "\n" +
-              m_optionalParameters[i].descriptionLine5;
-          }
-          else
-          {
-            return m_optionalParameters[i].descriptionLine1 + " " + m_optionalParameters[i].descriptionLine2 + " " +
-              m_optionalParameters[i].descriptionLine3 + " " + m_optionalParameters[i].descriptionLine4 + " " +
-              m_optionalParameters[i].descriptionLine5;
-          }
+          return m_optionalParameters[i].descriptionLine1 + "\n" + m_optionalParameters[i].descriptionLine2 + "\n" +
+            m_optionalParameters[i].descriptionLine3 + "\n" + m_optionalParameters[i].descriptionLine4 + "\n" +
+            m_optionalParameters[i].descriptionLine5;
         }
-        noMoreChecks = true;
+        else
+        {
+          return m_optionalParameters[i].descriptionLine1 + " " + m_optionalParameters[i].descriptionLine2 + " " +
+            m_optionalParameters[i].descriptionLine3 + " " + m_optionalParameters[i].descriptionLine4 + " " +
+            m_optionalParameters[i].descriptionLine5;
+        }
+        noMoreChecks = 1;
       }
+      i++;
     }
 
     return "";
+  }
+
+  std::string CmdParser::getDataTypeAsString(const std::string &laconicParameter)
+  {
+    int noMoreChecks = 0; // ensures that extra checks are not done for parameters
+    if (laconicParameter == "")
+    {
+      std::cerr << "Parameter cannot be an empty string. Please try again.\n";
+      exit(EXIT_FAILURE);
+    }
+    if (!checkMaxLen)
+    {
+      getMaxLength();
+    }
+
+    size_t i = 0;
+    while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
+    {
+      if (m_requiredParameters[i].laconic == laconicParameter)
+      {
+        return m_requiredParameters[i].dataType_string;
+        noMoreChecks = 1;
+      }
+      i++;
+    }
+
+    i = 0;
+    while ((i < m_optionalParameters.size()) && (noMoreChecks < 1))
+    {
+      if (m_optionalParameters[i].laconic == laconicParameter)
+      {
+        return m_optionalParameters[i].dataType_string;
+        noMoreChecks = 1;
+      }
+      i++;
+    }
+
+    return "";
+  }
+
+  int CmdParser::getDataTypeAsEnumCode(const std::string &laconicParameter)
+  {
+    int noMoreChecks = 0; // ensures that extra checks are not done for parameters
+    if (laconicParameter == "")
+    {
+      std::cerr << "Parameter cannot be an empty string. Please try again.\n";
+      exit(EXIT_FAILURE);
+    }
+    if (!checkMaxLen)
+    {
+      getMaxLength();
+    }
+
+    size_t i = 0;
+    while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
+    {
+      if (m_requiredParameters[i].laconic == laconicParameter)
+      {
+        return m_requiredParameters[i].dataType_enumCode;
+        noMoreChecks = 1;
+      }
+      i++;
+    }
+
+    i = 0;
+    while ((i < m_optionalParameters.size()) && (noMoreChecks < 1))
+    {
+      if (m_optionalParameters[i].laconic == laconicParameter)
+      {
+        return m_optionalParameters[i].dataType_enumCode;
+        noMoreChecks = 1;
+      }
+      i++;
+    }
+
+    return -1;
   }
 
   void CmdParser::exampleUsage(const std::string &usageOfExe)
@@ -472,7 +546,7 @@ namespace cbica
     std::string fileName = dirName_wrap + m_exeName + ".txt";
 
 #if (_WIN32)
-    if (_access(fileName.c_str(), 6) != -1)
+    if (_access(fileName.c_str(), 6) == -1)
     {
       std::cerr << "No write permission for the specified config file.\n";
       exit(EXIT_FAILURE);
@@ -492,18 +566,20 @@ namespace cbica
     {
       for (size_t i = 0; i < m_requiredParameters.size(); i++)
       {
-        file << ":" << m_requiredParameters[i].verbose << ": [" << m_requiredParameters[i].expectedDataType << "] <" <<
-          m_requiredParameters[i].dataRange << "> " <<
-          m_requiredParameters[i].descriptionLine1 + " " + m_requiredParameters[i].descriptionLine2 + " " +
+        file << getSeparator(Separator::Parameter) << m_requiredParameters[i].verbose << getSeparator(Separator::Parameter) <<
+          " " << getSeparator(Separator::DataType) << m_requiredParameters[i].dataType_string << getSeparator(Separator::DataType) <<
+          " " << getSeparator(Separator::DataRange) << m_requiredParameters[i].dataRange << getSeparator(Separator::DataRange) <<
+          " " << m_requiredParameters[i].descriptionLine1 + " " + m_requiredParameters[i].descriptionLine2 + " " +
           m_requiredParameters[i].descriptionLine3 + " " + m_requiredParameters[i].descriptionLine4 + " " +
           m_requiredParameters[i].descriptionLine5 << "\n";
       }
 
       for (size_t i = 0; i < m_optionalParameters.size(); i++)
       {
-        file << ":" << m_optionalParameters[i].verbose << ": [" << m_optionalParameters[i].expectedDataType << "] <" <<
-          m_optionalParameters[i].dataRange << "> " <<
-          m_optionalParameters[i].descriptionLine1 + " " + m_optionalParameters[i].descriptionLine2 + " " +
+        file << getSeparator(Separator::Parameter) << m_optionalParameters[i].verbose << getSeparator(Separator::Parameter) <<
+          " " << getSeparator(Separator::DataType) << m_optionalParameters[i].dataType_string << getSeparator(Separator::DataType) <<
+          " " << getSeparator(Separator::DataRange) << m_optionalParameters[i].dataRange << getSeparator(Separator::DataRange) <<
+          " " << m_optionalParameters[i].descriptionLine1 + " " + m_optionalParameters[i].descriptionLine2 + " " +
           m_optionalParameters[i].descriptionLine3 + " " + m_optionalParameters[i].descriptionLine4 + " " +
           m_optionalParameters[i].descriptionLine5 << "\n";
       }
@@ -511,15 +587,7 @@ namespace cbica
 
     file.close();
 
-    std::cout << "Config file written with path: '" << fileName << "'\n";
-    return;
-  }
-
-  void CmdParser::writeConfigFile()
-  {
-    std::string dirName_wrap;
-    cbica::makeTempDir(dirName_wrap);
-    CmdParser::writeConfigFile(dirName_wrap);
+    //std::cout << "Config file written with path: '" << fileName << "'\n";
     return;
   }
 

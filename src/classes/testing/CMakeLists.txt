@@ -63,7 +63,10 @@ ADD_TEST( NAME TempFolder_Test COMMAND ${TEST_EXE_NAME} -makeTempDir "random")
 ADD_TEST( NAME LoggerClass_Test COMMAND ${TEST_EXE_NAME} -logging "testing_phrase")
 
 # Test for CmdParser class
-ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "random")
+ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "${CMAKE_CURRENT_BINARY_DIR}")
+
+# Test for CSV Parser
+ADD_TEST( NAME ConfigFileReader_Test COMMAND ${TEST_EXE_NAME} -configFileReader "${CMAKE_CURRENT_BINARY_DIR}/ParserClassTests.txt")
 
 # Test for SymbolicLink
 ADD_TEST( NAME SymbolicLink_Test COMMAND ${TEST_EXE_NAME} -symbolic "random")

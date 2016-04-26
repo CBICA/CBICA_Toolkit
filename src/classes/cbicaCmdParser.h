@@ -24,76 +24,6 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 namespace cbica
 {
   /**
-  \struct Parameter
-  \brief Hold individual parameter information
-
-  This is a helper struct for internal usage of CmdParser. It is not meant to be used from a program directly.
-  All variables are self-explanatory. Currently, a maxium of five lines of description are supported.
-  */
-  struct Parameter
-  {
-    enum Type
-    {
-      FILE, DIRECTORY, STRING, INTEGER, FLOAT, BOOLEAN, NONE
-    };
-
-    std::string laconic;
-    std::string verbose;
-    std::string expectedDataType;
-    std::string dataRange;
-    std::string descriptionLine1;
-    std::string descriptionLine2;
-    std::string descriptionLine3;
-    std::string descriptionLine4;
-    std::string descriptionLine5;
-    size_t length;
-
-    //! Constructor with five lines of description
-    Parameter(const std::string &in_laconic, const std::string &in_verbose, const int &in_dataType, const std::string &in_dataRange,
-      const std::string &in_descriptionLine1, const std::string &in_descriptionLine2, const std::string &in_descriptionLine3,
-      const std::string &in_descriptionLine4, const std::string &in_descriptionLine5) :
-      laconic(in_laconic), verbose(in_verbose), /*expectedDataType(in_dataType),*/ dataRange(in_dataRange),
-      descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
-      descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
-    {
-      laconic = cbica::replaceString(laconic, "-", "");
-      laconic = cbica::replaceString(laconic, "--", "");
-      verbose = cbica::replaceString(verbose, "-", "");
-      verbose = cbica::replaceString(verbose, "--", "");
-      length = laconic.length() + verbose.length();
-
-      switch (in_dataType)
-      {
-      case Type::FILE:
-        expectedDataType = "FILE";
-        break;
-      case Type::DIRECTORY:
-        expectedDataType = "DIRECTORY";
-        break;
-      case Type::STRING:
-        expectedDataType = "STRING";
-        break;
-      case Type::INTEGER:
-        expectedDataType = "INTEGER";
-        break;
-      case Type::FLOAT:
-        expectedDataType = "FLOAT";
-        break;
-      case Type::BOOLEAN:
-        expectedDataType = "BOOL";
-        break;
-      case Type::NONE:
-        expectedDataType = "NONE";
-        break;
-      default:
-        expectedDataType = "UNKNOWN";
-        break;
-      }
-    }
-
-  };
-
-  /**
   \class CmdParser
 
   \brief Simple command line parsing
@@ -110,9 +40,9 @@ namespace cbica
   /// The parameters "u", "usage", "h", "help", "v" and "version" are automatically added ///
 
   // add parameters to the variable
-  parser.addOptionalParameter("m","marvel", "int", "1 to 10", "I like The Avengers");
-  parser.addOptionalParameter("d", "dc", "double", "1.00 to 10.00", "I prefer the Justice League");
-  parser.addRequiredParameter("p", "people", "string", "max length = 1024", "People are always required");
+  parser.addOptionalParameter("m","marvel", cbica::Parameter::INTEGER, "1 to 10", "I like The Avengers");
+  parser.addOptionalParameter("d", "dc", cbica::Parameter::FLOAT, "1.00 to 10.00", "I prefer the Justice League");
+  parser.addRequiredParameter("p", "people", cbica::Parameter::STRING, "max length = 1024", "People are always required");
 
   /// checks for required parameters are done internally.
 
@@ -246,20 +176,33 @@ namespace cbica
     std::string getDescription(const std::string &laconicParameter, bool NewLine);
 
     /**
-    \brief Write the configuration file for the executable for use in the common GUI framework
+    \brief Get the data type analogous with the parameter
 
-    Defaults to directory specified in cbica::makeTempDir() if dirName is empty. The file is always 'EXE_NAME.txt'.
+    Searches only using the laconic parameter; restriction placed for performance reasons.
 
-    \param dirName The full path of the directory to save the file
+    \param parameter Parameter whose description is requested
+    \return Description of parameter as string
     */
-    void writeConfigFile(const std::string &dirName);
+    std::string getDataTypeAsString(const std::string &laconicParameter);
+
+    /**
+    \brief Get the data type analogous with the parameter
+
+    Searches only using the laconic parameter; restriction placed for performance reasons.
+
+    \param parameter Parameter whose description is requested
+    \return Description of parameter as Enum Code (Parameter::Type)
+    */
+    int getDataTypeAsEnumCode(const std::string &laconicParameter);
 
     /**
     \brief Write the configuration file for the executable for use in the common GUI framework
 
-    File is always written to the directory specified in cbica::makeTempDir(). The file is always 'EXE_NAME.txt'.
+    The generated config file is always named 'EXE_NAME.txt'.
+
+    \param dirName The full path of the directory to save the file; defaults to directory specified in cbica::makeTempDir()
     */
-    void writeConfigFile();
+    void writeConfigFile(const std::string &dirName = "");
 
     /**
     \brief Gives a brief example of how to use the executable

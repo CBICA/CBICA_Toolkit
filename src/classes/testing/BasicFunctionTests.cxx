@@ -27,8 +27,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
 
 #define TEST_DATA "/nifit1/"
 
-#include "classes/cbicaLogging.h"
 #include "classes/cbicaUtilities.h"
+#include "classes/cbicaLogging.h"
 #include "classes/cbicaCmdParser.h"
 
 int main(int argc, char** argv)
@@ -48,6 +48,7 @@ int main(int argc, char** argv)
     if( (std::string( "-cmdParser").compare(argv[1]) == 0) || 
         (std::string("--cmdParser").compare(argv[1]) == 0) )
     {
+      std::string dirToWrite = argv[2];
       int i = 0;
       argv[++i] = (char *)"-1p";
       argv[++i] = (char *)"1";
@@ -55,24 +56,107 @@ int main(int argc, char** argv)
       argv[++i] = (char *)"2";
       
       cbica::CmdParser parser = cbica::CmdParser(i+1, argv);
-      parser.setExeName("BasicFunctionTests");
+      parser.setExeName("ParserClassTests");
       parser.addParameter("1p", "firstParam", cbica::Parameter::INTEGER, "1 to 10", "first parameter"); // defaults to optional parameters 
-      parser.addRequiredParameter("2p", "secondParam", cbica::Parameter::INTEGER, "1 to 10", "second parameter", "description line 2", "description line 3", "description line 4", "description line 5");
+      parser.addRequiredParameter("2p", "secondParam", cbica::Parameter::FLOAT, "0.1 to 20", "second parameter", "description line 2", "description line 3", "description line 4", "description line 5");
       parser.addOptionalParameter("3p", "thirdParam", cbica::Parameter::STRING, "max length = 1024", "third parameter which is optional");
 
+      parser.writeConfigFile(dirToWrite);
       int tempPosition;
 
+      // parameter is found
       if (!parser.compareParameter("1p", tempPosition))
         return EXIT_FAILURE;
 
       if (!parser.compareParameter("2p", tempPosition))
         return EXIT_FAILURE;
     
+      // description can be read
       if( parser.getDescription("1p", false) == "" )
         return EXIT_FAILURE;
     
       if (parser.getDescription("2p", false) == "")
         return EXIT_FAILURE;
+
+      // data type can be deduced as enum code
+      if (parser.getDataTypeAsEnumCode("1p") != cbica::Parameter::INTEGER)
+        return EXIT_FAILURE;
+
+      if (parser.getDataTypeAsEnumCode("2p") != cbica::Parameter::FLOAT)
+        return EXIT_FAILURE;
+
+      // data type can be deduced as string
+      if (parser.getDataTypeAsString("1p") != "INTEGER")
+        return EXIT_FAILURE;
+
+      if (parser.getDataTypeAsString("2p") != "FLOAT")
+        return EXIT_FAILURE;
+
+    }
+
+    else if ( (std::string( "-configFileReader").compare(argv[1]) == 0) ||
+              (std::string("--configFileReader").compare(argv[1]) == 0))
+    {
+      std::string configFile = argv[2];
+      std::vector< cbica::Parameter > testParameters = cbica::readConfigFile(configFile, true);
+
+      size_t count = 0;
+
+      for (size_t i = 0; i < testParameters.size(); i++)
+      {
+        // everything is put in a nested if-else loop so that the number of iterations can be reduced
+        if (testParameters[i].verbose == "firstParam")
+        {
+          count++;
+          if (testParameters[i].dataType_string != "INTEGER")
+            return EXIT_FAILURE;
+
+          if (testParameters[i].dataType_enumCode != cbica::Parameter::Type::INTEGER)
+            return EXIT_FAILURE;
+
+          if (testParameters[i].dataRange != "1 to 10")
+            return EXIT_FAILURE;
+
+          if (testParameters[i].descriptionLine1.length() == 0)
+            return EXIT_FAILURE;
+        }
+        else if (testParameters[i].verbose == "secondParam")
+        {
+          count++;
+          if (testParameters[i].dataType_string != "FLOAT")
+            return EXIT_FAILURE;
+
+          if (testParameters[i].dataType_enumCode != cbica::Parameter::Type::FLOAT)
+            return EXIT_FAILURE;
+
+          if (testParameters[i].dataRange != "0.1 to 20")
+            return EXIT_FAILURE;
+
+          if (testParameters[i].descriptionLine1.length() == 0)
+            return EXIT_FAILURE;
+        }
+        else if (testParameters[i].verbose == "thirdParam")
+        {
+          count++;
+          if (testParameters[i].dataType_string != "STRING")
+            return EXIT_FAILURE;
+
+          if (testParameters[i].dataType_enumCode != cbica::Parameter::Type::STRING)
+            return EXIT_FAILURE;
+
+          if (testParameters[i].dataRange != "max length = 1024")
+            return EXIT_FAILURE;
+
+          if (testParameters[i].descriptionLine1.length() == 0)
+            return EXIT_FAILURE;
+        }
+      }
+      
+      if (count < 3)
+      {
+        // return failure if the number of parameters that needed to be detected is less than 3
+        return EXIT_FAILURE;
+      }
     }
 
     else if( (std::string( "-noFolder").compare(argv[1]) == 0) || 

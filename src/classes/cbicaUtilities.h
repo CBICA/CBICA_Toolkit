@@ -25,6 +25,20 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 //#include <type_traits>
 
+enum Separator
+{
+  Parameter, DataType, DataRange
+};
+
+static std::vector< std::string > SeparatorStrings = { ":", "%", "*" };
+
+static inline std::string getSeparator(int enumVal)
+{
+  return SeparatorStrings[enumVal];
+}
+
+const std::string Separator_Parameter = ":", separator_dataType = "%", separator_dataRange = "*";
+
 /**
 \struct CSVDict
 
@@ -59,6 +73,187 @@ struct CSVDict
 
 namespace cbica
 {
+
+  //====================================== String stuff ====================================//
+
+  /**
+  \brief Splits the input file name into its constituents
+
+  \param dataFile The full file name which is the input
+  \param baseName Overwritten with file name without extension
+  \param extension Overwritten with extension without '.'
+  \param path Overwritten with path to file
+
+  \return True if successful
+  */
+  bool splitFileName(const std::string &dataFile, std::string &path,
+    std::string &baseName, std::string &extension);
+
+  /**
+  \brief Splits the string
+
+  \param str String to split
+  \param delim Delimiter on the basis of which splitting is to be done
+  \return results Output in the form of vector of strings
+  */
+  std::vector<std::string> stringSplit(const std::string &str, const std::string &delim);
+
+  /**
+  \brief Searches for smaller string in larger string and then replaces it with user-defined input
+
+  \param entireString String to search
+  \param toReplace String to replace
+  \param replaceWith String to replace toReplace with
+
+  \return std::string of result
+  */
+  std::string replaceString(const std::string &entireString,
+    const std::string &toReplace,
+    const std::string &replaceWith);
+
+  /**
+  \brief Convert const char* to char*
+
+  \param input constant std::string
+
+  \return character pointer
+  */
+  char* constCharToChar(const std::string &input);
+
+  /**
+  \brief Convert const char* to char*
+
+  \param input constant character pointer
+
+  \return character pointer
+  */
+  char* constCharToChar(const char *input);
+
+  //====================================== Structs that need string stuff ====================================//
+
+  /**
+  \struct Parameter
+
+  \brief Holds individual parameter information
+
+  This is a helper struct for internal usage of different functions and classes (right now, the function ReadConfigFile()
+  and the class CmdParser() use it). It is not meant to be used from a program directly.
+  All variables are self-explanatory. Currently, a maxium of five lines of description are supported.
+  */
+  struct Parameter
+  {
+    enum Type
+    {
+      FILE, DIRECTORY, STRING, INTEGER, FLOAT, BOOLEAN, NONE
+    };
+
+    std::string laconic;
+    std::string verbose;
+    std::string dataRange;
+    std::string descriptionLine1;
+    std::string descriptionLine2; //! defaults to blank
+    std::string descriptionLine3; //! defaults to blank
+    std::string descriptionLine4; //! defaults to blank
+    std::string descriptionLine5; //! defaults to blank
+    size_t length;
+    std::string dataType_string;
+    int dataType_enumCode;
+
+    //! Constructor with five lines of description
+    Parameter(const std::string &in_laconic, const std::string &in_verbose, const int &in_dataType, const std::string &in_dataRange,
+      const std::string &in_descriptionLine1, const std::string &in_descriptionLine2 = "", const std::string &in_descriptionLine3 = "",
+      const std::string &in_descriptionLine4 = "", const std::string &in_descriptionLine5 = "") :
+      laconic(in_laconic), verbose(in_verbose), dataType_enumCode(in_dataType), dataRange(in_dataRange),
+      descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
+      descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
+    {
+      laconic = cbica::replaceString(laconic, "-", "");
+      laconic = cbica::replaceString(laconic, "--", "");
+      verbose = cbica::replaceString(verbose, "-", "");
+      verbose = cbica::replaceString(verbose, "--", "");
+      length = laconic.length() + verbose.length();
+
+      // populate dataType_string WRT dataType_enumCode
+      switch (in_dataType)
+      {
+      case Type::FILE:
+        dataType_string = "FILE";
+        break;
+      case Type::DIRECTORY:
+        dataType_string = "DIRECTORY";
+        break;
+      case Type::STRING:
+        dataType_string = "STRING";
+        break;
+      case Type::INTEGER:
+        dataType_string = "INTEGER";
+        break;
+      case Type::FLOAT:
+        dataType_string = "FLOAT";
+        break;
+      case Type::BOOLEAN:
+        dataType_string = "BOOL";
+        break;
+      case Type::NONE:
+        dataType_string = "NONE";
+        break;
+      default:
+        dataType_string = "UNKNOWN";
+        break;
+      }
+    }
+
+    //! Constructor with five lines of description
+    Parameter(const std::string &in_laconic, const std::string &in_verbose, const std::string &in_dataType, const std::string &in_dataRange,
+      const std::string &in_descriptionLine1, const std::string &in_descriptionLine2 = "", const std::string &in_descriptionLine3 = "",
+      const std::string &in_descriptionLine4 = "", const std::string &in_descriptionLine5 = "") :
+      laconic(in_laconic), verbose(in_verbose), dataType_string(in_dataType), dataRange(in_dataRange),
+      descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
+      descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
+    {
+      laconic = cbica::replaceString(laconic, "-", "");
+      laconic = cbica::replaceString(laconic, "--", "");
+      verbose = cbica::replaceString(verbose, "-", "");
+      verbose = cbica::replaceString(verbose, "--", "");
+      length = laconic.length() + verbose.length();
+
+      // populate dataType_enumCode WRT dataType_string
+      if (dataType_string == "FILE")
+      {
+        dataType_enumCode = Type::FILE;
+      }
+      else if (dataType_string == "DIRECTORY")
+      {
+        dataType_enumCode = Type::DIRECTORY;
+      }
+      else if (dataType_string == "STRING")
+      {
+        dataType_enumCode = Type::STRING;
+      }
+      else if (dataType_string == "INTEGER")
+      {
+        dataType_enumCode = Type::INTEGER;
+      }
+      else if (dataType_string == "FLOAT")
+      {
+        dataType_enumCode = Type::FLOAT;
+      }
+      else if (dataType_string == "BOOL")
+      {
+        dataType_enumCode = Type::BOOLEAN;
+      }
+      else if (dataType_string == "NONE")
+      {
+        dataType_enumCode = Type::NONE;
+      }
+      else
+      {
+        dataType_enumCode = -1;
+      }
+    }
+
+  };
+
   //======================================== OS stuff ======================================//
 
   /**
@@ -438,61 +633,13 @@ namespace cbica
   */
   std::vector< CSVDict > parseCSVFile(const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, bool checkFile = true, const std::string &rowsDelimiter = "\n", const std::string &colsDelimiter = ",", const std::string &optionsDelimiter = ",");
 
-
-  //====================================== String stuff ====================================//
-
   /**
-  \brief Splits the input file name into its constituents
+  \brief Reads a pre-written configuration file using CmdParser::WriteConfigFile()
 
-  \param dataFile The full file name which is the input
-  \param baseName Overwritten with file name without extension
-  \param extension Overwritten with extension without '.'
-  \param path Overwritten with path to file
-
-  \return True if successful
+  \param inputConfigFile Full path to the configuration file which needs to be read
+  \return Vector of the Parameter structure where laconic paramter is always empty for all variables
   */
-  bool splitFileName(const std::string &dataFile, std::string &path,
-    std::string &baseName, std::string &extension);
-
-  /**
-  \brief Splits the string
-
-  \param str String to split
-  \param delim Delimiter on the basis of which splitting is to be done
-  \return results Output in the form of vector of strings
-  */
-  std::vector<std::string> stringSplit(const std::string &str, const std::string &delim);
-
-  /**
-  \brief Searches for smaller string in larger string and then replaces it with user-defined input
-
-  \param entireString String to search
-  \param toReplace String to replace
-  \param replaceWith String to replace toReplace with
-
-  \return std::string of result
-  */
-  std::string replaceString(const std::string &entireString,
-    const std::string &toReplace,
-    const std::string &replaceWith);
-
-  /**
-  \brief Convert const char* to char*
-
-  \param input constant std::string
-
-  \return character pointer
-  */
-  char* constCharToChar(const std::string &input);
-
-  /**
-  \brief Convert const char* to char*
-
-  \param input constant character pointer
-
-  \return character pointer
-  */
-  char* constCharToChar(const char *input);
+  std::vector< Parameter > readConfigFile(const std::string &inputConfigFile, bool getDescription = true);
 
   //==================================== Template stuff ==================================//
 
