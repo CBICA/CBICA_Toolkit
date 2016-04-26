@@ -238,7 +238,7 @@ namespace cbica
       {
         dataType_enumCode = Type::FLOAT;
       }
-      else if (dataType_string == "BOOL")
+      else if ((dataType_string == "BOOL") || (dataType_string == "BOOLEAN"))
       {
         dataType_enumCode = Type::BOOLEAN;
       }
