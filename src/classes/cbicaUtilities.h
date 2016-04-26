@@ -161,7 +161,7 @@ namespace cbica
     std::string dataType_string;
     int dataType_enumCode;
 
-    //! Constructor with five lines of description
+    //! Constructor with five lines of description and string for dataType
     Parameter(const std::string &in_laconic, const std::string &in_verbose, const int &in_dataType, const std::string &in_dataRange,
       const std::string &in_descriptionLine1, const std::string &in_descriptionLine2 = "", const std::string &in_descriptionLine3 = "",
       const std::string &in_descriptionLine4 = "", const std::string &in_descriptionLine5 = "") :
@@ -205,7 +205,7 @@ namespace cbica
       }
     }
 
-    //! Constructor with five lines of description
+    //! Constructor with five lines of description and enum_code for dataType
     Parameter(const std::string &in_laconic, const std::string &in_verbose, const std::string &in_dataType, const std::string &in_dataRange,
       const std::string &in_descriptionLine1, const std::string &in_descriptionLine2 = "", const std::string &in_descriptionLine3 = "",
       const std::string &in_descriptionLine4 = "", const std::string &in_descriptionLine5 = "") :
