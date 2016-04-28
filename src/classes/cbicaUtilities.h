@@ -41,6 +41,8 @@ static inline std::string getSeparator(int enumVal)
   return SeparatorStrings[enumVal];
 }
 
+static std::string tempDirInitialized = "";
+
 /**
 \struct CSVDict
 
@@ -702,7 +704,7 @@ namespace cbica
     return return_vector;
   }
   
-#if (_MSC_VER >= 1800) || __GXX_EXPERIMENTAL_CXX0X__
+#if (_MSC_VER >= 1800) || __GXX_EXPERIMENTAL_CXX0X__ || (__GNUC__ > 4)
   /**
   \brief Base for compareEqual(...)
   */
@@ -749,7 +751,7 @@ namespace cbica
   }
 
   /**
-  \brief Compare if greater for multiple inputs
+  \brief Compare if lesser for multiple inputs
   */
   template <typename A, typename B, typename... Others>
   bool compareLesser(const A x, const B y, Others const ... args)

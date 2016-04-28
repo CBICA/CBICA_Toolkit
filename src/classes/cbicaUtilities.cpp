@@ -110,23 +110,31 @@ namespace cbica
 
   bool createTmpDir(std::string &returnDir)
   {
-    char *tmp;
-    char tempPath[FILENAME_MAX];
+    if (tempDirInitialized == "")
+    {
+      char *tmp;
+      char tempPath[FILENAME_MAX];
 #if defined(_WIN32)
-    tmp = getenv("USERPROFILE");
-    std::string temp = cbica::replaceString(tmp, "\\", "/");
-    sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
-    strcat_s(tempPath,"/tmp/");
+      tmp = getenv("USERPROFILE");
+      std::string temp = cbica::replaceString(tmp, "\\", "/");
+      sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
+      strcat_s(tempPath,"/tmp/");
 #else
       tmp = std::getenv("HOME");
       sprintf(tempPath, "%s", tmp);
-      strcat(tempPath,"/tmp/");
+      strcat(tempPath, "/tmp/");
 #endif    
 
-    returnDir = std::string(tempPath);
-    tmp[0] = '\0';
-    tempPath[0] = '\0';
-    //std::cout << "temp_dir: " << returnDir <<std::endl;
+      returnDir = std::string(tempPath);
+      tmp[0] = '\0';
+      tempPath[0] = '\0';
+      //std::cout << "temp_dir: " << returnDir <<std::endl;
+      tempDirInitialized = returnDir;
+    }
+    else
+    {
+      returnDir = tempDirInitialized;
+    }
     return createDir(returnDir);
   }
   
