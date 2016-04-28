@@ -992,7 +992,7 @@ namespace cbica
       {
         inputLabelIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputLabelsVec[j]) - allRows[0].begin();
 #ifndef _WIN32
-        inputLabelIndeces[j] -= inputLabelIndeces[j];
+        inputLabelIndeces[j] -= inputLabelIndeces[j]; // this is done because gcc, for some weird reason, sets the absolute value for the indeces
 #endif
       }
     }
