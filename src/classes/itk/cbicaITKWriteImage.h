@@ -38,11 +38,8 @@ namespace cbica
   template <typename ComputedImageType, typename ExpectedImageType>
   void WriteImage(typename ComputedImageType::Pointer inputImage, const std::string &fileName)
   {
-    typedef typename itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
-    typename CastFilterType::Pointer filter = CastFilterType::New();
-    
-    typename ExpectedImageType::Pointer writtenImage = ExpectedImageType::New();
-
+    typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
+    typename CastFilterType::Pointer filter = CastFilterType::New();    
     filter->SetInput(inputImage);
     filter->Update();
 
