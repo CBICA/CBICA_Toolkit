@@ -9,6 +9,8 @@ INCLUDE_DIRECTORIES(
 
 SET(  
   MainSources
+  ${CBICA_Headers}
+  ${CBICA_Sources}
   ${ITK_Class_Headers}
   ${ITK_Class_Sources}
 )
@@ -26,13 +28,13 @@ ENABLE_TESTING()
 SET( DATA_DIR "${PROJECT_SOURCE_DIR}/data/nifti1/" )
 
 # Test for the imageInfo class
-ADD_TEST( NAME ItkImageInfoClass_Test COMMAND ${ITK_TEST_EXE_NAME} -itkImageInfo "${DATA_DIR}/1.nii")
+ADD_TEST( NAME ItkImageInfoClass_Test COMMAND ${ITK_TEST_EXE_NAME} -imageInfo "${DATA_DIR}/1.nii")
 
 #Test for the ReadImage function
 ADD_TEST( NAME ItkReadUnknownImage_Test COMMAND ${ITK_TEST_EXE_NAME} -readImage "${DATA_DIR}/1.nii")
 
 #Test for the ReadImage function
-ADD_TEST( NAME ItkWriteUnknownImage_Test COMMAND ${ITK_TEST_EXE_NAME} -writeImage "${DATA_DIR}/1.nii" "${CURRENT_BINARY_DIR}/1_test.nii")
+ADD_TEST( NAME ItkWriteUnknownImage_Test COMMAND ${ITK_TEST_EXE_NAME} -writeImage "${DATA_DIR}/1.nii" "${DATA_DIR}/1_test.nii")
 
 SET_TARGET_PROPERTIES( ${ITK_TEST_EXE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY  "${PROJECT_BINARY_DIR}/testing/" )
 SET_TARGET_PROPERTIES( ${ITK_TEST_EXE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/testing/" )

@@ -35,44 +35,49 @@ IF(UNIX)
 	endif()
 ENDIF(UNIX) 
 
+SET( DATA_DIR "${PROJECT_SOURCE_DIR}/data/" )
+
 # Test that usage prints properly
-ADD_TEST( NAME Print_Usage_Test COMMAND ${TEST_EXE_NAME} -u "random text")
+ADD_TEST( NAME Print_Usage_Test COMMAND ${TEST_EXE_NAME} -buffer "random text")
 
-# Test for folder exist functions
-ADD_TEST( NAME NoFolder_Test COMMAND ${TEST_EXE_NAME} -noFolder ${CMAKE_CURRENT_BINARY_DIR}/test_noFolder )
+# Test for CmdParser class - done last because this class is anyway being used 
+ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "${CMAKE_CURRENT_BINARY_DIR}")
 
-# Test for file exist functions
-ADD_TEST( NAME NoFile_Test COMMAND ${TEST_EXE_NAME} -noFile ${CMAKE_CURRENT_BINARY_DIR}/test_noFile.png )
-
-# Test for folder create functions
-ADD_TEST( NAME CreateFolder_Test COMMAND ${TEST_EXE_NAME} -createFolder ${CMAKE_CURRENT_BINARY_DIR}/test_Folder )
+# Test for Config File Parser
+ADD_TEST( NAME ConfigFileReader_Test COMMAND ${TEST_EXE_NAME} -configFileReader "${DATA_DIR}/ParserClassTests.txt")
 
 # Test for file create functions
 ADD_TEST( NAME CreateFile_Test COMMAND ${TEST_EXE_NAME} -createFile ${CMAKE_CURRENT_BINARY_DIR}/test_File.txt )
 
-# Test for folder delete functions
-ADD_TEST( NAME DeleteFolder_Test COMMAND ${TEST_EXE_NAME} -deleteFolder ${CMAKE_CURRENT_BINARY_DIR}/test_Folder )
+# Test for folder create functions
+ADD_TEST( NAME CreateFolder_Test COMMAND ${TEST_EXE_NAME} -createFolder ${CMAKE_CURRENT_BINARY_DIR}/test_Folder )
+
+# Test for CSV Parser
+ADD_TEST( NAME CSVParser_Test COMMAND ${TEST_EXE_NAME} -csvParser ${DATA_DIR}/list.csv)
 
 # Test for file delete functions
 ADD_TEST( NAME DeleteFile_Test COMMAND ${TEST_EXE_NAME} -deleteFile ${CMAKE_CURRENT_BINARY_DIR}/test_File.txt )
 
-# Test for temporary folder creation
-ADD_TEST( NAME TempFolder_Test COMMAND ${TEST_EXE_NAME} -makeTempDir "random")
+# Test for folder delete functions
+ADD_TEST( NAME DeleteFolder_Test COMMAND ${TEST_EXE_NAME} -deleteFolder ${CMAKE_CURRENT_BINARY_DIR}/test_Folder )
+
+# Test for Environment Variables
+ADD_TEST( NAME EnvironmentVar_Test COMMAND ${TEST_EXE_NAME} -envName "random")
 
 # Test for Logger class
 ADD_TEST( NAME LoggerClass_Test COMMAND ${TEST_EXE_NAME} -logging "testing_phrase")
 
-# Test for CmdParser class
-ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "${CMAKE_CURRENT_BINARY_DIR}")
+# Test for temporary folder creation
+ADD_TEST( NAME TempFolder_Test COMMAND ${TEST_EXE_NAME} -makeTempDir "random")
 
-# Test for CSV Parser
-ADD_TEST( NAME ConfigFileReader_Test COMMAND ${TEST_EXE_NAME} -configFileReader "${CMAKE_CURRENT_BINARY_DIR}/ParserClassTests.txt")
+# Test for file exist functions
+ADD_TEST( NAME NoFile_Test COMMAND ${TEST_EXE_NAME} -noFile ${CMAKE_CURRENT_BINARY_DIR}/test_noFile.png )
+
+# Test for folder exist functions
+ADD_TEST( NAME NoFolder_Test COMMAND ${TEST_EXE_NAME} -noFolder ${CMAKE_CURRENT_BINARY_DIR}/test_noFolder )
 
 # Test for SymbolicLink
 ADD_TEST( NAME SymbolicLink_Test COMMAND ${TEST_EXE_NAME} -symbolic "random")
-
-# Test for Environment Variables
-ADD_TEST( NAME EnvironmentVar_Test COMMAND ${TEST_EXE_NAME} -envName "random")
 
 # Test for temporary folder creation
 ADD_TEST( NAME SubDir_Test COMMAND ${TEST_EXE_NAME} -subDir "random")
@@ -82,8 +87,11 @@ IF( (MSVC_VERSION GREATER 1700) OR (UNIX) )
   ADD_TEST( NAME Variadic_Test COMMAND ${TEST_EXE_NAME} -variadic "random")
 ENDIF()
 
-# Test for CSV Parser
-ADD_TEST( NAME CSVParser_Test COMMAND ${TEST_EXE_NAME} -csvParser ${CMAKE_SOURCE_DIR}/data/list.csv)
+# Test for Split File Name
+ADD_TEST( NAME SplitFileName_Test COMMAND ${TEST_EXE_NAME} -buffer "random") # no test is needed since previous tests have used this function
+
+# Test for File Name Extension
+ADD_TEST( NAME FileNameExtension_Test COMMAND ${TEST_EXE_NAME} -buffer "random") # no test is needed since previous tests have used this function
 
 ## Tests for ITK classes
 IF( BUILD_CBICA_ITK_CLASSES )
