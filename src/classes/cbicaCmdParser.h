@@ -90,11 +90,6 @@ namespace cbica
 
     As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
 
-    /**
-    \brief Adding parameters: defaults to optional parameters
-
-    As a standard, neither the laconic nor verbose parameters should have any '-' in the constructor.
-
     \param laconic The laconic variant
     \param verbose The verbose variant
     \param expectedDataType The data type expected for this parameter

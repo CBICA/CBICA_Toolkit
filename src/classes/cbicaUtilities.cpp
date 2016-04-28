@@ -991,6 +991,9 @@ namespace cbica
       for (size_t j = 0; j < inputLabelsVec.size(); j++)
       {
         inputLabelIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputLabelsVec[j]) - allRows[0].begin();
+#ifndef _WIN32
+        inputLabelIndeces[j] -= inputLabelIndeces[j];
+#endif
       }
     }
 
@@ -999,10 +1002,11 @@ namespace cbica
     // if the total number of rows in CSV file are less than the available number of threads on machine (happens for testing),
     // use only the number of rows where meaningful data is present - this avoids extra thread overhead
     threads > static_cast<int>(numberOfRows) ? threads = static_cast<int>(numberOfRows - 1) : threads = threads; 
-#pragma omp parallel for num_threads(threads)
+//#pragma omp parallel for num_threads(threads)
     for (int rowCounter = 1; rowCounter < static_cast<int>(allRows.size()); rowCounter++)
     {
       return_CSVDict[rowCounter - 1].inputImages.resize(inputColumnIndeces.size()); // pre-initialize size to ensure thread-safety
+      return_CSVDict[rowCounter - 1].inputLabels.resize(inputLabelIndeces.size()); // pre-initialize size to ensure thread-safety
       for (size_t i = 0; i < inputColumnIndeces.size(); i++)
       {
         if (!checkFile) // this case should only be used for testing purposes
@@ -1021,13 +1025,12 @@ namespace cbica
             exit(EXIT_FAILURE);
           }
         }
+        for (size_t j = 0; j < inputLabelIndeces.size(); j++)
+        {
+          return_CSVDict[rowCounter - 1].inputLabels[j] = std::atof(allRows[rowCounter][inputLabelIndeces[j]].c_str());
+        }
       }
       
-      return_CSVDict[rowCounter - 1].inputLabels.resize(inputLabelIndeces.size()); // pre-initialize size to ensure thread-safety
-      for (size_t i = 0; i < inputLabelIndeces.size(); i++)
-      {
-        return_CSVDict[rowCounter - 1].inputLabels[i] = std::atof(allRows[rowCounter][inputLabelIndeces[i]].c_str());
-      }
     }
 
     return return_CSVDict;
@@ -1085,7 +1088,7 @@ namespace cbica
   std::vector< Parameter > readConfigFile(const std::string &path_to_config_file, bool getDescription)
   {
     std::vector< Parameter > returnVector;
-    std::ifstream inputFile(path_to_config_file);
+    std::ifstream inputFile(path_to_config_file.c_str());
     if (!inputFile) 
     {
       std::cerr << "File '" << path_to_config_file << "' not found.\n";
@@ -1099,11 +1102,23 @@ namespace cbica
       std::string parameter, parameterDataType, parameterDataRange, parameterDescription = "";
       for (size_t i = 0; i < line.length(); i++)
       {
-        parameter = iterateOverStringAndSeparators(line, i, Separator::Parameter);
+        parameter = iterateOverStringAndSeparators(line, i, 
+#ifdef _WIN32
+          Separator::
+#endif
+          Param);
         i = i + 2;
-        parameterDataType = iterateOverStringAndSeparators(line, i, Separator::DataType);
+        parameterDataType = iterateOverStringAndSeparators(line, i,
+#ifdef _WIN32
+          Separator::
+          #endif
+          DataType);
         i = i + 2;
-        parameterDataRange = iterateOverStringAndSeparators(line, i, Separator::DataRange);
+        parameterDataRange = iterateOverStringAndSeparators(line, i,
+#ifdef _WIN32
+          Separator::
+#endif
+          DataRange);
         if (getDescription)
         {
           i = i + 1;

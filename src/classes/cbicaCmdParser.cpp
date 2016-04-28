@@ -56,9 +56,9 @@ namespace cbica
     m_argc = argc;
     m_argv = argv;
 
-    m_optionalParameters.push_back(Parameter("u", "usage", Parameter::Type::NONE, "", "Prints basic usage message.", "", "", "", ""));
-    m_optionalParameters.push_back(Parameter("h", "help", Parameter::Type::NONE, "", "Prints verbose usage information.", "", "", "", ""));
-    m_optionalParameters.push_back(Parameter("v", "version", Parameter::Type::NONE, "", "Prints information about software version.", "", "", "", ""));
+    m_optionalParameters.push_back(Parameter("u", "usage", cbica::Parameter::NONE, "", "Prints basic usage message.", "", "", "", ""));
+    m_optionalParameters.push_back(Parameter("h", "help", cbica::Parameter::NONE, "", "Prints verbose usage information.", "", "", "", ""));
+    m_optionalParameters.push_back(Parameter("v", "version", cbica::Parameter::NONE, "", "Prints information about software version.", "", "", "", ""));
   }
 
   CmdParser::CmdParser(int argc, const char **argv, const std::string &exe_name /*= ""*/)
@@ -576,9 +576,9 @@ namespace cbica
     {
       for (size_t i = 0; i < m_requiredParameters.size(); i++)
       {
-        file << getSeparator(Separator::Parameter) << m_requiredParameters[i].verbose << getSeparator(Separator::Parameter) <<
-          " " << getSeparator(Separator::DataType) << m_requiredParameters[i].dataType_string << getSeparator(Separator::DataType) <<
-          " " << getSeparator(Separator::DataRange) << m_requiredParameters[i].dataRange << getSeparator(Separator::DataRange) <<
+        file << getSeparator(Param) << m_requiredParameters[i].verbose << getSeparator(Param) <<
+          " " << getSeparator(DataType) << m_requiredParameters[i].dataType_string << getSeparator(DataType) <<
+          " " << getSeparator(DataRange) << m_requiredParameters[i].dataRange << getSeparator(DataRange) <<
           " " << m_requiredParameters[i].descriptionLine1 + " " + m_requiredParameters[i].descriptionLine2 + " " +
           m_requiredParameters[i].descriptionLine3 + " " + m_requiredParameters[i].descriptionLine4 + " " +
           m_requiredParameters[i].descriptionLine5 << "\n";
@@ -586,9 +586,9 @@ namespace cbica
 
       for (size_t i = 0; i < m_optionalParameters.size(); i++)
       {
-        file << getSeparator(Separator::Parameter) << m_optionalParameters[i].verbose << getSeparator(Separator::Parameter) <<
-          " " << getSeparator(Separator::DataType) << m_optionalParameters[i].dataType_string << getSeparator(Separator::DataType) <<
-          " " << getSeparator(Separator::DataRange) << m_optionalParameters[i].dataRange << getSeparator(Separator::DataRange) <<
+        file << getSeparator(Param) << m_optionalParameters[i].verbose << getSeparator(Param) <<
+          " " << getSeparator(DataType) << m_optionalParameters[i].dataType_string << getSeparator(DataType) <<
+          " " << getSeparator(DataRange) << m_optionalParameters[i].dataRange << getSeparator(DataRange) <<
           " " << m_optionalParameters[i].descriptionLine1 + " " + m_optionalParameters[i].descriptionLine2 + " " +
           m_optionalParameters[i].descriptionLine3 + " " + m_optionalParameters[i].descriptionLine4 + " " +
           m_optionalParameters[i].descriptionLine5 << "\n";

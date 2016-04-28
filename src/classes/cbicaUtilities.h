@@ -14,7 +14,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 */
 #pragma once
 
-#include <string>
+#include <string.h>
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -22,12 +22,13 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <stdexcept>
 #include <iterator>
 #include <cmath>
+#include <memory.h>
 
 //#include <type_traits>
 
 enum Separator
 {
-  Parameter, DataType, DataRange
+  Param, DataType, DataRange
 };
 
 #if defined(__GNUC__)  && (__GNUC__ < 5)
@@ -180,25 +181,25 @@ namespace cbica
       // populate dataType_string WRT dataType_enumCode
       switch (in_dataType)
       {
-      case Type::FILE:
+      case FILE:
         dataType_string = "FILE";
         break;
-      case Type::DIRECTORY:
+      case DIRECTORY:
         dataType_string = "DIRECTORY";
         break;
-      case Type::STRING:
+      case STRING:
         dataType_string = "STRING";
         break;
-      case Type::INTEGER:
+      case INTEGER:
         dataType_string = "INTEGER";
         break;
-      case Type::FLOAT:
+      case FLOAT:
         dataType_string = "FLOAT";
         break;
-      case Type::BOOLEAN:
+      case BOOLEAN:
         dataType_string = "BOOL";
         break;
-      case Type::NONE:
+      case NONE:
         dataType_string = "NONE";
         break;
       default:
@@ -224,31 +225,31 @@ namespace cbica
       // populate dataType_enumCode WRT dataType_string
       if (dataType_string == "FILE")
       {
-        dataType_enumCode = Type::FILE;
+        dataType_enumCode = FILE;
       }
       else if (dataType_string == "DIRECTORY")
       {
-        dataType_enumCode = Type::DIRECTORY;
+        dataType_enumCode = DIRECTORY;
       }
       else if (dataType_string == "STRING")
       {
-        dataType_enumCode = Type::STRING;
+        dataType_enumCode = STRING;
       }
       else if (dataType_string == "INTEGER")
       {
-        dataType_enumCode = Type::INTEGER;
+        dataType_enumCode = INTEGER;
       }
       else if (dataType_string == "FLOAT")
       {
-        dataType_enumCode = Type::FLOAT;
+        dataType_enumCode = FLOAT;
       }
       else if ((dataType_string == "BOOL") || (dataType_string == "BOOLEAN"))
       {
-        dataType_enumCode = Type::BOOLEAN;
+        dataType_enumCode = BOOLEAN;
       }
       else if (dataType_string == "NONE")
       {
-        dataType_enumCode = Type::NONE;
+        dataType_enumCode = NONE;
       }
       else
       {

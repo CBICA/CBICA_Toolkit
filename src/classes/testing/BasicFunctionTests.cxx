@@ -120,7 +120,7 @@ int main(int argc, char** argv)
         if (testParameters[i].dataType_string != "INTEGER")
           return EXIT_FAILURE;
 
-        if (testParameters[i].dataType_enumCode != cbica::Parameter::Type::INTEGER)
+        if (testParameters[i].dataType_enumCode != cbica::Parameter::INTEGER)
           return EXIT_FAILURE;
 
         if (testParameters[i].dataRange != "1 to 10")
@@ -135,7 +135,7 @@ int main(int argc, char** argv)
         if (testParameters[i].dataType_string != "FLOAT")
           return EXIT_FAILURE;
 
-        if (testParameters[i].dataType_enumCode != cbica::Parameter::Type::FLOAT)
+        if (testParameters[i].dataType_enumCode != cbica::Parameter::FLOAT)
           return EXIT_FAILURE;
 
         if (testParameters[i].dataRange != "0.1 to 20")
@@ -150,7 +150,7 @@ int main(int argc, char** argv)
         if (testParameters[i].dataType_string != "STRING")
           return EXIT_FAILURE;
 
-        if (testParameters[i].dataType_enumCode != cbica::Parameter::Type::STRING)
+        if (testParameters[i].dataType_enumCode != cbica::Parameter::STRING)
           return EXIT_FAILURE;
 
         if (testParameters[i].dataRange != "max length = 1024")
@@ -278,7 +278,7 @@ int main(int argc, char** argv)
     }
 
     std::ifstream logFile;
-    logFile.open(fName);
+    logFile.open(fName.c_str());
     std::string content;
     if (logFile.is_open())
       while (!logFile.eof())
