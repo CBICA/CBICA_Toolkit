@@ -14,7 +14,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 */
 #pragma once
 
-#include <string.h>
+#include <string>
 #include <vector>
 #include <algorithm>
 #include <iostream>
