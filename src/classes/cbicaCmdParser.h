@@ -67,6 +67,15 @@ namespace cbica
     explicit CmdParser(const int argc, char **argv, const std::string &exe_name = "");
 
     /**
+    \brief The Constructor
+
+    \param argc The "argc" from executable
+    \param argv The "argv" from executable
+    \param exe_name Name of the executable, defaults to picking up from cbica::getExecutableName()
+    */
+    explicit CmdParser(const int argc, const char **argv, const std::string &exe_name = "");
+
+    /**
     \brief The Destructor
     */
     virtual ~CmdParser();

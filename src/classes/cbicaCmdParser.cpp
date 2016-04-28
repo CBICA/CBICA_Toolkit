@@ -61,6 +61,16 @@ namespace cbica
     m_optionalParameters.push_back(Parameter("v", "version", Parameter::Type::NONE, "", "Prints information about software version.", "", "", "", ""));
   }
 
+  CmdParser::CmdParser(int argc, const char **argv, const std::string &exe_name /*= ""*/)
+  {
+    char *argv2[] = {" ", "1"};
+    for (size_t i = 0; i < argc; i++)
+    {
+      argv2[i] = strdup(argv[i]);
+    }
+    CmdParser(argc, argv2, exe_name);
+  }
+
   CmdParser::~CmdParser()
   {
 
