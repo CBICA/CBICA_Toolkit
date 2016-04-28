@@ -41,7 +41,8 @@ namespace cbica
   logger.Write( "'I accept chaos, I'm not sure whether it accepts me' - Bob Dylan" ); // writes to file_name.txt
   \endverbatim
 
-  The class defaults to console logging. Use cbica::Logging::
+  The class defaults to console logging. Use Logging::EnableTextLogging() or UseNewFile() to switch; 
+  by default, it writes to a text file 'EXE_NAME-log.txt' in directory specified by cbica::createTemporaryDirectory()
   */
 	class Logging
 	{
@@ -80,7 +81,7 @@ namespace cbica
 
     \param newLogFile Path of new log file
     */
-    void UseNewFile(const std::string &newLogFile);
+    void UseNewFile(const std::string &newLogFile = "");
 
 		//! The Destructor
 		virtual ~Logging();
@@ -111,8 +112,15 @@ namespace cbica
 
     <4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text>
     */
-    void EnableTextLogging(const std::string &newLogFile);
-    
+    void EnableTextLogging(const std::string &newLogFile = "");
+
+    /**
+    \brief Get the file name with full path where log has happened
+
+    \return file_name_with_path 
+    */
+    std::string getLoggingFileName(){ return file_name_with_path; };
+
   protected:    
     /**
     \brief The function used to initialize the class
@@ -140,7 +148,6 @@ namespace cbica
 	  */
 	  inline void writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
 			time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError = false );
-
 
 	private:
     //! The file handler class

@@ -44,7 +44,15 @@ namespace cbica
   void Logging::UseNewFile(const std::string &newLogFile)
   {
     consoleLogging = false;
-    file_name_with_path = newLogFile;
+    if (newLogFile == "")
+    {
+      cbica::createTmpDir(file_name_with_path);
+      file_name_with_path += cbica::getExecutableName() + "-log.txt";
+    }
+    else
+    {
+      file_name_with_path = newLogFile;
+    }
     initialize_class(file_name_with_path, log_file, exe_name, user_name);
     //writing_function("", log_file, timer, exe_name, user_name);
     log_file.close();
