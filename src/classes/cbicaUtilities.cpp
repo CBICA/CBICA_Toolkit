@@ -21,6 +21,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
   #include <conio.h>
   #include <lmcons.h>
   #include <Shlobj.h>
+  #include <filesystem>
   #define GetCurrentDir _getcwd
   bool WindowsDetected = true;
   static const char  cSeparator  = '\\';
@@ -34,6 +35,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
   #include <cstdlib>
   #include <sys/types.h>
   #include <errno.h>
+  #include <ftw.h>
   #define GetCurrentDir getcwd
   bool WindowsDetected = false;
   static const char  cSeparator  = '/';
@@ -131,9 +133,9 @@ namespace cbica
       //std::cout << "temp_dir: " << returnDir <<std::endl;
       tempDirInitialized = returnDir;
     }
-    else
+    else // do this if /user/tmp/ folder was found -- this needs to be updated for some flexibility 
     {
-      returnDir = tempDirInitialized;
+      returnDir = tempDirInitialized; 
     }
     return createDir(returnDir);
   }
@@ -280,6 +282,191 @@ namespace cbica
     #endif*/
 
     return true;
+  }
+
+  bool copyDir(const std::string &inputFolder, const std::string &destination, bool recursion = true)
+  {
+    if (cbica::isDir(inputFolder))
+    {
+      if (!cbica::isDir(destination))
+      {
+        cbica::createDir(destination);
+      }
+#ifdef _WIN32 // do intelligent thing for Windows 
+      WIN32_FIND_DATA FindFileData;
+      HANDLE hFind;
+      char l_szTmp[1025] = { 0 };
+      memcpy(l_szTmp, inputFolder.c_str(), 1024);
+
+
+      char l_szSrcPath[1025] = { 0 };
+      char l_szDesPath[1025] = { 0 };
+      memcpy(l_szSrcPath, inputFolder.c_str(), 1024);
+      memcpy(l_szDesPath, inputFolder.c_str(), 1024);
+
+      char l_szNewSrcPath[1025] = { 0 };
+      char l_szNewDesPath[1025] = { 0 };
+
+      strcat(l_szTmp, "*");
+
+      hFind = FindFirstFile(l_szTmp, &FindFileData);
+      if (hFind == NULL)
+      {
+        return false;
+      }
+      do
+      {
+        if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        {
+          if (strcmp(FindFileData.cFileName, "."))
+          {
+            if (strcmp(FindFileData.cFileName, ".."))
+            {
+              //printf("The Directory found is %s ", FindFileData.cFileName);
+              sprintf_s(l_szNewDesPath, static_cast<size_t>(FILENAME_MAX), "%s%s\/", l_szDesPath, FindFileData.cFileName);
+              sprintf_s(l_szNewSrcPath, static_cast<size_t>(FILENAME_MAX), "%s%s\/", l_szSrcPath, FindFileData.cFileName);
+              CreateDirectory(l_szNewDesPath, NULL);
+              copyDir(l_szNewSrcPath, l_szNewDesPath);
+            }
+          }
+        }
+        else
+        {
+          //printf("The File found is %s", FindFileData.cFileName);
+          char l_szSrcFile[1025] = { 0 };
+          char l_szDesFile[1025] = { 0 };
+          sprintf_s(l_szDesFile, static_cast<size_t>(FILENAME_MAX), "%s%s", l_szDesPath, FindFileData.cFileName);
+          sprintf_s(l_szSrcFile, static_cast<size_t>(FILENAME_MAX), "%s%s", l_szSrcPath, FindFileData.cFileName);
+          BOOL l_bRet = CopyFile(l_szSrcFile, l_szDesFile, TRUE);
+        }
+
+      } while (FindNextFile(hFind, &FindFileData));
+      FindClose(hFind);
+
+#else // initiate system call for Linux
+      if (recursion)
+      {
+        recur = "-r ";
+      }
+      system(std::string("cp " + recur + " " + inputFolder + " " + destination).c_str());
+#endif
+
+      if (cbica::isDir(destination))
+      {
+        return true;
+      }
+      else
+      {
+        std::cerr << "Something went wrong when trying to do the copy. Ensure you have write access to destination.\n";
+        return false;
+      }
+    }
+    else
+    {
+      std::cerr << "The input folder '" << inputFolder << "' cannot be verified as a folder.\n";
+      return false;
+    }
+  }
+
+  bool copyFile(const std::string &inputFile, const std::string &destination)
+  {
+    if (cbica::fileExists(inputFile))
+    {
+      std::ifstream  src(inputFile, std::ios::binary);
+      std::ofstream  dst(destination, std::ios::binary);
+
+      dst << src.rdbuf();
+
+      if (cbica::fileExists(destination))
+      {
+        return true;
+      }
+      else
+      {
+        std::cerr << "Something went wrong when trying to do the copy. Ensure you have write access to destination.\n";
+        return false;
+      }
+    }
+    else
+    {
+      std::cerr << "The input file '" << inputFile << "' cannot be verified as a file.\n";
+      return false;
+    }
+  }
+
+  size_t getFileSize(const std::string &inputFile)
+  {
+    std::streampos begin, end;
+    std::ifstream myfile(inputFile, std::ios::binary);
+    begin = myfile.tellg();
+    myfile.seekg(0, std::ios::end);
+    end = myfile.tellg();
+    myfile.close();
+    
+    return (end - begin);
+
+    /* // if using filesystem
+    std::tr2::sys::path folderPath(inputFile);
+    return file_size(filePath);
+    */
+  }
+
+  size_t getFolderSize(const std::string &rootFolder)
+  {
+    size_t f_size;
+#ifdef _WIN32
+    std::tr2::sys::path folderPath(rootFolder);
+    if (exists(folderPath))
+    {
+      std::tr2::sys::directory_iterator end_itr;
+      for (std::tr2::sys::directory_iterator dirIte(rootFolder); dirIte != end_itr; ++dirIte)
+      {
+        std::tr2::sys::path filePath(complete(dirIte->path(), folderPath));
+        if (!is_directory(dirIte->status()))
+        {
+          f_size = f_size + file_size(filePath);
+        }
+        else
+        {
+          f_size += getFoldersize(filePath);
+        }
+      }
+    }
+    else
+    {
+      std::cerr << "Folder not found.\n";
+      exit(EXIT_FAILURE);
+    }
+#else
+    DIR *d;
+    struct dirent *de;
+    struct stat buf;
+    int exists;
+
+    d = opendir(".");
+    if (d == NULL) 
+    {
+      perror("prsize");
+      exit(1);
+    }
+
+    f_size = 0;
+
+    for (de = readdir(d); de != NULL; de = readdir(d)) 
+    {
+      exists = stat(de->d_name, &buf);
+      if (exists < 0) 
+      {
+        fprintf(stderr, "Couldn't stat %s\n", de->d_name);
+      }
+      else 
+      {
+        f_size += buf.st_size;
+      }
+    }
+    closedir(d);
+#endif
+    return f_size;
   }
 
   //======================================== OS stuff ======================================//
@@ -740,7 +927,7 @@ namespace cbica
 
   bool makeSymbolicLink(const std::string &input_fileName, const std::string &ouput_fileName)
   {
-    if (!fileExists(input_fileName))
+    if (!cbica::fileExists(input_fileName))
     {
       std::cerr << "Supplied file name wasn't found.\n";
       exit(EXIT_FAILURE);
@@ -793,7 +980,7 @@ namespace cbica
 
   std::vector< std::string > filesInDirectory( const std::string &dirName )
   {
-    if (!directoryExists(dirName))
+    if (!cbica::directoryExists(dirName))
     {
       std::cerr << "Supplied directory name wasn't found.\n";
       exit(EXIT_FAILURE);
@@ -846,7 +1033,7 @@ namespace cbica
   
   std::vector<std::string> subdirectoriesInDirectory(const std::string &dirName, bool recursiveSearch)
   {
-    if (!directoryExists(dirName))
+    if (!cbica::directoryExists(dirName))
     {
       std::cerr << "Supplied directory name wasn't found.\n";
       exit(EXIT_FAILURE);
@@ -945,7 +1132,7 @@ namespace cbica
     const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
     // if CSV file doesn't exist, exit with meaningful message
-    if (!fileExists(csvFileName))
+    if (!cbica::fileExists(csvFileName))
     {
       std::cerr << "Supplied file name wasn't found.\n";
       exit(EXIT_FAILURE);

@@ -398,6 +398,42 @@ namespace cbica
   bool deleteDir(const std::string &path);
 
   /**
+  \brief Copy a folder and if recursion enabled, all its contents
+
+  https://msdn.microsoft.com/en-us/library/hh874694.aspx?f=255&MSPPError=-2147217396
+
+  \param inputFolder Folder to copy
+  \param destination Where to copy to
+  \param recursion Do recursion and copy, defaults to true
+
+  \return true for success
+  */
+  bool copyDir(const std::string &inputFolder, const std::string &destination, bool recursion = true);
+
+  /**
+  \brief Copy a folder and if recursion enabled, all its contents
+
+  \param inputFile File to copy
+  \param destination Where to copy to
+  \return true for success
+  */
+  bool copyFile(const std::string &inputFile, const std::string &destination);
+
+  /**
+  \brief Get the size of the file in bytes
+
+  \param inputFile The input file
+  */
+  size_t getFileSize(const std::string &inputFile);
+
+  /**
+  \brief Get the size of the folder
+
+  \param rootFolder The input folder
+  */
+  size_t getFolderSize(const std::string &rootFolder);
+
+  /**
   \brief Gets the extension of the supplied file name using splitFileName()
 
   Prefer to use "/" as file path deliminators.
