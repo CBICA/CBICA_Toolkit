@@ -1,9 +1,0 @@
-/**
-
-\page Publications Related Publications
-
-Please cite the following publications when you use the CBICA Viewer in your research:
-
-
-
-*/

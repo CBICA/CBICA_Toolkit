@@ -8,8 +8,6 @@
     <tab type="user" visible="yes" title="Usage" url="Usage.html"/>
     <tab type="user" visible="yes" title="For Developers" url="ForDevelopers.html"/>
     <tab type="user" visible="yes" title="People" url="People.html"/>
-    <tab type="user" visible="yes" title="Publications" url="Publications.html"/>
-    <tab type="user" visible="yes" title="Changelog" url="Changelog.html"/>
     <tab type="user" visible="yes" title="License" url="License.html"/>
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="yes" title="" intro=""/>

@@ -12,20 +12,12 @@
 <strong>Developers:</strong>
 <table border="0" style="width:100%">
   <tr text-align="top">
-    <td width="10%">Sarthak Pati</td>
+    <td width="10%"><a href="https://www.cbica.upenn.edu/sbia/Sarthak.Pati/">Sarthak Pati</a></td>
     <td>Primary developer, integration of everything</td>
   </tr>
   <tr text-align="top">
-    <td width="10%">Drew Parker</td>
-    <td>DTI algorithms</td>		
-  </tr>
-  <tr text-align="top">
-    <td width="10%">Saima</td>
-    <td>DICOM handling</td>		
-  </tr>
-  <tr text-align="top">
-    <td width="10%">Jimit</td>
-    <td>Testing</td>		
+    <td width="10%"><a href="https://www.cbica.upenn.edu/sbia/Saima.Rathore/">Saima Rathore</a></td>
+    <td>Some ITK algorithms</td>		
   </tr>
 </table>
 <br>

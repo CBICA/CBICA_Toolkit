@@ -1,8 +1,0 @@
-/**
-
-\page Changelog Changes Since Previous Release
-
-With repsect to previous release, the following changes have happened:
-
-- Added ITK functionality
-*/
