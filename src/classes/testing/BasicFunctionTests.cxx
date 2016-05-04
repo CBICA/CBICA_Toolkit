@@ -34,9 +34,11 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
 int main(int argc, char** argv)
 {
   cbica::CmdParser parser(argc, argv);
-  parser.addOptionalParameter("b", "buffer", cbica::Parameter::NONE, "", "Buffer Test");
+  parser.addOptionalParameter("b1", "buffer", cbica::Parameter::NONE, "", "Buffer Test");
   parser.addOptionalParameter("p1", "cmdParser", cbica::Parameter::NONE, "", "CmdParser Test");
-  parser.addOptionalParameter("c", "configFileReader", cbica::Parameter::NONE, "", "ConfigFileReader Test");
+  parser.addOptionalParameter("c1", "configFileReader", cbica::Parameter::NONE, "", "ConfigFileReader Test");
+  parser.addOptionalParameter("c2", "copyFile", cbica::Parameter::NONE, "", "copyFile Test");
+  parser.addOptionalParameter("c3", "copyFolder", cbica::Parameter::NONE, "", "copyFolder Test");
   parser.addOptionalParameter("f2", "createFile", cbica::Parameter::NONE, "", "createFile Test");
   parser.addOptionalParameter("f1", "createFolder", cbica::Parameter::NONE, "", "createFolder Test");
   parser.addOptionalParameter("p2", "csvParser", cbica::Parameter::NONE, "", "envName Test");
@@ -61,7 +63,7 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("cmdParser", tempPostion))
   {
-    //std::string dirToWrite = argv[2];
+    //std::string dirToWrite = argv[tempPostion + 1];
     //int i = 0;
     //const char *argv2[] = { "test-exe", "-1p", "1", "--secondParam", "2" };
 
@@ -106,7 +108,7 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("configFileReader", tempPostion))
   {
-    std::string configFile = argv[2];
+    std::string configFile = argv[tempPostion + 1];
     std::vector< cbica::Parameter > testParameters = cbica::readConfigFile(configFile, true);
 
     size_t count = 0;
@@ -168,34 +170,87 @@ int main(int argc, char** argv)
     }
   }
 
+  if (parser.compareParameter("copyFile", tempPostion))
+  {
+    const std::string inputFile = argv[tempPostion + 1];
+    std::string outputDir, path, base, ext;
+    cbica::createTemporaryDirectory(outputDir);
+    std::string outputFile = outputDir + "/example" + ext;
+    cbica::splitFileName(inputFile, path, base, ext);
+
+    if (!cbica::copyFile(inputFile, outputFile))
+    {
+      return EXIT_FAILURE;
+    }
+
+    if (!cbica::fileExists(outputFile))
+    {
+      return EXIT_FAILURE;
+    }
+
+    if (cbica::getFileSize(outputFile) != cbica::getFileSize(inputFile))
+    {
+      return EXIT_FAILURE;
+    }
+
+    cbica::deleteDir(outputDir);
+  }
+
+  if (parser.compareParameter("copyFolder", tempPostion))
+  {
+    const std::string inputFolder = argv[tempPostion + 1];
+    std::string outputDir;
+    cbica::createTemporaryDirectory(outputDir);
+    cbica::copyDir(inputFolder, outputDir);
+
+    if (!cbica::copyDir(inputFolder, outputDir))
+    {
+      return EXIT_FAILURE;
+    }
+
+    if (!cbica::directoryExists(outputDir))
+    {
+      return EXIT_FAILURE;
+    }
+
+    auto test1 = cbica::getFolderSize(outputDir);
+    auto test2 = cbica::getFolderSize(inputFolder);
+    if (cbica::getFolderSize(outputDir) != cbica::getFolderSize(inputFolder))
+    {
+      return EXIT_FAILURE;
+    }
+
+    cbica::deleteDir(outputDir);
+  }
+
   if (parser.compareParameter("createFile", tempPostion))
   {
     std::ofstream file;
-    file.open(argv[2]);
+    file.open(argv[tempPostion + 1]);
     file << "test";
     file.close();
-    if (!cbica::fileExists(argv[2]))
+    if (!cbica::fileExists(argv[tempPostion + 1]))
       return EXIT_FAILURE;
-    if (!cbica::exists(argv[2]))
+    if (!cbica::exists(argv[tempPostion + 1]))
       return EXIT_FAILURE;
 
-    std::remove(argv[2]);
+    std::remove(argv[tempPostion + 1]);
   }
 
   if (parser.compareParameter("createFolder", tempPostion))
   {
-    cbica::createDir(argv[2]);
-    if (!cbica::directoryExists(argv[2]))
+    cbica::createDir(argv[tempPostion + 1]);
+    if (!cbica::directoryExists(argv[tempPostion + 1]))
       return EXIT_FAILURE;
-    if (!cbica::exists(argv[2]))
+    if (!cbica::exists(argv[tempPostion + 1]))
       return EXIT_FAILURE;
 
-    cbica::deleteDir(argv[2]);
+    cbica::deleteDir(argv[tempPostion + 1]);
   }
 
   if (parser.compareParameter("csvParser", tempPostion))
   {
-    std::string csvFileName = argv[2];
+    std::string csvFileName = argv[tempPostion + 1];
 
     std::vector< CSVDict > csv_test = cbica::parseCSVFile(csvFileName, "T2,FL,T1", "AGE", false);
 
@@ -216,17 +271,17 @@ int main(int argc, char** argv)
   if (parser.compareParameter("deleteFile", tempPostion))
   {
     std::ofstream file;
-    file.open(argv[2]);
+    file.open(argv[tempPostion + 1]);
     file << "test";
     file.close();
-    if (std::remove(argv[2]) != 0)
+    if (std::remove(argv[tempPostion + 1]) != 0)
       return EXIT_FAILURE;
   }
 
   if (parser.compareParameter("deleteFolder", tempPostion))
   {
-    cbica::createDir(argv[2]);
-    if (!cbica::deleteDir(argv[2]))
+    cbica::createDir(argv[tempPostion + 1]);
+    if (!cbica::deleteDir(argv[tempPostion + 1]))
       return EXIT_FAILURE;
   }
 
@@ -255,7 +310,7 @@ int main(int argc, char** argv)
     cbica::createTmpDir(dirName);
     std::string fName = dirName + std::string("log.txt");
 
-    cbica::Logging logger(fName, argv[2] /*take free text from the console*/);
+    cbica::Logging logger(fName, argv[tempPostion + 1] /*take free text from the console*/);
 
     if (!cbica::fileExists(fName))
     {
@@ -305,17 +360,17 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("noFile", tempPostion))
   {
-    if (cbica::fileExists(argv[2]))
+    if (cbica::fileExists(argv[tempPostion + 1]))
       return EXIT_FAILURE;
-    else if (cbica::exists(argv[2]))
+    else if (cbica::exists(argv[tempPostion + 1]))
       return EXIT_FAILURE;
   }
 
   if (parser.compareParameter("noFolder", tempPostion))
   {
-    if (cbica::directoryExists(argv[2]))
+    if (cbica::directoryExists(argv[tempPostion + 1]))
       return EXIT_FAILURE;
-    else if (cbica::exists(argv[2]))
+    else if (cbica::exists(argv[tempPostion + 1]))
       return EXIT_FAILURE;
   }
 
@@ -325,7 +380,7 @@ int main(int argc, char** argv)
     cbica::createTmpDir(dirName);
     std::string fName = dirName + std::string("log.txt");
     std::string fName_sym = dirName + std::string("log_sym.txt");
-    cbica::Logging logger(fName, argv[2]);
+    cbica::Logging logger(fName, argv[tempPostion + 1]);
 
 #if defined(_WIN32)
     // do nothing as Windows doesn't support symbolic linkage creatation for non-admins

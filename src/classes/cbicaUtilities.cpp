@@ -284,7 +284,7 @@ namespace cbica
     return true;
   }
 
-  bool copyDir(const std::string &inputFolder, const std::string &destination, bool recursion = true)
+  bool copyDir(const std::string &inputFolder, const std::string &destination, bool recursion)
   {
     if (cbica::isDir(inputFolder))
     {
@@ -295,17 +295,18 @@ namespace cbica
 #ifdef _WIN32 // do intelligent thing for Windows 
       WIN32_FIND_DATA FindFileData;
       HANDLE hFind;
-      char l_szTmp[1025] = { 0 };
-      memcpy(l_szTmp, inputFolder.c_str(), 1024);
+      const size_t MAX_FILE_SIZE = 1025;
+      char l_szTmp[MAX_FILE_SIZE] = { 0 };
+      memcpy(l_szTmp, inputFolder.c_str(), MAX_FILE_SIZE - 1);
 
 
-      char l_szSrcPath[1025] = { 0 };
-      char l_szDesPath[1025] = { 0 };
-      memcpy(l_szSrcPath, inputFolder.c_str(), 1024);
-      memcpy(l_szDesPath, inputFolder.c_str(), 1024);
+      char l_szSrcPath[MAX_FILE_SIZE] = { 0 };
+      char l_szDesPath[MAX_FILE_SIZE] = { 0 };
+      memcpy(l_szSrcPath, inputFolder.c_str(), MAX_FILE_SIZE - 1);
+      memcpy(l_szDesPath, destination.c_str(), MAX_FILE_SIZE - 1);
 
-      char l_szNewSrcPath[1025] = { 0 };
-      char l_szNewDesPath[1025] = { 0 };
+      char l_szNewSrcPath[MAX_FILE_SIZE] = { 0 };
+      char l_szNewDesPath[MAX_FILE_SIZE] = { 0 };
 
       strcat(l_szTmp, "*");
 
@@ -323,8 +324,8 @@ namespace cbica
             if (strcmp(FindFileData.cFileName, ".."))
             {
               //printf("The Directory found is %s ", FindFileData.cFileName);
-              sprintf_s(l_szNewDesPath, static_cast<size_t>(FILENAME_MAX), "%s%s\/", l_szDesPath, FindFileData.cFileName);
-              sprintf_s(l_szNewSrcPath, static_cast<size_t>(FILENAME_MAX), "%s%s\/", l_szSrcPath, FindFileData.cFileName);
+              sprintf_s(l_szNewDesPath, static_cast<size_t>(MAX_FILE_SIZE - 1), "%s%s\/", l_szDesPath, FindFileData.cFileName);
+              sprintf_s(l_szNewSrcPath, static_cast<size_t>(MAX_FILE_SIZE - 1), "%s%s\/", l_szSrcPath, FindFileData.cFileName);
               CreateDirectory(l_szNewDesPath, NULL);
               copyDir(l_szNewSrcPath, l_szNewDesPath);
             }
@@ -333,10 +334,10 @@ namespace cbica
         else
         {
           //printf("The File found is %s", FindFileData.cFileName);
-          char l_szSrcFile[1025] = { 0 };
-          char l_szDesFile[1025] = { 0 };
-          sprintf_s(l_szDesFile, static_cast<size_t>(FILENAME_MAX), "%s%s", l_szDesPath, FindFileData.cFileName);
-          sprintf_s(l_szSrcFile, static_cast<size_t>(FILENAME_MAX), "%s%s", l_szSrcPath, FindFileData.cFileName);
+          char l_szSrcFile[MAX_FILE_SIZE] = { 0 };
+          char l_szDesFile[MAX_FILE_SIZE] = { 0 };
+          sprintf_s(l_szDesFile, static_cast<size_t>(MAX_FILE_SIZE - 1), "%s%s", l_szDesPath, FindFileData.cFileName);
+          sprintf_s(l_szSrcFile, static_cast<size_t>(MAX_FILE_SIZE - 1), "%s%s", l_szSrcPath, FindFileData.cFileName);
           BOOL l_bRet = CopyFile(l_szSrcFile, l_szDesFile, TRUE);
         }
 
@@ -413,7 +414,7 @@ namespace cbica
 
   size_t getFolderSize(const std::string &rootFolder)
   {
-    size_t f_size;
+    size_t f_size = 0;
 #ifdef _WIN32
     std::tr2::sys::path folderPath(rootFolder);
     if (exists(folderPath))
@@ -424,11 +425,11 @@ namespace cbica
         std::tr2::sys::path filePath(complete(dirIte->path(), folderPath));
         if (!is_directory(dirIte->status()))
         {
-          f_size = f_size + file_size(filePath);
+          f_size += file_size(filePath);
         }
         else
         {
-          f_size += getFoldersize(filePath);
+          f_size += getFolderSize(filePath);
         }
       }
     }

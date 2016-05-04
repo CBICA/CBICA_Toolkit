@@ -46,6 +46,12 @@ ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "${CMAKE_CUR
 # Test for Config File Parser
 ADD_TEST( NAME ConfigFileReader_Test COMMAND ${TEST_EXE_NAME} -configFileReader "${DATA_DIR}/ParserClassTests.txt")
 
+# Test for Copy File
+ADD_TEST( NAME CopyFile_Test COMMAND ${TEST_EXE_NAME} -copyFile "${DATA_DIR}/list.csv" )
+
+# Test for Copy File
+ADD_TEST( NAME CopyFolder_Test COMMAND ${TEST_EXE_NAME} -copyFolder "${DATA_DIR}/" )
+
 # Test for file create functions
 ADD_TEST( NAME CreateFile_Test COMMAND ${TEST_EXE_NAME} -createFile ${CMAKE_CURRENT_BINARY_DIR}/test_File.txt )
 
