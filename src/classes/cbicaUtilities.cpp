@@ -131,7 +131,7 @@ namespace cbica
     tempPath[0] = '\0';
     if (isDir(returnDir))
     {
-      for (size_t i = 0; i < FILENAME_MAX; i++)
+      for (size_t i = 1; i <= FILENAME_MAX; i++)
       {
         returnDir += std::to_string(i);
         if (!isDir(returnDir))
