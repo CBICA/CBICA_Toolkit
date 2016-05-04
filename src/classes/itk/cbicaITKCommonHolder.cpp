@@ -31,7 +31,7 @@ namespace cbica
     m_extension = "";
     if (output.empty())
     {
-      cbica::createTmpDir(m_outputDir);
+      m_outputDir = cbica::createTmpDir();
       std::cout << "No output folder has been specified. Writing to temporary directory: '"
         << m_outputDir << "'\n";
     }
@@ -124,7 +124,7 @@ namespace cbica
         }
         else
         {
-          cbica::createTmpDir(m_outputDir);
+          m_outputDir = cbica::createTmpDir();
           std::cout << "An output file has been defined without path. Saving in directory: "
             << m_outputDir << "\n";
           m_outputBaseNames.push_back(m_outputDir + m_prefix + baseName);
@@ -158,7 +158,7 @@ namespace cbica
   
   CommonHolder::CommonHolder( const std::vector<std::string> &inputFileNames )
   {
-    cbica::createTmpDir(m_outputDir);
+    m_outputDir = cbica::createTmpDir();
     initializeClass(inputFileNames, m_outputDir, "o");
   }
   
