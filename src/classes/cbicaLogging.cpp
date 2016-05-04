@@ -46,7 +46,7 @@ namespace cbica
     consoleLogging = false;
     if (newLogFile == "")
     {
-      cbica::createTmpDir(file_name_with_path);
+      file_name_with_path = cbica::createTmpDir();
       file_name_with_path += cbica::getExecutableName() + "-log.txt";
     }
     else
@@ -103,7 +103,7 @@ namespace cbica
     {
       if (file_name_with_path_wrap == "")
       {
-        cbica::createTmpDir(file_name_with_path_wrap);
+        file_name_with_path_wrap = cbica::createTmpDir();
         file_name_with_path_wrap += "temp.log";
         std::cout << "Blank file name provided. A new file has been created with path: "
           << file_name_with_path_wrap << std::endl;

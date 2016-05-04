@@ -545,7 +545,7 @@ namespace cbica
     std::string dirName_wrap;
     if (!cbica::directoryExists(dirName) || (dirName == ""))
     {
-      cbica::makeTempDir(dirName_wrap);
+      dirName_wrap = cbica::makeTempDir();
     }
     dirName_wrap = cbica::replaceString(dirName, "\\", "/");
     if (dirName_wrap.substr(dirName_wrap.length() - 1) != "/")
