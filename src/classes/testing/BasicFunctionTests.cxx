@@ -211,8 +211,6 @@ int main(int argc, char** argv)
       return EXIT_FAILURE;
     }
 
-    auto test1 = cbica::getFolderSize(outputDir);
-    auto test2 = cbica::getFolderSize(inputFolder);
     if (cbica::getFolderSize(outputDir) != cbica::getFolderSize(inputFolder))
     {
       return EXIT_FAILURE;
