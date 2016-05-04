@@ -173,8 +173,7 @@ int main(int argc, char** argv)
   if (parser.compareParameter("copyFile", tempPostion))
   {
     const std::string inputFile = argv[tempPostion + 1];
-    std::string outputDir, path, base, ext;
-    cbica::createTemporaryDirectory(outputDir);
+    std::string outputDir = cbica::createTemporaryDirectory(), path, base, ext;
     std::string outputFile = outputDir + "/example" + ext;
     cbica::splitFileName(inputFile, path, base, ext);
 
@@ -199,8 +198,7 @@ int main(int argc, char** argv)
   if (parser.compareParameter("copyFolder", tempPostion))
   {
     const std::string inputFolder = argv[tempPostion + 1];
-    std::string outputDir;
-    cbica::createTemporaryDirectory(outputDir);
+    std::string outputDir = cbica::createTemporaryDirectory();
     cbica::copyDir(inputFolder, outputDir);
 
     if (!cbica::copyDir(inputFolder, outputDir))
@@ -306,8 +304,7 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("logging", tempPostion))
   {
-    std::string dirName;
-    cbica::createTmpDir(dirName);
+    std::string dirName = cbica::createTmpDir();
     std::string fName = dirName + std::string("log.txt");
 
     cbica::Logging logger(fName, argv[tempPostion + 1] /*take free text from the console*/);
@@ -352,9 +349,11 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("makeTempDir", tempPostion))
   {
-    std::string return_dir;
-    if (!cbica::createTmpDir(return_dir))
+    std::string return_dir = cbica::createTmpDir();
+    
+    if (!cbica::isDir(return_dir))
       return EXIT_FAILURE;
+
     cbica::deleteDir(return_dir);
   }
 
@@ -376,8 +375,7 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("symbolic", tempPostion))
   {
-    std::string dirName;
-    cbica::createTmpDir(dirName);
+    std::string dirName = cbica::createTmpDir();
     std::string fName = dirName + std::string("log.txt");
     std::string fName_sym = dirName + std::string("log_sym.txt");
     cbica::Logging logger(fName, argv[tempPostion + 1]);
@@ -395,8 +393,9 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("subDir", tempPostion))
   {
-    std::string return_dir;
-    if (!cbica::createTmpDir(return_dir))
+    std::string return_dir = cbica::createTmpDir();
+
+    if (!cbica::isDir(return_dir))
       return EXIT_FAILURE;
 
     if (mkdir(std::string(return_dir + "/random1/").c_str()
