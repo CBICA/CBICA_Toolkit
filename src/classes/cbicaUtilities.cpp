@@ -110,49 +110,60 @@ namespace cbica
         return true;
   }
 
-  bool createTmpDir(std::string &returnDir)
+  std::string createTmpDir()
   {
-    if (tempDirInitialized == "")
-    {
-      char *tmp;
-      char tempPath[FILENAME_MAX];
+    std::string returnDir = "";
+    char *tmp;
+    char tempPath[FILENAME_MAX];
 #if defined(_WIN32)
-      tmp = getenv("USERPROFILE");
-      std::string temp = cbica::replaceString(tmp, "\\", "/");
-      sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
-      strcat_s(tempPath,"/tmp/");
+    tmp = getenv("USERPROFILE");
+    std::string temp = cbica::replaceString(tmp, "\\", "/");
+    sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
+    strcat_s(tempPath, "/tmp");
 #else
-      tmp = std::getenv("HOME");
-      sprintf(tempPath, "%s", tmp);
-      strcat(tempPath, "/tmp/");
+    tmp = std::getenv("HOME");
+    sprintf(tempPath, "%s", tmp);
+    strcat(tempPath, "/tmp");
 #endif    
 
-      returnDir = std::string(tempPath);
-      tmp[0] = '\0';
-      tempPath[0] = '\0';
-      //std::cout << "temp_dir: " << returnDir <<std::endl;
-      tempDirInitialized = returnDir;
-    }
-    else // do this if /user/tmp/ folder was found -- this needs to be updated for some flexibility 
+    returnDir = std::string(tempPath);
+    tmp[0] = '\0';
+    tempPath[0] = '\0';
+    if (isDir(returnDir))
     {
-      returnDir = tempDirInitialized; 
+      for (size_t i = 0; i < FILENAME_MAX; i++)
+      {
+        returnDir += std::to_string(i);
+        if (!isDir(returnDir))
+        {
+          break;
+        }
+      }
     }
-    return createDir(returnDir);
+
+    returnDir += "/";
+    if (!createDir(returnDir))
+    {
+      std::cerr << "Could not create the temporary directory '" << returnDir << "'\n";
+      exit(EXIT_FAILURE);
+    }
+
+    return returnDir;
   }
   
-  bool createTemporaryDirectory( std::string &returnDir )
+  std::string createTemporaryDirectory()
   {
-    return createTmpDir(returnDir);
+    return createTmpDir();
   }
 
-  bool makeTemporaryDirectory( std::string &returnDir )
+  std::string makeTemporaryDirectory()
   {
-    return createTmpDir(returnDir);
+    return createTmpDir();
   }
 
-  bool makeTempDir( std::string &returnDir )
+  std::string makeTempDir()
   {
-    return createTmpDir(returnDir);
+    return createTmpDir();
   }
 
   bool createDir( const std::string &dir_name )
@@ -176,6 +187,21 @@ namespace cbica
   bool makeDir(const std::string &dir_name)
   {
     return createDir( dir_name );
+  }
+
+  bool createDirectory(const std::string &dir_name)
+  {
+    return createDir(dir_name);
+  }
+
+  bool makeDirectory(const std::string &dir_name)
+  {
+    return createDir(dir_name);
+  }
+
+  bool createFolder(const std::string &dir_name)
+  {
+    return createDir(dir_name);
   }
 
   int removeDirectoryRecursively(const std::string &dirname, bool bDeleteSubdirectories = true)
@@ -369,6 +395,16 @@ namespace cbica
     }
   }
 
+  bool copyDirectory(const std::string &inputFolder, const std::string &destination, bool recursion)
+  {
+    return copyDir(inputFolder, destination, recursion);
+  }
+
+  bool copyFolder(const std::string &inputFolder, const std::string &destination, bool recursion)
+  {
+    return copyDir(inputFolder, destination, recursion);
+  }
+
   bool copyFile(const std::string &inputFile, const std::string &destination)
   {
     if (cbica::fileExists(inputFile))
@@ -468,6 +504,16 @@ namespace cbica
     closedir(d);
 #endif
     return f_size;
+  }
+
+  size_t getDirSize(const std::string &rootFolder)
+  {
+    return getFolderSize(rootFolder);
+  }
+
+  size_t getDirectorySize(const std::string &rootFolder)
+  {
+    return getFolderSize(rootFolder);
   }
 
   //======================================== OS stuff ======================================//

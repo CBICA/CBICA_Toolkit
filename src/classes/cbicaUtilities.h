@@ -42,8 +42,6 @@ static inline std::string getSeparator(int enumVal)
   return SeparatorStrings[enumVal];
 }
 
-static std::string tempDirInitialized = "";
-
 /**
 \struct CSVDict
 
@@ -325,7 +323,7 @@ namespace cbica
 
   \return True if success
   */
-  bool createTmpDir(std::string &returnDir);
+  std::string createTmpDir();
 
   /**
   \brief Create a temporary directory
@@ -334,7 +332,7 @@ namespace cbica
 
   \return True if success
   */
-  bool createTemporaryDirectory(std::string &returnDir);
+  std::string createTemporaryDirectory();
 
   /**
   \brief Create a temporary directory
@@ -343,7 +341,7 @@ namespace cbica
 
   \return True if success
   */
-  bool makeTemporaryDirectory(std::string &returnDir);
+  std::string makeTemporaryDirectory();
 
   /**
   \brief Create a temporary directory
@@ -352,7 +350,7 @@ namespace cbica
 
   \return True if success
   */
-  bool makeTempDir(std::string &returnDir);
+  std::string makeTempDir();
 
   /**
   \brief Create a directory
@@ -369,6 +367,38 @@ namespace cbica
   \param dir_name Name of directory to be created with full path
   */
   bool makeDir(const std::string &dir_name);
+
+  /**
+  \brief Create a directory
+
+  \param dir_name Name of directory to be created with full path
+
+  \return True if success
+  */
+  bool createDirectory(const std::string &dir_name);
+
+  /**
+  \brief Create a directory
+
+  \param dir_name Name of directory to be created with full path
+  */
+  bool makeDirectory(const std::string &dir_name);
+
+  /**
+  \brief Create a directory
+
+  \param dir_name Name of directory to be created with full path
+
+  \return True if success
+  */
+  bool createFolder(const std::string &dir_name);
+
+  /**
+  \brief Create a directory
+
+  \param dir_name Name of directory to be created with full path
+  */
+  bool makeFolder(const std::string &dir_name);
 
   /**
   \brief Recursively delete a folder and contents [internal function]
@@ -413,6 +443,32 @@ namespace cbica
   /**
   \brief Copy a folder and if recursion enabled, all its contents
 
+  https://msdn.microsoft.com/en-us/library/hh874694.aspx?f=255&MSPPError=-2147217396
+
+  \param inputFolder Folder to copy
+  \param destination Where to copy to
+  \param recursion Do recursion and copy, defaults to true
+
+  \return true for success
+  */
+  bool copyDirectory(const std::string &inputFolder, const std::string &destination, bool recursion = true);
+
+  /**
+  \brief Copy a folder and if recursion enabled, all its contents
+
+  https://msdn.microsoft.com/en-us/library/hh874694.aspx?f=255&MSPPError=-2147217396
+
+  \param inputFolder Folder to copy
+  \param destination Where to copy to
+  \param recursion Do recursion and copy, defaults to true
+
+  \return true for success
+  */
+  bool copyFolder(const std::string &inputFolder, const std::string &destination, bool recursion = true);
+
+  /**
+  \brief Copy a folder and if recursion enabled, all its contents
+
   \param inputFile File to copy
   \param destination Where to copy to
   \return true for success
@@ -432,6 +488,20 @@ namespace cbica
   \param rootFolder The input folder
   */
   size_t getFolderSize(const std::string &rootFolder);
+
+  /**
+  \brief Get the size of the folder
+
+  \param rootFolder The input folder
+  */
+  size_t getDirSize(const std::string &rootFolder);
+
+  /**
+  \brief Get the size of the folder
+
+  \param rootFolder The input folder
+  */
+  size_t getDirectorySize(const std::string &rootFolder);
 
   /**
   \brief Gets the extension of the supplied file name using splitFileName()
