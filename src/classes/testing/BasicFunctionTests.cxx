@@ -394,7 +394,9 @@ int main(int argc, char** argv)
     std::string return_dir = cbica::createTmpDir();
 
     if (!cbica::isDir(return_dir))
+    {
       return EXIT_FAILURE;
+    }
 
     if (mkdir(std::string(return_dir + "/random1/").c_str()
 #if(WIN32)
@@ -403,7 +405,10 @@ int main(int argc, char** argv)
       , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
 #endif
       ) != 0)
+    {
+      cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
+    }
 
     if (mkdir(std::string(return_dir + "/random2/").c_str()
 #if(WIN32)
@@ -412,7 +417,10 @@ int main(int argc, char** argv)
       , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
 #endif
       ) != 0)
+    {
+      cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
+    }
 
     if (mkdir(std::string(return_dir + "/random3/").c_str()
 #if(WIN32)
@@ -421,7 +429,10 @@ int main(int argc, char** argv)
       , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
 #endif
       ) != 0)
+    {
+      cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
+    }
 
     if (mkdir(std::string(return_dir + "random1/random11/").c_str()
 #if(WIN32)
@@ -430,10 +441,16 @@ int main(int argc, char** argv)
       , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
 #endif
       ) != 0)
+    {
+      cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
+    }
 
     if (cbica::subdirectoriesInDirectory(return_dir, true).size() != 4)
+    {
+      cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
+    }
 
     if (!cbica::deleteDir(return_dir))
       return EXIT_FAILURE;
