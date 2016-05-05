@@ -112,7 +112,7 @@ namespace cbica
 
   std::string createTmpDir()
   {
-    std::string returnDir = "";
+    std::string returnDir = "", tempCheck;
     char *tmp;
     char tempPath[FILENAME_MAX];
 #if defined(_WIN32)
@@ -126,19 +126,23 @@ namespace cbica
     strcat(tempPath, "/tmp");
 #endif    
 
-    returnDir = std::string(tempPath);
+    tempCheck = std::string(tempPath);
     tmp[0] = '\0';
     tempPath[0] = '\0';
-    if (isDir(returnDir))
+    if (isDir(tempCheck))
     {
       for (size_t i = 1; i <= FILENAME_MAX; i++)
       {
-        returnDir += std::to_string(i);
+        returnDir = tempCheck + std::to_string(i);
         if (!isDir(returnDir))
         {
           break;
         }
       }
+    }
+    else
+    {
+      returnDir = tempCheck;
     }
 
     returnDir += "/";
@@ -334,7 +338,7 @@ namespace cbica
       char l_szNewSrcPath[MAX_FILE_SIZE] = { 0 };
       char l_szNewDesPath[MAX_FILE_SIZE] = { 0 };
 
-      strcat(l_szTmp, "*");
+      strcat_s(l_szTmp, "*");
 
       hFind = FindFirstFile(l_szTmp, &FindFileData);
       if (hFind == NULL)
@@ -568,20 +572,22 @@ namespace cbica
 
   std::string getExecutableName()
   {
+    std::string return_string;
     #if defined(_WIN32)
     	//! Initialize pointers to file and user names
     	char filename[FILENAME_MAX];
 	    GetModuleFileNameA(NULL, filename, FILENAME_MAX);
-	    _splitpath(filename, NULL, NULL, filename, NULL);
+      std::string path, ext;
+      splitFileName(filename, path, return_string, ext);
       //_splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
     #else
     	//! Initialize pointers to file and user names
     	char *filename, filename_2[FILENAME_MAX];    
     	::readlink("/proc/self/exe", filename_2, sizeof(filename_2)-1);
-    	filename = basename(filename_2);
+      filename = basename(filename_2);
+      return_string = std::string(filename);
     #endif
 
-    std::string return_string = std::string(filename);
     filename[0] = '\0';
     
     return return_string;
@@ -1331,8 +1337,6 @@ namespace cbica
     std::string line;
     while (std::getline(inputFile, line)) 
     {
-      size_t count = 0;
-      size_t position;
       std::string parameter, parameterDataType, parameterDataRange, parameterDescription = "";
       for (size_t i = 0; i < line.length(); i++)
       {
@@ -1504,7 +1508,11 @@ namespace cbica
   char* constCharToChar(const std::string &input)
   {
     char *s = new char[input.size()+1];
+#ifdef _WIN32
+    strcpy_s(s, input.size() + 1, input.c_str());
+#else
     std::strcpy(s, input.c_str());
+#endif
     return s;
   }
 
