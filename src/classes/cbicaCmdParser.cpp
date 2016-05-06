@@ -68,11 +68,11 @@ namespace cbica
     //*argv[1] = "1";
     for (int i = 0; i < argc; i++)
     {
-      argv2[i] = 
-      #ifdef _WIN32
-      _strdup
-      #else
-      strdup
+      argv2[i] =
+#ifdef _WIN32
+        _strdup
+#else
+        strdup
 #endif    
       (argv[i]);
     }
