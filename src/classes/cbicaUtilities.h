@@ -152,14 +152,14 @@ namespace cbica
 
     std::string laconic;
     std::string verbose;
+    int dataType_enumCode;
+    std::string dataType_string;
+    std::string dataRange;
     std::string descriptionLine1;
     std::string descriptionLine2; //! defaults to blank
     std::string descriptionLine3; //! defaults to blank
     std::string descriptionLine4; //! defaults to blank
     std::string descriptionLine5; //! defaults to blank
-    int dataType_enumCode;
-    std::string dataType_string;
-    std::string dataRange;
 
     size_t length;
 

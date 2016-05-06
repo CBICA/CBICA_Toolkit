@@ -63,10 +63,18 @@ namespace cbica
 
   CmdParser::CmdParser(int argc, const char **argv, const std::string &exe_name /*= ""*/)
   {
-    char *argv2[] = {" ", "1"};
-    for (size_t i = 0; i < argc; i++)
+    char *argv2[FILENAME_MAX];
+    //*argv[0] = " ";
+    //*argv[1] = "1";
+    for (int i = 0; i < argc; i++)
     {
-      argv2[i] = _strdup(argv[i]);
+      argv2[i] = 
+      #ifdef _WIN32
+      _strdup
+      #else
+      strdup
+#endif    
+      (argv[i]);
     }
     CmdParser(argc, argv2, exe_name);
   }

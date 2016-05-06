@@ -380,8 +380,8 @@ namespace cbica
       {
         char Path[256], *EndPtr = Path;
         struct dirent *e;
-        strcpy(Path, inputFolder);                  //Copies the current path to the 'Path' variable.
-        EndPtr += strlen(inputFolder);              //Moves the EndPtr to the ending position.
+        strcpy(Path, inputFolder.c_str());                  //Copies the current path to the 'Path' variable.
+        EndPtr += strlen(inputFolder.c_str());              //Moves the EndPtr to the ending position.
         while ((e = readdir(dir)) != NULL) //Iterates through the entire directory
         {  
           struct stat info;                //Helps us know about stuff
@@ -391,11 +391,11 @@ namespace cbica
             if (S_ISDIR(info.st_mode)) //Are we dealing with a directory?
             {  
               //Make corresponding directory in the target folder here.
-              SearchDirectory(Path);   //Calls this function AGAIN, this time with the sub-name.
+              copyDir(Path, EndPtr);   //Calls this function AGAIN, this time with the sub-name.
             }
-            else if (S_ISREG(info.st_mode) //Or did we find a regular file?
+            else if (S_ISREG(info.st_mode)) //Or did we find a regular file?
             { 
-              copyFile();
+              copyFile(Path, EndPtr);
             }
           }
         }
@@ -433,8 +433,8 @@ namespace cbica
   {
     if (cbica::fileExists(inputFile))
     {
-      std::ifstream  src(inputFile, std::ios::binary);
-      std::ofstream  dst(destination, std::ios::binary);
+      std::ifstream src(inputFile.c_str(), std::ios::binary);
+      std::ofstream dst(destination.c_str(), std::ios::binary);
 
       dst << src.rdbuf();
 
@@ -458,7 +458,7 @@ namespace cbica
   size_t getFileSize(const std::string &inputFile)
   {
     std::streampos begin, end;
-    std::ifstream myfile(inputFile, std::ios::binary);
+    std::ifstream myfile(inputFile.c_str(), std::ios::binary);
     begin = myfile.tellg();
     myfile.seekg(0, std::ios::end);
     end = myfile.tellg();
