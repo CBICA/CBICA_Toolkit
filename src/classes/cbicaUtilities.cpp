@@ -326,21 +326,18 @@ namespace cbica
       WIN32_FIND_DATA FindFileData;
       HANDLE hFind;
       const size_t MAX_FILE_SIZE = 1025;
-      char l_szTmp[MAX_FILE_SIZE] = { 0 };
-      memcpy(l_szTmp, inputFolder.c_str(), MAX_FILE_SIZE - 1);
 
+      std::string source_tmp = inputFolder;
+      // ensure that all folders end with "/"
+      if (source_tmp[source_tmp.length() - 1] != '/')
+      {
+        source_tmp.append("/");
+      }
+      
+      // check for all files inside 
+      source_tmp.append("*");
 
-      char l_szSrcPath[MAX_FILE_SIZE] = { 0 };
-      char l_szDesPath[MAX_FILE_SIZE] = { 0 };
-      memcpy(l_szSrcPath, inputFolder.c_str(), MAX_FILE_SIZE - 1);
-      memcpy(l_szDesPath, destination.c_str(), MAX_FILE_SIZE - 1);
-
-      char l_szNewSrcPath[MAX_FILE_SIZE] = { 0 };
-      char l_szNewDesPath[MAX_FILE_SIZE] = { 0 };
-
-      strcat_s(l_szTmp, "*");
-
-      hFind = FindFirstFile(l_szTmp, &FindFileData);
+      hFind = FindFirstFile(source_tmp.c_str(), &FindFileData);
       if (hFind == NULL)
       {
         return false;
@@ -353,33 +350,56 @@ namespace cbica
           {
             if (strcmp(FindFileData.cFileName, ".."))
             {
-              //printf("The Directory found is %s ", FindFileData.cFileName);
-              sprintf_s(l_szNewDesPath, static_cast<size_t>(MAX_FILE_SIZE - 1), "%s%s\/", l_szDesPath, FindFileData.cFileName);
-              sprintf_s(l_szNewSrcPath, static_cast<size_t>(MAX_FILE_SIZE - 1), "%s%s\/", l_szSrcPath, FindFileData.cFileName);
-              CreateDirectory(l_szNewDesPath, NULL);
-              copyDir(l_szNewSrcPath, l_szNewDesPath);
+              std::string newSource = inputFolder + std::string(FindFileData.cFileName) + "/",
+                newDest = destination + std::string(FindFileData.cFileName) + "/";
+              createDir(newDest);
+              //CreateDirectory(newDest.c_str(), NULL);
+              copyDir(newSource, newDest);
             }
           }
         }
         else
         {
-          //printf("The File found is %s", FindFileData.cFileName);
-          char l_szSrcFile[MAX_FILE_SIZE] = { 0 };
-          char l_szDesFile[MAX_FILE_SIZE] = { 0 };
-          sprintf_s(l_szDesFile, static_cast<size_t>(MAX_FILE_SIZE - 1), "%s%s", l_szDesPath, FindFileData.cFileName);
-          sprintf_s(l_szSrcFile, static_cast<size_t>(MAX_FILE_SIZE - 1), "%s%s", l_szSrcPath, FindFileData.cFileName);
-          BOOL l_bRet = CopyFile(l_szSrcFile, l_szDesFile, TRUE);
+          std::string sourceFile = inputFolder + std::string(FindFileData.cFileName), destinationFile = destination + std::string(FindFileData.cFileName);
+          copyFile(sourceFile, destinationFile);
+          //BOOL l_bRet = CopyFile(sourceFile.c_str(), destinationFile.c_str(), TRUE);
         }
 
       } while (FindNextFile(hFind, &FindFileData));
       FindClose(hFind);
 
 #else // initiate system call for Linux
-      if (recursion)
+      //if (recursion)
+      //{
+      //  recur = "-r ";
+      //}
+      //system(std::string("cp " + recur + " " + inputFolder + " " + destination).c_str());
+
+      DIR *dir = opendir(inputFolder);                //Assuming absolute pathname here.
+      if (dir) 
       {
-        recur = "-r ";
+        char Path[256], *EndPtr = Path;
+        struct dirent *e;
+        strcpy(Path, inputFolder);                  //Copies the current path to the 'Path' variable.
+        EndPtr += strlen(inputFolder);              //Moves the EndPtr to the ending position.
+        while ((e = readdir(dir)) != NULL) //Iterates through the entire directory
+        {  
+          struct stat info;                //Helps us know about stuff
+          strcpy(EndPtr, e->d_name);       //Copies the current filename to the end of the path, overwriting it with each loop.
+          if (!stat(Path, &info)) //stat returns zero on success.
+          {         
+            if (S_ISDIR(info.st_mode)) //Are we dealing with a directory?
+            {  
+              //Make corresponding directory in the target folder here.
+              SearchDirectory(Path);   //Calls this function AGAIN, this time with the sub-name.
+            }
+            else if (S_ISREG(info.st_mode) //Or did we find a regular file?
+            { 
+              copyFile();
+            }
+          }
+        }
       }
-      system(std::string("cp " + recur + " " + inputFolder + " " + destination).c_str());
 #endif
 
       if (cbica::isDir(destination))

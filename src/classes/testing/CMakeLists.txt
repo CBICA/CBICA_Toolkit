@@ -35,7 +35,7 @@ IF(UNIX)
 	#endif()
 ENDIF(UNIX) 
 
-SET( DATA_DIR "${PROJECT_SOURCE_DIR}/data/" )
+SET( DATA_DIR "${PROJECT_SOURCE_DIR}/data" )
 
 # Test that usage prints properly
 ADD_TEST( NAME Print_Usage_Test COMMAND ${TEST_EXE_NAME} -buffer "random text")

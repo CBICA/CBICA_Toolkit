@@ -66,7 +66,7 @@ namespace cbica
     char *argv2[] = {" ", "1"};
     for (size_t i = 0; i < argc; i++)
     {
-      argv2[i] = strdup(argv[i]);
+      argv2[i] = _strdup(argv[i]);
     }
     CmdParser(argc, argv2, exe_name);
   }

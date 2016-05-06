@@ -108,11 +108,11 @@ namespace itk
       virtual void SetMetricType (int _arg)
       {
         if (this->m_MetricType !=
-          (_arg<EUCLIDEAN?EUCLIDEAN:(_arg>LOGEUCLIDEAN?LOGEUCLIDEAN:_arg)))
-          {
+          (bool)(_arg<EUCLIDEAN ? EUCLIDEAN : (_arg>LOGEUCLIDEAN ? LOGEUCLIDEAN : _arg)))
+        {
           this->m_MetricType =
-            (_arg<EUCLIDEAN?EUCLIDEAN:(_arg>LOGEUCLIDEAN?LOGEUCLIDEAN:_arg));
-          }
+            (bool)(_arg<EUCLIDEAN ? EUCLIDEAN : (_arg>LOGEUCLIDEAN ? LOGEUCLIDEAN : _arg));
+        }
       }
 
     private:
