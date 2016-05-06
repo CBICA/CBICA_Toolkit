@@ -375,7 +375,7 @@ namespace cbica
       //}
       //system(std::string("cp " + recur + " " + inputFolder + " " + destination).c_str());
 
-      DIR *dir = opendir(inputFolder);                //Assuming absolute pathname here.
+      DIR *dir = opendir(inputFolder.c_str());                //Assuming absolute pathname here.
       if (dir) 
       {
         char Path[256], *EndPtr = Path;

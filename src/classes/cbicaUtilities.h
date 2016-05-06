@@ -152,21 +152,22 @@ namespace cbica
 
     std::string laconic;
     std::string verbose;
-    std::string dataRange;
     std::string descriptionLine1;
     std::string descriptionLine2; //! defaults to blank
     std::string descriptionLine3; //! defaults to blank
     std::string descriptionLine4; //! defaults to blank
     std::string descriptionLine5; //! defaults to blank
-    size_t length;
-    std::string dataType_string;
     int dataType_enumCode;
+    std::string dataType_string;
+    std::string dataRange;
 
-    //! Constructor with five lines of description and string for dataType
+    size_t length;
+
+    //! Constructor with five lines of description and enum_code for dataType
     Parameter(const std::string &in_laconic, const std::string &in_verbose, const int &in_dataType, const std::string &in_dataRange,
       const std::string &in_descriptionLine1, const std::string &in_descriptionLine2 = "", const std::string &in_descriptionLine3 = "",
       const std::string &in_descriptionLine4 = "", const std::string &in_descriptionLine5 = "") :
-      laconic(in_laconic), verbose(in_verbose), dataType_enumCode(in_dataType), dataRange(in_dataRange),
+      laconic(in_laconic), verbose(in_verbose), dataType_enumCode(in_dataType), dataType_string(""), dataRange(in_dataRange),
       descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
       descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
     {
@@ -206,11 +207,11 @@ namespace cbica
       }
     }
 
-    //! Constructor with five lines of description and enum_code for dataType
+    //! Constructor with five lines of description and string for dataType
     Parameter(const std::string &in_laconic, const std::string &in_verbose, const std::string &in_dataType, const std::string &in_dataRange,
       const std::string &in_descriptionLine1, const std::string &in_descriptionLine2 = "", const std::string &in_descriptionLine3 = "",
       const std::string &in_descriptionLine4 = "", const std::string &in_descriptionLine5 = "") :
-      laconic(in_laconic), verbose(in_verbose), dataType_string(in_dataType), dataRange(in_dataRange),
+      laconic(in_laconic), verbose(in_verbose), dataType_enumCode(0), dataType_string(in_dataType), dataRange(in_dataRange),
       descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
       descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
     {
