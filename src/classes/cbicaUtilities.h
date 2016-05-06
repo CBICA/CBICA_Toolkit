@@ -544,6 +544,15 @@ namespace cbica
   std::string getExecutableName();
 
   /**
+  \brief Get the path of the Executable which is calling the function
+
+  returns the path after calling splitFileName on getFullPath
+
+  \return exe name
+  */
+  std::string getExecutablePath();
+
+  /**
   \brief Get the name of the Executable which is calling the function
 
   \return exe name

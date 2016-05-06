@@ -592,6 +592,13 @@ namespace cbica
     
     return return_string;
   }
+
+  std::string getExecutablePath()
+  {
+    std::string path, base, ext;
+    splitFileName(getFullPath(), path, base, ext);
+    return path;
+  }
   
   std::string getFullPath()
   {
