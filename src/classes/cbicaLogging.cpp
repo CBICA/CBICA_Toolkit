@@ -132,8 +132,7 @@ namespace cbica
 	inline void Logging::writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
 		const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError )
   {
-    //<4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name>;<free text>
-    // obtain current time
+    // obtain current time and add exeName, userName along with proper delineation
     std::string timeExeUser = cbica::getCurrentLocalDateAndTime() + ";" + exe_name_wrap + ";" + user_name_wrap + ";";
 
     if (consoleLogging)
