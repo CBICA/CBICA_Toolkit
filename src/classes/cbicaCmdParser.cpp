@@ -545,12 +545,12 @@ namespace cbica
       (rawValue == "yes") || (rawValue == "Yes") || (rawValue == "YES") ||
       (rawValue == "")) // if the parameter is just passed as a flag, assume that the user wants it enabled
     {
-      parameterValue = true;
+      parameterValue = true; // return value is a bool
       return;
     }
     else
     {
-      parameterValue = false;
+      parameterValue = false; // return value is a bool
       return;
     }
   }
