@@ -163,7 +163,6 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
 
-    m_parameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
     m_optionalParameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
   }
 
@@ -194,7 +193,6 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
 
-    m_parameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
     m_requiredParameters.push_back(Parameter(laconic, verbose, expectedDataType, dataRange, description_line1, description_line2, description_line3, description_line4, description_line5));
   }
 
@@ -347,7 +345,6 @@ namespace cbica
 
   bool CmdParser::compareParameter(const std::string &execParamToCheck, int &position)
   {
-    bool found = false;
     position = -1;
     std::string execParamToCheck_wrap = execParamToCheck;
     verbose_check(execParamToCheck_wrap);
@@ -363,6 +360,8 @@ namespace cbica
         || (inputParamToCheck == "v") || (inputParamToCheck == "-v") || (inputParamToCheck == "--v"))
       {
         helpRequested = true;
+        position = i;
+        return true;
       }
       if (!checkMaxLen)
       {
@@ -373,8 +372,7 @@ namespace cbica
       if (inputParamToCheck == execParamToCheck_wrap)
       {
         position = i;
-        found = true;
-        return found;
+        return true;
       }
       else
       {
@@ -388,19 +386,18 @@ namespace cbica
         if (inputCheck == execCheck)
         {
           position = i;
-          found = true;
-          return found;
+          return true;
         }
       }
     }
 
-    return found;
+    return false;
   }
 
-  std::string CmdParser::getDescription(const std::string &laconicParameter, bool NewLine = false)
+  std::string CmdParser::getDescription(const std::string &execParamToCheck, bool NewLine = false)
   {
     int noMoreChecks = 0; // ensures that extra checks are not done for parameters
-    if (laconicParameter == "")
+    if (execParamToCheck == "")
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -413,7 +410,8 @@ namespace cbica
     size_t i = 0;
     while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
     {
-      if (m_requiredParameters[i].laconic == laconicParameter)
+      if ((m_requiredParameters[i].laconic == execParamToCheck) ||
+        (m_requiredParameters[i].verbose == execParamToCheck))
       {
         if (NewLine)
         {
@@ -435,7 +433,8 @@ namespace cbica
     i = 0;
     while ((i < m_optionalParameters.size()) && (noMoreChecks < 1))
     {
-      if (m_optionalParameters[i].laconic == laconicParameter)
+      if ((m_optionalParameters[i].laconic == execParamToCheck) ||
+        (m_optionalParameters[i].verbose == execParamToCheck))
       {
         if (NewLine)
         {
@@ -457,10 +456,10 @@ namespace cbica
     return "";
   }
 
-  std::string CmdParser::getDataTypeAsString(const std::string &laconicParameter)
+  std::string CmdParser::getDataTypeAsString(const std::string &execParamToCheck)
   {
     int noMoreChecks = 0; // ensures that extra checks are not done for parameters
-    if (laconicParameter == "")
+    if (execParamToCheck == "")
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -473,7 +472,8 @@ namespace cbica
     size_t i = 0;
     while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
     {
-      if (m_requiredParameters[i].laconic == laconicParameter)
+      if ((m_requiredParameters[i].laconic == execParamToCheck)  ||
+        (m_requiredParameters[i].verbose == execParamToCheck))
       {
         return m_requiredParameters[i].dataType_string;
         noMoreChecks = 1;
@@ -484,7 +484,8 @@ namespace cbica
     i = 0;
     while ((i < m_optionalParameters.size()) && (noMoreChecks < 1))
     {
-      if (m_optionalParameters[i].laconic == laconicParameter)
+      if ((m_optionalParameters[i].laconic == execParamToCheck) ||
+        (m_optionalParameters[i].verbose == execParamToCheck))
       {
         return m_optionalParameters[i].dataType_string;
         noMoreChecks = 1;
@@ -495,10 +496,10 @@ namespace cbica
     return "";
   }
 
-  int CmdParser::getDataTypeAsEnumCode(const std::string &laconicParameter)
+  int CmdParser::getDataTypeAsEnumCode(const std::string &execParamToCheck)
   {
     int noMoreChecks = 0; // ensures that extra checks are not done for parameters
-    if (laconicParameter == "")
+    if (execParamToCheck == "")
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -511,7 +512,8 @@ namespace cbica
     size_t i = 0;
     while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
     {
-      if (m_requiredParameters[i].laconic == laconicParameter)
+      if ((m_requiredParameters[i].laconic == execParamToCheck) ||
+        (m_requiredParameters[i].verbose == execParamToCheck))
       {
         return m_requiredParameters[i].dataType_enumCode;
         noMoreChecks = 1;
@@ -522,7 +524,8 @@ namespace cbica
     i = 0;
     while ((i < m_optionalParameters.size()) && (noMoreChecks < 1))
     {
-      if (m_optionalParameters[i].laconic == laconicParameter)
+      if ((m_optionalParameters[i].laconic == execParamToCheck) ||
+        (m_optionalParameters[i].verbose == execParamToCheck))
       {
         return m_optionalParameters[i].dataType_enumCode;
         noMoreChecks = 1;
@@ -531,6 +534,49 @@ namespace cbica
     }
 
     return -1;
+  }
+
+  void CmdParser::getParameterValue(const std::string &execParamToCheck, bool &parameterValue)
+  {
+    int position;
+    compareParameter(execParamToCheck, position);
+    std::string rawValue = m_argv[position + 1];
+    if ((rawValue == "1") || (rawValue == "true") || (rawValue == "True") || (rawValue == "TRUE") ||
+      (rawValue == "yes") || (rawValue == "Yes") || (rawValue == "YES") ||
+      (rawValue == "")) // if the parameter is just passed as a flag, assume that the user wants it enabled
+    {
+      parameterValue = true;
+      return;
+    }
+    else
+    {
+      parameterValue = false;
+      return;
+    }
+  }
+
+  void CmdParser::getParameterValue(const std::string &execParamToCheck, int &parameterValue)
+  {
+    int position;
+    compareParameter(execParamToCheck, position);
+    parameterValue = std::atoi(m_argv[position + 1]); // return value is an integer
+    return;
+  }
+
+  void CmdParser::getParameterValue(const std::string &execParamToCheck, float &parameterValue)
+  {
+    int position;
+    compareParameter(execParamToCheck, position);
+    parameterValue = static_cast<float>(std::atof(m_argv[position + 1])); // return value is a float
+    return;
+  }
+
+  void CmdParser::getParameterValue(const std::string &execParamToCheck, std::string &parameterValue)
+  {
+    int position;
+    compareParameter(execParamToCheck, position);
+    parameterValue = m_argv[position + 1]; // return value is a string
+    return;
   }
 
   void CmdParser::exampleUsage(const std::string &usageOfExe)

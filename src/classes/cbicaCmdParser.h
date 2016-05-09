@@ -171,33 +171,33 @@ namespace cbica
     /**
     \brief Get the description analogous with the parameter
 
-    Searches only using the laconic parameter; restriction placed for performance reasons.
+    Can search using both laconic and verbose parameters.
 
     \param parameter Parameter whose description is requested
     \param "NewLine Return with "\n" between description lines if true, defaults to space between lines
     \return Description of parameter
     */
-    std::string getDescription(const std::string &laconicParameter, bool NewLine);
+    std::string getDescription(const std::string &execParamToCheck, bool NewLine);
 
     /**
     \brief Get the data type analogous with the parameter
 
-    Searches only using the laconic parameter; restriction placed for performance reasons.
+    Can search using both laconic and verbose parameters.
 
     \param parameter Parameter whose description is requested
     \return Description of parameter as string
     */
-    std::string getDataTypeAsString(const std::string &laconicParameter);
+    std::string getDataTypeAsString(const std::string &execParamToCheck);
 
     /**
     \brief Get the data type analogous with the parameter
 
-    Searches only using the laconic parameter; restriction placed for performance reasons.
+    Can search using both laconic and verbose parameters.
 
     \param parameter Parameter whose description is requested
     \return Description of parameter as Enum Code (Parameter::Type)
     */
-    int getDataTypeAsEnumCode(const std::string &laconicParameter);
+    int getDataTypeAsEnumCode(const std::string &execParamToCheck);
 
     /**
     \brief Write the configuration file for the executable for use in the common GUI framework
@@ -218,6 +218,46 @@ namespace cbica
     */
     void exampleUsage(const std::string &usageOfExe);
 
+    /**
+    \brief Get the value of the parameter
+
+    Can search using both laconic and verbose parameters.
+
+    \param execParamToCheck The laconic or verbose variant of the parameter
+    \param parameterValue The return value of the parameter as bool
+    */
+    void getParameterValue(const std::string &execParamToCheck, bool &parameterValue);
+
+    /**
+    \brief Get the value of the parameter
+
+    Can search using both laconic and verbose parameters.
+
+    \param execParamToCheck The laconic or verbose variant of the parameter
+    \param parameterValue The return value of the parameter as int
+    */
+    void getParameterValue(const std::string &execParamToCheck, int &parameterValue);
+
+    /**
+    \brief Get the value of the parameter
+
+    Can search using both laconic and verbose parameters.
+
+    \param execParamToCheck The laconic or verbose variant of the parameter
+    \param parameterValue The return value of the parameter as float
+    */
+    void getParameterValue(const std::string &execParamToCheck, float &parameterValue);
+
+    /**
+    \brief Get the value of the parameter
+
+    Can search using both laconic and verbose parameters.
+
+    \param execParamToCheck The laconic or verbose variant of the parameter
+    \param parameterValue The return value of the parameter as std::string (valid for Parameter::Type::FILE, Parameter::Type::DIRECTORY, Parameter::Type::STRING)
+    */
+    void getParameterValue(const std::string &execParamToCheck, std::string &parameterValue);
+
   private:
     //! Executable name
     std::string m_exeName;
@@ -231,7 +271,7 @@ namespace cbica
     //! CMD variable
     char ** m_argv;
 
-    std::vector< Parameter > m_parameters, m_requiredParameters, m_optionalParameters;
+    std::vector< Parameter > m_requiredParameters, m_optionalParameters;
 
     //! Max length of parameters for echoUsage()
     size_t m_maxLength;
@@ -252,5 +292,7 @@ namespace cbica
     inline void writeParameters(const std::vector< Parameter > &inputParameters, bool verbose);
 
     size_t m_maxLaconicLength, m_minVerboseLength;
+
+    bool paramChecked;
   };
 }
