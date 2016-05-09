@@ -591,11 +591,15 @@ namespace cbica
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, std::string &parameterValue)
   {
-    if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::STRING)
+    int returnCode = getDataTypeAsEnumCode(execParamToCheck);
+    if ((returnCode != cbica::Parameter::STRING))
     {
-      std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
-        "' and cannot be returned as a STRING.\n";
-      exit(EXIT_FAILURE);
+      if ((returnCode != cbica::Parameter::NONE)) // check if type is NONE, if yes then it is not an error
+      {
+        std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
+          "' and cannot be returned as a STRING.\n";
+        exit(EXIT_FAILURE);
+      }
     }
     int position;
     compareParameter(execParamToCheck, position);
