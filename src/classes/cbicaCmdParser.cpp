@@ -498,7 +498,7 @@ namespace cbica
 
   int CmdParser::getDataTypeAsEnumCode(const std::string &execParamToCheck)
   {
-    int noMoreChecks = 0; // ensures that extra checks are not done for parameters
+    bool noMoreChecks = false; // ensures that extra checks are not done for parameters
     if (execParamToCheck == "")
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
@@ -510,25 +510,25 @@ namespace cbica
     }
 
     size_t i = 0;
-    while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
+    while ((i < m_requiredParameters.size()) && !noMoreChecks)
     {
       if ((m_requiredParameters[i].laconic == execParamToCheck) ||
         (m_requiredParameters[i].verbose == execParamToCheck))
       {
         return m_requiredParameters[i].dataType_enumCode;
-        noMoreChecks = 1;
+        noMoreChecks = true;
       }
       i++;
     }
 
     i = 0;
-    while ((i < m_optionalParameters.size()) && (noMoreChecks < 1))
+    while ((i < m_optionalParameters.size()) && !noMoreChecks)
     {
       if ((m_optionalParameters[i].laconic == execParamToCheck) ||
         (m_optionalParameters[i].verbose == execParamToCheck))
       {
         return m_optionalParameters[i].dataType_enumCode;
-        noMoreChecks = 1;
+        noMoreChecks = true;
       }
       i++;
     }
@@ -538,6 +538,12 @@ namespace cbica
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, bool &parameterValue)
   {
+    if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::BOOLEAN)
+    {
+      std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
+        "' and cannot be returned as a BOOL.\n";
+      exit(EXIT_FAILURE);
+    }
     int position;
     compareParameter(execParamToCheck, position);
     std::string rawValue = m_argv[position + 1];
@@ -557,6 +563,12 @@ namespace cbica
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, int &parameterValue)
   {
+    if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::INTEGER)
+    {
+      std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
+        "' and cannot be returned as a INTEGER.\n";
+      exit(EXIT_FAILURE);
+    }
     int position;
     compareParameter(execParamToCheck, position);
     parameterValue = std::atoi(m_argv[position + 1]); // return value is an integer
@@ -565,6 +577,12 @@ namespace cbica
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, float &parameterValue)
   {
+    if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::FLOAT)
+    {
+      std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
+        "' and cannot be returned as a FLOAT.\n";
+      exit(EXIT_FAILURE);
+    }
     int position;
     compareParameter(execParamToCheck, position);
     parameterValue = static_cast<float>(std::atof(m_argv[position + 1])); // return value is a float
@@ -573,6 +591,12 @@ namespace cbica
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, std::string &parameterValue)
   {
+    if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::STRING)
+    {
+      std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
+        "' and cannot be returned as a STRING.\n";
+      exit(EXIT_FAILURE);
+    }
     int position;
     compareParameter(execParamToCheck, position);
     parameterValue = m_argv[position + 1]; // return value is a string
