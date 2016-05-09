@@ -63,6 +63,13 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("cmdParser", tempPostion))
   {
+    std::string valueToCheck = argv[tempPostion + 1], returnValue;
+    parser.getParameterValue("cmdParser", returnValue);
+
+    if (returnValue != valueToCheck)
+    {
+      return EXIT_FAILURE;
+    }
     //std::string dirToWrite = argv[tempPostion + 1];
     //int i = 0;
     //const char *argv2[] = { "test-exe", "-1p", "1", "--secondParam", "2" };

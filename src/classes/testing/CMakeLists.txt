@@ -41,7 +41,7 @@ SET( DATA_DIR "${PROJECT_SOURCE_DIR}/data" )
 ADD_TEST( NAME Print_Usage_Test COMMAND ${TEST_EXE_NAME} -buffer "random text")
 
 # Test for CmdParser class - done last because this class is anyway being used 
-ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "${CMAKE_CURRENT_BINARY_DIR}")
+ADD_TEST( NAME ParserClass_Test COMMAND ${TEST_EXE_NAME} -cmdParser "${DATA_DIR}")
 
 # Test for Config File Parser
 ADD_TEST( NAME ConfigFileReader_Test COMMAND ${TEST_EXE_NAME} -configFileReader "${DATA_DIR}/ParserClassTests.txt")
