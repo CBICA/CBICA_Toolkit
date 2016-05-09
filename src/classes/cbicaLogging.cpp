@@ -16,29 +16,28 @@ namespace cbica
 { 
   Logging::Logging(const std::string file_name, const std::string FreeText_input) 
   {
-    consoleLogging = false;
+    consoleLogging = false; // console output is disabled if file is provided
     file_name_with_path = file_name;
     initialize_class(file_name_with_path, log_file, exe_name, user_name);
-    writing_function(";" + FreeText_input, log_file, timer, exe_name, user_name);
+    writing_function(";" + FreeText_input, log_file, exe_name, user_name);
     log_file.close();
   }
   
   Logging::Logging(const std::string file_name) 
   {
-    consoleLogging = false;
+    consoleLogging = false; // console output is disabled if file is provided
     file_name_with_path = file_name;
   	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    writing_function("", log_file, timer, exe_name, user_name);
+    writing_function("", log_file, exe_name, user_name);
     log_file.close();
   }
   
   Logging::Logging() 
   {	
     file_name_with_path = "";
-    //log_file.close();
-    consoleLogging = true;
+    consoleLogging = true; // no file path translates to console output
     initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    //writing_function("", log_file, timer, exe_name, user_name); 
+    //writing_function("", log_file, exe_name, user_name); 
   }
 
   void Logging::UseNewFile(const std::string &newLogFile)
@@ -103,8 +102,7 @@ namespace cbica
     {
       if (file_name_with_path_wrap == "")
       {
-        file_name_with_path_wrap = cbica::createTmpDir();
-        file_name_with_path_wrap += "temp.log";
+        file_name_with_path_wrap = cbica::createTmpDir() + "temp.log";
         std::cout << "Blank file name provided. A new file has been created with path: "
           << file_name_with_path_wrap << std::endl;
       }
