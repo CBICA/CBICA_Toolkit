@@ -116,7 +116,9 @@ namespace cbica
     char *tmp;
     char tempPath[FILENAME_MAX];
 #if defined(_WIN32)
+    //size_t size;
     tmp = getenv("USERPROFILE");
+    //getenv_s(&size, tmp, size, "USERPROFILE"); // does not work, for some reason - needs to be tested
     std::string temp = cbica::replaceString(tmp, "\\", "/");
     sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
     strcat_s(tempPath, "/tmp");
