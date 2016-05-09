@@ -1400,6 +1400,152 @@ namespace cbica
     return returnVector;
   }
 
+  std::string getCurrentLocalDate()
+  {
+    time_t timer;
+    // obtain current time
+    time(&timer);
+    tm *time_struct = NULL;
+    char buffer[200];
+
+    // obtain current local date
+#ifdef _WIN32
+    struct tm timeinfo;
+    localtime_s(&timeinfo, &timer);
+    sprintf_s(buffer, "%d:%02d:%02d",
+      timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday);
+#else
+    time_struct = localtime(&timer_wrap);
+    sprintf(buffer, "%d:%02d:%02d",
+      time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday);
+#endif
+
+    return buffer;
+  }
+
+  std::string getCurrentLocalTime()
+  {
+    std::string returnDate;
+    time_t timer;
+    // obtain current time
+    time(&timer);
+    tm *time_struct = NULL;
+    char buffer[200];
+
+    // obtain current local date
+#ifdef _WIN32
+    struct tm timeinfo;
+    localtime_s(&timeinfo, &timer);
+    sprintf_s(buffer, "%02d:%02d:%02d",
+      timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+#else
+    time_struct = localtime(&timer_wrap);
+    sprintf(buffer, "%02d:%02d:%02d",
+      time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
+#endif
+
+    return buffer;
+  }
+
+  std::string getCurrentLocalDateAndTime()
+  {
+    std::string returnDate;
+    time_t timer;
+    // obtain current time
+    time(&timer);
+    tm *time_struct = NULL;
+    char buffer[200];
+
+    // obtain current local date
+#ifdef _WIN32
+    struct tm timeinfo;
+    localtime_s(&timeinfo, &timer);
+    sprintf_s(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
+      timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
+      timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+#else
+    time_struct = localtime(&timer_wrap);
+    sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
+      time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
+      time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
+#endif
+
+    return buffer;
+  }
+
+  std::string getCurrentGMTDate()
+  {
+    time_t timer;
+    // obtain current time
+    time(&timer);
+    tm *time_struct = NULL;
+    char buffer[200];
+
+    // obtain current local date
+#ifdef _WIN32
+    struct tm timeinfo;
+    gmtime_s(&timeinfo, &timer);
+    sprintf_s(buffer, "%d:%02d:%02d",
+      timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday);
+#else
+    time_struct = gmtime(&timer_wrap);
+    sprintf(buffer, "%d:%02d:%02d",
+      time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday);
+#endif
+
+    return buffer;
+  }
+
+  std::string getCurrentGMT()
+  {
+    std::string returnDate;
+    time_t timer;
+    // obtain current time
+    time(&timer);
+    tm *time_struct = NULL;
+    char buffer[200];
+
+    // obtain current local date
+#ifdef _WIN32
+    struct tm timeinfo;
+    gmtime_s(&timeinfo, &timer);
+    sprintf_s(buffer, "%02d:%02d:%02d",
+      timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+#else
+    time_struct = gmtime(&timer_wrap);
+    sprintf(buffer, "%02d:%02d:%02d",
+      time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
+#endif
+
+    return buffer;
+  }
+
+  std::string getCurrentGMTDateAndTime()
+  {
+    std::string returnDate;
+    time_t timer;
+    // obtain current time
+    time(&timer);
+    tm *time_struct = NULL;
+    char buffer[200];
+
+    // obtain current local date
+#ifdef _WIN32
+    struct tm timeinfo;
+    gmtime_s(&timeinfo, &timer);
+    sprintf_s(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
+      timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
+      timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+#else
+    time_struct = gmtime(&timer_wrap);
+    sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
+      time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
+      time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
+#endif
+
+    return buffer;
+  }
+
   //====================================== String stuff ====================================//
 
   bool splitFileName( const std::string &dataFile, std::string &path,

@@ -762,6 +762,36 @@ namespace cbica
   */
   std::vector< Parameter > readConfigFile(const std::string &inputConfigFile, bool getDescription = true);
 
+  /**
+  \brief Get current local time as string delineated as YYYY:MM:DD
+  */
+  std::string getCurrentLocalDate();
+
+  /**
+  \brief Get current local time as string delineated as HH:MM:SS
+  */
+  std::string getCurrentLocalTime();
+
+  /**
+  \brief Get current local time as string delineated as YYYY:MM:DD,HH:MM:SS
+  */
+  std::string getCurrentLocalDateAndTime();
+
+  /**
+  \brief Get current GMT as string delineated as YYYY:MM:DD
+  */
+  std::string getCurrentGMTDate();
+
+  /**
+  \brief Get current GMT as string delineated as HH:MM:SS
+  */
+  std::string getCurrentGMT();
+
+  /**
+  \brief Get current GMT as string delineated as YYYY:MM:DD,HH:MM:SS
+  */
+  std::string getCurrentGMTDateAndTime();
+
   //==================================== Template stuff ==================================//
 
   /**
