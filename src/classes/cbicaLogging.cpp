@@ -14,21 +14,19 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 namespace cbica
 { 
-  Logging::Logging(const std::string file_name, const std::string FreeText_input) 
+  Logging::Logging(const std::string file_name, const std::string FreeText_input = "") 
   {
     consoleLogging = false; // console output is disabled if file is provided
     file_name_with_path = file_name;
     initialize_class(file_name_with_path, log_file, exe_name, user_name);
-    writing_function(";" + FreeText_input, log_file, exe_name, user_name);
-    log_file.close();
-  }
-  
-  Logging::Logging(const std::string file_name) 
-  {
-    consoleLogging = false; // console output is disabled if file is provided
-    file_name_with_path = file_name;
-  	initialize_class(file_name_with_path, log_file, exe_name, user_name); 
-    writing_function("", log_file, exe_name, user_name);
+    if (FreeText_input.empty())
+    {
+      writing_function("", log_file, exe_name, user_name);
+    }
+    else
+    {
+      writing_function(";" + FreeText_input, log_file, exe_name, user_name);
+    }
     log_file.close();
   }
   
@@ -40,13 +38,12 @@ namespace cbica
     //writing_function("", log_file, exe_name, user_name); 
   }
 
-  void Logging::UseNewFile(const std::string &newLogFile)
+  void Logging::UseNewFile(const std::string &newLogFile = "")
   {
     consoleLogging = false;
-    if (newLogFile == "")
+    if (newLogFile.empty())
     {
-      file_name_with_path = cbica::createTmpDir();
-      file_name_with_path += cbica::getExecutableName() + "-log.txt";
+      file_name_with_path = cbica::createTmpDir() + cbica::getExecutableName() + "-log.txt";
     }
     else
     {
@@ -64,11 +61,20 @@ namespace cbica
 
   Logging::~Logging() 
   { 
-    /*log_file.close();*/ 
+    //log_file.close(); // this is no longer needed as the Write() command opens and closes the log_file every single time
+    // this is done so that the OS don't keep a file handle lock on the log file and the user can visualize the log as it happens
   }
-  void Logging::EnableTextLogging(const std::string &newLogFile)
+  void Logging::EnableTextLogging(const std::string &newLogFile = "")
   {
     UseNewFile(newLogFile);
+  }
+
+  void Logging::EnableConsoleLogging()
+  {
+    consoleLogging = true;
+    initialize_class(file_name_with_path, log_file, exe_name, user_name);
+    //writing_function("", log_file, timer, exe_name, user_name);
+    log_file.close();
   }
 
   void Logging::WriteError(const std::string FreeText_input)
@@ -79,22 +85,21 @@ namespace cbica
     log_file.close();
   }
 
-  void Logging::Write(const std::string FreeText_input) 
+  void Logging::Write(const std::string FreeText_input = "")
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function(";" + FreeText_input, log_file, exe_name, user_name);
+    if (FreeText_input.empty())
+    {
+      writing_function("", log_file, exe_name, user_name);
+    }
+    else
+    {
+      writing_function(";" + FreeText_input, log_file, exe_name, user_name);
+    }
     log_file.close();
   }
   
-  void Logging::Write() 
-  { 
-    // assumes file exists because constructor writes the file once
-    log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function("", log_file, exe_name, user_name);
-    log_file.close();
-  }
-
 	inline void Logging::initialize_class(std::string &file_name_with_path_wrap, std::ofstream &log_file_wrap, 
 		std::string &exe_name_wrap, std::string &user_name_wrap )
 	{
@@ -149,5 +154,10 @@ namespace cbica
       log_file_wrap << timeExeUser.c_str() << FreeText_wrap.c_str() << "\n";
     }
 	}
+
+  std::string Logging::getLoggingFileName()
+  {
+    return file_name_with_path;
+  }
 
 } // end namespace cbica

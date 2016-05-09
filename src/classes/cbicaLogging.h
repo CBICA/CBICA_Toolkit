@@ -51,16 +51,9 @@ namespace cbica
     \brief Actual Constructor
 
     \param file_name_with_path The file onto which the log file is to be written
-    \param FreeText_input Free text which the user wants to be present in the log
+    \param FreeText_input Free text which the user wants to be present in the log, defaults to an empty string
     */
 		explicit Logging(const std::string file_name, const std::string FreeText_input);
-		
-		/**
-    \brief Actual Constructor
-
-    \param file_name_with_path The file onto which the log file is to be written
-    */
-		explicit Logging(const std::string file_name);
 		
 		/**
     \brief Default constructor
@@ -79,9 +72,9 @@ namespace cbica
     /**
     \brief Change Logging file after initializing class
 
-    \param newLogFile Path of new log file
+    \param newLogFile Path of new log file. If empty, it becomes 'cbica::createTmpDir() + cbica::getExecutableName() + "-log.txt"'
     */
-    void UseNewFile(const std::string &newLogFile = "");
+    void UseNewFile(const std::string &newLogFile);
 
 		//! The Destructor
 		virtual ~Logging();
@@ -94,32 +87,36 @@ namespace cbica
     void WriteError(const std::string FreeText_input);
 
     /**
-		\brief Function to call to write to log file without any free text
-    
-    \param FreeText_input Free text which the user wants to be present in the log
+		\brief Function to call to write to log file
+        
+    \param FreeText_input Free text which the user wants to be present in the log, defaults to an empty string
     */
 		void Write(const std::string FreeText_input);
     
     /**
-		\brief Function to call to write to log file
-    */
-		void Write();
-
-    /**
-    \brief Switches between console and text file logging
+    \brief Switches from console to text file logging
     
     The output stamps are of the form:
 
     <4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text>
     */
-    void EnableTextLogging(const std::string &newLogFile = "");
+    void EnableTextLogging(const std::string &newLogFile);
+
+    /**
+    \brief Switches from text to console file logging
+
+    The output stamps are of the form:
+
+    <4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text>
+    */
+    void EnableConsoleLogging();
 
     /**
     \brief Get the file name with full path where log has happened
 
     \return file_name_with_path 
     */
-    std::string getLoggingFileName(){ return file_name_with_path; };
+    std::string getLoggingFileName();
 
   protected:    
     /**
