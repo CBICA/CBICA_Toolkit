@@ -76,7 +76,7 @@ namespace cbica
   {
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function(";" + FreeText_input, log_file, timer, exe_name, user_name, true);
+    writing_function(";" + FreeText_input, log_file, exe_name, user_name, true);
     log_file.close();
   }
 
@@ -84,7 +84,7 @@ namespace cbica
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function(";" + FreeText_input, log_file, timer, exe_name, user_name);
+    writing_function(";" + FreeText_input, log_file, exe_name, user_name);
     log_file.close();
   }
   
@@ -92,7 +92,7 @@ namespace cbica
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function("", log_file, timer, exe_name, user_name);
+    writing_function("", log_file, exe_name, user_name);
     log_file.close();
   }
 
@@ -130,43 +130,27 @@ namespace cbica
 	}
 
 	inline void Logging::writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
-		time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError )
-	{
-		// obtain current time
-		time(&timer_wrap);
-		tm *time_struct = NULL;
-		char buffer[200];
-	
-		// obtain current local date
-#ifdef _WIN32
-    struct tm timeinfo;
-    localtime_s(&timeinfo, &timer_wrap);
-    sprintf_s(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
-      timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
-      timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-#else
-    time_struct = localtime(&timer_wrap);
-    sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
-      time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
-      time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
-#endif
-    	
+		const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError )
+  {
+    //<4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name>;<free text>
+    // obtain current time
+    std::string timeExeUser = cbica::getCurrentLocalDateAndTime() + ";" + exe_name_wrap + ";" + user_name_wrap + ";";
+
     if (consoleLogging)
     {
       if (isError)
       {
-        std::cerr << std::string(buffer) + FreeText_wrap << "\n";
+        std::cerr << timeExeUser + FreeText_wrap << "\n";
       }
       else
       {
-        std::cout << std::string(buffer) + FreeText_wrap << "\n";
+        std::cout << timeExeUser + FreeText_wrap << "\n";
       }
     }
     else
     {
-      log_file_wrap << buffer << FreeText_wrap.c_str() << "\n";
+      log_file_wrap << timeExeUser.c_str() << FreeText_wrap.c_str() << "\n";
     }
-
 	}
 
-}
+} // end namespace cbica

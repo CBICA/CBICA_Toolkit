@@ -147,13 +147,11 @@ namespace cbica
 	  \param user_name_wrap Wrap for user_name
 	  */
 	  inline void writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
-			time_t &timer_wrap, const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError = false );
+			const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError = false );
 
 	private:
     //! The file handler class
 		std::ofstream log_file;
-		//! The time class
-    time_t timer; 
     //! The name of the executable calling the class
 		std::string exe_name; 
     //! The current active user name
