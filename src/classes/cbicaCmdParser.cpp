@@ -620,7 +620,9 @@ namespace cbica
     int returnCode = getDataTypeAsEnumCode(execParamToCheck);
     if ((returnCode != cbica::Parameter::STRING))
     {
-      if ((returnCode != cbica::Parameter::NONE)) // check if type is NONE, if yes then it is not an error
+      if (!((returnCode == cbica::Parameter::NONE) || // check if type is NONE or FILE or DIR, if yes then it is not an error
+        (returnCode == cbica::Parameter::FILE) ||
+        (returnCode == cbica::Parameter::DIRECTORY)))
       {
         std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
           "' and cannot be returned as a STRING.\n";
