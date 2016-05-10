@@ -4,7 +4,7 @@
 \brief File for testing the ITK classes.
 
 https://www.cbica.upenn.edu/sbia/software/
-sbia-software@uphs.upenn.edu
+software@cbica.upenn.edu
 
 Copyright (c) 2015 University of Pennsylvania. All rights reserved.
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
@@ -23,7 +23,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "classes/cbicaCmdParser.h"
 
 #include "classes/itk/cbicaITKImageInfo.h"
-#include "classes/itk/cbicaITKWriteImage.h"
+#include "classes/itk/cbicaITKSafeImageIO.h"
 
 #include "itkImage.h"
 #include "gdcmImage.h"
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
   int tempPosition;
   if (parser.compareParameter("imageInfo", tempPosition))
   {
-    cbica::ImageInfo test_image = cbica::ImageInfo(argv[2]);
+    cbica::ImageInfo test_image = cbica::ImageInfo(argv[tempPosition + 1]);
     itk::SmartPointer<itk::ImageIOBase> io_base = test_image.getImageIOBase();
     std::vector<itk::SizeValueType> size = test_image.getImageSize();
     std::vector<double> spacings = test_image.getImageSpacings();
@@ -56,13 +56,9 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("readImage", tempPosition))
   {
-    const std::string inputFile = argv[2];
+    const std::string inputFile = argv[tempPosition + 1];
     typedef itk::Image<int, 3> ExpectedImageType;
-    typedef itk::ImageFileReader< ExpectedImageType > ReaderType;
-    ReaderType::Pointer reader = ReaderType::New();
-    reader->SetFileName(inputFile);
-    reader->Update();
-    ExpectedImageType::Pointer inputImage = reader->GetOutput();
+    ExpectedImageType::Pointer inputImage = cbica::ReadImage<ExpectedImageType>(inputFile);
 
     if (inputImage->GetImageDimension() == 0)
       return EXIT_FAILURE;
@@ -77,7 +73,7 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("writeImage", tempPosition))
   {
-    const std::string inputFile = argv[2], fileToWrite = argv[3];
+    const std::string inputFile = argv[tempPosition + 1], fileToWrite = argv[tempPosition + 2];
     typedef itk::Image<int, 3> ExpectedImageType;
     typedef itk::ImageFileReader< ExpectedImageType > ReaderType;
     ReaderType::Pointer reader = ReaderType::New();
@@ -88,11 +84,7 @@ int main(int argc, char** argv)
     typedef itk::Image<float, 3> OutputImageType;
     cbica::WriteImage<ExpectedImageType, OutputImageType>(inputImage, fileToWrite);
 
-    typedef itk::ImageFileReader< OutputImageType > OutputReaderType;
-    OutputReaderType::Pointer reader2 = OutputReaderType::New();
-    reader2->SetFileName(fileToWrite);
-    reader2->Update();
-    OutputImageType::Pointer writtenImage = reader2->GetOutput();
+    OutputImageType::Pointer writtenImage = cbica::ReadImage<OutputImageType>(fileToWrite);
 
     if (writtenImage->GetImageDimension() != inputImage->GetImageDimension())
       return EXIT_FAILURE;
