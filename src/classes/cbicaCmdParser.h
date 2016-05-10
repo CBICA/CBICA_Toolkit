@@ -287,36 +287,29 @@ namespace cbica
     std::string m_exeName;
     //! Version
     std::string m_version;
-
+    //! Example of how to use the executable in question
     std::string m_exampleOfUsage;
-
-    //! CMD variable
+    //! CMD variable, used to ensure that 'const' based variables are taken into consideration
     int m_argc;
-    //! CMD variable
-    char ** m_argv;
-
+    //! CMD variable, used to ensure that 'const' based variables are taken into consideration
+    char **m_argv;
+    //! Collection of required and optional parameters
     std::vector< Parameter > m_requiredParameters, m_optionalParameters;
-
     //! Max length of parameters for echoUsage()
     size_t m_maxLength;
-
     //! Flag to toggle check for maximum overall length
     bool checkMaxLen;
-
     //! Flag to check for requested help/usage
     bool helpRequested;
-
     //! Get max length
     inline void getMaxLength();
-
     //! Internal function to check for verbose parameter
     inline void verbose_check(std::string &input_string);
-
     //! Internal function to write vector of parameters
     inline void writeParameters(const std::vector< Parameter > &inputParameters, bool verbose);
+    
+    size_t m_maxLaconicLength, //! maximum length of laconic parameters
+      m_minVerboseLength; //! maximum length of verbose parameters
 
-    size_t m_maxLaconicLength, m_minVerboseLength;
-
-    bool paramChecked;
   };
 }
