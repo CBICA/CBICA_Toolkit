@@ -4,7 +4,7 @@
 \brief File for testing the basic classes.
 
 https://www.cbica.upenn.edu/sbia/software/
-sbia-software@uphs.upenn.edu
+software@cbica.upenn.edu
 
 Copyright (c) 2015 University of Pennsylvania. All rights reserved.
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
@@ -405,49 +405,25 @@ int main(int argc, char** argv)
       return EXIT_FAILURE;
     }
 
-    if (mkdir(std::string(return_dir + "/random1/").c_str()
-#if(WIN32)
-
-#else
-      , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
-#endif
-      ) != 0)
+    if (cbica::createDir(return_dir + "/random1/"))
     {
       cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
     }
 
-    if (mkdir(std::string(return_dir + "/random2/").c_str()
-#if(WIN32)
-
-#else
-      , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
-#endif
-      ) != 0)
+    if (cbica::createDir(return_dir + "/random2/"))
     {
       cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
     }
 
-    if (mkdir(std::string(return_dir + "/random3/").c_str()
-#if(WIN32)
-
-#else
-      , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
-#endif
-      ) != 0)
+    if (cbica::createDir(return_dir + "/random3/"))
     {
       cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
     }
 
-    if (mkdir(std::string(return_dir + "random1/random11/").c_str()
-#if(WIN32)
-
-#else
-      , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
-#endif
-      ) != 0)
+    if (cbica::createDir(return_dir + "/random1/random11/"))
     {
       cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
@@ -460,7 +436,9 @@ int main(int argc, char** argv)
     }
 
     if (!cbica::deleteDir(return_dir))
+    {
       return EXIT_FAILURE;
+    }
   }
 
 #if (_MSC_VER >= 1800) || __GXX_EXPERIMENTAL_CXX0X__ || (__GNUC__ > 4)
