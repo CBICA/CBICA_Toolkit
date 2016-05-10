@@ -555,19 +555,21 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     int position;
-    compareParameter(execParamToCheck, position);
-    std::string rawValue = m_argv[position + 1];
-    if ((rawValue == "1") || (rawValue == "true") || (rawValue == "True") || (rawValue == "TRUE") ||
-      (rawValue == "yes") || (rawValue == "Yes") || (rawValue == "YES") ||
-      (rawValue == "")) // if the parameter is just passed as a flag, assume that the user wants it enabled
+    if (compareParameter(execParamToCheck, position))
     {
-      parameterValue = true; // return value is a bool
-      return;
-    }
-    else
-    {
-      parameterValue = false; // return value is a bool
-      return;
+      std::string rawValue = m_argv[position + 1];
+      if ((rawValue == "1") || (rawValue == "true") || (rawValue == "True") || (rawValue == "TRUE") ||
+        (rawValue == "yes") || (rawValue == "Yes") || (rawValue == "YES") ||
+        (rawValue == "")) // if the parameter is just passed as a flag, assume that the user wants it enabled
+      {
+        parameterValue = true; // return value is a bool
+        return;
+      }
+      else
+      {
+        parameterValue = false; // return value is a bool
+        return;
+      }
     }
   }
 
@@ -580,9 +582,16 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     int position;
-    compareParameter(execParamToCheck, position);
-    parameterValue = std::atoi(m_argv[position + 1]); // return value is an integer
-    return;
+    if (compareParameter(execParamToCheck, position))
+    {
+      parameterValue = std::atoi(m_argv[position + 1]); // return value is an integer
+      return;
+    }
+    else
+    {
+      parameterValue = -1;
+      return;
+    }
   }
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, float &parameterValue)
@@ -594,9 +603,16 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     int position;
-    compareParameter(execParamToCheck, position);
-    parameterValue = static_cast<float>(std::atof(m_argv[position + 1])); // return value is a float
-    return;
+    if (compareParameter(execParamToCheck, position))
+    {
+      parameterValue = static_cast<float>(std::atof(m_argv[position + 1])); // return value is a float
+      return;
+    }
+    else
+    {
+      parameterValue = -1;
+      return;
+    }
   }
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, std::string &parameterValue)
@@ -612,9 +628,16 @@ namespace cbica
       }
     }
     int position;
-    compareParameter(execParamToCheck, position);
-    parameterValue = m_argv[position + 1]; // return value is a string
-    return;
+    if (compareParameter(execParamToCheck, position))
+    {
+      parameterValue = m_argv[position + 1]; // return value is a string
+      return;
+    }
+    else
+    {
+      parameterValue = "";
+      return;
+    }
   }
 
   void CmdParser::exampleUsage(const std::string &usageOfExe)
