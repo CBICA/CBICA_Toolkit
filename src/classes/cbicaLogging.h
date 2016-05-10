@@ -34,7 +34,9 @@ namespace cbica
 
   Usage:
   \verbatim
+  // writing to a file
   cbica::Logging logger( "file_name.txt", "randomness is highly underrated" ); // the file has already been written at this point and can be viewed
+  // to write to console, either initialize the class as 'cbica::Logging logger;' or call EnableConsoleLogging() after the initialization.
   ...
   // more code
   ...
@@ -104,6 +106,8 @@ namespace cbica
 
     /**
     \brief Switches from text to console file logging
+
+    This is helpful if the user wants to visualize the console output. If it is done for saving, the recommended way is to call EnableTextLogging().
 
     The output stamps are of the form:
 
