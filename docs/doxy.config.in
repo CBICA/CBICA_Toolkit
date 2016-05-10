@@ -463,20 +463,14 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/doxy.log
 
 
 FILE_PATTERNS          = *.dox \
-                         *.txt
-                         #*.h
+                         *.txt \
+                         *.h
 
 INPUT                  =  	@PROJECT_SOURCE_DIR@ \
                             @PROJECT_BINARY_DIR@ \
                             @PROJECT_SOURCE_DIR@/licences/
-                            #@PROJECT_SOURCE_DIR@/README.txt
-                            #@PROJECT_SOURCE_DIR@/Download.txt
-                            #@PROJECT_SOURCE_DIR@/Installation.txt
-                            #@PROJECT_SOURCE_DIR@/Usage.txt
-                            #@PROJECT_SOURCE_DIR@/People.txt
-                            #@PROJECT_SOURCE_DIR@/Publications.txt
-                            #@PROJECT_SOURCE_DIR@/Changelog.txt
-                            #@PROJECT_SOURCE_DIR@/licences/COPYING.txt
+                            @PROJECT_SOURCE_DIR@/src/classes/
+                            @PROJECT_SOURCE_DIR@/src/classes/itk/
 									
 
 LAYOUT_FILE = @PROJECT_SOURCE_DIR@/docs/DoxygenLayout.xml
@@ -1136,7 +1130,7 @@ GROUP_GRAPHS           = YES
 # collaboration diagrams in a style similar to the OMG's Unified Modeling 
 # Language.
 
-UML_LOOK               = NO
+UML_LOOK               = YES
 # UML_LOOK               = YES
 
 # If set to YES, the inheritance and collaboration graphs will show the 
