@@ -47,7 +47,16 @@ namespace cbica
     typename WriterType::Pointer writer = WriterType::New();
     writer->SetInput(filter->GetOutput());
     writer->SetFileName(fileName);
-    writer->Write();
+
+    try
+    {
+      writer->Write();
+    }
+    catch (itk::ExceptionObject &e)
+    {
+      std::cerr << "Error occurred while trying to write the image: " << e.what() << "\n";
+      exit(EXIT_FAILURE);
+    }
 
     return;
   }
