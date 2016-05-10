@@ -20,7 +20,7 @@ SET(PROJECT_VENDOR "CBICA - UPenn")
 SET(LICENSE_FILE "${PROJECT_SOURCE_DIR}/licenses/COPYING.txt")
 SET(README_FILE  "${PROJECT_SOURCE_DIR}/README.txt")
 SET(PROJECT_DOMAIN "https://www.cbica.upenn.edu/sbia/software/")
-SET(PROJECT_CONTACT "sbia-software@uphs.upenn.edu")
+SET(PROJECT_CONTACT "software@cbica.upenn.edu")
 
 ## Super build
 #SET( BUILD_ITK OFF CACHE BOOL "Do you want to build ITK from source (needs Git)?" )

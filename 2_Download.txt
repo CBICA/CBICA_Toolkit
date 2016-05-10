@@ -2,6 +2,6 @@
 
 \page Download Download Instructions
 
-To download this, please contact <a href="mailto:sbia-software@uphs.upenn.edu">SBIA Software</a>.
+To download this, please contact <a href="mailto:software@cbica.upenn.edu">CBICA Software</a>.
 
 */

@@ -22,6 +22,6 @@
 </table>
 <br>
 
-Contact details: <mailto:sbia-software@uphs.upenn.edu>
+Contact details: <mailto:software@cbica.upenn.edu>
 
 */

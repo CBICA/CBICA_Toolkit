@@ -133,7 +133,7 @@ In case of failing tests, re-run the tests, but this time by executing <a href="
 ctest -V >& CBICATk-test.log
 \endverbatim
 
-And send the file <b>CBICATk-test.log</b> as attachment of the issue report to <mailto:sbia-software@uphs.upenn.edu>.
+And send the file <b>CBICATk-test.log</b> as attachment of the issue report to <mailto:software@cbica.upenn.edu>.
 
 ## 2.4 [OPTIONAL] Install 
 

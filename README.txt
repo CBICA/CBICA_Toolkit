@@ -59,7 +59,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 	</tr>
 	<tr>
 		<td><b>makeTemporaryDirectory</b></td>
-		<td>Wrap of<code>createTemporaryDirectory</code></td>
+		<td>Wrap of <code>createTemporaryDirectory</code></td>
 	</tr>
 	<tr>
 		<td><b>createTmpDir</b></td>
@@ -277,7 +277,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 ### 2.2.1 Logging
 
-A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file.
+A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file. For full documentation, see <a href="classcbica_1_1CmdParser.html">cbica::Logging</a>.
 
 Generated log is in the format: <br>
 <CODE><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name></CODE>
