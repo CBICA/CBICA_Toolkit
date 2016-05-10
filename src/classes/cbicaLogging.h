@@ -116,6 +116,11 @@ namespace cbica
     void EnableConsoleLogging();
 
     /**
+    \brief This enables logging the date and time in GMT rather than in local (which is the default behavior)
+    */
+    void EnableGMTLogging();
+
+    /**
     \brief Get the file name with full path where log has happened
 
     \return file_name_with_path 
@@ -163,6 +168,7 @@ namespace cbica
     std::string file_name_with_path;
     //! Flag to initialize local logging
     bool consoleLogging;
-
+    //! Flag to denote logging in GMT
+    bool GMTLogging;
 	};
 }

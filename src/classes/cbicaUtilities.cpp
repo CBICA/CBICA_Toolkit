@@ -1425,7 +1425,6 @@ namespace cbica
 
   std::string getCurrentLocalTime()
   {
-    std::string returnDate;
     time_t timer;
     // obtain current time
     time(&timer);
@@ -1449,7 +1448,6 @@ namespace cbica
 
   std::string getCurrentLocalDateAndTime()
   {
-    std::string returnDate;
     time_t timer;
     // obtain current time
     time(&timer);
@@ -1498,7 +1496,6 @@ namespace cbica
 
   std::string getCurrentGMT()
   {
-    std::string returnDate;
     time_t timer;
     // obtain current time
     time(&timer);
@@ -1522,7 +1519,6 @@ namespace cbica
 
   std::string getCurrentGMTDateAndTime()
   {
-    std::string returnDate;
     time_t timer;
     // obtain current time
     time(&timer);
