@@ -1,9 +1,9 @@
 /**
-\file  cbicaReadUnknownImage.h
+\file  cbicaITKSafeImageIO.h
 
-\brief Declaration of the ReadUnknownImage class
+\brief Defines safe input and output of itk::Images
 
-Using the file name, reads an image and returns an itk::Image<>.
+Read and Write itk::Image data in a safe manner
 
 https://www.cbica.upenn.edu/sbia/software/ <br>
 sbia-software@uphs.upenn.edu
@@ -14,11 +14,49 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 */
 #pragma once
 
+#include "itkImage.h"
+#include "itkImageFileReader.h"
 #include "itkCastImageFilter.h"
 #include "itkImageFileWriter.h"
 
+//typedef itk::Image< float, 3 > TImageType;
+
 namespace cbica
 {
+  /**
+  \brief Get the itk::Image from input file name 
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputFileName = parser.getParameterValue("inputImage");
+  ExpectedImageType::Pointer inputImage = ReadImage<ExpectedImageType>(inputFileName);
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  \param fName name of the image
+  \return itk::Image templated over the same as requested by user
+  */
+  template <class TImageType>
+  typename TImageType::Pointer ReadImage(const std::string &fName)
+  {
+    typedef itk::ImageFileReader< TImageType > ImageReaderType;
+    typename ImageReaderType::Pointer reader = ImageReaderType::New();
+    reader->SetFileName(fName);
+
+    try
+    {
+      reader->Update();
+    }
+    catch (itk::ExceptionObject& e)
+    {
+      std::cerr << "Exception caught while reading the image '" << fName << "': " << e.what() << "\n";
+      exit(EXIT_FAILURE);
+    }
+
+    return reader->GetOutput();
+  }
+
   /**
   \brief Write the itk::Image to the file name
 
@@ -29,6 +67,7 @@ namespace cbica
   ProcessedImageType::Pointer outputImage = ProcessedImageType::New();
   outputImage = GetImageSomehow();
   WriteImage< ProcessedImageType, WrittenImageType >(fileNameToWriteImage); 
+  // at this point, the image has already been written
   \endverbatim
 
   \param inputImage Pointer to processed image data which is to be written
@@ -36,11 +75,11 @@ namespace cbica
   \return itk::Image of specified pixel and dimension type
   */
   template <typename ComputedImageType, typename ExpectedImageType>
-  void WriteImage(typename ComputedImageType::Pointer inputImage, const std::string &fileName)
+  void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
   {
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
     typename CastFilterType::Pointer filter = CastFilterType::New();    
-    filter->SetInput(inputImage);
+    filter->SetInput(imageToWrite);
     filter->Update();
 
     typedef typename itk::ImageFileWriter<ExpectedImageType> WriterType;
@@ -54,7 +93,7 @@ namespace cbica
     }
     catch (itk::ExceptionObject &e)
     {
-      std::cerr << "Error occurred while trying to write the image: " << e.what() << "\n";
+      std::cerr << "Error occurred while trying to write the image '" << fileName << "': " << e.what() << "\n";
       exit(EXIT_FAILURE);
     }
 

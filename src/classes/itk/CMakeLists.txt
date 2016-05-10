@@ -33,8 +33,7 @@ SET( ITK_Class_Headers
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKComputeVarianceMap.h
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKCommonHolder.h
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKDtiRecon.h  
-  #${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKReadImage.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKWriteImage.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKSafeImageIO.h
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKUtilities.h
     
   ${CMAKE_CURRENT_SOURCE_DIR}/itkDTILogEuclideanCalculator.h
