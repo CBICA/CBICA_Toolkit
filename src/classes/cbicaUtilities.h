@@ -26,17 +26,22 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 //#include <type_traits>
 
+/**
+\brief Int separators for Parameter, DataType and DataRange to Write and Read Config Files
+*/
 enum Separator
 {
   Param, DataType, DataRange
 };
 
+//! String separators corresponding to Separator
 #if defined(__GNUC__)  && (__GNUC__ < 5)
   static const char *SeparatorStrings[] = { ":", "%", "*" };
 #else
   static std::vector< std::string > SeparatorStrings = { ":", "%", "*" };
 #endif
 
+//! Get the Separator as a string from the enum Separator
 static inline std::string getSeparator(int enumVal)
 {
   return SeparatorStrings[enumVal];

@@ -46,12 +46,16 @@ namespace cbica
 
   /// checks for required parameters are done internally.
 
-  // optional parameters
-  int m_position; // defaults to "-1"
-  if (parser.compareParameter("m", m_position))
-  {
-  doSomethingWithFile( m_position+1 );
-  }
+  std::string peopleString;
+  parser.getParameterValue("p", peopleString);
+
+  int marvelValue = 5; // set default value
+  parser.getParameterValue("m", marvelValue);
+
+  float dcValue = 5.15; // set default value
+  parser.getParameterValue("d", dcValue);
+
+  doSomethingWithTheParameters( peopleString, marvelValue, dcValue );
   \endverbatim
   */
   class CmdParser
