@@ -345,7 +345,6 @@ namespace cbica
 
   bool CmdParser::compareParameter(const std::string &execParamToCheck, int &position)
   {
-    position = -1;
     std::string execParamToCheck_wrap = execParamToCheck;
     verbose_check(execParamToCheck_wrap);
 
@@ -392,6 +391,17 @@ namespace cbica
     }
 
     return false;
+  }
+
+  bool CmdParser::compareParameter(const std::string &execParamToCheck)
+  {
+    int position;
+    return compareParameter(execParamToCheck, position);
+  }
+
+  bool CmdParser::isPresent(const std::string &execParamToCheck)
+  {
+    return compareParameter(execParamToCheck);
   }
 
   std::string CmdParser::getDescription(const std::string &execParamToCheck, bool NewLine = false)

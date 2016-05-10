@@ -169,6 +169,26 @@ namespace cbica
     bool compareParameter(const std::string &execParamToCheck, int &position);
 
     /**
+    \brief Check parameters WITHOUT hyphens
+
+    Checks for both laconic and verbose variants of the specified parameter. Can be used to see if the parameter is present or not.
+
+    \param execParamToCheck Which parameter to check
+    \return True if parameter found else False
+    */
+    bool compareParameter(const std::string &execParamToCheck);
+
+    /**
+    \brief Check if supplied parameter is present in the argument list
+
+    Checks for both laconic and verbose variants of the specified parameter. Uses compareParameter() internally.
+
+    \param execParamToCheck Which parameter to check
+    \return True if parameter found else False
+    */
+    bool isPresent(const std::string &execParamToCheck);
+
+    /**
     \brief Get the description analogous with the parameter
 
     Can search using both laconic and verbose parameters.
