@@ -4,7 +4,7 @@
 \brief Implementation of the DTILogEuclideanCalculator class
 
 https://www.cbica.upenn.edu/sbia/software/ <br>
-sbia-software@uphs.upenn.edu
+software@cbica.upenn.edu
 
 Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html

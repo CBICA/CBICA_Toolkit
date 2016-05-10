@@ -6,7 +6,7 @@
 This class computes the average of a series of 2 or 3 dimension images.
 
 https://www.cbica.upenn.edu/sbia/software/ <br>
-sbia-software@uphs.upenn.edu
+software@cbica.upenn.edu
 
 Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
