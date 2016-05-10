@@ -34,6 +34,8 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 ## 2.1 Basic Functions
 
+For a full list, please see the documentation of cbicaUtilities.h file.
+
 ### 2.1.1 Folder/File operations
 
 <table border="0">
@@ -277,7 +279,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 ### 2.2.1 Logging
 
-A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file. For full documentation, see <a href="classcbica_1_1CmdParser.html">cbica::Logging</a>.
+A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file. For full documentation, see the cbica::Logging.
 
 Generated log is in the format: <br>
 <CODE><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name></CODE>
@@ -305,7 +307,7 @@ Generated log is in the format: <br>
 
 ### 2.2.2 CmdParser
 
-Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file. It picks up exe name using getExecutableName() but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file).
+Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file. It picks up exe name using getExecutableName() but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file). For full documentation, see the cbica::CmdParser.
   
 #### Available functions: 
 
