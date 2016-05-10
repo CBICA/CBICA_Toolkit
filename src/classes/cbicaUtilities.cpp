@@ -6,7 +6,7 @@
 Dependecies: OpenMP
 
 https://www.cbica.upenn.edu/sbia/software/ <br>
-sbia-software@uphs.upenn.edu
+software@cbica.upenn.edu
 
 \author Sarthak Pati
 

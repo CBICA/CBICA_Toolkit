@@ -4,7 +4,7 @@
 \brief Implementation file for CmdParser class.
 
 https://www.cbica.upenn.edu/sbia/software/ <br>
-sbia-software@uphs.upenn.edu
+software@cbica.upenn.edu
 
 Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
@@ -88,7 +88,7 @@ namespace cbica
   {
     std::cout <<
       "\n=========================================================================\n" <<
-      "Contact: sbia-software@uphs.upenn.edu\n\n" <<
+      "Contact: software@cbica.upenn.edu\n\n" <<
       "Copyright (c) 2015 University of Pennsylvania. All rights reserved.\n" <<
       "See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html" <<
       "\n=========================================================================\n";
