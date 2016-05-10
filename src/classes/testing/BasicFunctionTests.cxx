@@ -319,17 +319,12 @@ int main(int argc, char** argv)
       return EXIT_FAILURE;
     }
 
-    std::string fileName, extName, baseName, path;
-    if (!cbica::splitFileName(fName, path, baseName, extName))
-    {
-      return EXIT_FAILURE; // fail if splitFileName() return false
-    }
-
+    std::string ext, path, base;
     // check for certain conditions and fail if even one of them isn't met 
-    if ((extName != ".txt")
-      || (cbica::getFilenameExtension(fName) != ".txt")
-      || (path == "")
-      || (baseName == ""))
+    if (!cbica::splitFileName(fName, path, base, ext) || // if splitFileName fails
+      (ext != ".txt") || // if the extension is not txt
+      (path == "") || // if path is empty
+      (base == "")) // if base is empty
     {
       return EXIT_FAILURE; // fail if detected extension is not a txt
     }
