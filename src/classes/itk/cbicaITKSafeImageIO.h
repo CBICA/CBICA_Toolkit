@@ -3,7 +3,7 @@
 
 \brief Defines safe input and output of itk::Images
 
-Read and Write itk::Image data in a safe manner
+Read and Write itk::Image data in a safe manner. Header-only
 
 https://www.cbica.upenn.edu/sbia/software/ <br>
 sbia-software@uphs.upenn.edu
@@ -19,7 +19,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkCastImageFilter.h"
 #include "itkImageFileWriter.h"
 
-//typedef itk::Image< float, 3 > TImageType;
+//typedef itk::Image< float, 3 > TImageType; // debugging purposes only
 
 namespace cbica
 {
