@@ -19,6 +19,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkCastImageFilter.h"
 #include "itkImageFileWriter.h"
 
+#include "cbicaUtilities.h"
+
 //typedef itk::Image< float, 3 > TImageType; // debugging purposes only
 
 namespace cbica
@@ -35,11 +37,29 @@ namespace cbica
   \endverbatim
 
   \param fName name of the image
+  \param supportedExtensions Supported extensions
   \return itk::Image templated over the same as requested by user
   */
   template <class TImageType>
-  typename TImageType::Pointer ReadImage(const std::string &fName)
+  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions, const std::string &delimitor = ",")
   {
+    std::vector< std::string > extensions = cbica::stringSplit(supportedExtensions, delimitor);  
+    
+    bool supportedExtensionFound = false;
+    for (size_t i = 0; i < extensions.size(); i++)
+    {
+      if (extensions[i] == cbica::getFilenameExtension(fName))
+      {
+        supportedExtensionFound = true;
+      }
+    }
+
+    if (!supportedExtensionFound)
+    {
+      std::cerr << "Supplied file name '" << fName << "' doesn't have a supported extension. \nSupported Extensions: " << supportedExtensions << "\n";
+      exit(EXIT_FAILURE);
+    }
+
     typedef itk::ImageFileReader< TImageType > ImageReaderType;
     typename ImageReaderType::Pointer reader = ImageReaderType::New();
     reader->SetFileName(fName);
