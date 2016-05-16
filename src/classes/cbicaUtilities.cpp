@@ -1206,7 +1206,7 @@ namespace cbica
   std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, 
     bool checkFile, const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
-    return parseCSVFile("", csvFileName, inputColumns, inputLabels, checkFile, rowsDelimiter, colsDelimiter, optionsDelimiter);
+    return parseCSVFile(cbica::getFilenamePath(csvFileName), csvFileName, inputColumns, inputLabels, checkFile, rowsDelimiter, colsDelimiter, optionsDelimiter);
   }
 
   std::vector< CSVDict > parseCSVFile(const std::string &dataDir, const std::string &csvFileName, 
@@ -1278,15 +1278,16 @@ namespace cbica
       return_CSVDict[rowCounter - 1].inputLabels.resize(inputLabelIndeces.size()); // pre-initialize size to ensure thread-safety
       for (size_t i = 0; i < inputColumnIndeces.size(); i++)
       {
+        std::string fileToAdd = dataDir + allRows[rowCounter][inputColumnIndeces[i]];
         if (!checkFile) // this case should only be used for testing purposes
         {
-          return_CSVDict[rowCounter - 1].inputImages[i] = dataDir + allRows[rowCounter][inputColumnIndeces[i]];
+          return_CSVDict[rowCounter - 1].inputImages[i] = fileToAdd;
         }
         else
         {
-          if (fileExists(dataDir + allRows[rowCounter][inputColumnIndeces[i]]))
+          if (fileExists(fileToAdd))
           {
-            return_CSVDict[rowCounter - 1].inputImages[i] = dataDir + allRows[rowCounter][inputColumnIndeces[i]];
+            return_CSVDict[rowCounter - 1].inputImages[i] = fileToAdd;
           }
           else
           {
