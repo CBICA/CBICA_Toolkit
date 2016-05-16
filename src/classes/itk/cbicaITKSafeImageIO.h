@@ -41,23 +41,26 @@ namespace cbica
   \return itk::Image templated over the same as requested by user
   */
   template <class TImageType>
-  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions, const std::string &delimitor = ",")
+  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = "", const std::string &delimitor = ",")
   {
-    std::vector< std::string > extensions = cbica::stringSplit(supportedExtensions, delimitor);  
-    
-    bool supportedExtensionFound = false;
-    for (size_t i = 0; i < extensions.size(); i++)
+    if (supportedExtensions != "")
     {
-      if (extensions[i] == cbica::getFilenameExtension(fName))
-      {
-        supportedExtensionFound = true;
-      }
-    }
+      std::vector< std::string > extensions = cbica::stringSplit(supportedExtensions, delimitor);
 
-    if (!supportedExtensionFound)
-    {
-      std::cerr << "Supplied file name '" << fName << "' doesn't have a supported extension. \nSupported Extensions: " << supportedExtensions << "\n";
-      exit(EXIT_FAILURE);
+      bool supportedExtensionFound = false;
+      for (size_t i = 0; i < extensions.size(); i++)
+      {
+        if (extensions[i] == cbica::getFilenameExtension(fName))
+        {
+          supportedExtensionFound = true;
+        }
+      }
+
+      if (!supportedExtensionFound)
+      {
+        std::cerr << "Supplied file name '" << fName << "' doesn't have a supported extension. \nSupported Extensions: " << supportedExtensions << "\n";
+        exit(EXIT_FAILURE);
+      }
     }
 
     typedef itk::ImageFileReader< TImageType > ImageReaderType;
