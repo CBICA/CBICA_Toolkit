@@ -87,11 +87,11 @@ namespace cbica
   inline void copyrightNotice()
   {
     std::cout <<
-      "\n=========================================================================\n" <<
+      "\n==========================================================================\n" <<
       "Contact: software@cbica.upenn.edu\n\n" <<
-      "Copyright (c) 2015 University of Pennsylvania. All rights reserved.\n" <<
+      "Copyright (c) 2016 University of Pennsylvania. All rights reserved.\n" <<
       "See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html" <<
-      "\n=========================================================================\n";
+      "\n==========================================================================\n";
   }
 
   inline void CmdParser::getMaxLength()
