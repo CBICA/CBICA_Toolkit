@@ -127,8 +127,15 @@ namespace cbica
         {
           std::cout << "The required parameter '" << m_requiredParameters[i].laconic << "' is missing from the command line arguments you provided. See '" <<
             m_exeName << " --help' for extended help.\n\n";
-            
-          std::cout << "An exemplary usage scenario: \n\n" << m_exeName << " " << m_exampleOfUsage << "\n\n";
+
+          std::string m_exeName_wrap;
+#ifdef _WIN32
+          m_exeName_wrap = m_exeName + ".exe";
+#else
+          m_exeName_wrap = "./" + m_exeName;
+#endif
+
+          std::cout << "An exemplary usage scenario: \n\n" << m_exeName_wrap << " " << m_exampleOfUsage << "\n\n";
 
           exit(EXIT_FAILURE);
         }
@@ -289,10 +296,17 @@ namespace cbica
     std::cout << ":::Optional parameters:::\n\n";
     writeParameters(m_optionalParameters, true);
 
+    std::string m_exeName_wrap;
+#ifdef _WIN32
+    m_exeName_wrap = m_exeName + ".exe";
+#else
+    m_exeName_wrap = "./" + m_exeName;
+#endif
+
     if (m_exampleOfUsage != "")
     {
       std::cout << "For example: \n\n" << 
-        m_exeName << " " << m_exampleOfUsage << "\n";
+        m_exeName_wrap << " " << m_exampleOfUsage << "\n";
     }
 
     copyrightNotice();
@@ -653,11 +667,8 @@ namespace cbica
   void CmdParser::exampleUsage(const std::string &usageOfExe)
   {
     m_exampleOfUsage = usageOfExe;
-#if(WIN32)
     m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, m_exeName + ".exe", "");
-#else
     m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, "./" + m_exeName, "");
-#endif
   }
 
   void CmdParser::writeConfigFile(const std::string &dirName)
