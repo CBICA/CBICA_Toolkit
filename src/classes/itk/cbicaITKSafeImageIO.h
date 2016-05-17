@@ -18,6 +18,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageFileReader.h"
 #include "itkCastImageFilter.h"
 #include "itkImageFileWriter.h"
+#include "itkImageIOBase.h"
+#include "itkImageIOFactory.h"
 
 #include "cbicaUtilities.h"
 
@@ -33,6 +35,7 @@ namespace cbica
   typedef itk::Image< float, 3 > ExpectedImageType;
   std::string inputFileName = parser.getParameterValue("inputImage");
   ExpectedImageType::Pointer inputImage = ReadImage<ExpectedImageType>(inputFileName);
+  ExpectedImageType::Pointer inputImage_2 = ReadImage<ExpectedImageType>(inputFileName, ".nii.gz");
   DoAwesomeStuffWithImage( inputImage );
   \endverbatim
 
@@ -61,6 +64,19 @@ namespace cbica
         std::cerr << "Supplied file name '" << fName << "' doesn't have a supported extension. \nSupported Extensions: " << supportedExtensions << "\n";
         exit(EXIT_FAILURE);
       }
+    }
+
+	// ensure that the requested image dimensions and read image dimensions match up
+    itk::ImageIOBase::Pointer im_base = itk::ImageIOFactory::CreateImageIO(fName.c_str(), itk::ImageIOFactory::ReadMode);
+    im_base->SetFileName(fName);
+    im_base->ReadImageInformation();
+
+    // perform basic sanity check
+    if (im_base->GetNumberOfDimensions() != typename TImageType::ImageDimension)
+    {
+      std::cerr << "Image Dimension mismatch. Return image is expected to be '" << typename TImageType::ImageDimension << 
+        "'D and doesn't match the image dimension read from the input file, which is '" << im_base->GetNumberOfDimensions() << "'.\n";
+      exit(EXIT_FAILURE);
     }
 
     typedef itk::ImageFileReader< TImageType > ImageReaderType;
