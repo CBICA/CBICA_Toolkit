@@ -123,7 +123,7 @@ namespace cbica
       {
         // check if current required parameter has been supplied in the command line (obtained from argv)
         int tempPos;
-        if (!CmdParser::compareParameter(m_requiredParameters[i].laconic, tempPos))
+        if (!CmdParser::compareParameter(m_requiredParameters[i].laconic, tempPos) && !helpRequested)
         {
           std::cout << "The required parameter '" << m_requiredParameters[i].laconic << "' is missing from the command line arguments you provided. See '" <<
             m_exeName << " --help' for extended help.\n\n";
@@ -324,6 +324,19 @@ namespace cbica
 
   inline void CmdParser::verbose_check(std::string &input_string)
   {
+    if (input_string == "usage")
+    {
+      input_string = "u";
+    }
+    else if (input_string == "help")
+    {
+      input_string = "h";
+    }
+    else if (input_string == "version")
+    {
+      input_string = "v";
+    }
+
     if (input_string.length() > m_maxLaconicLength)
     {
       input_string = cbica::replaceString(input_string, "--", "");
@@ -351,22 +364,17 @@ namespace cbica
     for (int i = 1; i < m_argc; i++)
     {
       std::string inputParamToCheck = m_argv[i];
-      if ((inputParamToCheck == "usage") || (inputParamToCheck == "-usage") || (inputParamToCheck == "--usage")
-        || (inputParamToCheck == "u") || (inputParamToCheck == "-u") || (inputParamToCheck == "--u") ||
-        (inputParamToCheck == "help") || (inputParamToCheck == "-help") || (inputParamToCheck == "--help")
-        || (inputParamToCheck == "h") || (inputParamToCheck == "-h") || (inputParamToCheck == "--h") ||
-        (inputParamToCheck == "version") || (inputParamToCheck == "-version") || (inputParamToCheck == "--version")
-        || (inputParamToCheck == "v") || (inputParamToCheck == "-v") || (inputParamToCheck == "--v"))
-      {
-        helpRequested = true;
-        position = i;
-        return true;
-      }
       if (!checkMaxLen)
       {
         getMaxLength();
       }
       verbose_check(inputParamToCheck);
+      if ((inputParamToCheck == "u") || (inputParamToCheck == "h") || (inputParamToCheck == "v"))
+      {
+        helpRequested = true;
+        position = i;
+        //return true;
+      }
 
       if (inputParamToCheck == execParamToCheck_wrap)
       {
