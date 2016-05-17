@@ -731,7 +731,7 @@ namespace cbica
 
   \param csvFileName The full path of the file to parse, all paths are absolute or relative to current working directory
   \param inputColumns The string of input columns which contain the data to be used for further processing
-  \param inputLabels The string of input labels based on which further processing is to be done
+  \param inputLabels The string of input labels per subject based on which further processing is to be done; if this is empty, it is initialized as 1 for all subjects
   \param checkFile Check the validity of the file; defaults to true
   \param rowsDelimiter The delimiters used to distinguish rows in the file
   \param colsDelimiter The delimiters used to distinguish cols in the file
@@ -750,7 +750,7 @@ namespace cbica
   \param dataDir The full path of the directory where the data is present
   \param csvFileName The full path of the file to parse and all paths in CSV File are relative to dataDir
   \param inputColumns The string of input columns which contain the data to be used for further processing
-  \param inputLabels The string of input labels based on which further processing is to be done
+  \param inputLabels The string of input labels per subject based on which further processing is to be done; if this is empty, it is initialized as 1 for all subjects
   \param checkFile Check the validity of the file; defaults to true
   \param rowsDelimiter The delimiters used to distinguish rows in the file, default = "\n"
   \param colsDelimiter The delimiters used to distinguish cols in the file, default = ","

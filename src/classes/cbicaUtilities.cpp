@@ -1220,12 +1220,21 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
 
+    bool labelsConsidered = true;
+    if (inputLabels.empty())
+    {
+      labelsConsidered = false;
+    }
+
     // store number of rows in the file - this is used to make the program parallelize-able 
     const size_t numberOfRows = numberOfRowsInFile(csvFileName);
     
-    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, optionsDelimiter), // columns to consider as images
+    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, optionsDelimiter), inputLabelsVec; // columns to consider as images
+    if (labelsConsidered)
+    {
       inputLabelsVec = stringSplit(inputLabels, optionsDelimiter); // columns to consider as labels
-    
+    }
+
     // initialize return dictionary
     std::vector< CSVDict > return_CSVDict;
     return_CSVDict.resize(numberOfRows - 1);
@@ -1257,12 +1266,15 @@ namespace cbica
       {
         inputColumnIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputColumnsVec[j]) - allRows[0].begin();
       }
-      for (size_t j = 0; j < inputLabelsVec.size(); j++)
+      if (labelsConsidered)
       {
-        inputLabelIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputLabelsVec[j]) - allRows[0].begin();
+        for (size_t j = 0; j < inputLabelsVec.size(); j++)
+        {
+          inputLabelIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputLabelsVec[j]) - allRows[0].begin();
 #ifndef _WIN32
-        inputLabelIndeces[j] -= inputLabelIndeces[j]; // this is done because gcc, for some weird reason, sets the absolute value for the indeces
+          inputLabelIndeces[j] -= inputLabelIndeces[j]; // this is done because gcc, for some weird reason, sets the absolute value for the indeces
 #endif
+        }
       }
     }
 
@@ -1275,7 +1287,14 @@ namespace cbica
     for (int rowCounter = 1; rowCounter < static_cast<int>(allRows.size()); rowCounter++)
     {
       return_CSVDict[rowCounter - 1].inputImages.resize(inputColumnIndeces.size()); // pre-initialize size to ensure thread-safety
-      return_CSVDict[rowCounter - 1].inputLabels.resize(inputLabelIndeces.size()); // pre-initialize size to ensure thread-safety
+      if (labelsConsidered)
+      {
+        return_CSVDict[rowCounter - 1].inputLabels.resize(inputLabelIndeces.size()); // pre-initialize size to ensure thread-safety
+      }
+      else
+      {
+        return_CSVDict[rowCounter - 1].inputLabels.resize(1);
+      }
       for (size_t i = 0; i < inputColumnIndeces.size(); i++)
       {
         std::string fileToAdd = dataDir + allRows[rowCounter][inputColumnIndeces[i]];
@@ -1297,7 +1316,14 @@ namespace cbica
         }
         for (size_t j = 0; j < inputLabelIndeces.size(); j++)
         {
-          return_CSVDict[rowCounter - 1].inputLabels[j] = std::atof(allRows[rowCounter][inputLabelIndeces[j]].c_str());
+          if (labelsConsidered)
+          {
+            return_CSVDict[rowCounter - 1].inputLabels[j] = std::atof(allRows[rowCounter][inputLabelIndeces[j]].c_str());
+          }
+          else
+          {
+            return_CSVDict[rowCounter - 1].inputLabels[j] = 1;
+          }
         }
       }
       
