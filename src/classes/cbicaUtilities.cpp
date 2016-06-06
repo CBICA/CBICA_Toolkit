@@ -1315,7 +1315,7 @@ namespace cbica
       {
         std::string fileToAdd = allRows[rowCounter][inputColumnIndeces[i]]; // case where the file names in the CSV are complete paths
 
-        if (pathsRelativeToCSV)
+        if (pathsRelativeToCSV || !dataDir.empty())
         {
           fileToAdd = dataDir_wrap + allRows[rowCounter][inputColumnIndeces[i]];
         }
