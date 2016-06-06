@@ -1204,46 +1204,41 @@ namespace cbica
   }
 
   std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, 
-    bool checkFile, const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
+    bool checkFile, bool pathsRelativeToCSV, const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
-    return parseCSVFile(cbica::getFilenamePath(csvFileName), csvFileName, inputColumns, inputLabels, checkFile, rowsDelimiter, colsDelimiter, optionsDelimiter);
+    return parseCSVFile("", csvFileName, inputColumns, inputLabels, checkFile, pathsRelativeToCSV, rowsDelimiter, colsDelimiter, optionsDelimiter);
   }
 
   std::vector< CSVDict > parseCSVFile(const std::string &dataDir, const std::string &csvFileName, 
-    const std::string &inputColumns, const std::string &inputLabels, bool checkFile,
+    const std::string &inputColumns, const std::string &inputLabels, bool checkFile, bool pathsRelativeToCSV,
     const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
     // if CSV file doesn't exist, exit with meaningful message
     if (!cbica::fileExists(csvFileName))
     {
-      std::cerr << "Supplied file name wasn't found.\n";
+      std::cerr << "Supplied file name, '" << csvFileName << "' wasn't found.\n";
       exit(EXIT_FAILURE);
     }
 
-    bool labelsConsidered = true;
-    if (inputLabels.empty())
+    std::string dataDir_wrap = dataDir;
+    if (dataDir_wrap.empty())
     {
-      labelsConsidered = false;
+      if (pathsRelativeToCSV)
+      {
+        dataDir_wrap = cbica::getFilenamePath(csvFileName);
+      }
+      else
+      {
+        dataDir_wrap = cbica::getCWD();
+      }
     }
 
     // store number of rows in the file - this is used to make the program parallelize-able 
     const size_t numberOfRows = numberOfRowsInFile(csvFileName);
     
-    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, optionsDelimiter), inputLabelsVec; // columns to consider as images
-    if (labelsConsidered)
-    {
-      inputLabelsVec = stringSplit(inputLabels, optionsDelimiter); // columns to consider as labels
-    }
-
     // initialize return dictionary
     std::vector< CSVDict > return_CSVDict;
     return_CSVDict.resize(numberOfRows - 1);
-
-    std::vector< size_t > inputColumnIndeces, // indeces in the CSV file which correspond to images
-      inputLabelIndeces; // indeces in the CSV file which correspond to labels
-
-    inputColumnIndeces.resize(inputColumnsVec.size());
-    inputLabelIndeces.resize(inputLabelsVec.size());
 
     std::vector< std::vector < std::string > > allRows; // store the entire data of the CSV file as a vector of colums and rows (vector< rows <cols> >)
 
@@ -1259,22 +1254,45 @@ namespace cbica
 
     inFile.close(); // at this point, the entire data from the CSV file has been read and stored in allRows
 
-    // populate information about which indeces to store for data and labels from first row (rowCounter = 0)
-    for (size_t i = 0; i < allRows[0].size(); i++)
+    std::vector< std::string > inputColumnsVec = stringSplit(inputColumns, optionsDelimiter), inputLabelsVec; // columns to consider as images
+
+    std::vector< size_t > inputColumnIndeces, // indeces in the CSV file which correspond to images
+      inputLabelIndeces; // indeces in the CSV file which correspond to labels
+
+    inputColumnIndeces.resize(inputColumnsVec.size());
+
+    bool allLabelsConsidered = inputLabels.empty();
+    if (!allLabelsConsidered)
     {
-      for (size_t j = 0; j < inputColumnsVec.size(); j++)
+      inputLabelsVec = stringSplit(inputLabels, optionsDelimiter); // columns to consider as labels
+      // if label columns are defined, use that number for the vector, otherwise, it considers all columns appearing AFTER the last image column as labels
+      inputLabelIndeces.resize(inputLabelsVec.size()); 
+    }
+
+    // populate information about which indeces to store for data from first row (rowCounter = 0)
+    for (size_t j = 0; j < inputColumnsVec.size(); j++)
+    {
+      inputColumnIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputColumnsVec[j]) - allRows[0].begin();
+    }
+
+    // populate information about which indeces to store for labels from first row (rowCounter = 0)
+    if (!allLabelsConsidered)
+    {
+      // if specific labels are defined, use those indeces only
+      for (size_t j = 0; j < inputLabelsVec.size(); j++)
       {
-        inputColumnIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputColumnsVec[j]) - allRows[0].begin();
-      }
-      if (labelsConsidered)
-      {
-        for (size_t j = 0; j < inputLabelsVec.size(); j++)
-        {
-          inputLabelIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputLabelsVec[j]) - allRows[0].begin();
-#ifndef _WIN32
-          inputLabelIndeces[j] -= inputLabelIndeces[j]; // this is done because gcc, for some weird reason, sets the absolute value for the indeces
+        inputLabelIndeces[j] = std::find(allRows[0].begin(), allRows[0].end(), inputLabelsVec[j]) - allRows[0].begin();
+#ifdef __GNUC__
+        inputLabelIndeces[j] -= inputLabelIndeces[j]; // this is done because gcc, for some weird reason, sets the absolute value for the indeces
 #endif
-        }
+      }
+    }
+    else
+    {
+      // otherwise, assume ALL other columns appearing AFTER the last image as labels
+      for (size_t i = inputLabelIndeces.size() - 1; i < allRows[0].size(); i++)
+      {
+        inputLabelIndeces.push_back(i);
       }
     }
 
@@ -1287,36 +1305,35 @@ namespace cbica
     for (int rowCounter = 1; rowCounter < static_cast<int>(allRows.size()); rowCounter++)
     {
       return_CSVDict[rowCounter - 1].inputImages.resize(inputColumnIndeces.size()); // pre-initialize size to ensure thread-safety
-      if (labelsConsidered)
-      {
-        return_CSVDict[rowCounter - 1].inputLabels.resize(inputLabelIndeces.size()); // pre-initialize size to ensure thread-safety
-      }
-      else
+      return_CSVDict[rowCounter - 1].inputLabels.resize(inputLabelIndeces.size()); // pre-initialize size to ensure thread-safety
+
+      if (inputLabelIndeces.size() == 0) // contingency in the case where no labels are detected - just push back 1s instead
       {
         return_CSVDict[rowCounter - 1].inputLabels.resize(1);
       }
       for (size_t i = 0; i < inputColumnIndeces.size(); i++)
       {
-        std::string fileToAdd = dataDir + allRows[rowCounter][inputColumnIndeces[i]];
-        if (!checkFile) // this case should only be used for testing purposes
+        std::string fileToAdd = allRows[rowCounter][inputColumnIndeces[i]]; // case where the file names in the CSV are complete paths
+
+        if (pathsRelativeToCSV)
         {
-          return_CSVDict[rowCounter - 1].inputImages[i] = fileToAdd;
+          fileToAdd = dataDir_wrap + allRows[rowCounter][inputColumnIndeces[i]];
         }
-        else
+
+        return_CSVDict[rowCounter - 1].inputImages[i] = fileToAdd;
+
+        if (checkFile) // this case should only be used for testing purposes
         {
-          if (fileExists(fileToAdd))
-          {
-            return_CSVDict[rowCounter - 1].inputImages[i] = fileToAdd;
-          }
-          else
+          if (!fileExists(fileToAdd))
           {
             std::cerr << "File name in list does not exist. Location: row = " << rowCounter << ", col = " << inputColumnIndeces[i] << "\n";
             exit(EXIT_FAILURE);
           }
         }
+
         for (size_t j = 0; j < inputLabelIndeces.size(); j++)
         {
-          if (labelsConsidered)
+          if (inputLabelIndeces.size() != 0)
           {
             return_CSVDict[rowCounter - 1].inputLabels[j] = std::atof(allRows[rowCounter][inputLabelIndeces[j]].c_str());
           }
@@ -1396,19 +1413,19 @@ namespace cbica
       std::string parameter, parameterDataType, parameterDataRange, parameterDescription = "";
       for (size_t i = 0; i < line.length(); i++)
       {
-        parameter = iterateOverStringAndSeparators(line, i, 
+        parameter = cbica::iterateOverStringAndSeparators(line, i, 
 #ifdef _WIN32
           Separator::
 #endif
           Param);
         i = i + 2;
-        parameterDataType = iterateOverStringAndSeparators(line, i,
+        parameterDataType = cbica::iterateOverStringAndSeparators(line, i,
 #ifdef _WIN32
           Separator::
-          #endif
+#endif
           DataType);
         i = i + 2;
-        parameterDataRange = iterateOverStringAndSeparators(line, i,
+        parameterDataRange = cbica::iterateOverStringAndSeparators(line, i,
 #ifdef _WIN32
           Separator::
 #endif
@@ -1416,7 +1433,7 @@ namespace cbica
         if (getDescription)
         {
           i = i + 1;
-          parameterDescription = iterateOverStringAndSeparators(line, i, 10);
+          parameterDescription = cbica::iterateOverStringAndSeparators(line, i, 10);
         }
         i = line.length();
         returnVector.push_back(Parameter("", parameter, parameterDataType, parameterDataRange, parameterDescription));
