@@ -1203,34 +1203,14 @@ namespace cbica
     return rowVec.size();
   }
 
-  std::vector< CSVDict > parseCSVFile( const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, 
+  std::vector< CSVDict > parseCSVFile(const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, 
     bool checkFile, bool pathsRelativeToCSV, const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
-  {
-    return parseCSVFile("", csvFileName, inputColumns, inputLabels, checkFile, pathsRelativeToCSV, rowsDelimiter, colsDelimiter, optionsDelimiter);
-  }
-
-  std::vector< CSVDict > parseCSVFile(const std::string &dataDir, const std::string &csvFileName, 
-    const std::string &inputColumns, const std::string &inputLabels, bool checkFile, bool pathsRelativeToCSV,
-    const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
     // if CSV file doesn't exist, exit with meaningful message
     if (!cbica::fileExists(csvFileName))
     {
       std::cerr << "Supplied file name, '" << csvFileName << "' wasn't found.\n";
       exit(EXIT_FAILURE);
-    }
-
-    std::string dataDir_wrap = dataDir;
-    if (dataDir_wrap.empty())
-    {
-      if (pathsRelativeToCSV)
-      {
-        dataDir_wrap = cbica::getFilenamePath(csvFileName);
-      }
-      else
-      {
-        dataDir_wrap = cbica::getCWD();
-      }
     }
 
     // store number of rows in the file - this is used to make the program parallelize-able 
@@ -1315,11 +1295,18 @@ namespace cbica
       {
         std::string fileToAdd = allRows[rowCounter][inputColumnIndeces[i]]; // case where the file names in the CSV are complete paths
 
-        if (pathsRelativeToCSV || !dataDir.empty())
+        if (!fileExists(fileToAdd)) // if absolute paths aren't found, check for other conditions
         {
-          fileToAdd = dataDir_wrap + allRows[rowCounter][inputColumnIndeces[i]];
+          if (pathsRelativeToCSV) // image paths are relative to location of CSV file
+          {
+            fileToAdd = cbica::getFilenamePath(csvFileName) + allRows[rowCounter][inputColumnIndeces[i]];
+          }
+          else // image paths are relative to CWD
+          {
+            fileToAdd = cbica::getCWD() + allRows[rowCounter][inputColumnIndeces[i]];
+          }
         }
-
+        
         return_CSVDict[rowCounter - 1].inputImages[i] = fileToAdd;
 
         if (checkFile) // this case should only be used for testing purposes

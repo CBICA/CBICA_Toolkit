@@ -728,6 +728,7 @@ namespace cbica
   Assumptions:
   1. Header information is in first row
   2. Full paths of images are given
+  3. Image paths are either absolute (default behaviour) OR relative to the location of CSV file OR relative to CWD
 
   \param csvFileName The full path of the file to parse, all paths are absolute or relative to current working directory
   \param inputColumns The string of input columns which contain the data to be used for further processing
@@ -740,26 +741,6 @@ namespace cbica
   \return Vector of CSV Dictionary items: Collection of input images are respective labels
   */
   std::vector< CSVDict > parseCSVFile(const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, bool checkFile = true, bool pathsRelativeToCSV = false, const std::string &rowsDelimiter = "\n", const std::string &colsDelimiter = ",", const std::string &optionsDelimiter = ",");
-
-  /**
-  \brief Parse the supplied CSV File and obtain Row and Column information.
-
-  Assumptions:
-  1. Header information is in first row
-  2. Paths of images are given relative to the dataDir
-
-  \param dataDir The full path of the directory where the image data is present; if empty, data paths are assumed to be WRT the CSV file location or CWD
-  \param csvFileName The full path of the file to parse and all paths in CSV File are relative to dataDir
-  \param inputColumns The string of input columns which contain the data to be used for further processing
-  \param inputLabels The string of input labels per subject based on which further processing is to be done; if this is empty, it is initialized as 1 for all subjects
-  \param checkFile Check the validity of the file; defaults to true
-  \param pathsRelativeToCSV The paths in the CSV file are relative to the location of CSV file otherwise, they are checked relative to the dataDir
-  \param rowsDelimiter The delimiters used to distinguish rows in the file, default = "\n"
-  \param colsDelimiter The delimiters used to distinguish cols in the file, default = ","
-  \param optionsDelimiter The delimiters used in inputColumns and inputLabels, default = ","
-  \return Vector of CSV Dictionary items: Collection of input images are respective labels
-  */
-  std::vector< CSVDict > parseCSVFile(const std::string &dataDir, const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, bool checkFile = true, bool pathsRelativeToCSV = false, const std::string &rowsDelimiter = "\n", const std::string &colsDelimiter = ",", const std::string &optionsDelimiter = ",");
 
   /**
   \brief Reads a pre-written configuration file using CmdParser::WriteConfigFile()
