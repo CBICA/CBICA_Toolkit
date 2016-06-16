@@ -7,7 +7,7 @@ Windows x64 and Linux (CentOS6) x64.
 
 All the functions are standalone in nature; i.e., they are header-only and can be exported individually for use/distribution in projects.
 
-Currently, the Toolkit has been tested to be working on Windows x64 using MS Visual Studio 2012 while linking against ITK/4.7.1 built with options
+Currently, the Toolkit has been tested to be working on Windows x64 using MS Visual Studio 2012 while linking against ITK/4.7.1 and ITK/4.9.0 built with options
 specified in SBIA internal Wiki (http://sbia-wiki.uphs.upenn.edu/wiki/index.php/Third-party_Software#ITK).
 
 <b>TO DO:</b>

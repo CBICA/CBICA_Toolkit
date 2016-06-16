@@ -1203,7 +1203,7 @@ namespace cbica
     return rowVec.size();
   }
 
-  std::vector< CSVDict > parseCSVFile(const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, 
+  std::vector< CSVDict > parseCSVFile(const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels,
     bool checkFile, bool pathsRelativeToCSV, const std::string &rowsDelimiter, const std::string &colsDelimiter, const std::string &optionsDelimiter)
   {
     // if CSV file doesn't exist, exit with meaningful message
@@ -1212,6 +1212,8 @@ namespace cbica
       std::cerr << "Supplied file name, '" << csvFileName << "' wasn't found.\n";
       exit(EXIT_FAILURE);
     }
+
+    //std::string dirName_Wrap = dirName;
 
     // store number of rows in the file - this is used to make the program parallelize-able 
     const size_t numberOfRows = numberOfRowsInFile(csvFileName);
@@ -1301,6 +1303,10 @@ namespace cbica
           {
             fileToAdd = cbica::getFilenamePath(csvFileName) + allRows[rowCounter][inputColumnIndeces[i]];
           }
+          //else if (fileExists(dirName + fileToAdd))
+          //{
+          //  fileToAdd = dirName + fileToAdd;
+          //}
           else // image paths are relative to CWD
           {
             fileToAdd = cbica::getCWD() + allRows[rowCounter][inputColumnIndeces[i]];

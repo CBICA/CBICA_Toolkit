@@ -140,6 +140,35 @@ namespace cbica
   //====================================== Structs that need string stuff ====================================//
 
   /**
+  \struct FileNameParts
+
+  \brief Holds the different parts of a file name
+
+  This is a helper struct for uses concerning uses where different parts of a file (path, base, ext) need to be used.
+  */
+  struct FileNameParts
+  {
+    std::string fullPath, path, base, extension;
+
+    //! Default Constructor
+    FileNameParts();
+
+    //! Constructor with input file string
+    FileNameParts(const std::string &inputFileName) : 
+      fullPath(inputFileName) 
+    {
+      cbica::splitFileName(fullPath, path, base, extension);
+    }
+
+    //! Member function to set input file name
+    void SetFileName(const std::string &inputFileName)
+    {
+      fullPath = inputFileName;
+      cbica::splitFileName(fullPath, path, base, extension);
+    }
+  };
+
+  /**
   \struct Parameter
 
   \brief Holds individual parameter information
