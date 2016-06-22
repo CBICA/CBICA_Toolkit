@@ -16,6 +16,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #if (_WIN32)
 #include <io.h>
@@ -89,7 +90,7 @@ namespace cbica
     std::cout <<
       "\n==========================================================================\n" <<
       "Contact: software@cbica.upenn.edu\n\n" <<
-      "Copyright (c) 2016 University of Pennsylvania. All rights reserved.\n" <<
+      "Copyright (c) " << cbica::getCurrentYear() << " University of Pennsylvania. All rights reserved.\n" <<
       "See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html" <<
       "\n==========================================================================\n";
   }

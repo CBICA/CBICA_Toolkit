@@ -79,6 +79,52 @@ struct CSVDict
     inputImages(inputImagesVector), inputLabels(inputLabelVector) {};
 };
 
+/**
+\struct FileNameParts
+
+\brief Holds the different parts of a file name (path, base and extension)
+
+This is a helper struct for uses concerning uses where different parts of a file (path, base, ext) need to be used multiple times.
+*/
+struct FileNameParts
+{
+  std::string fullFileName, path, base, extension;
+
+  //! Default Constructor
+  FileNameParts();
+
+  /** 
+  \brief Constructor with input file string
+
+  \param inputFileName The complete input file name
+  */
+  FileNameParts(const std::string &inputFileName) : fullFileName(inputFileName)
+  {
+    if (cbica::fileExists(inputFileName))
+      cbica::splitFileName(fullFileName, path, base, extension);
+    else
+    {
+      std::cerr << "The input file '" << inputFileName << "' wasn't found on disk.\n";
+    }
+  }
+
+  /**
+  \brief Member function to set the fullFileName
+
+  \param inputFileName The complete input file name
+  */
+  void SetFileName(const std::string &inputFileName)
+  {
+    fullFileName = inputFileName;
+    if (cbica::fileExists(fullFileName))
+      cbica::splitFileName(fullFileName, path, base, extension);
+    else
+    {
+      std::cerr << "The input file '" << inputFileName << "' wasn't found on disk.\n";
+    }
+  }
+};
+
 namespace cbica
 {
 
@@ -138,35 +184,6 @@ namespace cbica
   char* constCharToChar(const char *input);
 
   //====================================== Structs that need string stuff ====================================//
-
-  /**
-  \struct FileNameParts
-
-  \brief Holds the different parts of a file name
-
-  This is a helper struct for uses concerning uses where different parts of a file (path, base, ext) need to be used.
-  */
-  struct FileNameParts
-  {
-    std::string fullPath, path, base, extension;
-
-    //! Default Constructor
-    FileNameParts();
-
-    //! Constructor with input file string
-    FileNameParts(const std::string &inputFileName) : 
-      fullPath(inputFileName) 
-    {
-      cbica::splitFileName(fullPath, path, base, extension);
-    }
-
-    //! Member function to set input file name
-    void SetFileName(const std::string &inputFileName)
-    {
-      fullPath = inputFileName;
-      cbica::splitFileName(fullPath, path, base, extension);
-    }
-  };
 
   /**
   \struct Parameter
@@ -809,6 +826,10 @@ namespace cbica
   */
   std::string getCurrentGMTDateAndTime();
 
+  /**
+  \brief Get current Year as string delineated as YYYY
+  */
+  std::string getCurrentYear();
   //==================================== Template stuff ==================================//
 
   /**

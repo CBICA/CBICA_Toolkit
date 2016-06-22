@@ -1579,6 +1579,26 @@ namespace cbica
     return buffer;
   }
 
+  std::string getCurrentYear()
+  {
+    time_t timer;
+    // obtain current time
+    time(&timer);
+    tm *time_struct = NULL;
+    char buffer[200];
+
+    // obtain current local date
+#ifdef _WIN32
+    struct tm timeinfo;
+    localtime_s(&timeinfo, &timer);
+    sprintf_s(buffer, "%d", timeinfo.tm_year + 1900);
+#else
+    time_struct = localtime(&timer_wrap);
+    sprintf(buffer, "%d", timeinfo.tm_year + 1900);
+#endif
+    return std::string(buffer);
+  }
+
   //====================================== String stuff ====================================//
 
   bool splitFileName( const std::string &dataFile, std::string &path,
