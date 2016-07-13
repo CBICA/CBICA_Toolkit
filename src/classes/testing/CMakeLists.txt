@@ -22,6 +22,13 @@ ADD_EXECUTABLE(
 )
 #MESSAGE( STATUS "cbica_class name: " ${CBICA_TOOLKIT_NAME} )
 
+ADD_EXECUTABLE( 
+  Benchmarking 
+  ${CBICA_Headers}
+  ${CBICA_Sources}
+  Benchmarking.cxx 
+)
+
 IF(UNIX)
 	#INCLUDE( CheckCXXCompilerFlag )
 	#CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
