@@ -63,21 +63,24 @@ int main(int argc, char** argv)
 
     for (size_t j = 0; j < filesPerSubject.size(); j++)
     {
-      const std::string fileUnderConsideration = subjectUnderConsideration + filesPerSubject[j];
+      // FileNameParts is a custom struct that holds the full path, base and extensions of a particular file
+      const FileNameParts fileUnderConsideration = FileNameParts(subjectUnderConsideration + filesPerSubject[j]);
       
       // ensure file is present
-      if (!cbica::fileExists(fileUnderConsideration))
+      if (!cbica::fileExists(fileUnderConsideration.fullFileName))
       {
-        logger.WriteError("The file, '" + fileUnderConsideration + "' wasn't found");
+        logger.WriteError("The file, '" + fileUnderConsideration.fullFileName + "' wasn't found");
         return EXIT_FAILURE;
       }
 
       // check for output file patterns
       for (size_t k = 0; k < outputPatterns_vector.size(); k++)
       {
-        if (fileUnderConsideration.find(outputPatterns_vector[k]) != std::string::npos)
+        // the check is done on the base of the file to ensure that there isn't any mix-up with the folder names as well
+        // this can be easily made modular using a command line option
+        if (fileUnderConsideration.base.find(outputPatterns_vector[k]) != std::string::npos)
         {
-          outputFiles.push_back(fileUnderConsideration);
+          outputFiles.push_back(fileUnderConsideration.fullFileName);
           outputFileIndeces.push_back(j);
         }
       }
@@ -89,13 +92,13 @@ int main(int argc, char** argv)
     {
       if (std::find(outputFileIndeces.begin(), outputFileIndeces.end(), j) == outputFileIndeces.end())
       {
-        const std::string fileUnderConsideration = subjectUnderConsideration + filesPerSubject[j]; // check is not needed since it is already done in the previous loop
+        const FileNameParts fileUnderConsideration = FileNameParts(subjectUnderConsideration + filesPerSubject[j]); // check is not needed since it is already done in the previous loop
         // check for input file patterns
         for (size_t k = 0; k < inputPatterns_vector.size(); k++)
         {
-          if (fileUnderConsideration.find(inputPatterns_vector[k]) != std::string::npos)
+          if (fileUnderConsideration.base.find(inputPatterns_vector[k]) != std::string::npos)
           {
-            inputFiles.push_back(fileUnderConsideration);
+            inputFiles.push_back(fileUnderConsideration.fullFileName);
           }
         }
       }
