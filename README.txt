@@ -354,7 +354,11 @@ Universal command line parser. Add parameters, descriptions and call on them fro
 	</tr>
 </table>
 
-### 2.2.3 TO DO
+## 2.3 Benchmarking Executable
+
+This is a shell executable that is used for benchmarking different algorithms and applications. This provides a ready-to-use way for comparing different algorithm outputs with the one that needs to be tested for multiple inputs. See <code>src/Benchmarking.cxx</code> for details.
+
+## 2.4 TO DO
 
 [Request a new function via eLog.]
 
