@@ -28,6 +28,24 @@ int main(int argc, char** argv)
 
   std::string logFile = cbica::createTmpDir() + "Benchmarking.log", inputPatterns, outputPatterns, dataDir;
 
+  if (parser.isPresent("u") || (argc < 2) || (argc > 5))
+  {
+    parser.echoUsage();
+    return EXIT_SUCCESS;
+  }
+
+  if (parser.isPresent("h"))
+  {
+    parser.echoHelp();
+    return EXIT_SUCCESS;
+  }
+
+  if (parser.isPresent("v"))
+  {
+    parser.echoVersion();
+    return EXIT_SUCCESS;
+  }
+
   // parser the command line
   parser.getParameterValue("d", dataDir);
   parser.getParameterValue("i", inputPatterns);
