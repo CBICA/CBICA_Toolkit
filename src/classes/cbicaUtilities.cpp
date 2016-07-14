@@ -1150,7 +1150,6 @@ namespace cbica
       } while (FindNextFile(hFind, &fd) != 0);
       ::FindClose(hFind);
     }
-    return allDirectories;
 #else
     DIR *dp;
     struct dirent *dirp;
@@ -1174,8 +1173,8 @@ namespace cbica
       allDirectories.push_back(dirp->d_name);
     }
     closedir(dp);
-    return allDirectories;
 #endif
+    return allDirectories;
   }
   
   size_t numberOfRowsInFile(const std::string &csvFileName, const std::string &delim)

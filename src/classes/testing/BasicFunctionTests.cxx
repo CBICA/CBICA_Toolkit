@@ -400,25 +400,25 @@ int main(int argc, char** argv)
       return EXIT_FAILURE;
     }
 
-    if (cbica::createDir(return_dir + "/random1/"))
+    if (!cbica::createDir(return_dir + "/random1/"))
     {
       cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
     }
 
-    if (cbica::createDir(return_dir + "/random2/"))
+    if (!cbica::createDir(return_dir + "/random2/"))
     {
       cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
     }
 
-    if (cbica::createDir(return_dir + "/random3/"))
+    if (!cbica::createDir(return_dir + "/random3/"))
     {
       cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
     }
 
-    if (cbica::createDir(return_dir + "/random1/random11/"))
+    if (!cbica::createDir(return_dir + "/random1/random11/"))
     {
       cbica::deleteDir(return_dir);
       return EXIT_FAILURE;
