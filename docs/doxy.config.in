@@ -463,12 +463,14 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/doxy.log
 
 
 FILE_PATTERNS          = *.dox \
-                         *.txt
-                         #*.h
+                         *.txt \
+                         *.h
 
 INPUT                  =  	@PROJECT_SOURCE_DIR@ \
                             @PROJECT_BINARY_DIR@ \
                             @PROJECT_SOURCE_DIR@/licences/
+                            @PROJECT_SOURCE_DIR@/src/classes/
+                            @PROJECT_SOURCE_DIR@/src/classes/itk/
 									
 
 LAYOUT_FILE = @PROJECT_SOURCE_DIR@/docs/DoxygenLayout.xml
