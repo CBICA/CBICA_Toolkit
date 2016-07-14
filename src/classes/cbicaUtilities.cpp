@@ -324,7 +324,7 @@ namespace cbica
       {
         cbica::createDir(destination);
       }
-#ifdef _WIN32 // do intelligent thing for Windows 
+#ifdef _WIN32
       WIN32_FIND_DATA FindFileData;
       HANDLE hFind;
       const size_t MAX_FILE_SIZE = 1025;
@@ -370,7 +370,7 @@ namespace cbica
       } while (FindNextFile(hFind, &FindFileData));
       FindClose(hFind);
 
-#else // initiate system call for Linux
+#else
       //if (recursion)
       //{
       //  recur = "-r ";

@@ -27,9 +27,9 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
 
 #define TEST_DATA "/nifit1/"
 
-#include "classes/cbicaUtilities.h"
-#include "classes/cbicaLogging.h"
-#include "classes/cbicaCmdParser.h"
+#include "cbicaUtilities.h"
+#include "cbicaLogging.h"
+#include "cbicaCmdParser.h"
 
 int main(int argc, char** argv)
 {
