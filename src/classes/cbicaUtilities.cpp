@@ -1439,20 +1439,20 @@ namespace cbica
 
   std::string getCurrentLocalDate()
   {
-    time_t timer_wrap;
+    time_t timer;
     // obtain current time
-    time(&timer_wrap);
+    time(&timer);
     tm *time_struct = NULL;
     char buffer[200];
 
     // obtain current local date
 #ifdef _WIN32
     struct tm timeinfo;
-    localtime_s(&timeinfo, &timer_wrap);
+    localtime_s(&timeinfo, &timer);
     sprintf_s(buffer, "%d:%02d:%02d",
       timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday);
 #else
-    time_struct = localtime(&timer_wrap);
+    time_struct = localtime(&timer);
     sprintf(buffer, "%d:%02d:%02d",
       time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday);
 #endif
@@ -1475,7 +1475,7 @@ namespace cbica
     sprintf_s(buffer, "%02d:%02d:%02d",
       timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
 #else
-    time_struct = localtime(&timer_wrap);
+    time_struct = localtime(&timer);
     sprintf(buffer, "%02d:%02d:%02d",
       time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
 #endif
@@ -1499,7 +1499,7 @@ namespace cbica
       timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
       timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
 #else
-    time_struct = localtime(&timer_wrap);
+    time_struct = localtime(&timer);
     sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
       time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
       time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
@@ -1523,7 +1523,7 @@ namespace cbica
     sprintf_s(buffer, "%d:%02d:%02d",
       timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday);
 #else
-    time_struct = gmtime(&timer_wrap);
+    time_struct = gmtime(&timer);
     sprintf(buffer, "%d:%02d:%02d",
       time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday);
 #endif
@@ -1546,7 +1546,7 @@ namespace cbica
     sprintf_s(buffer, "%02d:%02d:%02d",
       timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
 #else
-    time_struct = gmtime(&timer_wrap);
+    time_struct = gmtime(&timer);
     sprintf(buffer, "%02d:%02d:%02d",
       time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
 #endif
@@ -1570,7 +1570,7 @@ namespace cbica
       timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
       timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
 #else
-    time_struct = gmtime(&timer_wrap);
+    time_struct = gmtime(&timer);
     sprintf(buffer, "%d:%02d:%02d,%02d:%02d:%02d",
       time_struct->tm_year + 1900, time_struct->tm_mon + 1, time_struct->tm_mday,
       time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
@@ -1593,7 +1593,7 @@ namespace cbica
     localtime_s(&timeinfo, &timer);
     sprintf_s(buffer, "%d", timeinfo.tm_year + 1900);
 #else
-    time_struct = localtime(&timer_wrap);
+    time_struct = localtime(&timer);
     sprintf(buffer, "%d", timeinfo.tm_year + 1900);
 #endif
     return std::string(buffer);
