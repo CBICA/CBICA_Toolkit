@@ -1586,10 +1586,10 @@ namespace cbica
     time(&timer);
     tm *time_struct = NULL;
     char buffer[200];
+    struct tm timeinfo;
 
     // obtain current local date
 #ifdef _WIN32
-    struct tm timeinfo;
     localtime_s(&timeinfo, &timer);
     sprintf_s(buffer, "%d", timeinfo.tm_year + 1900);
 #else
