@@ -1439,16 +1439,16 @@ namespace cbica
 
   std::string getCurrentLocalDate()
   {
-    time_t timer;
+    time_t timer_wrap;
     // obtain current time
-    time(&timer);
+    time(&timer_wrap);
     tm *time_struct = NULL;
     char buffer[200];
 
     // obtain current local date
 #ifdef _WIN32
     struct tm timeinfo;
-    localtime_s(&timeinfo, &timer);
+    localtime_s(&timeinfo, &timer_wrap);
     sprintf_s(buffer, "%d:%02d:%02d",
       timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday);
 #else
