@@ -1060,6 +1060,7 @@ struct FileNameParts
   */
   FileNameParts(const std::string &inputFileName) : fullFileName(inputFileName)
   {
+    cbica::replaceString(fullFileName, "\\", "/");
     if (cbica::fileExists(inputFileName))
       cbica::splitFileName(fullFileName, path, base, extension);
     else
@@ -1076,6 +1077,7 @@ struct FileNameParts
   void SetFileName(const std::string &inputFileName)
   {
     fullFileName = inputFileName;
+    cbica::replaceString(fullFileName, "\\", "/");
     if (cbica::fileExists(fullFileName))
       cbica::splitFileName(fullFileName, path, base, extension);
     else
