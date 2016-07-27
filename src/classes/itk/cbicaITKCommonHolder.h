@@ -113,7 +113,8 @@ namespace cbica
 
   protected:
     // vector of input file names
-    std::vector<std::string> m_inputFiles;
+    std::vector<FileNameParts> m_inputFiles_parts;
+    std::vector< std::string > m_inputFiles;
 
     // output directory (to write multiple files)
     std::string m_outputDir;
@@ -170,8 +171,9 @@ namespace cbica
     \param inputFileNames Wrap for m_inputFiles
     \param output Can have the output file or directory. If file is specified without path, it is written in temp dir created using cbica::createTmpDir()
     */
-    inline void initializeClass( const std::vector<std::string> &inputFileNames, const std::string &output, 
-                                 const std::string &prefix );
+    inline void initializeClass( const std::vector<std::string> &inputFileNames, 
+                                 const std::string &output, 
+                                 const std::string &prefix);
 
   };
 

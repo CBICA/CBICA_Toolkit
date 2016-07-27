@@ -28,6 +28,12 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImage.h"
 #include "gdcmImage.h"
 
+#include "itkTranslationTransform.h"
+#include "itkImageFileReader.h"
+#include "itkNormalizeImageFilter.h"
+#include "itkResampleImageFilter.h"
+#include "itkImageFileWriter.h"
+
 int main(int argc, char** argv)
 {
   cbica::CmdParser parser(argc, argv);
@@ -57,7 +63,8 @@ int main(int argc, char** argv)
   if (parser.compareParameter("readImage", tempPosition))
   {
     const std::string inputFile = argv[tempPosition + 1];
-    typedef itk::Image<int, 3> ExpectedImageType;
+    typedef float ExpectedPixelType;
+    typedef itk::Image<ExpectedPixelType, 3> ExpectedImageType;
     ExpectedImageType::Pointer inputImage = cbica::ReadImage<ExpectedImageType>(inputFile);
 
     if (inputImage->GetImageDimension() == 0)

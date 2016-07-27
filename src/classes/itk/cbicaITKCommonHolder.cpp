@@ -18,8 +18,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 namespace cbica
 {
   inline void CommonHolder::initializeClass( const std::vector<std::string> &inputFileNames, 
-                                             const std::string &output, 
-                                             const std::string &prefix )
+                                             const std::string &output = "", 
+                                             const std::string &prefix = "" )
   {
     if (inputFileNames.empty())
     {
@@ -32,47 +32,42 @@ namespace cbica
     if (output.empty())
     {
       m_outputDir = cbica::createTmpDir();
-      std::cout << "No output folder has been specified. Writing to temporary directory: '"
-        << m_outputDir << "'\n";
+      std::cout << "No output folder has been specified. Writing to temporary directory: '" << m_outputDir << "'\n";
     }
-    m_inputFiles = inputFileNames;
+    //m_inputFiles = inputFileNames;
+    m_inputFiles.resize(inputFileNames.size());
+
     m_prefix = prefix;
     std::string extName, baseName, path;
 
     m_componentType_asString = "";
 
-    for (unsigned int i = 0; i < m_inputFiles.size(); ++i)
+    for (unsigned int i = 0; i < inputFileNames.size(); ++i)
     {
-      if (!fileExists(m_inputFiles[i]))
+      if (!fileExists(inputFileNames[i]))
       {
         std::cerr << "The " << i << "'th Input file does not exist. Please check.\n";
         return;
       }
-      
-      replaceString(m_inputFiles[i], "\\", "/");
+      m_inputFiles_parts[i].SetFileName(inputFileNames[i]);
 
-      if (splitFileName(m_inputFiles[i], path, baseName, extName))
+      if (m_inputFiles_parts[i].extension == ".img")
       {
-        if (extName == "img")
+        std::cerr << "Header has been supplied as '.img' in file #" << i <<
+          ". Please supply it as '.hdr'.\n";
+        return;
+      }
+      
+      if (i > 0)
+      {
+        if (m_inputFiles_parts[i].extension != m_inputFiles_parts[i - 1].extension)
         {
-          std::cerr << "Header has been supplied as '.img' in file #" << i << 
-            ". Please supply it as '.hdr'.\n";
-          return;
-        }
-        
-        if (m_extension == "")
-        {
-          m_extension = extName;
-        }
-        else if (m_extension != extName)
-        {
-          std::cerr << "Extension mismatch in input files #" << i-1 << " and #" << i <<
-            ". Please check.\n";
+          std::cerr << "Extension mismatch in input files #" << i - 1 << " and #" << i << ". Please check.\n";
           return;
         }
       }
       
-      cbica::ImageInfo imageIO = cbica::ImageInfo(m_inputFiles[i]);
+      cbica::ImageInfo imageIO = cbica::ImageInfo(m_inputFiles_parts[i].fullFileName);
 
       if (m_componentType_asString == "")
       {
