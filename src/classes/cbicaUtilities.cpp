@@ -661,6 +661,24 @@ namespace cbica
     return return_string;
   }
 
+  std::string getUserHomeDirectory()
+  {
+    char *tmp;
+    char tempPath[FILENAME_MAX];
+#if defined(_WIN32)
+    //size_t size;
+    //getenv_s(&size, tmp, size, "USERPROFILE"); // does not work, for some reason - needs to be tested
+    tmp = getenv("USERPROFILE");
+    std::string temp = cbica::replaceString(tmp, "\\", "/");
+    sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
+#else
+    tmp = std::getenv("HOME");
+    sprintf(tempPath, "%s", tmp);
+#endif    
+
+    return std::string(tempPath);
+  }
+
   std::string getCWD()
   {
     std::string wd = "";

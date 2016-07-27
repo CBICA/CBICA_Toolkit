@@ -573,6 +573,16 @@ namespace cbica
   std::string getUserName();
 
   /**
+  \brief Get the home directory of the user
+
+  Windows - C:/Users/XYZ
+  Linux - /home/XYZ
+
+  \return user directory
+  */
+  std::string getUserHomeDirectory();
+
+  /**
   \brief Get the current working directory
 
   [Wrap for cbica::getcwd()]
