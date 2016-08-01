@@ -920,7 +920,7 @@ namespace cbica
 
 };
 
-#if defined(__GNUC__)  && (__GNUC__ < 5)
+#if defined(__GNUC__)  && (__GNUC__ < 5) && !(__APPLE__)
 namespace std
 {
   //! std::round wrap for GCC
