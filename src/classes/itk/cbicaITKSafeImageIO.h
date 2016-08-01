@@ -16,10 +16,13 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "itkImage.h"
 #include "itkImageFileReader.h"
+#include "itkImageSeriesReader.h"
+#include "itkImageSeriesWriter.h"
 #include "itkCastImageFilter.h"
 #include "itkImageFileWriter.h"
 #include "itkImageIOBase.h"
 #include "itkImageIOFactory.h"
+#include "itkGDCMImageIO.h"
 
 #include "cbicaUtilities.h"
 
@@ -28,23 +31,23 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 namespace cbica
 {
   /**
-  \brief Get the itk::Image from input file name 
+  \brief Get the itk::ImageFileReader from input file name. This is useful for scenarios where reader meta information is needed for later writing step(s).
 
   Usage:
   \verbatim
   typedef itk::Image< float, 3 > ExpectedImageType;
   std::string inputFileName = parser.getParameterValue("inputImage");
-  ExpectedImageType::Pointer inputImage = ReadImage<ExpectedImageType>(inputFileName);
-  ExpectedImageType::Pointer inputImage_2 = ReadImage<ExpectedImageType>(inputFileName, ".nii.gz");
+  ExpectedImageType::Pointer inputImage_1 = GetImageReader< ExpectedImageType >(inputFileName)->GetOutput();
+  ExpectedImageType::Pointer inputImage_2 = GetImageReader< ExpectedImageType >(inputFileName, ".nii.gz,.img")->GetOutput();
   DoAwesomeStuffWithImage( inputImage );
   \endverbatim
 
   \param fName name of the image
   \param supportedExtensions Supported extensions
-  \return itk::Image templated over the same as requested by user
+  \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType>
-  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = "", const std::string &delimitor = ",")
+  typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz", const std::string &delimitor = ",")
   {
     if (supportedExtensions != "")
     {
@@ -66,7 +69,7 @@ namespace cbica
       }
     }
 
-	// ensure that the requested image dimensions and read image dimensions match up
+    // ensure that the requested image dimensions and read image dimensions match up
     itk::ImageIOBase::Pointer im_base = itk::ImageIOFactory::CreateImageIO(fName.c_str(), itk::ImageIOFactory::ReadMode);
     im_base->SetFileName(fName);
     im_base->ReadImageInformation();
@@ -74,7 +77,7 @@ namespace cbica
     // perform basic sanity check
     if (im_base->GetNumberOfDimensions() != typename TImageType::ImageDimension)
     {
-      std::cerr << "Image Dimension mismatch. Return image is expected to be '" << typename TImageType::ImageDimension << 
+      std::cerr << "Image Dimension mismatch. Return image is expected to be '" << typename TImageType::ImageDimension <<
         "'D and doesn't match the image dimension read from the input file, which is '" << im_base->GetNumberOfDimensions() << "'.\n";
       exit(EXIT_FAILURE);
     }
@@ -93,19 +96,147 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
 
-    return reader->GetOutput();
+    return reader;
+  }
+  
+  /**
+  \brief Get the itk::Image from input file name
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputFileName = parser.getParameterValue("inputImage");
+  ExpectedImageType::Pointer inputImage_1 = ReadImage< ExpectedImageType >(inputFileName);
+  ExpectedImageType::Pointer inputImage_2 = ReadImage< ExpectedImageType >(inputFileName, ".nii.gz,.img");
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  \param fName name of the image
+  \param supportedExtensions Supported extensions
+  \return itk::ImageFileReader::Pointer templated over the same as requested by user
+  */
+  template <class TImageType>
+  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz", const std::string &delimitor = ",")
+  {
+    return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
   }
 
+  /**
+  \brief Same as ReadImage<>
+  */
+  template <class TImageType>
+  typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz", const std::string &delimitor = ",")
+  {
+    return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
+  }
+
+  /**
+  \brief Get the Dicom image reader (not the image, the READER). This is useful for scenarios where reader meta information is needed for later writing step(s).
+  
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputDirName = parser.getParameterValue("inputDirName");
+  ExpectedImageType::Pointer inputImage = GetDicomImageReader< ExpectedImageType >(inputDirName)->GetOutput();
+  ExpectedImageType::Pointer inputImage = GetDicomImageReader< ExpectedImageType >(inputDirName, "0008|0021")->GetOutput();
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  \param dirName This is the directory name of the DICOM image which needs to be loaded - if this is an image, the underlying path of the image is considered
+  \param seriesRestrictions The DICOM series restriction(s) based on which the reader needs to act on - defaults to MRI and perfusion and delimitor is always ','
+  */
+  template <class TImageType>
+  typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+  {
+    std::string dirName_wrap = dirName;
+    if (!cbica::isDir(dirName_wrap))
+    {
+      dirName_wrap = cbica::getFilenamePath(dirName);
+    }
+
+    typedef std::vector< std::string > SeriesIdContainer;
+    SeriesIdContainer seriesToRead = cbica::stringSplit(seriesRestrictions, ",");
+    
+    typedef itk::ImageSeriesReader< TImageType > ReaderType;
+    typename ReaderType::Pointer seriesReader = ReaderType::New();
+
+    typedef itk::GDCMImageIO ImageIOType;
+    ImageIOType::Pointer dicomIO = ImageIOType::New();
+    seriesReader->SetImageIO(dicomIO);
+    typedef itk::GDCMSeriesFileNames NamesGeneratorType;
+    NamesGeneratorType::Pointer namesGenerator = NamesGeneratorType::New();
+    namesGenerator->SetUseSeriesDetails(true);
+    for (size_t i = 0; i < seriesToRead.size(); i++)
+    {
+      namesGenerator->AddSeriesRestriction(seriesToRead[i]);
+    }
+    namesGenerator->SetInputDirectory(dirName_wrap);
+
+    const SeriesIdContainer &seriesUID = namesGenerator->GetSeriesUIDs();
+
+    SeriesIdContainer::const_iterator seriesItr = seriesUID.begin();
+    SeriesIdContainer::const_iterator seriesEnd = seriesUID.end();
+    while (seriesItr != seriesEnd)
+    {
+      std::vector< std::string > fileNames;
+      fileNames = namesGenerator->GetFileNames(seriesItr->c_str());
+      seriesReader->SetFileNames(fileNames);
+      try
+      {
+        seriesreader->Update();
+      }
+      catch (itk::ExceptionObject & err)
+      {
+        std::cerr << "Error while loading DICOM images: " << err.what() << "\n";
+      }
+      ++seriesItr;
+    }
+
+    return seriesReader;
+  }
+
+  /**
+  \brief Get the itk::Image from input dir name
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputDirName = parser.getParameterValue("inputDirName");
+  ExpectedImageType::Pointer inputImage_1 = ReadDicomImage< ExpectedImageType >(inputFileName);
+  ExpectedImageType::Pointer inputImage_2 = ReadDicomImage< ExpectedImageType >(inputDirName, "0008|0021")->GetOutput();
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  \param fName name of the image
+  \param supportedExtensions Supported extensions
+  \return itk::ImageFileReader::Pointer templated over the same as requested by user
+  */
+  template <class TImageType>
+  typename TImageType::Pointer ReadDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+  {
+    return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
+  }
+
+  /**
+  \brief Same as ReadDicomImage<>
+  */
+  template <class TImageType>
+  typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+  {
+    return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
+  }
+
+  
   /**
   \brief Write the itk::Image to the file name
 
   Usage:
   \verbatim
-  typedef itk::Image< float, 3 > ProcessedImageType;
+  typedef itk::Image< float, 3 > ComputedImageType;
   typedef itk::Image< unsigned char, 3 > WrittenImageType;
-  ProcessedImageType::Pointer outputImage = ProcessedImageType::New();
+  ComputedImageType::Pointer outputImage = ComputedImageType::New();
   outputImage = GetImageSomehow();
-  WriteImage< ProcessedImageType, WrittenImageType >(fileNameToWriteImage); 
+  WriteImage< ComputedImageType, WrittenImageType >(outputImage, fileNameToWriteImage); 
   // at this point, the image has already been written
   \endverbatim
 
@@ -113,7 +244,7 @@ namespace cbica
   \param fileName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
-  template <typename ComputedImageType, typename ExpectedImageType>
+  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
   void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
   {
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
@@ -139,4 +270,59 @@ namespace cbica
     return;
   }
 
+  /**
+  \brief Write the itk::Image to the file name
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ComputedImageType;
+  typedef itk::Image< unsigned char, 3 > WrittenImageType;
+  itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader = GetDicomImageReader< ComputedImageType >(inputDirName);
+  WriteImage< ComputedImageType, WrittenImageType >(inputImageReader, fileNameToWriteImage);
+  WriteImage< ComputedImageType >(inputImageReader, fileNameToWriteImage);
+  // at this point, the image has already been written
+  \endverbatim
+
+  \param inputImage Pointer to processed image data which is to be written
+  \param fileName File containing the image
+  \return itk::Image of specified pixel and dimension type
+  */
+  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
+  void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
+  {
+    typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput(imageToWrite);
+    castFilter->Update();
+
+    typedef typename ExpectedImageType::PixelType DicomPixelType;
+
+    typedef itk::GDCMImageIO ImageIOType;
+    ImageIOType::Pointer dicomIO = ImageIOType::New();
+
+    typedef itk::GDCMSeriesFileNames NamesGeneratorType;
+    NamesGeneratorType::Pointer namesGenerator = NamesGeneratorType::New();
+    namesGenerator->SetUseSeriesDetails(false);
+    namesGenerator->SetOutputDirectory(dirName);
+
+    const unsigned int OutputDimension = 2; // dicom images are always 2D
+    typedef itk::Image<DicomPixelType, OutputDimension> DicomImage2DType;
+    typedef itk::ImageSeriesWriter<ExpectedImageType, DicomImage2DType> SeriesWriterType;
+    SeriesWriterType::Pointer seriesWriter = SeriesWriterType::New();
+    seriesWriter->SetInput(castFilter->GetOutput());
+    seriesWriter->SetImageIO(dicomIO);
+    seriesWriter->SetFileNames(namesGenerator->GetOutputFileNames());
+    seriesWriter->SetMetaDataDictionaryArray(inputImageReader->GetMetaDataDictionaryArray());
+
+    try
+    {
+      seriesWriter->Write();
+    }
+    catch (itk::ExceptionObject &e)
+    {
+      std::cerr << "Error occurred while trying to write the image '" << dirName << "': " << e.what() << "\n";
+      exit(EXIT_FAILURE);
+    }
+
+  }
 }
