@@ -43,11 +43,11 @@ namespace cbica
   \endverbatim
 
   \param fName name of the image
-  \param supportedExtensions Supported extensions
+  \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType>
-  typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz", const std::string &delimitor = ",")
+  typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     if (supportedExtensions != "")
     {
@@ -112,11 +112,11 @@ namespace cbica
   \endverbatim
 
   \param fName name of the image
-  \param supportedExtensions Supported extensions
+  \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType>
-  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz", const std::string &delimitor = ",")
+  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
   }
@@ -125,7 +125,7 @@ namespace cbica
   \brief Same as ReadImage<>
   */
   template <class TImageType>
-  typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz", const std::string &delimitor = ",")
+  typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
   }
@@ -137,8 +137,8 @@ namespace cbica
   \verbatim
   typedef itk::Image< float, 3 > ExpectedImageType;
   std::string inputDirName = parser.getParameterValue("inputDirName");
-  ExpectedImageType::Pointer inputImage = GetDicomImageReader< ExpectedImageType >(inputDirName)->GetOutput();
-  ExpectedImageType::Pointer inputImage = GetDicomImageReader< ExpectedImageType >(inputDirName, "0008|0021")->GetOutput();
+  ExpectedImageType::Pointer inputImage = GetDicomImageReader< ExpectedImageType >(inputDirName)->GetOutput(); // reads MRI and perfusion data by default tags "0008|0021,0020|0012"
+  ExpectedImageType::Pointer inputImage = GetDicomImageReader< ExpectedImageType >(inputDirName, "0008|0021")->GetOutput(); // only reads images with tag "0008|0021"
   DoAwesomeStuffWithImage( inputImage );
   \endverbatim
 
@@ -202,8 +202,8 @@ namespace cbica
   \verbatim
   typedef itk::Image< float, 3 > ExpectedImageType;
   std::string inputDirName = parser.getParameterValue("inputDirName");
-  ExpectedImageType::Pointer inputImage_1 = ReadDicomImage< ExpectedImageType >(inputFileName);
-  ExpectedImageType::Pointer inputImage_2 = ReadDicomImage< ExpectedImageType >(inputDirName, "0008|0021")->GetOutput();
+  ExpectedImageType::Pointer inputImage_1 = ReadDicomImage< ExpectedImageType >(inputFileName); // reads MRI and perfusion data by default tags "0008|0021,0020|0012"
+  ExpectedImageType::Pointer inputImage_2 = ReadDicomImage< ExpectedImageType >(inputDirName, "0008|0021")->GetOutput(); // only reads images with tag "0008|0021"
   DoAwesomeStuffWithImage( inputImage );
   \endverbatim
 
@@ -234,9 +234,10 @@ namespace cbica
   \verbatim
   typedef itk::Image< float, 3 > ComputedImageType;
   typedef itk::Image< unsigned char, 3 > WrittenImageType;
-  ComputedImageType::Pointer outputImage = ComputedImageType::New();
-  outputImage = GetImageSomehow();
-  WriteImage< ComputedImageType, WrittenImageType >(outputImage, fileNameToWriteImage); 
+  ComputedImageType::Pointer imageToWrite = ComputedImageType::New();
+  imageToWrite = GetImageSomehow();
+  WriteImage< ComputedImageType >(imageToWrite, fileNameToWriteImage); // casts imageToWrite to WrittenImageType
+  WriteImage< ComputedImageType, WrittenImageType >(imageToWrite, fileNameToWriteImage);  // writes imageToWrite as ComputedImageType
   // at this point, the image has already been written
   \endverbatim
 
@@ -271,15 +272,16 @@ namespace cbica
   }
 
   /**
-  \brief Write the itk::Image to the file name
+  \brief Write the itk::Image as a DICOM to the specified directory
 
   Usage:
   \verbatim
   typedef itk::Image< float, 3 > ComputedImageType;
   typedef itk::Image< unsigned char, 3 > WrittenImageType;
   itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader = GetDicomImageReader< ComputedImageType >(inputDirName);
-  WriteImage< ComputedImageType, WrittenImageType >(inputImageReader, fileNameToWriteImage);
-  WriteImage< ComputedImageType >(inputImageReader, fileNameToWriteImage);
+  ComputedImageType::Pointer imageToWrite = GetImageAfterProcessing( inputImageReader->GetOutput() );
+  WriteImage< ComputedImageType, WrittenImageType >(inputImageReader, imageToWrite, dirNameToWriteImage); // casts imageToWrite to WrittenImageType
+  WriteImage< ComputedImageType >(inputImageReader, imageToWrite, dirNameToWriteImage); // writes imageToWrite as ComputedImageType
   // at this point, the image has already been written
   \endverbatim
 
@@ -291,6 +293,11 @@ namespace cbica
   template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
   void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
+    if (!cbica::isDir(dirName))
+    {
+      std::cout << "Specified directory wasn't found, creating...\n";
+      cbica::createDir(dirName);
+    }
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput(imageToWrite);
