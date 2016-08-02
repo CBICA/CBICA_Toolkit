@@ -310,10 +310,6 @@ namespace cbica
     typedef itk::GDCMImageIO ImageIOType;
     ImageIOType::Pointer dicomIO = ImageIOType::New();
     dicomIO->SetMetaDataDictionary(inputImageReader->GetMetaDataDictionary());
-    dicomIO->SetDimensions(imageToWrite->GetImageDimension()[0], imageToWrite->GetImageDimension()[1], imageToWrite->GetImageDimension()[2]);
-    dicomIO->SetDirection(imageToWrite->GetDirection());
-    dicomIO->SetOrigin(imageToWrite->GetOrigin());
-    dicomIO->SetSpacing(imageToWrite->GetSpacing());
 
     typedef itk::GDCMSeriesFileNames NamesGeneratorType;
     NamesGeneratorType::Pointer namesGenerator = NamesGeneratorType::New();
