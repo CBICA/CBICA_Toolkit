@@ -283,8 +283,9 @@ namespace cbica
   // at this point, the image has already been written
   \endverbatim
 
-  \param inputImage Pointer to processed image data which is to be written
-  \param fileName File containing the image
+  \param inputImageReader The image reader for DICOM - this is necessary to populate the DICOM dictionary properly
+  \param imageToWrite Pointer to processed image data which is to be written
+  \param dirName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
   template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
@@ -299,14 +300,14 @@ namespace cbica
 
     typedef itk::GDCMImageIO ImageIOType;
     ImageIOType::Pointer dicomIO = ImageIOType::New();
+    dicomIO->SetMetaDataDictionary(inputImageReader->GetMetaDictionary());
 
     typedef itk::GDCMSeriesFileNames NamesGeneratorType;
     NamesGeneratorType::Pointer namesGenerator = NamesGeneratorType::New();
     namesGenerator->SetUseSeriesDetails(false);
     namesGenerator->SetOutputDirectory(dirName);
 
-    const unsigned int OutputDimension = 2; // dicom images are always 2D
-    typedef itk::Image<DicomPixelType, OutputDimension> DicomImage2DType;
+    typedef itk::Image<DicomPixelType, 2> DicomImage2DType; // dicom images are always 2D
     typedef itk::ImageSeriesWriter<ExpectedImageType, DicomImage2DType> SeriesWriterType;
     SeriesWriterType::Pointer seriesWriter = SeriesWriterType::New();
     seriesWriter->SetInput(castFilter->GetOutput());
