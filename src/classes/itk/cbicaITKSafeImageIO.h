@@ -27,7 +27,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "cbicaUtilities.h"
 
-typedef itk::Image< float, 3 > ComputedImageType; // debugging purposes only
+//typedef itk::Image< float, 3 > ComputedImageType; // debugging purposes only
+//typedef itk::Image< float, 3 > TImageType; // debugging purposes only
 
 namespace cbica
 {
@@ -291,7 +292,7 @@ namespace cbica
   \param dirName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
-  template </*typename ComputedImageType, */typename ExpectedImageType = ComputedImageType>
+  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
   void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
     if (!cbica::isDir(dirName))
