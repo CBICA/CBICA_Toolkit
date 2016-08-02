@@ -307,7 +307,7 @@ namespace cbica
 
     typedef itk::GDCMImageIO ImageIOType;
     ImageIOType::Pointer dicomIO = ImageIOType::New();
-    dicomIO->SetMetaDataDictionary(inputImageReader->GetMetaDictionary());
+    dicomIO->SetMetaDataDictionary(inputImageReader->GetMetaDataDictionary());
 
     typedef itk::GDCMSeriesFileNames NamesGeneratorType;
     NamesGeneratorType::Pointer namesGenerator = NamesGeneratorType::New();
