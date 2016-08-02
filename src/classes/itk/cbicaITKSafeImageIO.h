@@ -23,10 +23,11 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageIOBase.h"
 #include "itkImageIOFactory.h"
 #include "itkGDCMImageIO.h"
+#include "itkGDCMSeriesFileNames.h"
 
 #include "cbicaUtilities.h"
 
-//typedef itk::Image< float, 3 > TImageType; // debugging purposes only
+typedef itk::Image< float, 3 > ComputedImageType; // debugging purposes only
 
 namespace cbica
 {
@@ -290,7 +291,7 @@ namespace cbica
   \param dirName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
-  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
+  template </*typename ComputedImageType, */typename ExpectedImageType = ComputedImageType>
   void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
     if (!cbica::isDir(dirName))
@@ -308,11 +309,16 @@ namespace cbica
     typedef itk::GDCMImageIO ImageIOType;
     ImageIOType::Pointer dicomIO = ImageIOType::New();
     dicomIO->SetMetaDataDictionary(inputImageReader->GetMetaDataDictionary());
+    dicomIO->SetDimensions(imageToWrite->GetImageDimension()[0], imageToWrite->GetImageDimension()[1], imageToWrite->GetImageDimension()[2]);
+    dicomIO->SetDirection(imageToWrite->GetDirection());
+    dicomIO->SetOrigin(imageToWrite->GetOrigin());
+    dicomIO->SetSpacing(imageToWrite->GetSpacing());
 
     typedef itk::GDCMSeriesFileNames NamesGeneratorType;
     NamesGeneratorType::Pointer namesGenerator = NamesGeneratorType::New();
     namesGenerator->SetUseSeriesDetails(false);
     namesGenerator->SetOutputDirectory(dirName);
+    namesGenerator->Update();
 
     typedef itk::Image<DicomPixelType, 2> DicomImage2DType; // dicom images are always 2D
     typedef itk::ImageSeriesWriter<ExpectedImageType, DicomImage2DType> SeriesWriterType;
