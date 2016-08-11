@@ -809,7 +809,7 @@ namespace cbica
   \return Position if found (-1) if not
   */
   template<typename TContainerType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = std::string
 #endif
 >
@@ -836,7 +836,7 @@ namespace cbica
   \return Templated to the type of return required
   */
   template<typename TConvertType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = int
 #endif
 >
@@ -852,7 +852,7 @@ namespace cbica
   \return Templated vector to the type of return required
   */
   template<typename TConvertType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = int
 #endif
   >

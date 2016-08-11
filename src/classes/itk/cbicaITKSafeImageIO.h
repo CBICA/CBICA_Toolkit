@@ -49,7 +49,7 @@ namespace cbica
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 > 
 #endif
 >
@@ -122,7 +122,7 @@ namespace cbica
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
       >
@@ -135,7 +135,7 @@ namespace cbica
   \brief Same as ReadImage<>
   */
   template <class TImageType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
       >
@@ -160,7 +160,7 @@ namespace cbica
   \param seriesRestrictions The DICOM series restriction(s) based on which the reader needs to act on - defaults to MRI and perfusion and delimitor is always ','
   */
   template <class TImageType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
       >
@@ -230,7 +230,7 @@ namespace cbica
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
     >
@@ -243,7 +243,7 @@ namespace cbica
   \brief Same as ReadDicomImage<>
   */
   template <class TImageType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
       >
@@ -272,7 +272,7 @@ namespace cbica
   \return itk::Image of specified pixel and dimension type
   */
   template <typename ComputedImageType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
     , typename ExpectedImageType = ComputedImageType>
@@ -321,7 +321,7 @@ namespace cbica
   \return itk::Image of specified pixel and dimension type
   */
   template <typename ComputedImageType
-#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
       , typename ExpectedImageType = ComputedImageType>
