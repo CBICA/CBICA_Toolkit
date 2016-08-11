@@ -808,7 +808,11 @@ namespace cbica
   \return True if found
   \return Position if found (-1) if not
   */
-  template<typename TContainerType = std::string>
+  template<typename TContainerType
+#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = std::string
+#endif
+>
   std::pair<bool, int> findInVector(std::vector<TContainerType> &vector_to_search_in,
     TContainerType element_to_search_for)
   {
@@ -831,7 +835,11 @@ namespace cbica
   \param input_string Input character to be converted
   \return Templated to the type of return required
   */
-  template<typename TConvertType = int>
+  template<typename TConvertType
+#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = int
+#endif
+>
   /*typename*/ TConvertType convertCharacter(const std::string &input_string)
   {
     return static_cast<TConvertType>(input_string.at(0));
@@ -843,7 +851,11 @@ namespace cbica
   \param input_string Input character to be converted
   \return Templated vector to the type of return required
   */
-  template<typename TConvertType = int>
+  template<typename TConvertType
+#ifdef (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = int
+#endif
+  >
   std::vector</*typename*/ TConvertType> convertString(const std::string &input_string)
   {
     std::vector</*typename*/TConvertType>return_vector;
