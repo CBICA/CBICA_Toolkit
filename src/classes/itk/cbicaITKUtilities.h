@@ -40,7 +40,7 @@ namespace cbica
   \param maskDefinedPerSubject If true, the mask is defined on a per-subject basis instead of per-modality
   \return An OpenCV Mat: size is [inputSubjectsAndImages[i][j]->GetLargestPossibleRegion().GetSize(), inputSubjectsAndImages[j].size()] if columnMajor is true; transpose otherwise
   */
-  template< class TImageType >
+  template< class TImageType = itk::Image< float, 3 > >
   cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages, 
     const std::vector< typename TImageType::Pointer > maskImages, 
     const bool columnMajor, const bool appendInputImagesFromSubjects, const bool maskDefinedPerSubject)
@@ -110,7 +110,7 @@ namespace cbica
   \param maskDefinedPerSubject If true, the mask is defined on a per-subject basis instead of per-modality
   \return An OpenCV Mat: size is [inputSubjectsAndImages[i][j]->GetLargestPossibleRegion().GetSize(), inputSubjectsAndImages[j].size()] if columnMajor is true; transpose otherwise
   */
-  template< class TImageType >
+  template< class TImageType = itk::Image< float, 3 > >
   cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
     const std::vector< std::vector< typename TImageType::IndexType > > maskIndeces,
     const bool appendInputImagesFromSubjects = false, const bool columnMajor = false, const bool maskDefinedPerSubject = false)
@@ -181,7 +181,7 @@ namespace cbica
   \param appendInputImagesFromSubjects If true, concatenate all image voxels together in a single column/row
   \return An OpenCV Mat: size is [inputSubjectsAndImages[i]->GetLargestPossibleRegion().GetSize(), inputSubjectsAndImages.size()] if columnMajor is true; transpose otherwise
   */
-  template< class TImageType >
+  template< class TImageType = itk::Image< float, 3 > >
   cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
     const bool columnMajor = false, const bool appendInputImagesFromSubjects = false)
   {
@@ -229,7 +229,7 @@ namespace cbica
   \param inputModalitiesAndImages A collection of images which are stored in a per-modality basis
   \return A collection of indeces which constitute the non-zero locations per modality
   */
-  template< class TImageType >
+  template< class TImageType = itk::Image< float, 3 > >
   std::vector< std::vector< typename TImageType::IndexType > > createMaskIndeces(const std::vector< std::vector< typename TImageType::Pointer > > &inputModalitiesAndImages)
   {
     std::vector< std::vector< typename TImageType::IndexType > > returnMaskIndeces;
@@ -294,7 +294,7 @@ namespace cbica
   \param inputVector The vector to normalize
   \return The normalized vector
   */
-  template< typename TDataType >
+  template< typename TDataType = double >
   std::vector< TDataType > L2normalize(const std::vector< TDataType > &inputVector)
   {
     std::vector< TDataType > returnVector;
@@ -377,7 +377,7 @@ namespace cbica
   \param indeced The indeces from which pixel values need to be extracted
   \return Vector of values whose data type is the same as image type
   */
-  template < typename TImageType>
+  template < typename TImageType = itk::Image< float, 3 > >
   std::vector< typename TImageType::PixelType > extractPixelValues(const typename TImageType::Pointer inputImage, const std::vector< itk::Index<TImageType::ImageDimension> > &indeces)
   {
     std::vector< typename TImageType::PixelType > returnVector;

@@ -808,7 +808,7 @@ namespace cbica
   \return True if found
   \return Position if found (-1) if not
   */
-  template<typename TContainerType>
+  template<typename TContainerType = std::string>
   std::pair<bool, int> findInVector(std::vector<TContainerType> &vector_to_search_in,
     TContainerType element_to_search_for)
   {
@@ -831,7 +831,7 @@ namespace cbica
   \param input_string Input character to be converted
   \return Templated to the type of return required
   */
-  template<typename TConvertType>
+  template<typename TConvertType = int>
   /*typename*/ TConvertType convertCharacter(const std::string &input_string)
   {
     return static_cast<TConvertType>(input_string.at(0));
@@ -843,7 +843,7 @@ namespace cbica
   \param input_string Input character to be converted
   \return Templated vector to the type of return required
   */
-  template<typename TConvertType>
+  template<typename TConvertType = int>
   std::vector</*typename*/ TConvertType> convertString(const std::string &input_string)
   {
     std::vector</*typename*/TConvertType>return_vector;
@@ -857,7 +857,7 @@ namespace cbica
   /**
   \brief Base for compareEqual(...)
   */
-  template <typename A, typename B>
+  template <typename A = int, typename B = A>
   inline bool compareEqual(const A x, const B y)
   {
     return (x == y);
@@ -866,7 +866,7 @@ namespace cbica
   /**
   \brief Compare if equal for multiple inputs
   */
-  template <typename A, typename B, typename... Others>
+  template <typename A = int, typename B = A, typename... Others>
   bool compareEqual(const A x, const B y, Others const ... args)
   {
     return (x == y) && compareEqual(y, args...);
@@ -875,7 +875,7 @@ namespace cbica
   /**
   \brief Base for compareGreater(...)
   */
-  template <typename A, typename B>
+  template <typename A = int, typename B = A>
   inline bool compareGreater(const A x, const B y)
   {
     return (x > y);
@@ -884,7 +884,7 @@ namespace cbica
   /**
   \brief Compare if greater for multiple inputs
   */
-  template <typename A, typename B, typename... Others>
+  template <typename A = int, typename B = A, typename... Others>
   bool compareGreater(const A x, const B y, Others const ... args)
   {
     return (x > y) && compareGreater(y, args...);
@@ -893,7 +893,7 @@ namespace cbica
   /**
   \brief Base for compareLesser(...)
   */
-  template <typename A, typename B>
+  template <typename A = int, typename B = A>
   inline bool compareLesser(const A x, const B y)
   {
     return (x < y);
@@ -902,7 +902,7 @@ namespace cbica
   /**
   \brief Compare if lesser for multiple inputs
   */
-  template <typename A, typename B, typename... Others>
+  template <typename A = int, typename B = A, typename... Others>
   bool compareLesser(const A x, const B y, Others const ... args)
   {
     return (x < y) && compareLesser(y, args...);

@@ -48,7 +48,7 @@ namespace cbica
   \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
-  template <class TImageType>
+  template <class TImageType = itk::Image< float, 3 > >
   typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     if (supportedExtensions != "")
@@ -117,7 +117,7 @@ namespace cbica
   \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
-  template <class TImageType>
+  template <class TImageType = itk::Image< float, 3 >>
   typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
@@ -126,7 +126,7 @@ namespace cbica
   /**
   \brief Same as ReadImage<>
   */
-  template <class TImageType>
+  template <class TImageType = itk::Image< float, 3 >>
   typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
@@ -147,7 +147,7 @@ namespace cbica
   \param dirName This is the directory name of the DICOM image which needs to be loaded - if this is an image, the underlying path of the image is considered
   \param seriesRestrictions The DICOM series restriction(s) based on which the reader needs to act on - defaults to MRI and perfusion and delimitor is always ','
   */
-  template <class TImageType>
+  template <class TImageType = itk::Image< float, 3 >>
   typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     std::string dirName_wrap = dirName;
@@ -213,7 +213,7 @@ namespace cbica
   \param supportedExtensions Supported extensions
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
-  template <class TImageType>
+  template <class TImageType = itk::Image< float, 3 >>
   typename TImageType::Pointer ReadDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
@@ -222,7 +222,7 @@ namespace cbica
   /**
   \brief Same as ReadDicomImage<>
   */
-  template <class TImageType>
+  template <class TImageType = itk::Image< float, 3 >>
   typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
@@ -247,7 +247,7 @@ namespace cbica
   \param fileName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
-  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
+  template <typename ComputedImageType = itk::Image< float, 3 >, typename ExpectedImageType = ComputedImageType>
   void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
   {
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
@@ -292,7 +292,7 @@ namespace cbica
   \param dirName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
-  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
+  template <typename ComputedImageType = itk::Image< float, 3 >, typename ExpectedImageType = ComputedImageType>
   void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
     if (!cbica::isDir(dirName))
