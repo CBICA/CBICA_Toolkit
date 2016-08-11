@@ -34,50 +34,55 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 namespace cbica
 {
-  CmdParser::CmdParser(int argc, char **argv, const std::string &exe_name /*= ""*/)
+  void CmdParser::initializeClass(int &input_argc, std::vector< std::string > &input_argv, const std::string &input_exeName)
   {
 #ifdef PROJECT_VERSION
     m_version = PROJECT_VERSION;
 #else
     m_version = 0.1.0;
 #endif    
-    if (exe_name == "")
+    if (input_exeName.empty())
     {
       m_exeName = cbica::getExecutableName();
     }
     else
     {
-      m_exeName = exe_name;
+      m_exeName = input_exeName;
     }
+
+    m_argc = input_argc;
+    m_argv = input_argv;
+
     m_maxLength = 0;
     checkMaxLen = false;
     helpRequested = false;
     m_exampleOfUsage = "";
-
-    m_argc = argc;
-    m_argv = argv;
 
     m_optionalParameters.push_back(Parameter("u", "usage", cbica::Parameter::NONE, "", "Prints basic usage message.", "", "", "", ""));
     m_optionalParameters.push_back(Parameter("h", "help", cbica::Parameter::NONE, "", "Prints verbose usage information.", "", "", "", ""));
     m_optionalParameters.push_back(Parameter("v", "version", cbica::Parameter::NONE, "", "Prints information about software version.", "", "", "", ""));
   }
 
-  CmdParser::CmdParser(int argc, const char **argv, const std::string &exe_name /*= ""*/)
+  CmdParser::CmdParser(int argc, char **argv, const std::string &exe_name)
   {
-    char *argv2[FILENAME_MAX];
-    //*argv[0] = " ";
-    //*argv[1] = "1";
+    if (m_argv.empty())
+    {
+      for (int i = 0; i < argc; i ++)
+      {
+        m_argv.push_back(std::string(argv[i]));
+      }
+    }
+
+    initializeClass(argc, m_argv, exe_name);
+  }
+
+  CmdParser::CmdParser(int argc, const char **argv, const std::string &exe_name)
+  {
     for (int i = 0; i < argc; i++)
     {
-      argv2[i] =
-#ifdef _WIN32
-        _strdup
-#else
-        strdup
-#endif    
-      (argv[i]);
+      m_argv.push_back(std::string(argv[i]));
     }
-    CmdParser(argc, argv2, exe_name);
+    initializeClass(argc, m_argv, exe_name);
   }
 
   CmdParser::~CmdParser()
@@ -383,32 +388,35 @@ namespace cbica
       {
         getMaxLength();
       }
-      verbose_check(inputParamToCheck);
-      if ((inputParamToCheck == "u") || (inputParamToCheck == "h") || (inputParamToCheck == "v"))
+      if (inputParamToCheck[0] == '-')
       {
-        helpRequested = true;
-        position = i;
-        //return true;
-      }
+        verbose_check(inputParamToCheck);
+        if ((inputParamToCheck == "u") || (inputParamToCheck == "h") || (inputParamToCheck == "v"))
+        {
+          helpRequested = true;
+          position = i;
+          //return true;
+        }
 
-      if (inputParamToCheck == execParamToCheck_wrap)
-      {
-        position = i;
-        return true;
-      }
-      else
-      {
-        std::string inputCheck, execCheck;
-        const unsigned int minLength = static_cast<unsigned int>(std::max(
-          inputParamToCheck.length(), execParamToCheck_wrap.length()));
-
-        inputCheck = internal_compare(inputParamToCheck, minLength);
-        execCheck = internal_compare(execParamToCheck_wrap, minLength);
-
-        if (inputCheck == execCheck)
+        if (inputParamToCheck == execParamToCheck_wrap)
         {
           position = i;
           return true;
+        }
+        else
+        {
+          std::string inputCheck, execCheck;
+          const unsigned int minLength = static_cast<unsigned int>(std::max(
+            inputParamToCheck.length(), execParamToCheck_wrap.length()));
+
+          inputCheck = internal_compare(inputParamToCheck, minLength);
+          execCheck = internal_compare(execParamToCheck_wrap, minLength);
+
+          if (inputCheck == execCheck)
+          {
+            position = i;
+            return true;
+          }
         }
       }
     }
@@ -607,7 +615,7 @@ namespace cbica
     int position;
     if (compareParameter(execParamToCheck, position))
     {
-      parameterValue = std::atoi(m_argv[position + 1]); // return value is an integer
+      parameterValue = std::atoi(m_argv[position + 1].c_str()); // return value is an integer
       return;
     }
     else
@@ -628,7 +636,7 @@ namespace cbica
     int position;
     if (compareParameter(execParamToCheck, position))
     {
-      parameterValue = static_cast<float>(std::atof(m_argv[position + 1])); // return value is a float
+      parameterValue = static_cast<float>(std::atof(m_argv[position + 1].c_str())); // return value is a float
       return;
     }
     else

@@ -292,7 +292,7 @@ namespace cbica
     //! CMD variable, used to ensure that 'const' based variables are taken into consideration
     int m_argc;
     //! CMD variable, used to ensure that 'const' based variables are taken into consideration
-    char **m_argv;
+    std::vector< std::string > m_argv;
     //! Collection of required and optional parameters
     std::vector< Parameter > m_requiredParameters, m_optionalParameters;
     //! Max length of parameters for echoUsage()
@@ -301,6 +301,8 @@ namespace cbica
     bool checkMaxLen;
     //! Flag to check for requested help/usage
     bool helpRequested;
+    //! Initialize the class
+    inline void initializeClass(int &input_argc, std::vector< std::string > &input_argv, const std::string &input_exeName = "");
     //! Get max length
     inline void getMaxLength();
     //! Internal function to check for verbose parameter
