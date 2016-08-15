@@ -50,10 +50,10 @@ namespace cbica
   */
   template <class TImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 > 
+    = itk::Image< float, 3 >
 #endif
 >
-  typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     if (supportedExtensions != "")
     {
@@ -81,9 +81,9 @@ namespace cbica
     im_base->ReadImageInformation();
 
     // perform basic sanity check
-    if (im_base->GetNumberOfDimensions() != typename TImageType::ImageDimension)
+    if (im_base->GetNumberOfDimensions() != TImageType::ImageDimension)
     {
-      std::cerr << "Image Dimension mismatch. Return image is expected to be '" << typename TImageType::ImageDimension <<
+      std::cerr << "Image Dimension mismatch. Return image is expected to be '" << TImageType::ImageDimension <<
         "'D and doesn't match the image dimension read from the input file, which is '" << im_base->GetNumberOfDimensions() << "'.\n";
       exit(EXIT_FAILURE);
     }
@@ -104,7 +104,7 @@ namespace cbica
 
     return reader;
   }
-  
+
   /**
   \brief Get the itk::Image from input file name
 
@@ -126,7 +126,7 @@ namespace cbica
     = itk::Image< float, 3 >
 #endif
       >
-  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+      typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
   }
@@ -139,14 +139,14 @@ namespace cbica
     = itk::Image< float, 3 >
 #endif
       >
-  typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+      typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
   }
 
   /**
   \brief Get the Dicom image reader (not the image, the READER). This is useful for scenarios where reader meta information is needed for later writing step(s).
-  
+
   Usage:
   \verbatim
   typedef itk::Image< float, 3 > ExpectedImageType;
@@ -164,7 +164,7 @@ namespace cbica
     = itk::Image< float, 3 >
 #endif
       >
-  typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+      typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     std::string dirName_wrap = dirName;
     if (!cbica::isDir(dirName_wrap))
@@ -174,7 +174,7 @@ namespace cbica
 
     typedef std::vector< std::string > SeriesIdContainer;
     SeriesIdContainer seriesToRead = cbica::stringSplit(seriesRestrictions, ",");
-    
+
     typedef itk::ImageSeriesReader< TImageType > ReaderType;
     typename ReaderType::Pointer seriesReader = ReaderType::New();
 
@@ -201,7 +201,7 @@ namespace cbica
       seriesReader->SetFileNames(fileNames);
       try
       {
-        seriesreader->Update();
+        seriesReader->Update();
       }
       catch (itk::ExceptionObject & err)
       {
@@ -234,7 +234,7 @@ namespace cbica
     = itk::Image< float, 3 >
 #endif
     >
-  typename TImageType::Pointer ReadDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+    typename TImageType::Pointer ReadDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
   }
@@ -247,12 +247,12 @@ namespace cbica
     = itk::Image< float, 3 >
 #endif
       >
-  typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+      typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
   }
 
-  
+
   /**
   \brief Write the itk::Image to the file name
 
@@ -275,11 +275,15 @@ namespace cbica
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
-    , typename ExpectedImageType = ComputedImageType>
-  void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
+    , typename ExpectedImageType
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = ComputedImageType
+#endif
+>
+void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
   {
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
-    typename CastFilterType::Pointer filter = CastFilterType::New();    
+    typename CastFilterType::Pointer filter = CastFilterType::New();
     filter->SetInput(imageToWrite);
     filter->Update();
 
@@ -324,8 +328,12 @@ namespace cbica
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
-      , typename ExpectedImageType = ComputedImageType>
-  void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
+    , typename ExpectedImageType
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = ComputedImageType
+#endif
+>
+void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
     if (!cbica::isDir(dirName))
     {
@@ -351,7 +359,7 @@ namespace cbica
 
     typedef itk::Image<DicomPixelType, 2> DicomImage2DType; // dicom images are always 2D
     typedef itk::ImageSeriesWriter<ExpectedImageType, DicomImage2DType> SeriesWriterType;
-    SeriesWriterType::Pointer seriesWriter = SeriesWriterType::New();
+    typename SeriesWriterType::Pointer seriesWriter = SeriesWriterType::New();
     seriesWriter->SetInput(castFilter->GetOutput());
     seriesWriter->SetImageIO(dicomIO);
     seriesWriter->SetFileNames(namesGenerator->GetOutputFileNames());
