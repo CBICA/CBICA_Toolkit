@@ -243,6 +243,16 @@ namespace cbica
     void exampleUsage(const std::string &usageOfExe);
 
     /**
+    \brief Get the value of the parameter as string
+
+    Can search using both laconic and verbose parameters. This function is the most generic use-case to get the parameter value.
+
+    \param execParamToCheck The laconic or verbose variant of the parameter
+    \return Passed value in the command line corresponding to execParamToCheck
+    */
+    std::string GetParameterValueAsString(const std::string &execParamToCheck);
+
+    /**
     \brief Get the value of the parameter
 
     Can search using both laconic and verbose parameters.

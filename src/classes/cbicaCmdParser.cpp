@@ -673,6 +673,19 @@ namespace cbica
     }
   }
 
+  std::string CmdParser::GetParameterValueAsString(const std::string &execParamToCheck)
+  {
+    int position;
+    if (compareParameter(execParamToCheck, position))
+    {
+      return m_argv[position + 1]; // return value is a string
+    }
+    else
+    {
+      return "";
+    }
+  }
+
   void CmdParser::exampleUsage(const std::string &usageOfExe)
   {
     m_exampleOfUsage = usageOfExe;
