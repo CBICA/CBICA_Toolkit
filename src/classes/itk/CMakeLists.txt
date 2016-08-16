@@ -119,6 +119,5 @@ INSTALL(
 
 IF( BUILD_TESTING )
 	ENABLE_TESTING()
-  #MESSAGE( STATUS "itk testing enabled" )
   ADD_SUBDIRECTORY( testing )
 ENDIF()

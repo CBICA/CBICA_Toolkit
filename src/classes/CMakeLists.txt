@@ -48,20 +48,11 @@ SET( CBICA_Sources  ${CBICA_Sources} CACHE STRING "Basic sources" FORCE )
 SET( BASIC_CLASS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Basic classes directory" FORCE )
 SET( BASIC_CLASS_LIBRARY ${CBICA_LIB_NAME} CACHE STRING "Basic classes library" FORCE )
 
-# build static lib for Windows and shared lib for Unix: why?
-IF(WIN32)
-  ADD_LIBRARY( ${CBICA_LIB_NAME}
-        ${ExtraSources}
-        ${CBICA_Headers}
-        ${CBICA_Sources}
-  )
-ELSE()
-  ADD_LIBRARY( ${CBICA_LIB_NAME} SHARED
-        ${ExtraSources}
-        ${CBICA_Headers}
-        ${CBICA_Sources}
-  )
-ENDIF()
+ADD_LIBRARY( ${CBICA_LIB_NAME}
+  ${ExtraSources}
+  ${CBICA_Headers}
+  ${CBICA_Sources}
+)
 
 SET_PROPERTY( GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -87,13 +78,11 @@ INSTALL(
 
 IF( BUILD_TESTING )
 	ENABLE_TESTING()
-  #MESSAGE( STATUS "basic testing enabled" )
   ADD_SUBDIRECTORY( testing )
 ENDIF()
 
 # add ITK classes and implementations if BUILD_CBICA_ITK_CLASSES is enabled
 IF( BUILD_CBICA_ITK_CLASSES )	
-  #MESSAGE( STATUS "Building itk classes..." )
   ADD_SUBDIRECTORY( itk )
 ENDIF( BUILD_CBICA_ITK_CLASSES )
 
