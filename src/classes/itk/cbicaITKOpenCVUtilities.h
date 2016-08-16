@@ -1,7 +1,7 @@
 /**
-\file  cbicaITKUtilities.h
+\file  cbicaITKOpenCVUtilities.h
 
-\brief Some basic utility functions.
+\brief Some basic utility functions to be used along with OpenCV.
 
 Dependecies: ITK, OpenCV, OpenMP
 

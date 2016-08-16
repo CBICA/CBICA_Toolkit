@@ -149,7 +149,7 @@ namespace cbica
   std::string GetMD5Sum(const std::string &fileName)
   {
     gdcm::MD5 md5Computer;
-    char digStr[_MAX_PATH];
+    char digStr[MAX_PATH];
     md5Computer.ComputeFile(fileName.c_str(), digStr);
     return std::string(digStr);
   }

@@ -1,5 +1,5 @@
 /**
-\file  cbicaDtiRecon.h
+\file  cbicaITKDtiRecon.h
 
 \brief Declaration of DtiRecon
  
