@@ -40,7 +40,11 @@ namespace cbica
   \param maskDefinedPerSubject If true, the mask is defined on a per-subject basis instead of per-modality
   \return An OpenCV Mat: size is [inputSubjectsAndImages[i][j]->GetLargestPossibleRegion().GetSize(), inputSubjectsAndImages[j].size()] if columnMajor is true; transpose otherwise
   */
-  template< class TImageType = itk::Image< float, 3 > >
+  template< class TImageType
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = itk::Image< float, 3 >
+#endif
+  >
   cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages, 
     const std::vector< typename TImageType::Pointer > maskImages, 
     const bool columnMajor, const bool appendInputImagesFromSubjects, const bool maskDefinedPerSubject)
@@ -110,7 +114,11 @@ namespace cbica
   \param maskDefinedPerSubject If true, the mask is defined on a per-subject basis instead of per-modality
   \return An OpenCV Mat: size is [inputSubjectsAndImages[i][j]->GetLargestPossibleRegion().GetSize(), inputSubjectsAndImages[j].size()] if columnMajor is true; transpose otherwise
   */
-  template< class TImageType = itk::Image< float, 3 > >
+  template< class TImageType
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = itk::Image< float, 3 >
+#endif
+  >
   cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
     const std::vector< std::vector< typename TImageType::IndexType > > maskIndeces,
     const bool appendInputImagesFromSubjects = false, const bool columnMajor = false, const bool maskDefinedPerSubject = false)
@@ -181,7 +189,11 @@ namespace cbica
   \param appendInputImagesFromSubjects If true, concatenate all image voxels together in a single column/row
   \return An OpenCV Mat: size is [inputSubjectsAndImages[i]->GetLargestPossibleRegion().GetSize(), inputSubjectsAndImages.size()] if columnMajor is true; transpose otherwise
   */
-  template< class TImageType = itk::Image< float, 3 > >
+  template< class TImageType
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = itk::Image< float, 3 >
+#endif
+  >
   cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
     const bool columnMajor = false, const bool appendInputImagesFromSubjects = false)
   {
@@ -224,77 +236,16 @@ namespace cbica
   }
 
   /**
-  \brief Calculate and preserve the mask indeces
-
-  \param inputModalitiesAndImages A collection of images which are stored in a per-modality basis
-  \return A collection of indeces which constitute the non-zero locations per modality
-  */
-  template< class TImageType = itk::Image< float, 3 > >
-  std::vector< std::vector< typename TImageType::IndexType > > createMaskIndeces(const std::vector< std::vector< typename TImageType::Pointer > > &inputModalitiesAndImages)
-  {
-    std::vector< std::vector< typename TImageType::IndexType > > returnMaskIndeces;
-    returnMaskIndeces.resize(inputModalitiesAndImages.size());
-
-    // start data processing
-    // made parallel for efficiency
-    int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
-    threads > inputModalitiesAndImages.size() ? threads = inputModalitiesAndImages.size() : threads = threads;
-#pragma omp parallel for num_threads(threads)
-    for (int i = 0; i < inputModalitiesAndImages.size(); i++)
-    {
-      VectorType means;
-      std::vector< typename TImageType::IndexType > tempIndeces;
-      TImageType::SizeType size = inputModalitiesAndImages[i][0]->GetLargestPossibleRegion().GetSize();
-      size_t totalImageSize = size[0] * size[1] * size[2];
-      means.resize(totalImageSize);
-      //std::fill(means.begin(), means.end(), 0);
-      means.assign(totalImageSize, 0);
-
-      for (size_t j = 0; j < inputModalitiesAndImages[i].size(); j++)
-      {
-        VectorType tempVec;
-        itk::ImageRegionIterator< TImageType > it(inputModalitiesAndImages[i][j], inputModalitiesAndImages[i][j]->GetLargestPossibleRegion());
-        it.GoToBegin();
-
-        while (!it.IsAtEnd())
-        {
-          tempVec.push_back(it.Get());
-          tempIndeces.push_back(it.GetIndex());
-          ++it;
-        }
-        if (tempVec.size() == means.size())
-        {
-          std::transform(means.begin(), means.end(), tempVec.begin(), means.begin(), std::plus< float >()); // add tempVec to means dector
-        }
-        else
-        {
-          std::cerr << "Mean vector calculation error.\n";
-          exit(EXIT_FAILURE);
-        }
-      } // loop over all subjects in each modality
-
-      //std::transform(means.begin(), means.end(), means.begin(), std::bind1st(std::divides< float >(), means.size())); // divide entire means vector by its size
-      std::vector< typename TImageType::IndexType > tempMaskIndeces;
-      for (size_t j = 0; j < means.size(); j++)
-      {
-        if (means[j] > 0)
-        {
-          tempMaskIndeces.push_back(tempIndeces[j]); // store indeces of non-zero mean values
-        }
-      }
-      returnMaskIndeces[i] = tempMaskIndeces;
-    } // loop over all modalities
-
-    return returnMaskIndeces;
-  }
-
-  /**
   \brief Normalize a vector based on its L2 norm
 
   \param inputVector The vector to normalize
   \return The normalized vector
   */
-  template< typename TDataType = double >
+  template< typename TDataType
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = double
+#endif
+  >
   std::vector< TDataType > L2normalize(const std::vector< TDataType > &inputVector)
   {
     std::vector< TDataType > returnVector;
@@ -313,7 +264,7 @@ namespace cbica
   /**
   \brief Wrap of OpenCV's multiply function
   */
-  cv::Mat multiply(const cv::Mat &input1, const cv::Mat &input2)
+  cv::Mat Multiply(const cv::Mat &input1, const cv::Mat &input2)
   {
     cv::Mat returnMat;
     cv::multiply(input1, input2, returnMat);
@@ -323,7 +274,7 @@ namespace cbica
   /**
   \brief Wrap of OpenCV's multiply function
   */
-  cv::Mat multiply(const cv::Mat &input1, const double input2)
+  cv::Mat Multiply(const cv::Mat &input1, const double input2)
   {
     cv::Mat returnMat;
     cv::multiply(input1, input2, returnMat);
@@ -333,7 +284,7 @@ namespace cbica
   /**
   \brief Wrap of OpenCV's add function
   */
-  cv::Mat add(const cv::InputArray &input1, const cv::InputArray &input2)
+  cv::Mat Add(const cv::InputArray &input1, const cv::InputArray &input2)
   {
     cv::Mat returnMat;
     cv::add(input1, input2, returnMat);
@@ -343,7 +294,7 @@ namespace cbica
   /**
   \brief Wrap of OpenCV's invert function
   */
-  cv::Mat invert(const cv::InputArray &input)
+  cv::Mat Invert(const cv::InputArray &input)
   {
     cv::Mat returnMat;
     cv::invert(input, returnMat);
@@ -353,7 +304,7 @@ namespace cbica
   /**
   \brief Wrap of OpenCV's transpose function
   */
-  cv::Mat transpose(const cv::InputArray &input)
+  cv::Mat Transpose(const cv::InputArray &input)
   {
     cv::Mat returnMat;
     cv::transpose(input, returnMat);
@@ -363,47 +314,10 @@ namespace cbica
   /**
   \brief Wrap of OpenCV's subtract function
   */
-  cv::Mat subtract(const cv::InputArray &input1, const cv::InputArray &input2)
+  cv::Mat Subtract(const cv::InputArray &input1, const cv::InputArray &input2)
   {
     cv::Mat returnMat;
     cv::subtract(input1, input2, returnMat);
     return returnMat;
-  }
-
-  /**
-  \brief Get Pixel Values of specified indeces of input Image
-
-  \param inputImage The input image in itk::Image format
-  \param indeced The indeces from which pixel values need to be extracted
-  \return Vector of values whose data type is the same as image type
-  */
-  template < typename TImageType = itk::Image< float, 3 > >
-  std::vector< typename TImageType::PixelType > extractPixelValues(const typename TImageType::Pointer inputImage, const std::vector< itk::Index<TImageType::ImageDimension> > &indeces)
-  {
-    std::vector< typename TImageType::PixelType > returnVector;
-    returnVector.resize(indeces.size());
-
-    typedef itk::ImageRegionIterator< TImageType > IteratorType;
-    IteratorType imageIterator(inputImage, inputImage->GetBufferedRegion());
-
-    // made parallel for efficiency
-    int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
-    threads > returnVector.size() ? threads = returnVector.size() : threads = threads;
-#pragma omp parallel for num_threads(threads)
-    for (int i = 0; i < returnVector.size(); i++)
-    {
-      imageIterator.SetIndex(indeces[i]);
-      returnVector[i] = imageIterator.Get();
-    }
-
-    return returnVector;
-  }
-
-  std::string computeMD5Sum(const std::string &fileName)
-  {
-    gdcm::MD5 md5Computer;
-    char digStr[_MAX_PATH];
-    md5Computer.ComputeFile(fileName.c_str(), digStr);
-    return std::string(digStr);
   }
 }
