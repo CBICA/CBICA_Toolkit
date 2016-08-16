@@ -22,21 +22,6 @@ SET(README_FILE  "${PROJECT_SOURCE_DIR}/README.txt")
 SET(PROJECT_DOMAIN "https://www.cbica.upenn.edu/sbia/software/")
 SET(PROJECT_CONTACT "software@cbica.upenn.edu")
 
-## Super build
-#SET( BUILD_ITK OFF CACHE BOOL "Do you want to build ITK from source (needs Git)?" )
-#IF( BUILD_ITK )
-#  INCLUDE( ${CMAKE_SOURCE_DIR}/cmake/Superbuild.cmake )
-#ENDIF()
-
-#SET( Boost_FIND_QUIETLY TRUE )
-#SET( Boost_USE_MULTITHREADED TRUE )
-#SET( Boost_USE_STATIC FALSE )
-#FIND_PACKAGE( Boost REQUIRED 
-#	COMPONENTS program_options
-#	)
-#ADD_DEFINITIONS("-DHAS_BOOST")
-#LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-
 # ensure OpenMP flag is enabled throughout the project 
 FIND_PACKAGE(OpenMP REQUIRED)
 SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
@@ -135,26 +120,6 @@ INCLUDE_DIRECTORIES(
 )
 
 SET( EXE_NAME ${PROJECT_NAME} CACHE STRING "Executable name" FORCE)
-
-#ADD_EXECUTABLE( 
-#	${EXE_NAME} 
-#	${MainSources} 
-#	${SOURCE_DIRECTORY}/main.cxx
-#)
-
-## Add c++11 flag to compilation if GCC is detected under UNIX: how does this translate to MinGW/Cygwin??
-IF(CMAKE_COMPILER_IS_GNUCXX)
-	#INCLUDE( CheckCXXCompilerFlag )
-	#CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-	#CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-	#IF( COMPILER_SUPPORTS_CXX11 )
-	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	#ELSEIF(COMPILER_SUPPORTS_CXX0X )
-	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-	#ELSE()
-	#	MESSAGE(ERROR " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-	#ENDIF()
-ENDIF(CMAKE_COMPILER_IS_GNUCXX) 
 
 SET( PACKAGE_NAME ${PROJECT_NAME} )
 
