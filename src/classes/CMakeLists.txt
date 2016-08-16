@@ -70,20 +70,6 @@ SET_TARGET_PROPERTIES( ${CBICA_LIB_NAME} PROPERTIES FOLDER "CBICA_Toolkit")
 SET(CMAKE_DEBUG_POSTFIX "d")
 # OR set_target_properties(mylib PROPERTIES DEBUG_POSTFIX "d")
 
-## Add c++11 flag to compilation if GCC is detected under UNIX: how does this translate to MinGW/Cygwin??
-IF(CMAKE_COMPILER_IS_GNUCXX)
-	#INCLUDE( CheckCXXCompilerFlag )
-	#CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-	#CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-	#IF( COMPILER_SUPPORTS_CXX11 )
-	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	#ELSEIF(COMPILER_SUPPORTS_CXX0X )
-	#	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-	#ELSE()
-	#	MESSAGE(ERROR " The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-	#ENDIF()
-ENDIF(CMAKE_COMPILER_IS_GNUCXX) 
-
 # keep source files structured as folders for clarity
 SOURCE_GROUP( Basic_Headers FILES ${CBICA_Headers})
 SOURCE_GROUP( Basic_Sources FILES ${CBICA_Sources})
