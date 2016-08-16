@@ -31,7 +31,6 @@ ENDIF( WIN32 )
 # select all headers. it is manual addition for the explicit reason of view-ability (can be made automatic in a future build)
 SET( CBICA_Headers
 	${CMAKE_CURRENT_SOURCE_DIR}/cbicaLogging.h
-	${CMAKE_CURRENT_SOURCE_DIR}/cbicaMacros.h
 	${CMAKE_CURRENT_SOURCE_DIR}/cbicaUtilities.h
 	${CMAKE_CURRENT_SOURCE_DIR}/cbicaCmdParser.h
 )
