@@ -512,7 +512,7 @@ namespace cbica
   /**
   \brief Gets the extension of the supplied file name using splitFileName()
 
-  Prefer to use "/" as file path deliminators.
+  Prefer to use "/" as file path delimiter.
 
   \param filename The input filename
   \param checkFile Checks existence of file using fileExists
@@ -523,7 +523,7 @@ namespace cbica
   /**
   \brief Gets the base of the supplied file name using splitFileName()
 
-  Prefer to use "/" as file path deliminators.
+  Prefer to use "/" as file path delimiter.
 
   \param filename The input filename
   \param checkFile Checks existence of file using fileExists
@@ -534,7 +534,7 @@ namespace cbica
   /**
   \brief Gets the path of the supplied file name using splitFileName()
 
-  Prefer to use "/" as file path deliminators.
+  Prefer to use "/" as file path delimiter.
 
   \param filename The input filename
   \param checkFile Checks existence of file using fileExists
