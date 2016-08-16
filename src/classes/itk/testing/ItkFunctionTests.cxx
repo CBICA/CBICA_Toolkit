@@ -33,6 +33,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkNormalizeImageFilter.h"
 #include "itkResampleImageFilter.h"
 #include "itkImageFileWriter.h"
+#include "itkMinimumMaximumImageCalculator.h"
 
 int main(int argc, char** argv)
 {
@@ -67,6 +68,11 @@ int main(int argc, char** argv)
     typedef itk::Image<ExpectedPixelType, 3> ExpectedImageType;
     ExpectedImageType::Pointer inputImage = cbica::ReadImage<ExpectedImageType>(inputFile);
 
+    typedef itk::MinimumMaximumImageCalculator< ExpectedImageType > CalculatorType;
+    CalculatorType::Pointer calculator = CalculatorType::New();
+    calculator->SetImage(inputImage);
+    calculator->Compute();
+
     if (inputImage->GetImageDimension() == 0)
       return EXIT_FAILURE;
     for (size_t i = 0; i < inputImage->GetImageDimension(); i++)
@@ -75,6 +81,10 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
       if (inputImage->GetSpacing()[i] == 0)
         return EXIT_FAILURE;
+    }
+    if (calculator->GetMaximum() == 0)
+    {
+      return EXIT_FAILURE;
     }
   }
 
