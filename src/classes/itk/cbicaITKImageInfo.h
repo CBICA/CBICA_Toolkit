@@ -56,21 +56,21 @@ namespace cbica
     
     \return An itk::ImageIOBase which is overwritten with information
     */
-    itk::SmartPointer<itk::ImageIOBase> getImageIOBase();
+    itk::SmartPointer<itk::ImageIOBase> GetImageIOBase();
     
     /**
     \brief Get the Size of the specified image
     
     \return A vector of itk::SizeValueType which gets overwritten with information
     */
-    std::vector<itk::SizeValueType> getImageSize();
+    std::vector<itk::SizeValueType> GetImageSize();
     
     /**
     \brief Get the dimensions of the specified image
     
     \return A const unsigned int with the number of dimensions of the image
     */
-    const unsigned int getImageDimensions()
+    const unsigned int GetImageDimensions()
     { 
       m_dimensions = m_itkImageIOBase->GetNumberOfDimensions(); 
       return m_itkImageIOBase->GetNumberOfDimensions();
@@ -81,35 +81,35 @@ namespace cbica
     
     \return A vector of double which gets overwritten with information
     */
-    std::vector<double> getImageSpacings();
+    std::vector<double> GetImageSpacings();
     
     /**
     \brief Get the type of pixel in the image as a string
 
     \return Pixel type as a std::string
     */
-    std::string getComponentTypeAsString();
+    std::string GetComponentTypeAsString();
     
     /**
     \brief Get the type of pixel in the image as an itk IOComponentType
 
     \return Pixel type as an itk IOComponentType
     */
-    itk::ImageIOBase::IOComponentType getComponentType();
+    itk::ImageIOBase::IOComponentType GetComponentType();
     
     /**
     \brief Get the type of pixel in the image as an itk IOComponentType
 
     \return Pixel type as an itk IOComponentType
     */
-    std::string getPixelTypeAsString();
+    std::string GetPixelTypeAsString();
 
     /**
     \brief Get the type of pixel in the image as an itk IOComponentType
 
     \return Pixel type as an itk IOComponentType
     */
-    itk::ImageIOBase::IOPixelType getPixelType();
+    itk::ImageIOBase::IOPixelType GetPixelType();
         
   protected:
     std::string m_fileName;

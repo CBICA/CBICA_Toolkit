@@ -161,4 +161,17 @@ namespace cbica
   {
     return GetMD5Sum(fileName);
   }
+
+  /**
+  \brief Get the indeces of the image which do
+  */
+  template < typename TImageType
+#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
+    = itk::Image< float, 3 >
+#endif
+  >
+  std::vector< typename TImageType::IndexType > GetIndexFromNonZeroPixels(const typename TImageType::Pointer inputImage, const std::string valuesToExclude = "0")
+  {
+
+  }
 }

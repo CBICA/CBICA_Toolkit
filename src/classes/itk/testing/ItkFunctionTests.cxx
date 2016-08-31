@@ -46,10 +46,10 @@ int main(int argc, char** argv)
   if (parser.compareParameter("imageInfo", tempPosition))
   {
     cbica::ImageInfo test_image = cbica::ImageInfo(argv[tempPosition + 1]);
-    itk::SmartPointer<itk::ImageIOBase> io_base = test_image.getImageIOBase();
-    std::vector<itk::SizeValueType> size = test_image.getImageSize();
-    std::vector<double> spacings = test_image.getImageSpacings();
-    const int dimensions = test_image.getImageDimensions();
+    itk::SmartPointer<itk::ImageIOBase> io_base = test_image.GetImageIOBase();
+    std::vector<itk::SizeValueType> size = test_image.GetImageSize();
+    std::vector<double> spacings = test_image.GetImageSpacings();
+    const int dimensions = test_image.GetImageDimensions();
 
     if (dimensions == 0)
       return EXIT_FAILURE;

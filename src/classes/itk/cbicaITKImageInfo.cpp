@@ -55,37 +55,37 @@ namespace cbica
 
   }
 
-  itk::SmartPointer<itk::ImageIOBase> ImageInfo::getImageIOBase()
+  itk::SmartPointer<itk::ImageIOBase> ImageInfo::GetImageIOBase()
   {
     return m_itkImageIOBase;
   }
 
-  std::vector<itk::SizeValueType> ImageInfo::getImageSize()
+  std::vector<itk::SizeValueType> ImageInfo::GetImageSize()
   {
     return m_size;
   }
   
-  std::vector<double> ImageInfo::getImageSpacings()
+  std::vector<double> ImageInfo::GetImageSpacings()
   {
     return m_spacings;
   }
 
-  std::string ImageInfo::getComponentTypeAsString()
+  std::string ImageInfo::GetComponentTypeAsString()
   {
     return m_IOComponentType_asString;
   }
   
-  itk::ImageIOBase::IOComponentType ImageInfo::getComponentType()
+  itk::ImageIOBase::IOComponentType ImageInfo::GetComponentType()
   {
     return m_IOComponentType;
   }
   
-  std::string ImageInfo::getPixelTypeAsString()
+  std::string ImageInfo::GetPixelTypeAsString()
   {
     return m_pixelType_asString;
   }
   
-  itk::ImageIOBase::IOPixelType ImageInfo::getPixelType()
+  itk::ImageIOBase::IOPixelType ImageInfo::GetPixelType()
   {
     return m_pixelType;
   }

@@ -71,20 +71,20 @@ namespace cbica
 
       if (m_componentType_asString == "")
       {
-        m_componentType = imageIO.getComponentType();
-        m_pixelType = imageIO.getPixelType();
-        m_componentType_asString = imageIO.getComponentTypeAsString();
-        m_pixelType_asString = imageIO.getPixelTypeAsString();
+        m_componentType = imageIO.GetComponentType();
+        m_pixelType = imageIO.GetPixelType();
+        m_componentType_asString = imageIO.GetComponentTypeAsString();
+        m_pixelType_asString = imageIO.GetPixelTypeAsString();
       }
       
-      if (m_componentType != imageIO.getComponentType())
+      if (m_componentType != imageIO.GetComponentType())
       {
         std::cerr << "Component type mismatch between images #" << i-1 << " and #" << i <<
           ". Please check.\n";
         return;
       }
       
-      if (m_pixelType != imageIO.getPixelType()) 
+      if (m_pixelType != imageIO.GetPixelType()) 
       {
         std::cerr << "Pixel type mismatch between images #" << i-1 << " and #" << i <<
           ". Please check.\n";
