@@ -6,7 +6,7 @@
 https://www.cbica.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
+Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 */
@@ -241,16 +241,6 @@ namespace cbica
     \param usageOfExe A string which would correspond to the command line usage AFTER the executable has been called
     */
     void exampleUsage(const std::string &usageOfExe);
-
-    /**
-    \brief Get the value of the parameter as string
-
-    Can search using both laconic and verbose parameters. This function is the most generic use-case to get the parameter value.
-
-    \param execParamToCheck The laconic or verbose variant of the parameter
-    \return Passed value in the command line corresponding to execParamToCheck
-    */
-    std::string GetParameterValueAsString(const std::string &execParamToCheck);
 
     /**
     \brief Get the value of the parameter

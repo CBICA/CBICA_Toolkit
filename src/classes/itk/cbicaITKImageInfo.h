@@ -8,7 +8,7 @@ Extracts basic information from any image (like dimensions, spacing, pixel type,
 https://www.cbica.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
+Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 */

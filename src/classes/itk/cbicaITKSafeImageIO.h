@@ -8,7 +8,7 @@ Read and Write itk::Image data in a safe manner. Header-only
 https://www.cbica.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2015 University of Pennsylvania. All rights reserved. <br>
+Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 */
@@ -50,10 +50,10 @@ namespace cbica
   */
   template <class TImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
+    = ImageTypeFloat3D
 #endif
 >
-typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     if (supportedExtensions != "")
     {
@@ -104,7 +104,7 @@ typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::s
 
     return reader;
   }
-
+  
   /**
   \brief Get the itk::Image from input file name
 
@@ -123,10 +123,10 @@ typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::s
   */
   template <class TImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
+    = ImageTypeFloat3D
 #endif
       >
-      typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
   }
@@ -136,17 +136,17 @@ typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::s
   */
   template <class TImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
+    = ImageTypeFloat3D
 #endif
       >
-      typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
   }
 
   /**
   \brief Get the Dicom image reader (not the image, the READER). This is useful for scenarios where reader meta information is needed for later writing step(s).
-
+  
   Usage:
   \verbatim
   typedef itk::Image< float, 3 > ExpectedImageType;
@@ -161,10 +161,10 @@ typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::s
   */
   template <class TImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
+    = ImageTypeFloat3D
 #endif
       >
-      typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+  typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     std::string dirName_wrap = dirName;
     if (!cbica::isDir(dirName_wrap))
@@ -174,7 +174,7 @@ typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::s
 
     typedef std::vector< std::string > SeriesIdContainer;
     SeriesIdContainer seriesToRead = cbica::stringSplit(seriesRestrictions, ",");
-
+    
     typedef itk::ImageSeriesReader< TImageType > ReaderType;
     typename ReaderType::Pointer seriesReader = ReaderType::New();
 
@@ -231,10 +231,10 @@ typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::s
   */
   template <class TImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
+    = ImageTypeFloat3D
 #endif
     >
-    typename TImageType::Pointer ReadDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+  typename TImageType::Pointer ReadDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
   }
@@ -244,15 +244,15 @@ typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::s
   */
   template <class TImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
+    = ImageTypeFloat3D
 #endif
       >
-      typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+  typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
   }
 
-
+  
   /**
   \brief Write the itk::Image to the file name
 
@@ -273,17 +273,17 @@ typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::s
   */
   template <typename ComputedImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
+    = ImageTypeFloat3D
 #endif
-    , typename ExpectedImageType
+    , typename ExpectedImageType 
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = ComputedImageType
+  = ComputedImageType
 #endif
 >
-void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
+  void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
   {
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
-    typename CastFilterType::Pointer filter = CastFilterType::New();
+    typename CastFilterType::Pointer filter = CastFilterType::New();    
     filter->SetInput(imageToWrite);
     filter->Update();
 
@@ -326,14 +326,14 @@ void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::str
   */
   template <typename ComputedImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
+    = ImageTypeFloat3D
 #endif
-    , typename ExpectedImageType
+      , typename ExpectedImageType 
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = ComputedImageType
+  = ComputedImageType
 #endif
 >
-void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
+  void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
     if (!cbica::isDir(dirName))
     {
