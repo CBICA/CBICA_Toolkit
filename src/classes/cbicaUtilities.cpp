@@ -475,21 +475,26 @@ namespace cbica
   size_t getFolderSize(const std::string &rootFolder)
   {
     size_t f_size = 0;
-#ifdef _WIN32
+#if _WIN32
     std::tr2::sys::path folderPath(rootFolder);
     if (exists(folderPath))
     {
       std::tr2::sys::directory_iterator end_itr;
       for (std::tr2::sys::directory_iterator dirIte(rootFolder); dirIte != end_itr; ++dirIte)
       {
-        std::tr2::sys::path filePath(complete(dirIte->path(), folderPath));
+        std::tr2::sys::path filePath;
+#if (_MSC_VER >= 1900)
+        filePath = std::tr2::sys::system_complete(dirIte->path());
+#else
+        filePath(complete(dirIte->path(), folderPath));
+#endif
         if (!is_directory(dirIte->status()))
         {
           f_size += file_size(filePath);
         }
         else
         {
-          f_size += getFolderSize(filePath);
+          f_size += getFolderSize(filePath.string());
         }
       }
     }
