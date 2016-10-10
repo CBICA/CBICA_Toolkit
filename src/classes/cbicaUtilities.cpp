@@ -486,7 +486,7 @@ namespace cbica
 #if (_MSC_VER >= 1900)
         filePath = std::tr2::sys::system_complete(dirIte->path());
 #else
-        filePath(complete(dirIte->path(), folderPath));
+        filePath = complete(dirIte->path(), folderPath);
 #endif
         if (!is_directory(dirIte->status()))
         {
