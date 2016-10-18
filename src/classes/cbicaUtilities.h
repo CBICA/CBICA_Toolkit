@@ -3,6 +3,8 @@
 
 \brief Some basic utility functions.
 
+This needs c++11 flag enabled in gcc < 4.
+
 https://www.cbica.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
@@ -806,11 +808,7 @@ namespace cbica
   \return True if found
   \return Position if found (-1) if not
   */
-  template<typename TContainerType
-#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = std::string
-#endif
->
+  template<typename TContainerType = std::string >
   std::pair<bool, int> findInVector(std::vector<TContainerType> &vector_to_search_in,
     TContainerType element_to_search_for)
   {
@@ -849,11 +847,7 @@ namespace cbica
   \param input_string Input character to be converted
   \return Templated vector to the type of return required
   */
-  template<typename TConvertType
-#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = int
-#endif
-  >
+  template<typename TConvertType = int >
   std::vector</*typename*/ TConvertType> convertString(const std::string &input_string)
   {
     std::vector</*typename*/TConvertType>return_vector;
@@ -930,7 +924,7 @@ namespace cbica
 
 };
 
-#if defined(__GNUC__)  && (__GNUC__ < 5) && !(__APPLE__)
+#if defined(__GNUC__)  && (__GNUC__ < 5) && !(__APPLE__) && !(__GXX_EXPERIMENTAL_CXX0X__)
 namespace std
 {
   //! std::round wrap for GCC
