@@ -7,7 +7,7 @@
 ##   INCLUDE(CTest)
 
 set(CTEST_PROJECT_NAME "CBICA-Toolkit_Trunk")
-set(CTEST_NIGHTLY_START_TIME "13:00:00 UTC")
+set(CTEST_NIGHTLY_START_TIME "13:15:00 UTC")
 
 set(CTEST_DROP_METHOD "http")
 set(CTEST_DROP_SITE "cbica-infr-vweb")
