@@ -24,6 +24,9 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkSpatialObject.h"
 #include "itkNumericTraits.h"
 
+#if WIN32
+__declspec(dllexport) inline void getRidOfLNK4221(){};
+#endif
 
 namespace itk 
 {

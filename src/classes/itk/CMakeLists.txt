@@ -42,11 +42,11 @@ SET( ITK_Class_Headers
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKUtilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKOpenCVUtilities.h
     
-  ${CMAKE_CURRENT_SOURCE_DIR}/itkDTILogEuclideanCalculator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/itkNaryMeanImageFilter.h
   ${CMAKE_CURRENT_SOURCE_DIR}/itkNaryMeanDiffusionTensorImageFilter.h
   ${CMAKE_CURRENT_SOURCE_DIR}/itkNaryVarianceImageFilter.h
   ${CMAKE_CURRENT_SOURCE_DIR}/itkDiffusionTensor3DReconstructionImageFilter.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/itkDTILogEuclideanCalculator.h
   
 )
 
@@ -57,8 +57,8 @@ SET( ITK_Class_Sources
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKComputeVarianceMap.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKCommonHolder.cpp
     
-  ${CMAKE_CURRENT_SOURCE_DIR}/itkDTILogEuclideanCalculator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/itkDiffusionTensor3DReconstructionImageFilter.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/itkDTILogEuclideanCalculator.cpp
 )
 
 SET( ITK_CLASSES_DIR    ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "ITK CLASS INCLUDES" FORCE )

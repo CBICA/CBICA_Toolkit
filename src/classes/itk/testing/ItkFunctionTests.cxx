@@ -34,6 +34,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkResampleImageFilter.h"
 #include "itkImageFileWriter.h"
 #include "itkMinimumMaximumImageCalculator.h"
+#include "itkDiffusionTensor3DReconstructionImageFilter.h"
+
 
 int main(int argc, char** argv)
 {

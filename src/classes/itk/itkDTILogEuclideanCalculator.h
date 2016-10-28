@@ -17,6 +17,10 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkDiffusionTensor3D.h"
 #include "itkSymmetricSecondRankTensor.h"
 
+#if WIN32
+__declspec(dllexport) inline void getRidOfLNK4221(){};
+#endif
+
 namespace itk
 {
   /**
