@@ -136,7 +136,6 @@ namespace cbica
   std::string createTmpDir()
   {
     std::string returnDir = "", tempCheck, homeEnv;
-    char *tmp, tmp2[FILENAME_MAX], tempPath[FILENAME_MAX];
 #if defined(_WIN32)
 //    size_t size = MAX_PATH;
     homeEnv = "USERPROFILE";
