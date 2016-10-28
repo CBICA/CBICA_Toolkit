@@ -135,18 +135,9 @@ namespace cbica
   {
     std::string returnDir = "", tempCheck, homeEnv;
 #if defined(_WIN32)
-//    size_t size = MAX_PATH;
     homeEnv = "USERPROFILE";
-//    tmp = getenv("USERPROFILE");
-//    getenv_s(&size, tmp2, size, "USERPROFILE"); // does not work, for some reason - needs to be tested
-//    std::string temp = cbica::replaceString(tmp, "\\", "/");
-//    sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
-//    strcat_s(tempPath, "/tmp");
 #else
     homeEnv = "HOME";
-//    tmp = std::getenv("HOME");
-//    sprintf(tempPath, "%s", tmp);
-//    strcat(tempPath, "/tmp");
 #endif    
 
     tempCheck = cbica::getEnvironmentVariableValue(homeEnv);
@@ -689,20 +680,14 @@ namespace cbica
 
   std::string getUserHomeDirectory()
   {
-    char *tmp;
-    char tempPath[FILENAME_MAX];
+    std::string homeProfile;
 #if defined(_WIN32)
-    //size_t size;
-    //getenv_s(&size, tmp, size, "USERPROFILE"); // does not work, for some reason - needs to be tested
-    tmp = getenv("USERPROFILE");
-    std::string temp = cbica::replaceString(tmp, "\\", "/");
-    sprintf_s(tempPath, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
+    homeProfile = "USERPROFILE";
 #else
-    tmp = std::getenv("HOME");
-    sprintf(tempPath, "%s", tmp);
+    homeProfile = "HOME";
 #endif    
 
-    return std::string(tempPath);
+    return cbica::getEnvironmentVariableValue(homeProfile);
   }
 
   std::string getCWD()
