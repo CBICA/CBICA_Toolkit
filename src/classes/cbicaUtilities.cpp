@@ -118,13 +118,11 @@ namespace cbica
     getenv_s(&size, tmp, size, environmentVariable.c_str()); // does not work, for some reason - needs to be tested
     std::string temp = cbica::replaceString(tmp, "\\", "/");
     sprintf_s(tempValue, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
-    strcat_s(tempValue, "/tmp");
     tmp[0] = '\0';
 #else
     char *tmp;
     tmp = std::getenv(environmentVariable.c_str());
     sprintf(tempValue, "%s", tmp);
-    strcat(tempValue, "/tmp");
 #endif
 
     returnString = std::string(tempValue);
@@ -152,6 +150,8 @@ namespace cbica
 #endif    
 
     tempCheck = cbica::getEnvironmentVariableValue(homeEnv);
+    tempCheck += "/tmp";
+
     if (isDir(tempCheck))
     {
       for (size_t i = 1; i <= FILENAME_MAX; i++)
