@@ -313,13 +313,13 @@ int main(int argc, const char** argv)
 
     if (!cbica::setEnvironmentVariable(random_variable, random_val))
       return EXIT_FAILURE;
-    std::string value = getenv(random_variable.c_str());
+    std::string value = cbica::getEnvironmentVariableValue(random_variable);
     if (value != random_val)
       return EXIT_FAILURE;
     cbica::deleteEnvironmentVariable(random_variable);
     if (!cbica::setEnvironmentVariable(random_variable, std::to_string(val)))
       return EXIT_FAILURE;
-    value = getenv(random_variable.c_str());
+    value = cbica::getEnvironmentVariableValue(random_variable);
     if (value != std::to_string(val))
       return EXIT_FAILURE;
     cbica::deleteEnvironmentVariable(random_variable);
