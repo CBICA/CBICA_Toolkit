@@ -699,6 +699,11 @@ namespace cbica
   bool setEnvironmentVariable(const std::string &variable_name, const std::string &variable_value);
 
   /**
+  \brief Gets the value of the specified environment variable
+  */
+  std::string getEnvironmentVariableValue(const std::string &environmentVariable);
+
+  /**
   \brief Delete the environment variable
 
   \param variable_name Name of the Variable
