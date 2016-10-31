@@ -799,6 +799,13 @@ namespace cbica
   \brief Get current Year as string delineated as YYYY
   */
   std::string getCurrentYear();
+
+  /**
+  \brief Cross platform sleep
+
+  Defaults to "std::rand() % 1000 + 1"
+  */
+  void sleep(size_t ms);
   //==================================== Template stuff ==================================//
 
   /**

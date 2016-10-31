@@ -1779,5 +1779,20 @@ namespace cbica
     return "";
   }
 
+  //! Cross platform Sleep
+  void sleep(size_t ms = std::rand() % 1000 + 1)
+  {
+    if (ms <= 0)
+    {
+      std::cerr << "Sleep time of zero or less is not defined; calling Sleep with default parameter.\n";
+      sleep();
+    }
 
+#if WIN32
+    Sleep(static_cast<unsigned int>(ms));
+#else
+    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
+    nanosleep(&ts, NULL);
+#endif
+  }
 }
