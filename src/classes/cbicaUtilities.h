@@ -805,7 +805,7 @@ namespace cbica
 
   Defaults to "std::rand() % 1000 + 1"
   */
-  void sleep(size_t ms);
+  void sleep(size_t ms = std::rand() % 1000 + 1);
   //==================================== Template stuff ==================================//
 
   /**

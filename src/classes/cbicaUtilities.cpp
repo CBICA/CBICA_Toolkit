@@ -1780,7 +1780,7 @@ namespace cbica
   }
 
   //! Cross platform Sleep
-  void sleep(size_t ms = std::rand() % 1000 + 1)
+  void sleep(size_t ms)
   {
     if (ms <= 0)
     {
