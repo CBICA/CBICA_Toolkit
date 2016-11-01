@@ -123,12 +123,26 @@ namespace cbica
   }
 
   /**
-  \brief Same as ReadImage<>
+  \brief Get the itk::Image from input file name
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputFileName = parser.getParameterValue("inputImage");
+  ExpectedImageType::Pointer inputImage_1 = ReadImage< ExpectedImageType >(inputFileName);
+  ExpectedImageType::Pointer inputImage_2 = ReadImage< ExpectedImageType >(inputFileName, ".nii.gz,.img");
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  This function calls Same as ReadImage internally
+  \param fName name of the image
+  \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
+  \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
-    return ReadImage(fName, supportedExtensions, delimitor);
+    return ReadImage< TImageType >(fName, supportedExtensions, delimitor);
   }
 
   /**
@@ -219,7 +233,22 @@ namespace cbica
   }
 
   /**
-  \brief Same as ReadDicomImage<>
+  \brief Get the itk::Image from input dir name
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputDirName = parser.getParameterValue("inputDirName");
+  ExpectedImageType::Pointer inputImage_1 = ReadDicomImage< ExpectedImageType >(inputFileName); // reads MRI and perfusion data by default tags "0008|0021,0020|0012"
+  ExpectedImageType::Pointer inputImage_2 = ReadDicomImage< ExpectedImageType >(inputDirName, "0008|0021")->GetOutput(); // only reads images with tag "0008|0021"
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  This function calls ReadDicomImage<> internally
+
+  \param fName name of the image
+  \param supportedExtensions Supported extensions
+  \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
