@@ -27,9 +27,6 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "cbicaUtilities.h"
 
-//typedef itk::Image< float, 3 > ComputedImageType; // debugging purposes only
-//typedef itk::Image< float, 3 > TImageType; // debugging purposes only
-
 typedef itk::Image< float, 3 > ImageTypeFloat3D;
 
 namespace cbica
@@ -102,7 +99,7 @@ namespace cbica
 
     return reader;
   }
-  
+
   /**
   \brief Get the itk::Image from input file name
 
@@ -131,12 +128,12 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
-    return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
+    return ReadImage(fName, supportedExtensions, delimitor);
   }
 
   /**
   \brief Get the Dicom image reader (not the image, the READER). This is useful for scenarios where reader meta information is needed for later writing step(s).
-  
+
   Usage:
   \verbatim
   typedef itk::Image< float, 3 > ExpectedImageType;
@@ -160,7 +157,7 @@ namespace cbica
 
     typedef std::vector< std::string > SeriesIdContainer;
     SeriesIdContainer seriesToRead = cbica::stringSplit(seriesRestrictions, ",");
-    
+
     typedef itk::ImageSeriesReader< TImageType > ReaderType;
     typename ReaderType::Pointer seriesReader = ReaderType::New();
 
@@ -228,13 +225,13 @@ namespace cbica
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = ImageTypeFloat3D
 #endif
-      >
-  typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+    >
+    typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
-    return GetDicomImageReader< TImageType >(dirName, seriesRestrictions)->GetOutput();
+    return ReadDicomImage< TImageType >(dirName, seriesRestrictions);
   }
 
-  
+
   /**
   \brief Write the itk::Image to the file name
 
@@ -253,11 +250,11 @@ namespace cbica
   \param fileName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
-  template <typename ComputedImageType= ImageTypeFloat3D, typename ExpectedImageType = ComputedImageType>
+  template <typename ComputedImageType = ImageTypeFloat3D, typename ExpectedImageType = ComputedImageType>
   void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
   {
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
-    typename CastFilterType::Pointer filter = CastFilterType::New();    
+    typename CastFilterType::Pointer filter = CastFilterType::New();
     filter->SetInput(imageToWrite);
     filter->Update();
 
