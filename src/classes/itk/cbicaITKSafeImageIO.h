@@ -119,7 +119,15 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
-    return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
+    std::string extension = cbica::getFilenameExtension(fName);
+    if (cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom"))
+    {
+      return GetDicomImage< TImageType >(fName);
+    }
+    else
+    {
+      return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
+    }
   }
 
   /**
