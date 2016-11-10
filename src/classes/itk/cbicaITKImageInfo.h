@@ -72,7 +72,6 @@ namespace cbica
     */
     const unsigned int GetImageDimensions()
     { 
-      m_dimensions = m_itkImageIOBase->GetNumberOfDimensions(); 
       return m_itkImageIOBase->GetNumberOfDimensions();
     };
     

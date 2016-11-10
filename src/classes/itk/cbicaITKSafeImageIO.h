@@ -26,6 +26,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkGDCMSeriesFileNames.h"
 
 #include "cbicaUtilities.h"
+#include "cbicaITKImageInfo.h"
 
 typedef itk::Image< float, 3 > ImageTypeFloat3D;
 
@@ -71,12 +72,10 @@ namespace cbica
     }
 
     // ensure that the requested image dimensions and read image dimensions match up
-    itk::ImageIOBase::Pointer im_base = itk::ImageIOFactory::CreateImageIO(fName.c_str(), itk::ImageIOFactory::ReadMode);
-    im_base->SetFileName(fName);
-    im_base->ReadImageInformation();
+    auto imageInfo = cbica::ImageInfo(fName);
 
     // perform basic sanity check
-    if (im_base->GetNumberOfDimensions() != TImageType::ImageDimension)
+    if (imageInfo.GetImageDimensions() != TImageType::ImageDimension)
     {
       std::cerr << "Image Dimension mismatch. Return image is expected to be '" << TImageType::ImageDimension <<
         "'D and doesn't match the image dimension read from the input file, which is '" << im_base->GetNumberOfDimensions() << "'.\n";
