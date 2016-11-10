@@ -176,6 +176,7 @@ namespace cbica
     {
       dirName_wrap = cbica::getFilenamePath(dirName);
     }
+    dirName_wrap.pop_back(); // this is done to ensure the last "/" isn't taken into account for file name generation
 
     typedef std::vector< std::string > SeriesIdContainer;
     SeriesIdContainer seriesToRead = cbica::stringSplit(seriesRestrictions, ",");
@@ -194,6 +195,7 @@ namespace cbica
       namesGenerator->AddSeriesRestriction(seriesToRead[i]);
     }
     namesGenerator->SetInputDirectory(dirName_wrap);
+    const ReaderType::FileNamesContainer & filenames = namesGenerator->GetInputFileNames();
 
     const SeriesIdContainer &seriesUID = namesGenerator->GetSeriesUIDs();
 
@@ -311,6 +313,52 @@ namespace cbica
     }
 
     return;
+  }
+
+  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
+  void WriteDicomImage(const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
+  {
+    if (!cbica::isDir(dirName))
+    {
+      std::cout << "Specified directory wasn't found, creating...\n";
+      cbica::createDir(dirName);
+    }
+
+    typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput(imageToWrite);
+    castFilter->Update();
+
+    typedef typename ExpectedImageType::PixelType DicomPixelType;
+
+    typedef itk::GDCMImageIO ImageIOType;
+    ImageIOType::Pointer dicomIO = ImageIOType::New();
+    //dicomIO->SetMetaDataDictionary(inputImageReader->GetMetaDataDictionary()); // no dictionary information present without seriesReader
+
+    typedef itk::GDCMSeriesFileNames NamesGeneratorType;
+    NamesGeneratorType::Pointer namesGenerator = NamesGeneratorType::New();
+    namesGenerator->SetUseSeriesDetails(false);
+    namesGenerator->SetOutputDirectory(dirName);
+    namesGenerator->Update();
+
+    typedef itk::Image<DicomPixelType, 2> DicomImage2DType; // dicom images are always 2D
+    typedef itk::ImageSeriesWriter<ExpectedImageType, DicomImage2DType> SeriesWriterType;
+    typename SeriesWriterType::Pointer seriesWriter = SeriesWriterType::New();
+    seriesWriter->SetInput(castFilter->GetOutput());
+    seriesWriter->SetImageIO(dicomIO);
+    seriesWriter->SetFileNames(namesGenerator->GetOutputFileNames());
+    //seriesWriter->SetMetaDataDictionaryArray(inputImageReader->GetMetaDataDictionaryArray()); // no dictionary information present without seriesReader
+
+    try
+    {
+      seriesWriter->Write();
+    }
+    catch (itk::ExceptionObject &e)
+    {
+      std::cerr << "Error occurred while trying to write the image '" << dirName << "': " << e.what() << "\n";
+      exit(EXIT_FAILURE);
+    }
+
   }
 
   /**
