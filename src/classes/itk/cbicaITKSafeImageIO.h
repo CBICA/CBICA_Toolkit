@@ -78,7 +78,7 @@ namespace cbica
     if (imageInfo.GetImageDimensions() != TImageType::ImageDimension)
     {
       std::cerr << "Image Dimension mismatch. Return image is expected to be '" << TImageType::ImageDimension <<
-        "'D and doesn't match the image dimension read from the input file, which is '" << im_base->GetNumberOfDimensions() << "'.\n";
+        "'D and doesn't match the image dimension read from the input file, which is '" << imageInfo.GetImageDimensions() << "'.\n";
       exit(EXIT_FAILURE);
     }
 
