@@ -100,59 +100,6 @@ namespace cbica
   }
 
   /**
-  \brief Get the itk::Image from input file name
-
-  Usage:
-  \verbatim
-  typedef itk::Image< float, 3 > ExpectedImageType;
-  std::string inputFileName = parser.getParameterValue("inputImage");
-  ExpectedImageType::Pointer inputImage_1 = ReadImage< ExpectedImageType >(inputFileName);
-  ExpectedImageType::Pointer inputImage_2 = ReadImage< ExpectedImageType >(inputFileName, ".nii.gz,.img");
-  DoAwesomeStuffWithImage( inputImage );
-  \endverbatim
-
-  \param fName name of the image
-  \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
-  \return itk::ImageFileReader::Pointer templated over the same as requested by user
-  */
-  template <class TImageType = ImageTypeFloat3D >
-  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
-  {
-    std::string extension = cbica::getFilenameExtension(fName);
-    if (cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom"))
-    {
-      return GetDicomImage< TImageType >(fName);
-    }
-    else
-    {
-      return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
-    }
-  }
-
-  /**
-  \brief Get the itk::Image from input file name
-
-  Usage:
-  \verbatim
-  typedef itk::Image< float, 3 > ExpectedImageType;
-  std::string inputFileName = parser.getParameterValue("inputImage");
-  ExpectedImageType::Pointer inputImage_1 = ReadImage< ExpectedImageType >(inputFileName);
-  ExpectedImageType::Pointer inputImage_2 = ReadImage< ExpectedImageType >(inputFileName, ".nii.gz,.img");
-  DoAwesomeStuffWithImage( inputImage );
-  \endverbatim
-
-  This function calls Same as ReadImage internally
-  \param fName name of the image
-  \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
-  \return itk::ImageFileReader::Pointer templated over the same as requested by user
-  */
-  template <class TImageType = ImageTypeFloat3D >
-  typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
-  {
-    return ReadImage< TImageType >(fName, supportedExtensions, delimitor);
-  }
-
-  /**
   \brief Get the Dicom image reader (not the image, the READER). This is useful for scenarios where reader meta information is needed for later writing step(s).
 
   Usage:
@@ -194,7 +141,7 @@ namespace cbica
       namesGenerator->AddSeriesRestriction(seriesToRead[i]);
     }
     namesGenerator->SetInputDirectory(dirName_wrap);
-    const ReaderType::FileNamesContainer & filenames = namesGenerator->GetInputFileNames();
+    const typename ReaderType::FileNamesContainer & filenames = namesGenerator->GetInputFileNames();
 
     const SeriesIdContainer &seriesUID = namesGenerator->GetSeriesUIDs();
 
@@ -260,9 +207,7 @@ namespace cbica
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType
-#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = ImageTypeFloat3D
-#endif
     >
     typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
@@ -423,4 +368,59 @@ namespace cbica
     }
 
   }
+  
+  
+  /**
+  \brief Get the itk::Image from input file name
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputFileName = parser.getParameterValue("inputImage");
+  ExpectedImageType::Pointer inputImage_1 = ReadImage< ExpectedImageType >(inputFileName);
+  ExpectedImageType::Pointer inputImage_2 = ReadImage< ExpectedImageType >(inputFileName, ".nii.gz,.img");
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  \param fName name of the image
+  \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
+  \return itk::ImageFileReader::Pointer templated over the same as requested by user
+  */
+  template <class TImageType = ImageTypeFloat3D >
+  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  {
+    std::string extension = cbica::getFilenameExtension(fName);
+    if (cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom"))
+    {
+      return GetDicomImage< TImageType >(fName);
+    }
+    else
+    {
+      return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
+    }
+  }
+
+  /**
+  \brief Get the itk::Image from input file name
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputFileName = parser.getParameterValue("inputImage");
+  ExpectedImageType::Pointer inputImage_1 = ReadImage< ExpectedImageType >(inputFileName);
+  ExpectedImageType::Pointer inputImage_2 = ReadImage< ExpectedImageType >(inputFileName, ".nii.gz,.img");
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  This function calls Same as ReadImage internally
+  \param fName name of the image
+  \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
+  \return itk::ImageFileReader::Pointer templated over the same as requested by user
+  */
+  template <class TImageType = ImageTypeFloat3D >
+  typename TImageType::Pointer GetImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  {
+    return ReadImage< TImageType >(fName, supportedExtensions, delimitor);
+  }
+
 }
