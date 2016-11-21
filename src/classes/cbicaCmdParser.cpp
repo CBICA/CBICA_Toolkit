@@ -344,15 +344,19 @@ namespace cbica
 
   inline void CmdParser::verbose_check(std::string &input_string)
   {
-    if (input_string == "usage")
+    std::transform(input_string.begin(), input_string.end(), input_string.begin(), ::tolower);
+    if ((input_string == "usage") || (input_string == "-usage") || (input_string == "--usage")
+      || (input_string == "u") || (input_string == "-u") || (input_string == "--u"))
     {
       input_string = "u";
     }
-    else if (input_string == "help")
+    else if ((input_string == "help") || (input_string == "-help") || (input_string == "--help")
+      || (input_string == "h") || (input_string == "-h") || (input_string == "--h"))
     {
       input_string = "h";
     }
-    else if (input_string == "version")
+    else if ((input_string == "version") || (input_string == "-version") || (input_string == "--version")
+      || (input_string == "v") || (input_string == "-v") || (input_string == "--v"))
     {
       input_string = "v";
     }
@@ -384,39 +388,36 @@ namespace cbica
     for (int i = 1; i < m_argc; i++)
     {
       std::string inputParamToCheck = m_argv[i];
+      verbose_check(inputParamToCheck);
+      if ((inputParamToCheck == "u") || (inputParamToCheck == "h") || (inputParamToCheck == "v"))
+      {
+        helpRequested = true;
+        position = i;
+        //return true;
+      }
       if (!checkMaxLen)
       {
         getMaxLength();
       }
-      if (inputParamToCheck[0] == '-')
-      {
-        verbose_check(inputParamToCheck);
-        if ((inputParamToCheck == "u") || (inputParamToCheck == "h") || (inputParamToCheck == "v"))
-        {
-          helpRequested = true;
-          position = i;
-          //return true;
-        }
 
-        if (inputParamToCheck == execParamToCheck_wrap)
+      if (inputParamToCheck == execParamToCheck_wrap)
+      {
+        position = i;
+        return true;
+      }
+      else
+      {
+        std::string inputCheck, execCheck;
+        const unsigned int minLength = static_cast<unsigned int>(std::max(
+          inputParamToCheck.length(), execParamToCheck_wrap.length()));
+
+        inputCheck = internal_compare(inputParamToCheck, minLength);
+        execCheck = internal_compare(execParamToCheck_wrap, minLength);
+
+        if (inputCheck == execCheck)
         {
           position = i;
           return true;
-        }
-        else
-        {
-          std::string inputCheck, execCheck;
-          const unsigned int minLength = static_cast<unsigned int>(std::max(
-            inputParamToCheck.length(), execParamToCheck_wrap.length()));
-
-          inputCheck = internal_compare(inputParamToCheck, minLength);
-          execCheck = internal_compare(execParamToCheck_wrap, minLength);
-
-          if (inputCheck == execCheck)
-          {
-            position = i;
-            return true;
-          }
         }
       }
     }
