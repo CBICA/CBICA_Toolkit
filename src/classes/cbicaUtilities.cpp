@@ -620,11 +620,7 @@ namespace cbica
       splitFileName(filename, path, return_string, ext);
       //_splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
     #else
-    	//! Initialize pointers to file and user names
-    	char *filename, filename_2[FILENAME_MAX];    
-    	::readlink("/proc/self/exe", filename_2, sizeof(filename_2)-1);
-      filename = basename(filename_2);
-      return_string = std::string(filename);
+      return_string = getEnvironmentVariableValue("_");
     #endif
 
     filename[0] = '\0';
