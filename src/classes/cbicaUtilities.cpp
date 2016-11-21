@@ -618,12 +618,11 @@ namespace cbica
 	    GetModuleFileNameA(NULL, filename, FILENAME_MAX);
       std::string path, ext;
       splitFileName(filename, path, return_string, ext);
+      filename[0] = '\0';
       //_splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
     #else
       return_string = getEnvironmentVariableValue("_");
     #endif
-
-    filename[0] = '\0';
     
     return return_string;
   }
