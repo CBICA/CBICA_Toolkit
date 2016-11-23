@@ -801,6 +801,7 @@ namespace cbica
     {
       norm_path = join(norm_path, parts[i]);
     }
+    std::replace(norm_path.begin(), norm_path.end(), '\\', '/');
     return norm_path.empty() ? "." : norm_path;
   }
 
