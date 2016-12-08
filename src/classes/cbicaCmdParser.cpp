@@ -67,7 +67,7 @@ namespace cbica
   {
     if (m_argv.empty())
     {
-      for (int i = 0; i < argc; i ++)
+      for (int i = 0; i < argc; i++)
       {
         m_argv.push_back(std::string(argv[i]));
       }
@@ -311,7 +311,7 @@ namespace cbica
 
     if (m_exampleOfUsage != "")
     {
-      std::cout << "For example: \n\n" << 
+      std::cout << "For example: \n\n" <<
         m_exeName_wrap << " " << m_exampleOfUsage << "\n";
     }
 
@@ -514,7 +514,7 @@ namespace cbica
     size_t i = 0;
     while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
     {
-      if ((m_requiredParameters[i].laconic == execParamToCheck)  ||
+      if ((m_requiredParameters[i].laconic == execParamToCheck) ||
         (m_requiredParameters[i].verbose == execParamToCheck))
       {
         return m_requiredParameters[i].dataType_string;
@@ -628,9 +628,23 @@ namespace cbica
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, size_t &parameterValue)
   {
-    int returnAsInt;
-    getParameterValue(execParamToCheck, returnAsInt);
-    parameterValue = static_cast<size_t>(returnAsInt);
+    if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::INTEGER)
+    {
+      std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
+        "' and cannot be returned as a INTEGER.\n";
+      exit(EXIT_FAILURE);
+    }
+    int position;
+    if (compareParameter(execParamToCheck, position))
+    {
+      parameterValue = static_cast<size_t>(std::atoi(m_argv[position + 1].c_str())); // return value is an integer
+      return;
+    }
+    else
+    {
+      parameterValue = -1;
+      return;
+    }
   }
 
   void CmdParser::getParameterValue(const std::string &execParamToCheck, float &parameterValue)
