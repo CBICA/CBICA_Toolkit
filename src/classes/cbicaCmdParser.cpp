@@ -626,6 +626,13 @@ namespace cbica
     }
   }
 
+  void CmdParser::getParameterValue(const std::string &execParamToCheck, size_t &parameterValue)
+  {
+    int returnAsInt;
+    getParameterValue(execParamToCheck, returnAsInt);
+    parameterValue = static_cast<size_t>(returnAsInt);
+  }
+
   void CmdParser::getParameterValue(const std::string &execParamToCheck, float &parameterValue)
   {
     if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::FLOAT)

@@ -268,6 +268,16 @@ namespace cbica
     Can search using both laconic and verbose parameters.
 
     \param execParamToCheck The laconic or verbose variant of the parameter
+    \param parameterValue The return value of the parameter as size_t
+    */
+    void getParameterValue(const std::string &execParamToCheck, size_t &parameterValue);
+
+    /**
+    \brief Get the value of the parameter
+
+    Can search using both laconic and verbose parameters.
+
+    \param execParamToCheck The laconic or verbose variant of the parameter
     \param parameterValue The return value of the parameter as float
     */
     void getParameterValue(const std::string &execParamToCheck, float &parameterValue);
