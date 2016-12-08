@@ -27,7 +27,7 @@ namespace cbica
 
   \brief The logging class.
 
-  This automatically generates a machine-parseable log specified by the file name. The user also has the option 
+  This automatically generates a machine-parseable log specified by the file name. The user also has the option
   of submitting free text to be put along with the log. The generated log is in the format show below:
 
   <code><4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<exe name>;<user name>;<free text></code>
@@ -43,26 +43,26 @@ namespace cbica
   logger.Write( "'I accept chaos, I'm not sure whether it accepts me' - Bob Dylan" ); // writes to file_name.txt
   \endverbatim
 
-  The class defaults to console logging. Use Logging::EnableTextLogging() or UseNewFile() to switch; 
+  The class defaults to console logging. Use Logging::EnableTextLogging() or UseNewFile() to switch;
   by default, it writes to a text file 'EXE_NAME-log.txt' in directory specified by cbica::createTemporaryDirectory()
   */
-	class Logging
-	{
-	public:
-		/**
+  class Logging
+  {
+  public:
+    /**
     \brief Actual Constructor
 
     \param file_name_with_path The file onto which the log file is to be written
     \param FreeText_input Free text which the user wants to be present in the log, defaults to an empty string
     */
-		explicit Logging(const std::string file_name, const std::string FreeText_input);
-		
-		/**
+    explicit Logging(const std::string file_name, const std::string FreeText_input);
+
+    /**
     \brief Default constructor
 
     Just used to keep a track of the user name and executable run at a particular time.
     */
-		explicit Logging();
+    explicit Logging();
 
     /**
     \brief Default constructor
@@ -78,8 +78,8 @@ namespace cbica
     */
     void UseNewFile(const std::string &newLogFile);
 
-		//! The Destructor
-		virtual ~Logging();
+    //! The Destructor
+    virtual ~Logging();
 
     /**
     \brief Function to call to write error messages to log file without any free text
@@ -89,15 +89,15 @@ namespace cbica
     void WriteError(const std::string FreeText_input);
 
     /**
-		\brief Function to call to write to log file
-        
+    \brief Function to call to write to log file
+
     \param FreeText_input Free text which the user wants to be present in the log, defaults to an empty string
     */
-		void Write(const std::string FreeText_input);
-    
+    void Write(const std::string FreeText_input);
+
     /**
     \brief Switches from console to text file logging
-    
+
     The output stamps are of the form:
 
     <4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text>
@@ -123,52 +123,60 @@ namespace cbica
     /**
     \brief Get the file name with full path where log has happened
 
-    \return file_name_with_path 
+    \return file_name_with_path
     */
     std::string getLoggingFileName();
 
-  protected:    
+    /**
+    \brief Wrap of Write()
+    */
+    void operator << (const std::string &freeTextInput)
+    {
+      Write(freeTextInput);
+    }
+
+  protected:
     /**
     \brief The function used to initialize the class
-    
+
     Kept private to avoid cluttering global namespace.
-    
+
     \param file_name_with_path_wrap Wrap for file_name_with_path
     \param log_file_wrap Wrap for log_file
     \param exe_name_wrap Wrap for exe_name
     \param user_name_wrap Wrap for user_name
     */
-		inline void initialize_class( std::string &file_name_with_path_wrap, 
-			std::ofstream &log_file_wrap, std::string &exe_name_wrap, std::string &user_name_wrap );
-    
+    inline void initialize_class(std::string &file_name_with_path_wrap,
+      std::ofstream &log_file_wrap, std::string &exe_name_wrap, std::string &user_name_wrap);
+
     /**
-	  \brief The function used to do the actual writing onto the file
-	
-	  Kept private to avoid cluttering global namespace.
+    \brief The function used to do the actual writing onto the file
 
-	  \param FreeText_wrap Wrap for FreeText
-	  \param log_file_wrap Wrap for log_file
-	  \param timer_wrap Wrap for timer
-	  \param exe_name_wrap Wrap for exe_name
-	  \param user_name_wrap Wrap for user_name
-	  */
-	  inline void writing_function( const std::string &FreeText_wrap, std::ofstream &log_file_wrap, 
-			const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError = false );
+    Kept private to avoid cluttering global namespace.
 
-	private:
+    \param FreeText_wrap Wrap for FreeText
+    \param log_file_wrap Wrap for log_file
+    \param timer_wrap Wrap for timer
+    \param exe_name_wrap Wrap for exe_name
+    \param user_name_wrap Wrap for user_name
+    */
+    inline void writing_function(const std::string &FreeText_wrap, std::ofstream &log_file_wrap,
+      const std::string &exe_name_wrap, const std::string &user_name_wrap, bool isError = false);
+
+  private:
     //! The file handler class
-		std::ofstream log_file;
+    std::ofstream log_file;
     //! The name of the executable calling the class
-		std::string exe_name; 
+    std::string exe_name;
     //! The current active user name
-		std::string user_name;
+    std::string user_name;
     //! The free text to be written the log file. It is taken as input from user_name
-		//std::string FreeText; 
+    //std::string FreeText; 
     //! File path
     std::string file_name_with_path;
     //! Flag to initialize local logging
     bool consoleLogging;
     //! Flag to denote logging in GMT
     bool GMTLogging;
-	};
+  };
 }
