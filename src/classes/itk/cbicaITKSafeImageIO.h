@@ -51,6 +51,13 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
+    // check read access
+    if (((_access(directory_wrap.c_str(), 4)) == -1) || ((_access(directory_wrap.c_str(), 6)) == -1))
+    {
+      ShowErrorMessage("You don't have read access in selected location. Please check.");
+      return;
+    }
+
     if (supportedExtensions != "")
     {
       std::vector< std::string > extensions = cbica::stringSplit(supportedExtensions, delimitor);
@@ -123,6 +130,13 @@ namespace cbica
       dirName_wrap = cbica::getFilenamePath(dirName);
     }
     dirName_wrap.pop_back(); // this is done to ensure the last "/" isn't taken into account for file name generation
+
+    // check read access
+    if (((_access(directory_wrap.c_str(), 4)) == -1) || ((_access(directory_wrap.c_str(), 6)) == -1))
+    {
+      ShowErrorMessage("You don't have read access in selected location. Please check.");
+      return;
+    }
 
     typedef std::vector< std::string > SeriesIdContainer;
     SeriesIdContainer seriesToRead = cbica::stringSplit(seriesRestrictions, ",");
@@ -208,8 +222,8 @@ namespace cbica
   */
   template <class TImageType
     = ImageTypeFloat3D
-    >
-    typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+  >
+  typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     return ReadDicomImage< TImageType >(dirName, seriesRestrictions);
   }
@@ -236,6 +250,13 @@ namespace cbica
   template <typename ComputedImageType = ImageTypeFloat3D, typename ExpectedImageType = ComputedImageType>
   void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
   {
+    // check write access
+    if (((_access(fileName.c_str(), 2)) == -1) || ((_access(fileName.c_str(), 6)) == -1))
+    {
+      ShowErrorMessage("You don't have write access in selected location. Please check.");
+      return;
+    }
+
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
     typename CastFilterType::Pointer filter = CastFilterType::New();
     filter->SetInput(imageToWrite);
@@ -259,6 +280,26 @@ namespace cbica
     return;
   }
 
+  /*
+  \brief Write itk::ImageReader as DICOM to specified directory
+
+  This uses default dictionary created by GDCM::ImageIO
+
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ComputedImageType;
+  typedef itk::Image< unsigned char, 3 > WrittenImageType;
+  itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader = GetDicomImageReader< ComputedImageType >(inputDirName);
+  ComputedImageType::Pointer imageToWrite = GetImageAfterProcessing( inputImageReader->GetOutput() );
+  WriteImage< ComputedImageType, WrittenImageType >(imageToWrite, dirNameToWriteImage); // casts imageToWrite to WrittenImageType
+  WriteImage< ComputedImageType >(imageToWrite, dirNameToWriteImage); // writes imageToWrite as ComputedImageType
+  // at this point, the image has already been written
+  \endverbatim
+
+  \param imageToWrite Pointer to processed image data which is to be written
+  \param dirName File containing the image
+  \return itk::Image of specified pixel and dimension type
+  */
   template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
   void WriteDicomImage(const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
@@ -266,6 +307,13 @@ namespace cbica
     {
       std::cout << "Specified directory wasn't found, creating...\n";
       cbica::createDir(dirName);
+    }
+
+    // check write access
+    if (((_access(dirName.c_str(), 2)) == -1) || ((_access(dirName.c_str(), 6)) == -1))
+    {
+      ShowErrorMessage("You don't have write access in selected location. Please check.");
+      return;
     }
 
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
@@ -332,6 +380,14 @@ namespace cbica
       std::cout << "Specified directory wasn't found, creating...\n";
       cbica::createDir(dirName);
     }
+
+    // check write access
+    if (((_access(dirName.c_str(), 2)) == -1) || ((_access(dirName.c_str(), 6)) == -1))
+    {
+      ShowErrorMessage("You don't have write access in selected location. Please check.");
+      return;
+    }
+
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput(imageToWrite);
@@ -368,8 +424,8 @@ namespace cbica
     }
 
   }
-  
-  
+
+
   /**
   \brief Get the itk::Image from input file name
 
