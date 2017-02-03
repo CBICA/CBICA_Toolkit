@@ -24,11 +24,13 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageIOFactory.h"
 #include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
+#include "itkOrientImageFilter.h"
 
 #include "cbicaUtilities.h"
 #include "cbicaITKImageInfo.h"
 
 typedef itk::Image< float, 3 > ImageTypeFloat3D;
+typedef itk::Image<unsigned int, 3> MaskType;
 
 namespace cbica
 {
@@ -51,12 +53,12 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
-    // check read access
-    if (((_access(directory_wrap.c_str(), 4)) == -1) || ((_access(directory_wrap.c_str(), 6)) == -1))
-    {
-      ShowErrorMessage("You don't have read access in selected location. Please check.");
-      return;
-    }
+    //// check read access
+    //if (((_access(fName.c_str(), 4)) == -1) || ((_access(fName.c_str(), 6)) == -1))
+    //{
+    //  ShowErrorMessage("You don't have read access in selected location. Please check.");
+    //  exit(EXIT_FAILURE);
+    //}
 
     if (supportedExtensions != "")
     {
@@ -131,12 +133,12 @@ namespace cbica
     }
     dirName_wrap.pop_back(); // this is done to ensure the last "/" isn't taken into account for file name generation
 
-    // check read access
-    if (((_access(directory_wrap.c_str(), 4)) == -1) || ((_access(directory_wrap.c_str(), 6)) == -1))
-    {
-      ShowErrorMessage("You don't have read access in selected location. Please check.");
-      return;
-    }
+    //// check read access
+    //if (((_access(dirName_wrap.c_str(), 4)) == -1) || ((_access(dirName_wrap.c_str(), 6)) == -1))
+    //{
+    //  ShowErrorMessage("You don't have read access in selected location. Please check.");
+    //  exit(EXIT_FAILURE);
+    //}
 
     typedef std::vector< std::string > SeriesIdContainer;
     SeriesIdContainer seriesToRead = cbica::stringSplit(seriesRestrictions, ",");
@@ -222,8 +224,8 @@ namespace cbica
   */
   template <class TImageType
     = ImageTypeFloat3D
-  >
-  typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
+    >
+    typename TImageType::Pointer GetDicomImage(const std::string &dirName, const std::string &seriesRestrictions = "0008|0021,0020|0012")
   {
     return ReadDicomImage< TImageType >(dirName, seriesRestrictions);
   }
@@ -250,12 +252,12 @@ namespace cbica
   template <typename ComputedImageType = ImageTypeFloat3D, typename ExpectedImageType = ComputedImageType>
   void WriteImage(typename ComputedImageType::Pointer imageToWrite, const std::string &fileName)
   {
-    // check write access
-    if (((_access(fileName.c_str(), 2)) == -1) || ((_access(fileName.c_str(), 6)) == -1))
-    {
-      ShowErrorMessage("You don't have write access in selected location. Please check.");
-      return;
-    }
+    //// check write access
+    //if (((_access(fileName.c_str(), 2)) == -1) || ((_access(fileName.c_str(), 6)) == -1))
+    //{
+    //  ShowErrorMessage("You don't have write access in selected location. Please check.");
+    //  return;
+    //}
 
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
     typename CastFilterType::Pointer filter = CastFilterType::New();
@@ -274,7 +276,7 @@ namespace cbica
     catch (itk::ExceptionObject &e)
     {
       std::cerr << "Error occurred while trying to write the image '" << fileName << "': " << e.what() << "\n";
-      exit(EXIT_FAILURE);
+      //exit(EXIT_FAILURE);//TBD all exit(EXIT_FAILURE) should be removed 
     }
 
     return;
@@ -310,11 +312,11 @@ namespace cbica
     }
 
     // check write access
-    if (((_access(dirName.c_str(), 2)) == -1) || ((_access(dirName.c_str(), 6)) == -1))
-    {
-      ShowErrorMessage("You don't have write access in selected location. Please check.");
-      return;
-    }
+    //if (((_access(dirName.c_str(), 2)) == -1) || ((_access(dirName.c_str(), 6)) == -1))
+    //{
+    //  ShowErrorMessage("You don't have write access in selected location. Please check.");
+    //  return;
+    //}
 
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
@@ -382,11 +384,11 @@ namespace cbica
     }
 
     // check write access
-    if (((_access(dirName.c_str(), 2)) == -1) || ((_access(dirName.c_str(), 6)) == -1))
-    {
-      ShowErrorMessage("You don't have write access in selected location. Please check.");
-      return;
-    }
+    //if (((_access(dirName.c_str(), 2)) == -1) || ((_access(dirName.c_str(), 6)) == -1))
+    //{
+    //  ShowErrorMessage("You don't have write access in selected location. Please check.");
+    //  return;
+    //}
 
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
@@ -424,8 +426,8 @@ namespace cbica
     }
 
   }
-
-
+  
+  
   /**
   \brief Get the itk::Image from input file name
 
@@ -453,6 +455,46 @@ namespace cbica
     else
     {
       return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
+    }
+  }
+
+  static  ImageTypeFloat3D::Pointer ReadImageWithOrientFix(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  {
+    std::string extension = cbica::getFilenameExtension(fName);
+    if (cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom"))
+    {
+      return GetDicomImage< ImageTypeFloat3D >(fName);
+    }
+    else
+    {
+      ImageTypeFloat3D::Pointer rval = GetImageReader< ImageTypeFloat3D >(fName, supportedExtensions, delimitor)->GetOutput();
+      itk::OrientImageFilter<ImageTypeFloat3D, ImageTypeFloat3D>::Pointer orienter = itk::OrientImageFilter<ImageTypeFloat3D, ImageTypeFloat3D>::New();
+      orienter->UseImageDirectionOn();
+      orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI);
+      orienter->SetInput(rval);
+      orienter->Update();
+      rval = orienter->GetOutput();
+      return rval;
+    }
+  }
+
+  static  MaskType::Pointer ReadImageWithOrientFixMask(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  {
+    std::string extension = cbica::getFilenameExtension(fName);
+    if (cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom"))
+    {
+      return GetDicomImage< MaskType >(fName);
+    }
+    else
+    {
+      MaskType::Pointer rval = GetImageReader< MaskType >(fName, supportedExtensions, delimitor)->GetOutput();
+      itk::OrientImageFilter<MaskType, MaskType>::Pointer orienter = itk::OrientImageFilter<MaskType, MaskType>::New();
+      orienter->UseImageDirectionOn();
+      orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI);
+      orienter->SetInput(rval);
+      orienter->Update();
+      rval = orienter->GetOutput();
+      return rval;
     }
   }
 
