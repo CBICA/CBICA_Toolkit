@@ -67,7 +67,7 @@ namespace cbica
   {
     if (m_argv.empty())
     {
-      for (int i = 0; i < argc; i++)
+      for (int i = 0; i < argc; i ++)
       {
         m_argv.push_back(std::string(argv[i]));
       }
@@ -311,7 +311,7 @@ namespace cbica
 
     if (m_exampleOfUsage != "")
     {
-      std::cout << "For example: \n\n" <<
+      std::cout << "For example: \n\n" << 
         m_exeName_wrap << " " << m_exampleOfUsage << "\n";
     }
 
@@ -344,19 +344,20 @@ namespace cbica
 
   inline void CmdParser::verbose_check(std::string &input_string)
   {
-    std::transform(input_string.begin(), input_string.end(), input_string.begin(), ::tolower);
-    if ((input_string == "usage") || (input_string == "-usage") || (input_string == "--usage")
-      || (input_string == "u") || (input_string == "-u") || (input_string == "--u"))
+    std::string input_string_lower = input_string;
+    std::transform(input_string_lower.begin(), input_string_lower.end(), input_string_lower.begin(), ::tolower);
+    if ((input_string_lower == "usage") || (input_string_lower == "-usage") || (input_string_lower == "--usage")
+      || (input_string_lower == "u") || (input_string_lower == "-u") || (input_string_lower == "--u"))
     {
       input_string = "u";
     }
-    else if ((input_string == "help") || (input_string == "-help") || (input_string == "--help")
-      || (input_string == "h") || (input_string == "-h") || (input_string == "--h"))
+    else if ((input_string_lower == "help") || (input_string_lower == "-help") || (input_string_lower == "--help")
+      || (input_string_lower == "h") || (input_string_lower == "-h") || (input_string_lower == "--h"))
     {
       input_string = "h";
     }
-    else if ((input_string == "version") || (input_string == "-version") || (input_string == "--version")
-      || (input_string == "v") || (input_string == "-v") || (input_string == "--v"))
+    else if ((input_string_lower == "version") || (input_string_lower == "-version") || (input_string_lower == "--version")
+      || (input_string_lower == "v") || (input_string_lower == "-v") || (input_string_lower == "--v"))
     {
       input_string = "v";
     }
@@ -514,7 +515,7 @@ namespace cbica
     size_t i = 0;
     while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
     {
-      if ((m_requiredParameters[i].laconic == execParamToCheck) ||
+      if ((m_requiredParameters[i].laconic == execParamToCheck)  ||
         (m_requiredParameters[i].verbose == execParamToCheck))
       {
         return m_requiredParameters[i].dataType_string;
@@ -617,27 +618,6 @@ namespace cbica
     if (compareParameter(execParamToCheck, position))
     {
       parameterValue = std::atoi(m_argv[position + 1].c_str()); // return value is an integer
-      return;
-    }
-    else
-    {
-      parameterValue = -1;
-      return;
-    }
-  }
-
-  void CmdParser::getParameterValue(const std::string &execParamToCheck, size_t &parameterValue)
-  {
-    if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::INTEGER)
-    {
-      std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
-        "' and cannot be returned as a INTEGER.\n";
-      exit(EXIT_FAILURE);
-    }
-    int position;
-    if (compareParameter(execParamToCheck, position))
-    {
-      parameterValue = static_cast<size_t>(std::atoi(m_argv[position + 1].c_str())); // return value is an integer
       return;
     }
     else
