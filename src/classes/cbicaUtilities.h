@@ -3,7 +3,7 @@
 
 \brief Some basic utility functions.
 
-This needs c++11 flag enabled in gcc < 4.
+This needs c++11 flag enabled in gcc < 5.
 
 https://www.cbica.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
@@ -850,7 +850,7 @@ namespace cbica
 >
   /*typename*/ TConvertType convertCharacter(const std::string &input_string)
   {
-    return static_cast<TConvertType>(input_string.at(0));
+    return static_cast<TConvertType>(input_string[0]);
   }
 
   /**
@@ -864,7 +864,7 @@ namespace cbica
   {
     std::vector</*typename*/TConvertType>return_vector;
     for (int i = 0; i<input_string.length(); ++i)
-      return_vector.push_back(static_cast<TConvertType>(input_string.at(i)));
+      return_vector.push_back(static_cast<TConvertType>(input_string[i]));
 
     return return_vector;
   }
@@ -935,135 +935,6 @@ namespace cbica
 
 
 };
-
-#if defined(__GNUC__)  && (__GNUC__ < 5) && !(__APPLE__) && !(__GXX_EXPERIMENTAL_CXX0X__)
-namespace std
-{
-  //! std::round wrap for GCC
-  inline int round(const float &input)
-  {
-    int returnValue;
-    const float inputWrap = abs(input);
-    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
-
-    if (input < 0)
-    {
-      returnValue = -(returnValue);
-    }
-
-    return returnValue;
-  }
-
-  //! std::round wrap for GCC
-  inline int round(const double &input)
-  {
-    int returnValue;
-    const double inputWrap = abs(input);
-    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
-
-    if (input < 0)
-    {
-      returnValue = -(returnValue);
-    }
-
-    return returnValue;
-  }
-
-  //! std::round wrap for GCC
-  inline int round(const long int &input)
-  {
-    int returnValue;
-    const long int inputWrap = abs(input);
-    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
-
-    if (input < 0)
-    {
-      returnValue = -(returnValue);
-    }
-
-    return returnValue;
-  }
-
-  //! std::round wrap for GCC
-  inline int round(const unsigned int &input)
-  {
-    int returnValue;
-    const unsigned int inputWrap = abs(input);
-    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
-
-    if (input < 0)
-    {
-      returnValue = -(returnValue);
-    }
-
-    return returnValue;
-  }
-
-  //! std::round wrap for GCC
-  inline int round(const short &input)
-  {
-    int returnValue;
-    const short inputWrap = abs(input);
-    inputWrap >= floor(inputWrap) + 0.5 ? returnValue = ceil(inputWrap) : returnValue = floor(inputWrap);
-
-    if (input < 0)
-    {
-      returnValue = -(returnValue);
-    }
-
-    return returnValue;
-  }
-
-  //! std::to_string wrap for GCC
-  inline std::string to_string(const int &input)
-  {
-    std::ostringstream ss;
-    ss << input;
-    return ss.str();
-  }
-
-  //! std::to_string wrap for GCC
-  inline std::string to_string(const unsigned int &input)
-  {
-    std::ostringstream ss;
-    ss << input;
-    return ss.str();
-  }
-
-  //! std::to_string wrap for GCC
-  inline std::string to_string(const size_t &input)
-  {
-    std::ostringstream ss;
-    ss << input;
-    return ss.str();
-  }
-
-  //! std::to_string wrap for GCC
-  inline std::string to_string(const long int &input)
-  {
-    std::ostringstream ss;
-    ss << input;
-    return ss.str();
-  }
-
-  //! std::to_string wrap for GCC
-  inline std::string to_string(const double &input)
-  {
-    std::ostringstream ss;
-    ss << input;
-    return ss.str();
-  }
-
-  //! std::to_string wrap for GCC
-  inline std::string to_string(const float &input)
-  {
-    std::ostringstream ss;
-    ss << input;
-    return ss.str();
-  }
-  
-};
-#endif
 
 /**
 \struct FileNameParts
