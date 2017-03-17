@@ -1166,10 +1166,7 @@ namespace cbica
           if (recursiveSearch)
           {
             std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + std::string(fd.cFileName), true);
-            for (size_t i = 0; i < tempVector.size(); i++)
-            {
-              allDirectories.push_back(std::string(fd.cFileName) + "/" + tempVector[i]);
-            }
+            allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
           }
         }
       } while (FindNextFile(hFind, &fd) != 0);
@@ -1188,14 +1185,16 @@ namespace cbica
       if (recursiveSearch && (dirp->d_type == DT_DIR) && dirp->d_name[0] != '.')
       {
         std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + dirp->d_name, true);
-        for (size_t i = 0; i < tempVector.size(); i++)
-          allDirectories.push_back(std::string(dirp->d_name) + "/" + tempVector[i]);
+        allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
       }
 
       if ( (strcmp(dirp->d_name, ".") == 0) || (strcmp(dirp->d_name, "..") == 0) )
         continue;
 
-      allDirectories.push_back(dirp->d_name);
+      if (dirp->d_type == DT_DIR)
+      {
+        allDirectories.push_back(dirp->d_name);
+      }
     }
     closedir(dp);
 #endif
