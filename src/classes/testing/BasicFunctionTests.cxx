@@ -48,7 +48,7 @@ int main(int argc, const char** argv)
   parser.addOptionalParameter("l", "logging", cbica::Parameter::NONE, "", "logging Test");
   parser.addOptionalParameter("m", "makeTempDir", cbica::Parameter::NONE, "", "makeTempDir Test");
   parser.addOptionalParameter("n2", "noFile", cbica::Parameter::NONE, "", "noFile Test");
-  parser.addOptionalParameter("n1", "noFolder", cbica::Parameter::NONE, "", "noFolder Test"); 
+  parser.addOptionalParameter("n1", "noFolder", cbica::Parameter::NONE, "", "noFolder Test");
   parser.addOptionalParameter("s1", "symbolic", cbica::Parameter::NONE, "", "symbolic Test");
   parser.addOptionalParameter("s2", "subDir", cbica::Parameter::NONE, "", "subDir Test");
   parser.addOptionalParameter("v", "variadic", cbica::Parameter::NONE, "", "variadic Test");
@@ -134,7 +134,7 @@ int main(int argc, const char** argv)
   if (parser.compareParameter("configFileReader", tempPostion))
   {
     std::string configFile = argv[tempPostion + 1];
-    std::vector< cbica::Parameter > testParameters = cbica::readConfigFile(configFile, true);
+    std::vector< cbica::Parameter > testParameters = parser.readConfigFile(configFile, true);
 
     size_t count = 0;
 
@@ -368,7 +368,7 @@ int main(int argc, const char** argv)
   if (parser.compareParameter("makeTempDir", tempPostion))
   {
     std::string return_dir = cbica::createTmpDir();
-    
+
     if (!cbica::isDir(return_dir))
       return EXIT_FAILURE;
 

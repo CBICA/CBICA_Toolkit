@@ -1365,100 +1365,54 @@ namespace cbica
     return return_CSVDict;
   }
 
-  inline std::string iterateOverStringAndSeparators(const std::string &inputString, size_t &count, int enum_separator = 10)
-  {
-    std::string returnString = "";
-    if (enum_separator == 10) // to get description
-    {
-      returnString = inputString.substr(count + 1); // get all characters after the separator was detected
-    }    
-    else // for everything other than description
-    {
-      char testChar = inputString[count], separatorChar = *cbica::constCharToChar(getSeparator(enum_separator));
-      size_t position, // position to start getting the substring
-        separatorChecker = 2; // the configuration file needs the difference between two types of strings to be a single space (apart from the separator string)
-      if (testChar == separatorChar)  
-      {
-        count++;
-        position = count;
-        //stringStream.clear();
-        //stringStream << inputString[count];
-        //std::string testStr = stringStream.str(), testSep = getSeparator(enum_separator);
-        //while (stringStream.str() != getSeparator(enum_separator))
-        //{
-        //  stringStream << inputString[count];
-        //  returnString += stringStream.str();
-        //  stringStream.clear();
-        //  count++;
-        //}
-        testChar = inputString[count];
-        while (testChar != separatorChar)
-        {
-          count++;
-          testChar = inputString[count];
-        }
-        
-        returnString = inputString.substr(position, count - position);
-      }
-      else // a small check as a contingency plan
-      {
-        while (separatorChecker > 0)
-        {
-          separatorChecker--;
-          count++;
-          testChar = inputString[count];
-        }
-      }
-    }
+  //inline std::string iterateOverStringAndSeparators(const std::string &inputString, size_t &count, int enum_separator = 10)
+  //{
+  //  std::string returnString = "";
+  //  if (enum_separator == 10) // to get description
+  //  {
+  //    returnString = inputString.substr(count + 1); // get all characters after the separator was detected
+  //  }    
+  //  else // for everything other than description
+  //  {
+  //    char testChar = inputString[count], separatorChar = *cbica::constCharToChar(getSeparator(enum_separator));
+  //    size_t position, // position to start getting the substring
+  //      separatorChecker = 2; // the configuration file needs the difference between two types of strings to be a single space (apart from the separator string)
+  //    if (testChar == separatorChar)  
+  //    {
+  //      count++;
+  //      position = count;
+  //      //stringStream.clear();
+  //      //stringStream << inputString[count];
+  //      //std::string testStr = stringStream.str(), testSep = getSeparator(enum_separator);
+  //      //while (stringStream.str() != getSeparator(enum_separator))
+  //      //{
+  //      //  stringStream << inputString[count];
+  //      //  returnString += stringStream.str();
+  //      //  stringStream.clear();
+  //      //  count++;
+  //      //}
+  //      testChar = inputString[count];
+  //      while (testChar != separatorChar)
+  //      {
+  //        count++;
+  //        testChar = inputString[count];
+  //      }
+  //      
+  //      returnString = inputString.substr(position, count - position);
+  //    }
+  //    else // a small check as a contingency plan
+  //    {
+  //      while (separatorChecker > 0)
+  //      {
+  //        separatorChecker--;
+  //        count++;
+  //        testChar = inputString[count];
+  //      }
+  //    }
+  //  }
 
-    return returnString;
-  }
-
-  std::vector< Parameter > readConfigFile(const std::string &path_to_config_file, bool getDescription)
-  {
-    std::vector< Parameter > returnVector;
-    std::ifstream inputFile(path_to_config_file.c_str());
-    if (!inputFile) 
-    {
-      std::cerr << "File '" << path_to_config_file << "' not found.\n";
-      exit(EXIT_FAILURE);
-    }
-    std::string line;
-    while (std::getline(inputFile, line)) 
-    {
-      std::string parameter, parameterDataType, parameterDataRange, parameterDescription = "";
-      for (size_t i = 0; i < line.length(); i++)
-      {
-        parameter = cbica::iterateOverStringAndSeparators(line, i, 
-#ifdef _WIN32
-          Separator::
-#endif
-          Param);
-        i = i + 2;
-        parameterDataType = cbica::iterateOverStringAndSeparators(line, i,
-#ifdef _WIN32
-          Separator::
-#endif
-          DataType);
-        i = i + 2;
-        parameterDataRange = cbica::iterateOverStringAndSeparators(line, i,
-#ifdef _WIN32
-          Separator::
-#endif
-          DataRange);
-        if (getDescription)
-        {
-          i = i + 1;
-          parameterDescription = cbica::iterateOverStringAndSeparators(line, i, 10);
-        }
-        i = line.length();
-        returnVector.push_back(Parameter("", parameter, parameterDataType, parameterDataRange, parameterDescription));
-      }
-    }
-
-    inputFile.close();
-    return returnVector;
-  }
+  //  return returnString;
+  //}
 
   std::string getCurrentLocalDate()
   {

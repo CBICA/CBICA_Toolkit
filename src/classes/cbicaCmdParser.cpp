@@ -10,21 +10,45 @@ Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 */
-#include <functional>
-#include <cmath>
-#include <fstream>
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
 #if (_WIN32)
-#include <io.h>
+#define NOMINMAX
+#include <direct.h>
+#include <windows.h>
+#include <conio.h>
+#include <lmcons.h>
+#include <Shlobj.h>
+#include <filesystem>
+#define GetCurrentDir _getcwd
+static bool WindowsDetected = true;
+static const char  cSeparator  = '\\';
+//  static const char* cSeparators = "\\/";
 #else
+#include <dirent.h>
 #include <unistd.h>
+#include <libgen.h>
+#include <limits.h>
+#include <cstring>
+#include <cstdlib>
+#include <sys/types.h>
+#include <errno.h>
+#include <ftw.h>
+#define GetCurrentDir getcwd
+static bool WindowsDetected = false;
+static const char  cSeparator = '/';
+//  static const char* cSeparators = "/";
 #endif
 
-
+#include <fstream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <limits.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <exception>
+#include <typeinfo>
+#include <stdexcept>
+#include <algorithm>
+#include <string>
 #include "cbicaCmdParser.h"
 
 #ifndef PROJECT_VERSION
@@ -34,6 +58,280 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 namespace cbica
 {
+  //! copied from cbicaUtilities to ensure CmdParser stays header-only
+  static inline bool directoryExists(const std::string &dName)
+  {
+    struct stat info;
+    std::string dName_Wrap = dName;
+
+    if (dName_Wrap[dName_Wrap.length() - 1] == '/')
+    {
+      dName_Wrap.erase(dName_Wrap.end() - 1);
+    }
+
+    if (stat(dName_Wrap.c_str(), &info) != 0)
+      return false;
+    else if (info.st_mode & S_IFDIR)  // S_ISDIR() doesn't exist on windows
+      return true;
+    else
+      return false;
+  }
+
+  //! copied from cbicaUtilities to ensure CmdParser stays header-only
+  static inline std::string getEnvironmentVariableValue(const std::string &environmentVariable)
+  {
+    std::string returnString = "";
+    char tempValue[FILENAME_MAX];
+#if defined(_WIN32)
+    char tmp[FILENAME_MAX];
+    size_t size = FILENAME_MAX;
+    getenv_s(&size, tmp, size, environmentVariable.c_str()); // does not work, for some reason - needs to be tested
+    std::string temp = cbica::replaceString(tmp, "\\", "/");
+    sprintf_s(tempValue, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
+    tmp[0] = '\0';
+#else
+    char *tmp;
+    tmp = std::getenv(environmentVariable.c_str());
+    sprintf(tempValue, "%s", tmp);
+#endif
+
+    returnString = std::string(tempValue);
+    tempValue[0] = '\0';
+
+    return returnString;
+  }
+
+  //! copied from cbicaUtilities to ensure CmdParser stays header-only
+  static inline bool createDir(const std::string &dir_name)
+  {
+    //! Pure c++ based directory creation
+#if defined(_WIN32)
+    DWORD ftyp = GetFileAttributesA(dir_name.c_str()); // check if directory exists or not
+    if (ftyp == INVALID_FILE_ATTRIBUTES)
+      _mkdir(dir_name.c_str());
+    return true;
+#else
+    DIR *pDir;
+    pDir = opendir(dir_name.c_str()); // check if directory exists or not
+    if (pDir == NULL)
+      mkdir(dir_name.c_str(), 0777);
+    return true;
+#endif
+    return false;
+  }
+
+  //! copied from cbicaUtilities to ensure CmdParser stays header-only
+  static inline char* constCharToChar(const std::string &input)
+  {
+    char *s = new char[input.size() + 1];
+#ifdef _WIN32
+    strcpy_s(s, input.size() + 1, input.c_str());
+#else
+    std::strcpy(s, input.c_str());
+#endif
+    return s;
+  }
+
+  //! copied from cbicaUtilities to ensure CmdParser stays header-only
+  static inline std::string iterateOverStringAndSeparators(const std::string &inputString, size_t &count, int enum_separator = 10)
+  {
+    std::string returnString = "";
+    if (enum_separator == 10) // to get description
+    {
+      returnString = inputString.substr(count + 1); // get all characters after the separator was detected
+    }
+    else // for everything other than description
+    {
+      char testChar = inputString[count], separatorChar = *cbica::constCharToChar(getSeparator(enum_separator));
+      size_t position, // position to start getting the substring
+        separatorChecker = 2; // the configuration file needs the difference between two types of strings to be a single space (apart from the separator string)
+      if (testChar == separatorChar)
+      {
+        count++;
+        position = count;
+        //stringStream.clear();
+        //stringStream << inputString[count];
+        //std::string testStr = stringStream.str(), testSep = getSeparator(enum_separator);
+        //while (stringStream.str() != getSeparator(enum_separator))
+        //{
+        //  stringStream << inputString[count];
+        //  returnString += stringStream.str();
+        //  stringStream.clear();
+        //  count++;
+        //}
+        testChar = inputString[count];
+        while (testChar != separatorChar)
+        {
+          count++;
+          testChar = inputString[count];
+        }
+
+        returnString = inputString.substr(position, count - position);
+      }
+      else // a small check as a contingency plan
+      {
+        while (separatorChecker > 0)
+        {
+          separatorChecker--;
+          count++;
+          testChar = inputString[count];
+        }
+      }
+    }
+
+    return returnString;
+  }
+
+  //! copied from cbicaUtilities to ensure CmdParser stays header-only
+  static inline bool splitFileName(const std::string &dataFile, std::string &path,
+    std::string &baseName, std::string &extension)
+  {
+    std::string dataFile_wrap = dataFile;
+    std::vector< std::string > compressionFormats;
+    compressionFormats.push_back(".gz");
+    compressionFormats.push_back(".bz");
+    compressionFormats.push_back(".zip");
+    compressionFormats.push_back(".bz2");
+
+    // check for compression formats
+    for (size_t i = 0; i < compressionFormats.size(); i++)
+    {
+      if (dataFile_wrap.find(compressionFormats[i]) != std::string::npos)
+      {
+        dataFile_wrap = cbica::replaceString(dataFile_wrap, compressionFormats[i], "");
+        std::string tempExt;
+        cbica::splitFileName(dataFile_wrap, path, baseName, tempExt);
+        extension = tempExt + compressionFormats[i];
+      }
+    }
+    if (!path.empty() && !baseName.empty() && !extension.empty())
+    {
+      return true;
+    }
+    else
+    {
+      //! Initialize pointers to file and user names
+#if (_MSC_VER >= 1700)
+      char basename_var[FILENAME_MAX], ext[FILENAME_MAX], path_name[FILENAME_MAX], drive_letter[FILENAME_MAX];
+      //_splitpath(dataFile_wrap.c_str(), NULL, path_name, basename_var, ext);
+      _splitpath_s(dataFile.c_str(), drive_letter, FILENAME_MAX, path_name, FILENAME_MAX, basename_var, FILENAME_MAX, ext, FILENAME_MAX);
+#else
+      char *basename_var, *ext, *path_name;
+      path_name = dirname(cbica::constCharToChar(dataFile_wrap.c_str()));
+      basename_var = basename(cbica::constCharToChar(dataFile_wrap.c_str()));
+      ext = strrchr(cbica::constCharToChar(dataFile_wrap.c_str()), '.');
+#endif
+
+      //path sanity check
+      if (path_name == NULL)
+      {
+        std::cerr << "No filename path has been detected.\n";
+        exit(EXIT_FAILURE);
+      }
+      else
+      {
+        path =
+#ifdef _WIN32
+          std::string(drive_letter) +
+#endif
+          std::string(path_name);
+      }
+      path = cbica::replaceString(path, "\\", "/"); // normalize path for Windows
+
+      //base name sanity check
+      if (basename_var == NULL)
+      {
+        std::cerr << "No filename base has been detected.\n";
+        exit(EXIT_FAILURE);
+      }
+      else
+      {
+        baseName = std::string(basename_var);
+      }
+
+      //extension sanity check
+      if (ext == NULL)
+      {
+        extension = "";
+      }
+      else
+      {
+        extension = std::string(ext);
+      }
+
+#if (_MSC_VER >= 1700)
+      path_name[0] = NULL;
+      basename_var[0] = NULL;
+      ext[0] = NULL;
+      drive_letter[0] = NULL;
+#endif
+      if (path[path.length() - 1] != '/')
+      {
+        path += "/";
+      }
+
+      return true;
+    }
+  }
+
+  //! copied from cbicaUtilities to ensure CmdParser stays header-only
+  static inline std::string getExecutableName()
+  {
+    std::string return_string;
+#if defined(_WIN32)
+    //! Initialize pointers to file and user names
+    char filename[FILENAME_MAX];
+    GetModuleFileNameA(NULL, filename, FILENAME_MAX);
+    std::string path, ext;
+    splitFileName(filename, path, return_string, ext);
+    filename[0] = '\0';
+    //_splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
+#else
+    return_string = getEnvironmentVariableValue("_");
+#endif
+
+    return return_string;
+  }
+
+  static inline std::string makeTempDir()
+  {
+    std::string returnDir = "", tempCheck, homeEnv;
+#if defined(_WIN32)
+    homeEnv = "USERPROFILE";
+#else
+    homeEnv = "HOME";
+#endif    
+
+    tempCheck = cbica::getEnvironmentVariableValue(homeEnv);
+    tempCheck += "/tmp";
+
+    if (cbica::directoryExists(tempCheck))
+    {
+      for (size_t i = 1; i <= FILENAME_MAX; i++)
+      {
+        returnDir = tempCheck + std::to_string(i);
+        if (!cbica::directoryExists(returnDir))
+        {
+          break;
+        }
+      }
+    }
+    else
+    {
+      returnDir = tempCheck;
+    }
+
+    returnDir += "/";
+    if (!createDir(returnDir))
+    {
+      std::cerr << "Could not create the temporary directory '" << returnDir << "'\n";
+      exit(EXIT_FAILURE);
+    }
+
+    return returnDir;
+  }
+
+
   void CmdParser::initializeClass(int &input_argc, std::vector< std::string > &input_argv, const std::string &input_exeName)
   {
 #ifdef PROJECT_VERSION
@@ -90,6 +388,25 @@ namespace cbica
 
   }
 
+  static inline std::string getCurrentYear()
+  {
+    time_t timer;
+    // obtain current time
+    time(&timer);
+    char buffer[200];
+
+    // obtain current local date
+#ifdef _WIN32
+    struct tm timeinfo;
+    localtime_s(&timeinfo, &timer);
+    sprintf_s(buffer, "%d", timeinfo.tm_year + 1900);
+#else
+    tm *time_struct = localtime(&timer);
+    sprintf(buffer, "%d", time_struct->tm_year + 1900);
+#endif
+    return std::string(buffer);
+  }
+
   inline void copyrightNotice()
   {
     std::cout <<
@@ -99,7 +416,7 @@ namespace cbica
       "See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html" <<
       "\n==========================================================================\n";
   }
-
+  
   inline void CmdParser::getMaxLength()
   {
     m_minVerboseLength = 1024;
@@ -702,19 +1019,19 @@ namespace cbica
 
     std::string fileName = dirName_wrap + m_exeName + ".txt";
 
-#if (_WIN32)
-    if (_access(fileName.c_str(), 6) == -1)
-    {
-      std::cerr << "No write permission for the specified config file.\n";
-      exit(EXIT_FAILURE);
-    }
-#else
-    if (access(fileName.c_str(), R_OK && W_OK) != 0)
-    {
-      std::cerr << "No write permission for the specified config file.\n";
-      exit(EXIT_FAILURE);
-    }
-#endif
+//#if (_WIN32)
+//    if (_access(fileName.c_str(), 6) == -1)
+//    {
+//      std::cerr << "No write permission for the specified config file.\n";
+//      exit(EXIT_FAILURE);
+//    }
+//#else
+//    if (access(fileName.c_str(), R_OK && W_OK) != 0)
+//    {
+//      std::cerr << "No write permission for the specified config file.\n";
+//      exit(EXIT_FAILURE);
+//    }
+//#endif
 
     std::ofstream file;
     file.open(fileName.c_str());
@@ -746,6 +1063,52 @@ namespace cbica
 
     //std::cout << "Config file written with path: '" << fileName << "'\n";
     return;
+  }
+
+  std::vector< Parameter > CmdParser::readConfigFile(const std::string &path_to_config_file, bool getDescription)
+  {
+    std::vector< Parameter > returnVector;
+    std::ifstream inputFile(path_to_config_file.c_str());
+    if (!inputFile)
+    {
+      std::cerr << "File '" << path_to_config_file << "' not found.\n";
+      exit(EXIT_FAILURE);
+    }
+    std::string line;
+    while (std::getline(inputFile, line))
+    {
+      std::string parameter, parameterDataType, parameterDataRange, parameterDescription = "";
+      for (size_t i = 0; i < line.length(); i++)
+      {
+        parameter = cbica::iterateOverStringAndSeparators(line, i,
+#ifdef _WIN32
+          Separator::
+#endif
+          Param);
+        i = i + 2;
+        parameterDataType = cbica::iterateOverStringAndSeparators(line, i,
+#ifdef _WIN32
+          Separator::
+#endif
+          DataType);
+        i = i + 2;
+        parameterDataRange = cbica::iterateOverStringAndSeparators(line, i,
+#ifdef _WIN32
+          Separator::
+#endif
+          DataRange);
+        if (getDescription)
+        {
+          i = i + 1;
+          parameterDescription = cbica::iterateOverStringAndSeparators(line, i, 10);
+        }
+        i = line.length();
+        returnVector.push_back(Parameter("", parameter, parameterDataType, parameterDataRange, parameterDescription));
+      }
+    }
+
+    inputFile.close();
+    return returnVector;
   }
 
 }

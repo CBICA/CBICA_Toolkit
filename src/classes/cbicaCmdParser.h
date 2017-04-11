@@ -19,10 +19,175 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <algorithm>
 #include <vector>
 
-#include "cbicaUtilities.h"
+enum Separator
+{
+  Param, DataType, DataRange
+};
+
+//! String separators corresponding to Separator
+#if defined(__GNUC__)  && (__GNUC__ < 5)
+static const char *SeparatorStrings[] = { ":", "%", "*" };
+#else
+static std::vector< std::string > SeparatorStrings = { ":", "%", "*" };
+#endif
+
+//! Get the Separator as a string from the enum Separator
+static inline std::string getSeparator(int enumVal)
+{
+  return SeparatorStrings[enumVal];
+}
 
 namespace cbica
 {
+  //! copied from cbicaUtilities to ensure CmdParser stays header-only
+  static inline std::string replaceString(const std::string &entireString,
+    const std::string &toReplace,
+    const std::string &replaceWith)
+  {
+    std::string return_string = entireString;
+    for (size_t pos = 0;; pos += replaceWith.length())
+    {
+      pos = return_string.find(toReplace, pos);
+      if (pos == std::string::npos)
+        break;
+
+      return_string.erase(pos, toReplace.length());
+      return_string.insert(pos, replaceWith);
+    }
+    return return_string;
+    /*
+    if( entireString.length() < toReplace.length() )
+    std::cerr << "Length of string to search < length of string to replace. Please check.\n";
+
+    return(return_string.replace(entireString.find(toReplace), toReplace.length(), replaceWith));
+    */
+  }
+
+  //====================================== Structs that need string stuff ====================================//
+  /**
+  \struct Parameter
+
+  \brief Holds individual parameter information
+
+  This is a helper struct for internal usage of different functions and classes (right now, the function ReadConfigFile()
+  and the class CmdParser() use it). It is not meant to be used from a program directly.
+  All variables are self-explanatory. Currently, a maxium of five lines of description are supported.
+  */
+  struct Parameter
+  {
+    enum Type
+    {
+      FILE, DIRECTORY, STRING, INTEGER, FLOAT, BOOLEAN, NONE
+    };
+
+    std::string laconic;
+    std::string verbose;
+    int dataType_enumCode;
+    std::string dataType_string;
+    std::string dataRange;
+    std::string descriptionLine1;
+    std::string descriptionLine2; //! defaults to blank
+    std::string descriptionLine3; //! defaults to blank
+    std::string descriptionLine4; //! defaults to blank
+    std::string descriptionLine5; //! defaults to blank
+
+    size_t length;
+
+    //! Constructor with five lines of description and enum_code for dataType
+    Parameter(const std::string &in_laconic, const std::string &in_verbose, const int &in_dataType, const std::string &in_dataRange,
+      const std::string &in_descriptionLine1, const std::string &in_descriptionLine2 = "", const std::string &in_descriptionLine3 = "",
+      const std::string &in_descriptionLine4 = "", const std::string &in_descriptionLine5 = "") :
+      laconic(in_laconic), verbose(in_verbose), dataType_enumCode(in_dataType), dataType_string(""), dataRange(in_dataRange),
+      descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
+      descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
+    {
+      laconic = cbica::replaceString(laconic, "-", "");
+      laconic = cbica::replaceString(laconic, "--", "");
+      verbose = cbica::replaceString(verbose, "-", "");
+      verbose = cbica::replaceString(verbose, "--", "");
+      length = laconic.length() + verbose.length();
+
+      // populate dataType_string WRT dataType_enumCode
+      switch (in_dataType)
+      {
+      case FILE:
+        dataType_string = "FILE";
+        break;
+      case DIRECTORY:
+        dataType_string = "DIRECTORY";
+        break;
+      case STRING:
+        dataType_string = "STRING";
+        break;
+      case INTEGER:
+        dataType_string = "INTEGER";
+        break;
+      case FLOAT:
+        dataType_string = "FLOAT";
+        break;
+      case BOOLEAN:
+        dataType_string = "BOOL";
+        break;
+      case NONE:
+        dataType_string = "NONE";
+        break;
+      default:
+        dataType_string = "UNKNOWN";
+        break;
+      }
+    }
+
+    //! Constructor with five lines of description and string for dataType
+    Parameter(const std::string &in_laconic, const std::string &in_verbose, const std::string &in_dataType, const std::string &in_dataRange,
+      const std::string &in_descriptionLine1, const std::string &in_descriptionLine2 = "", const std::string &in_descriptionLine3 = "",
+      const std::string &in_descriptionLine4 = "", const std::string &in_descriptionLine5 = "") :
+      laconic(in_laconic), verbose(in_verbose), dataType_enumCode(0), dataType_string(in_dataType), dataRange(in_dataRange),
+      descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
+      descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
+    {
+      laconic = cbica::replaceString(laconic, "-", "");
+      laconic = cbica::replaceString(laconic, "--", "");
+      verbose = cbica::replaceString(verbose, "-", "");
+      verbose = cbica::replaceString(verbose, "--", "");
+      length = laconic.length() + verbose.length();
+
+      // populate dataType_enumCode WRT dataType_string
+      if (dataType_string == "FILE")
+      {
+        dataType_enumCode = FILE;
+      }
+      else if (dataType_string == "DIRECTORY")
+      {
+        dataType_enumCode = DIRECTORY;
+      }
+      else if (dataType_string == "STRING")
+      {
+        dataType_enumCode = STRING;
+      }
+      else if (dataType_string == "INTEGER")
+      {
+        dataType_enumCode = INTEGER;
+      }
+      else if (dataType_string == "FLOAT")
+      {
+        dataType_enumCode = FLOAT;
+      }
+      else if ((dataType_string == "BOOL") || (dataType_string == "BOOLEAN"))
+      {
+        dataType_enumCode = BOOLEAN;
+      }
+      else if (dataType_string == "NONE")
+      {
+        dataType_enumCode = NONE;
+      }
+      else
+      {
+        dataType_enumCode = -1;
+      }
+    }
+
+  };
+
   /**
   \class CmdParser
 
@@ -231,6 +396,14 @@ namespace cbica
     \param dirName The full path of the directory to save the file; defaults to directory specified in cbica::makeTempDir()
     */
     void writeConfigFile(const std::string &dirName = "");
+
+    /**
+    \brief Reads a pre-written configuration file using CmdParser::WriteConfigFile()
+
+    \param inputConfigFile Full path to the configuration file which needs to be read
+    \return Vector of the Parameter structure where laconic paramter is always empty for all variables
+    */
+    std::vector< Parameter > readConfigFile(const std::string &inputConfigFile, bool getDescription = true);
 
     /**
     \brief Gives a brief example of how to use the executable
