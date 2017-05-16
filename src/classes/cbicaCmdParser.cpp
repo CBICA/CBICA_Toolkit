@@ -3,11 +3,11 @@
 
 \brief Implementation file for CmdParser class.
 
-https://www.cbica.upenn.edu/sbia/software/ <br>
+http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
+See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 
 */
 #if (_WIN32)
@@ -19,7 +19,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <Shlobj.h>
 #include <filesystem>
 #define GetCurrentDir _getcwd
-static bool WindowsDetected = true;
+//static bool WindowsDetected = true;
 static const char  cSeparator  = '\\';
 //  static const char* cSeparators = "\\/";
 #else
@@ -33,7 +33,7 @@ static const char  cSeparator  = '\\';
 #include <errno.h>
 #include <ftw.h>
 #define GetCurrentDir getcwd
-static bool WindowsDetected = false;
+//static bool WindowsDetected = false;
 static const char  cSeparator = '/';
 //  static const char* cSeparators = "/";
 #endif
@@ -86,7 +86,7 @@ namespace cbica
     char tmp[FILENAME_MAX];
     size_t size = FILENAME_MAX;
     getenv_s(&size, tmp, size, environmentVariable.c_str()); // does not work, for some reason - needs to be tested
-    std::string temp = cbica::replaceString(tmp, "\\", "/");
+    std::string temp = cbica::stringReplace(tmp, "\\", "/");
     sprintf_s(tempValue, static_cast<size_t>(FILENAME_MAX), "%s", temp.c_str());
     tmp[0] = '\0';
 #else
@@ -198,7 +198,7 @@ namespace cbica
     {
       if (dataFile_wrap.find(compressionFormats[i]) != std::string::npos)
       {
-        dataFile_wrap = cbica::replaceString(dataFile_wrap, compressionFormats[i], "");
+        dataFile_wrap = cbica::stringReplace(dataFile_wrap, compressionFormats[i], "");
         std::string tempExt;
         cbica::splitFileName(dataFile_wrap, path, baseName, tempExt);
         extension = tempExt + compressionFormats[i];
@@ -236,7 +236,7 @@ namespace cbica
 #endif
           std::string(path_name);
       }
-      path = cbica::replaceString(path, "\\", "/"); // normalize path for Windows
+      path = cbica::stringReplace(path, "\\", "/"); // normalize path for Windows
 
       //base name sanity check
       if (basename_var == NULL)
@@ -413,7 +413,7 @@ namespace cbica
       "\n==========================================================================\n" <<
       "Contact: software@cbica.upenn.edu\n\n" <<
       "Copyright (c) " << cbica::getCurrentYear() << " University of Pennsylvania. All rights reserved.\n" <<
-      "See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html" <<
+      "See COPYING file or http://www.med.upenn.edu/sbia/software/license.html" <<
       "\n==========================================================================\n";
   }
   
@@ -681,8 +681,8 @@ namespace cbica
 
     if (input_string.length() > m_maxLaconicLength)
     {
-      input_string = cbica::replaceString(input_string, "--", "");
-      input_string = cbica::replaceString(input_string, "-", "");
+      input_string = cbica::stringReplace(input_string, "--", "");
+      input_string = cbica::stringReplace(input_string, "-", "");
 
       for (size_t i = 0; i < m_requiredParameters.size(); i++)
       {
@@ -995,8 +995,8 @@ namespace cbica
   void CmdParser::exampleUsage(const std::string &usageOfExe)
   {
     m_exampleOfUsage = usageOfExe;
-    m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, m_exeName + ".exe", "");
-    m_exampleOfUsage = cbica::replaceString(m_exampleOfUsage, "./" + m_exeName, "");
+    m_exampleOfUsage = cbica::stringReplace(m_exampleOfUsage, m_exeName + ".exe", "");
+    m_exampleOfUsage = cbica::stringReplace(m_exampleOfUsage, "./" + m_exeName, "");
   }
 
   void CmdParser::writeConfigFile(const std::string &dirName)
@@ -1011,7 +1011,7 @@ namespace cbica
     {
       dirName_wrap = cbica::makeTempDir();
     }
-    dirName_wrap = cbica::replaceString(dirName, "\\", "/");
+    dirName_wrap = cbica::stringReplace(dirName, "\\", "/");
     if (dirName_wrap.substr(dirName_wrap.length() - 1) != "/")
     {
       dirName_wrap += "/";

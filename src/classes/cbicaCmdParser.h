@@ -3,11 +3,11 @@
 
 \brief Declaration of the CmdParser class
 
-https://www.cbica.upenn.edu/sbia/software/ <br>
+http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
+See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 
 */
 #pragma once
@@ -40,7 +40,7 @@ static inline std::string getSeparator(int enumVal)
 namespace cbica
 {
   //! copied from cbicaUtilities to ensure CmdParser stays header-only
-  static inline std::string replaceString(const std::string &entireString,
+  inline std::string stringReplace(const std::string &entireString,
     const std::string &toReplace,
     const std::string &replaceWith)
   {
@@ -101,10 +101,10 @@ namespace cbica
       descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
       descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
     {
-      laconic = cbica::replaceString(laconic, "-", "");
-      laconic = cbica::replaceString(laconic, "--", "");
-      verbose = cbica::replaceString(verbose, "-", "");
-      verbose = cbica::replaceString(verbose, "--", "");
+      laconic = cbica::stringReplace(laconic, "-", "");
+      laconic = cbica::stringReplace(laconic, "--", "");
+      verbose = cbica::stringReplace(verbose, "-", "");
+      verbose = cbica::stringReplace(verbose, "--", "");
       length = laconic.length() + verbose.length();
 
       // populate dataType_string WRT dataType_enumCode
@@ -145,10 +145,10 @@ namespace cbica
       descriptionLine1(in_descriptionLine1), descriptionLine2(in_descriptionLine2),
       descriptionLine3(in_descriptionLine3), descriptionLine4(in_descriptionLine4), descriptionLine5(in_descriptionLine5)
     {
-      laconic = cbica::replaceString(laconic, "-", "");
-      laconic = cbica::replaceString(laconic, "--", "");
-      verbose = cbica::replaceString(verbose, "-", "");
-      verbose = cbica::replaceString(verbose, "--", "");
+      laconic = cbica::stringReplace(laconic, "-", "");
+      laconic = cbica::stringReplace(laconic, "--", "");
+      verbose = cbica::stringReplace(verbose, "-", "");
+      verbose = cbica::stringReplace(verbose, "--", "");
       length = laconic.length() + verbose.length();
 
       // populate dataType_enumCode WRT dataType_string
@@ -403,7 +403,7 @@ namespace cbica
     \param inputConfigFile Full path to the configuration file which needs to be read
     \return Vector of the Parameter structure where laconic paramter is always empty for all variables
     */
-    std::vector< Parameter > readConfigFile(const std::string &inputConfigFile, bool getDescription = true);
+    static std::vector< Parameter > readConfigFile(const std::string &inputConfigFile, bool getDescription = true);
 
     /**
     \brief Gives a brief example of how to use the executable

@@ -1,15 +1,17 @@
-///////////////////////////////////////////////////////////////////////////////////////
-// DTIProcessingManager.cpp
-// Developed by Saima Rathore
-// Copyright (c) 2016 University of Pennsylvania. All rights reserved.
-// See http://www.cbica.upenn.edu/sbia/software/license.html or COYPING file.
-// Contact: CBICA Group <software at cbica.upenn.edu>
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+\file  cbicaDTIProcessingManager.cpp
 
+\brief Implementation of DTIProcessingManager class
+
+http://www.med.upenn.edu/sbia/software/ <br>
+software@cbica.upenn.edu
+
+Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+
+*/
 
 #include "cbicaDTIProcessingManager.h"
-
-
 
 namespace cbica
 {
@@ -23,6 +25,7 @@ namespace cbica
   std::vector<ImageTypeFloat3D::Pointer> DTIProcessingManager::ConvertDWIToScalars(std::string inputDirName, std::string maskFileName)
   {
     std::vector< std::string > allFilesInDirectory = cbica::filesInDirectory(inputDirName);
+    std::vector<ImageTypeFloat3D::Pointer> vectorOfDTIs;
 
     //for (size_t i = 0; i < allFilesInDirectory.size(); i++)
     //{
@@ -77,46 +80,6 @@ namespace cbica
 
     itk::ExposeMetaData< std::string >(sliceDict, "0008|0070", vendor);
     //std::cout << vendor << std::endl;
-
-    //  0b) Add private dictionary -- private dictionaries are not a part of DICOM 3 standard and are loaded by default in GDCM so unsure if the code specified below should be used at all
-    if (vendor.find("GE") != std::string::npos)
-    {
-      // for GE data      
-      const gdcm::PrivateDict &testDict = gdcm::Global::GetInstance().GetDicts().GetPrivateDict();
-      /*std::remove_cv<const gdcm::PrivateDict>::type testDict2;
-      testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(GEDictBValue.GetName()), std::atoi(GEDictBValue.GetKeyword())), GEDictBValue);
-      testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(GEDictXGradient.GetName()), std::atoi(GEDictXGradient.GetKeyword())), GEDictXGradient);
-      testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(GEDictYGradient.GetName()), std::atoi(GEDictYGradient.GetKeyword())), GEDictYGradient);
-      testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(GEDictZGradient.GetName()), std::atoi(GEDictZGradient.GetKeyword())), GEDictZGradient);*/
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(GEDictBValue);
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(GEDictXGradient);
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(GEDictYGradient);
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(GEDictZGradient);
-    }
-    else if (vendor.find("SIEMENS") != std::string::npos)
-    {
-      // for Siemens data
-      const gdcm::PrivateDict &testDict = gdcm::Global::GetInstance().GetDicts().GetPrivateDict();
-      //     std::remove_cv<const gdcm::PrivateDict>::type testDict2;
-      //   testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(SiemensMosiacParameters.GetName()), std::atoi(SiemensMosiacParameters.GetKeyword())), SiemensMosiacParameters);
-      //testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(SiemensDictNMosiac.GetName()), std::atoi(SiemensDictNMosiac.GetKeyword())), SiemensDictNMosiac);
-      //testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(SiemensDictBValue.GetName()), std::atoi(SiemensDictBValue.GetKeyword())), SiemensDictBValue);
-      // testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(SiemensDictDiffusionDirection.GetName()), std::atoi(SiemensDictDiffusionDirection.GetKeyword())), SiemensDictDiffusionDirection);
-      //testDict2.AddDictEntry(gdcm::PrivateTag(std::atoi(SiemensDictDiffusionMatrix.GetName()), std::atoi(SiemensDictDiffusionMatrix.GetKeyword())), SiemensDictDiffusionMatrix);
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(SiemensMosiacParameters);
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(SiemensDictNMosiac);
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(SiemensDictBValue);
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(SiemensDictDiffusionDirection);
-      //  gdcm::Global::GetDicts()->GetDefaultPubDict()->AddEntry(SiemensDictDiffusionMatrix);
-    }
-    else if (vendor.find("PHILIPS") != std::string::npos)
-    {
-      // for philips data
-    }
-    else
-    {
-      std::cerr << "Unrecognized vendor.\n" << std::endl;
-    }
 
     // 1) Read the input series as an array of slices
     ReaderType::Pointer reader = ReaderType::New();
@@ -430,6 +393,12 @@ namespace cbica
       }
 
     }
+    else /*if (vendor.find("PHILIPS") != std::string::npos)*/
+    {
+      // no other scanner system has been worked up for this, yet so we exit
+      std::cerr << "Unrecognized vendor.\n";
+      return vectorOfDTIs;
+    }
     for (unsigned int diffId = 0; diffId < DiffusionVectorsWrite.size(); diffId++)
       fprintf(fid_bvec, "%f ", DiffusionVectorsWrite[diffId][0]);
     fprintf(fid_bvec, "\n");
@@ -546,8 +515,9 @@ namespace cbica
       }
       rawVol = dmImage;
     }
-    else
+    else /*if (vendor.find("PHILIPS") != std::string::npos)*/
     {
+
     }
     //-------------------------------------------------------------------------------
     int NumberOfRequiredVolumes = GetNumberOfVolumes(rawVol, nVolume, nSliceInVolume);
@@ -670,7 +640,7 @@ namespace cbica
 
 
     outputImage->SetMetaDataDictionary(outputImageMetaDictionary);
-    std::vector<ImageTypeFloat3D::Pointer> vectorOfDTIs;
+    
     try
     {
       itk::ImageIOBase::IOPixelType       maskPixelType;
