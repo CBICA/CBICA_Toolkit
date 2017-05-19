@@ -1160,7 +1160,7 @@ namespace cbica
     {
       do
       {
-        if ((fd.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && (fd.cFileName[0] != '.'))
+        if ((fd.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && (fd.cFileName[0] != '.') && (fd.cFileName != ".svn"))
         {
           allDirectories.push_back(std::string(fd.cFileName));
           if (recursiveSearch)
@@ -1182,7 +1182,7 @@ namespace cbica
 
     while ((dirp = readdir(dp)) != NULL)
     {
-      if (recursiveSearch && (dirp->d_type == DT_DIR) && dirp->d_name[0] != '.')
+      if (recursiveSearch && (dirp->d_type == DT_DIR) && (dirp->d_name[0] != '.') && && (dirp->d_name != ".svn"))
       {
         std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + dirp->d_name, true);
         allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
