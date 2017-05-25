@@ -20,9 +20,12 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "itkImage.h"
 #include "itkImageRegionIterator.h"
+#include "itkHistogramMatchingImageFilter.h"
+#include "itkAdaptiveHistogramEqualizationImageFilter.h"
+
 #include "gdcmMD5.h"
 
-//typedef itk::Image<double, 3> TImageType;
+typedef itk::Image<double, 3> TImageType;
 
 namespace cbica
 {
@@ -32,11 +35,7 @@ namespace cbica
   \param inputModalitiesAndImages A collection of images which are stored in a per-modality basis (each entry corresponds to a subject, whose entries contain different modalities)
   \return A collection of indeces which constitute the non-zero locations per modality (each entry corresponds to a subject, which contains the locations of non-zero pixel values for all modalities)
   */
-  template< class TImageType
-#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
-#endif
-  >
+  template< class TImageType = itk::Image< float, 3 > >
   std::vector< std::vector< typename TImageType::IndexType > > CreateMaskIndeces(const std::vector< std::vector< typename TImageType::Pointer > > &inputModalitiesAndImages)
   {
     std::vector< std::vector< typename TImageType::IndexType > > returnMaskIndeces;
@@ -102,11 +101,7 @@ namespace cbica
   \param indeced The indeces from which pixel values need to be extracted
   \return Vector of values whose data type is the same as image type
   */
-  template < typename TImageType
-#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
-#endif
-  >
+  template < typename TImageType = itk::Image< float, 3 > >
   std::vector< typename TImageType::PixelType > GetPixelValuesFromIndeces(const typename TImageType::Pointer inputImage, const std::vector< typename TImageType::IndexType > &indeces)
   {
     std::vector< typename TImageType::PixelType > returnVector;
@@ -131,11 +126,7 @@ namespace cbica
   /**
   \brief Wrap of GetPixelValues
   */
-  template < typename TImageType
-#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
-#endif
-  >
+  template < typename TImageType = itk::Image< float, 3 > >
   std::vector< typename TImageType::PixelType > ExtractPixelValuesFromIndeces(const typename TImageType::Pointer inputImage, const std::vector< typename TImageType::IndexType > &indeces)
   {
     return GetPixelValuesFromIndeces< TImageType >(inputImage, indeces);
@@ -163,15 +154,71 @@ namespace cbica
   }
 
   /**
-  \brief Get the indeces of the image which do
+  \brief Get the indeces of the image which are not zero
   */
-  template < typename TImageType
-#if (_MSC_VER >= 1800) || (__GNUC__ > 4)
-    = itk::Image< float, 3 >
-#endif
-  >
+  template < typename TImageType = itk::Image< float, 3 > >
   std::vector< typename TImageType::IndexType > GetIndexFromNonZeroPixels(const typename TImageType::Pointer inputImage, const std::string valuesToExclude = "0")
   {
+    std::vector< typename TImageType::IndexType > returnVector;
 
+    itk::ImageRegionConstIterator< TImageType > iterator(inputImage, inputImage->GetLargestPossibleRegion());
+    for (iterator.GoToBegin(); !iterator.IsAtEnd();++iterator)
+    {
+      if (iterator.Get() != 0)
+      {
+        returnVector.push_back(iterator.GetIndex());
+      }
+    }
+
+    return returnVector;
+  }
+
+  /**
+  \brief Get the indeces of the image which are not zero
+
+  \param inputImage The input image on which the matching needs to be done
+  \param referenceImage The reference image based on which the 
+  \param numberOfMatchPoints Governs the number of quantile values to be matched
+  \param numberOfHistogramLevels Sets the number of bins used when creating histograms of the source and reference images
+  */
+  template < typename TImageType = itk::Image< float, 3 > >
+  typename TImageType::Pointer GetHistogramMatchedImage(const typename TImageType::Pointer inputImage, const typename TImageType::Pointer referenceImage, 
+    const int numberOfMatchPoints = 40, const int numberOfHistogramLevels = 100)
+  {
+    auto filter = itk::HistogramMatchingImageFilter< TImageType, TImageType >::New();
+    filter->SetInput(inputImage);
+    filter->SetReferenceImage(referenceImage);
+    if (numberOfHistogramLevels != 100)
+    {
+      filter->SetNumberOfHistogramLevels(numberOfHistogramLevels);
+    }
+    filter->ThresholdAtMeanIntensityOn();
+    filter->SetNumberOfMatchPoints(numberOfMatchPoints);
+    filter->Update();
+
+    return filter->GetOutput();
+  }
+
+  /**
+  \brief Get the indeces of the image which are not zero
+
+  \param inputImage The input image on which the matching needs to be done
+  \param referenceImage The reference image based on which the
+  \param alpha Ranges between 0-1; with 1 giving result same as input image and lower values behaving as unsharp filters; default = 0.3
+  \param beta Ranges between 0-1; with 1 giving result same as input image and lower values behaving as unsharp filters; default = 0.3
+  \param radius Ranges between 1-10 with default = 1
+  */
+  template < typename TImageType = itk::Image< float, 3 > >
+  typename TImageType::Pointer GetAdaptiveHistogramEqualizedImage(const typename TImageType::Pointer inputImage, const typename TImageType::Pointer referenceImage,
+    const float alpha = 0.3, const float beta = 0.3, const float radius = 1, const int numberOfHistogramLevels = 100)
+  {
+    auto filter = itk::AdaptiveHistogramEqualizationImageFilter< TImageType, TImageType >::New();
+    filter->SetInput(inputImage);
+    filter->SetAlpha(alpha);
+    filter->SetBeta(beta);
+    filter->SetRadius(radius);
+    filter->Update();
+
+    return filter->GetOutput();
   }
 }

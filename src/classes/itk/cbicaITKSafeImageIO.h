@@ -5,11 +5,11 @@
 
 Read and Write itk::Image data in a safe manner. Header-only
 
-http://www.med.upenn.edu/sbia/software/ <br>
+https://www.cbica.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 */
 #pragma once
@@ -26,12 +26,14 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include "itkGDCMSeriesFileNames.h"
 #include "itkNumericSeriesFileNames.h"
 #include "itkOrientImageFilter.h"
+#include "itkChangeInformationImageFilter.h"
 
 #include "cbicaUtilities.h"
 #include "cbicaITKImageInfo.h"
 
-typedef itk::Image< float, 3 > ImageTypeFloat3D;
-typedef itk::Image<unsigned int, 3> MaskType;
+using ImageTypeFloat3D = itk::Image< float, 3 >;
+using TImageType = ImageTypeFloat3D;
+using MaskType = itk::Image<unsigned int, 3>;
 
 namespace cbica
 {
@@ -143,9 +145,7 @@ namespace cbica
     auto inputNames = itk::GDCMSeriesFileNames::New();
     inputNames->SetInputDirectory(dirName_wrap);
     //inputNames->SetLoadPrivateTags(true);
-    using ReaderType = itk::ImageSeriesReader< TImageType >;
-    typename ReaderType::Pointer seriesReader = ReaderType::New();
-    //auto seriesReader = typename itk::ImageSeriesReader< TImageType >::New();
+    auto seriesReader = typename itk::ImageSeriesReader< TImageType >::New();
 
     auto dicomIO = itk::GDCMImageIO::New();
     seriesReader->SetImageIO(dicomIO);
@@ -183,7 +183,61 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer ReadDicomImage(const std::string &dirName)
   {
-    return GetDicomImageReader< TImageType >(dirName)->GetOutput();
+    auto dicomReader = GetDicomImageReader< TImageType >(dirName);
+
+    auto inputDict = (*(dicomReader->GetMetaDataDictionaryArray()))[0];
+    std::string origin, pixelSpacing, direction, sliceSpacing_1, sliceSpacing_2;
+    typename TImageType::SpacingType outputSpacing;
+    typename TImageType::PointType outputOrigin, outputDirection;
+
+    itk::ExposeMetaData<std::string>(*inputDict, "0020|0032", origin);
+    itk::ExposeMetaData<std::string>(*inputDict, "0028|0030", pixelSpacing);
+    //itk::ExposeMetaData<std::string>(*inputDict, "0020|0037", direction);
+    
+    if (TImageType::ImageDimension > 2)
+    {
+      itk::ExposeMetaData<std::string>(*inputDict, "0018|0050", sliceSpacing_1);
+      itk::ExposeMetaData<std::string>(*inputDict, "0018|0088", sliceSpacing_2);
+      if (sliceSpacing_1 == sliceSpacing_2)
+      {
+        outputSpacing[2] = static_cast< typename TImageType::PixelType >(std::atof(sliceSpacing_1.c_str()));
+      }
+    }
+
+    if (!pixelSpacing.empty())
+    {
+      auto temp = cbica::stringSplit(pixelSpacing, "\\");
+      outputSpacing[0] = std::atof(temp[0].c_str());
+      outputSpacing[1] = std::atof(temp[1].c_str());
+    }
+
+    if (!origin.empty())
+    {
+      auto temp = cbica::stringSplit(origin, "\\");
+      for (auto i = 0; i < TImageType::ImageDimension; i++)
+      {
+        outputOrigin[i] = std::atof(temp[i].c_str());
+      }
+    }
+
+    //if (!direction.empty())
+    //{
+    //  auto temp = cbica::stringSplit(direction, "\\");
+    //  for (auto i = 0; i < TImageType::ImageDimension; i++)
+    //  {
+    //    outputOrigin[i] = std::atof(temp[i].c_str());
+    //  }
+    //}
+
+    auto infoChangeFilter = itk::ChangeInformationImageFilter< TImageType >::New();
+    infoChangeFilter->SetInput(dicomReader->GetOutput());
+    infoChangeFilter->SetChangeOrigin(true);
+    infoChangeFilter->SetChangeSpacing(true);
+    infoChangeFilter->SetOutputOrigin(outputOrigin);
+    infoChangeFilter->SetOutputSpacing(outputSpacing);
+    infoChangeFilter->Update();
+
+    return infoChangeFilter->GetOutput();
   }
 
   /**
@@ -282,11 +336,11 @@ namespace cbica
   \param dirName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
-  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
+  template <typename ComputedImageType>
   void WriteDicomImage(const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
     auto reader = typename itk::ImageSeriesReader< ComputedImageType >::New();
-    WriteDicomImage< ComputedImageType, ExpectedImageType >(reader, imageToWrite, dirName);
+    WriteDicomImage< ComputedImageType >(reader, imageToWrite, dirName);
   }
 
   /**
@@ -308,9 +362,7 @@ namespace cbica
   \param dirName File containing the image
   \return itk::Image of specified pixel and dimension type
   */
-  //using ComputedImageType = itk::Image< float, 3>;
-  //using ExpectedImageType = itk::Image< float, 3>;
-  template <typename ComputedImageType, typename ExpectedImageType = ComputedImageType>
+  template <typename ComputedImageType>
   void WriteDicomImage(const typename itk::ImageSeriesReader< ComputedImageType >::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &dirName)
   {
     if (!cbica::isDir(dirName))
@@ -326,14 +378,17 @@ namespace cbica
     //  return;
     //}
 
+    using ExpectedImageType = itk::Image< short, ComputedImageType::ImageDimension >; // this is needed because DICOM currently only supports short/int
     typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput(imageToWrite);
     castFilter->Update();
 
-    //typedef typename ExpectedImageType::PixelType DicomPixelType;
+    typedef typename ExpectedImageType::PixelType DicomPixelType;
 
     auto dicomIO = itk::GDCMImageIO::New();
+    //auto dicomIO = MyGDCMImageIO::New();
+    dicomIO->SetComponentType(itk::ImageIOBase::IOComponentType::SHORT);
 
     auto seriesWriter = itk::ImageSeriesWriter< ExpectedImageType, itk::Image<typename ExpectedImageType::PixelType, 2> >::New();
 
@@ -368,21 +423,33 @@ namespace cbica
       index[1] = 0;
       for (size_t i = 0; i < imageToWrite->GetLargestPossibleRegion().GetSize()[2]; i++)
       {
-        auto dict = new typename itk::ImageSeriesReader< ComputedImageType >::DictionaryType;
+        auto dict = new itk::ImageSeriesReader< ComputedImageType >::DictionaryType;
         typename ExpectedImageType::PointType position;
         index[2] = i;
         imageToWrite->TransformIndexToPhysicalPoint(index, position);
         itk::EncapsulateMetaData<std::string>(*dict, "0020|0032", std::to_string(position[0]) + "\\" + std::to_string(position[1]) + "\\" + std::to_string(position[2])); // patient position
         itk::EncapsulateMetaData<std::string>(*dict, "0020|1041", std::to_string(position[0]) + "\\" + std::to_string(position[1]) + "\\" + std::to_string(position[2])); // slice location
-        //itk::EncapsulateMetaData<std::string>(*dict, "0020|1041", "0\\0\\0"); // slice location
         //itk::EncapsulateMetaData<std::string>(*dict, "0020|0011", std::to_string(1)); 
         //itk::EncapsulateMetaData<std::string>(*dict, "0020|0013", std::to_string(i)); 
         //itk::EncapsulateMetaData<std::string>(*dict, "0018|5100", std::to_string(position[0]) + "\\" + std::to_string(position[1]) + "\\" + std::to_string(position[2]));
         //itk::EncapsulateMetaData<std::string>(*dict, "2020|0010", std::to_string(position[0]) + "\\" + std::to_string(position[1]) + "\\" + std::to_string(position[2]));
         //itk::EncapsulateMetaData<std::string>(*dict, "0018|5101", std::to_string(position[0]) + "\\" + std::to_string(position[1]) + "\\" + std::to_string(position[2]));
-        //itk::EncapsulateMetaData<std::string>(*dict, "0020|0037", std::to_string(*imageToWrite->GetDirection()[0]) + "\\" + std::to_string(*imageToWrite->GetDirection()[1]) + "\\0\\" + std::to_string(*imageToWrite->GetDirection()[3]) + "\\" + std::to_string(*imageToWrite->GetDirection()[4]) + "\\0"); // orientation
+        // direction
+        //if (ComputedImageType::ImageDimension == 2)
+        //{
+        //  itk::EncapsulateMetaData<std::string>(*dict, "0020|0037", std::to_string(*imageToWrite->GetDirection()[0]) + "\\" + std::to_string(*imageToWrite->GetDirection()[1]) + "\\0\\" + std::to_string(*imageToWrite->GetDirection()[2]) + "\\" + std::to_string(*imageToWrite->GetDirection()[3]) + "\\0"); // orientation
+        //}
+        //else if (ComputedImageType::ImageDimension == 3)
+        //{
+        //  itk::EncapsulateMetaData<std::string>(*dict, "0020|0037", 
+        //    std::to_string(*imageToWrite->GetDirection()[0]) + "\\" + std::to_string(*imageToWrite->GetDirection()[1]) + "\\" + std::to_string(*imageToWrite->GetDirection()[2]) + "\\" + 
+        //    std::to_string(*imageToWrite->GetDirection()[3]) + "\\" + std::to_string(*imageToWrite->GetDirection()[4]) + "\\" + std::to_string(*imageToWrite->GetDirection()[5]) + "\\" +
+        //    std::to_string(*imageToWrite->GetDirection()[6]) + "\\" + std::to_string(*imageToWrite->GetDirection()[7]) + "\\" + std::to_string(*imageToWrite->GetDirection()[8])
+        //    ); // orientation
+        //}
         itk::EncapsulateMetaData<std::string>(*dict, "0018|0050", std::to_string(imageToWrite->GetSpacing()[2])); // Slice Thickness
-        //itk::EncapsulateMetaData<std::string>(*dict, "0018|0088", std::to_string(imageToWrite->GetSpacing()[2])); // Spacing Between Slices
+        itk::EncapsulateMetaData<std::string>(*dict, "0018|0088", std::to_string(imageToWrite->GetSpacing()[2])); // Spacing Between Slices
+        itk::EncapsulateMetaData<std::string>(*dict, "0028|0030", std::to_string(imageToWrite->GetSpacing()[0]) + "\\" + std::to_string(imageToWrite->GetSpacing()[1]));
         //itk::EncapsulateMetaData<std::string>(*dict, "0008|0008", "DERIVED\\SECONDARY"); // Image Type
         //itk::EncapsulateMetaData<std::string>(*dict, "0008|0064", "DV"); // Conversion Type
         //itk::EncapsulateMetaData<std::string>(*dict, "0008|0060", "MR"); // Modality - can never gurantee MR
@@ -391,7 +458,7 @@ namespace cbica
         outputArray.push_back(dict);
       }
 
-      seriesWriter->SetMetaDataDictionaryArray(&outputArray);
+      seriesWriter->SetMetaDataDictionaryArray(&outputArray); 
     }
     else
     {
@@ -442,24 +509,51 @@ namespace cbica
     }
   }
 
+  /**
+  \brief This is an inline function used to correct the orientation for correct visualization
+
+  \param inputImage The input image
+  \return TImageType::Pointer templated over the same as requested by user
+  */
+  template< class TImageType >
+  inline typename TImageType::Pointer GetImageWithOrientFix(const typename TImageType::Pointer inputImage)
+  {
+    auto orienter = itk::OrientImageFilter<TImageType, TImageType>::New();
+    orienter->UseImageDirectionOn();
+    orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI);
+    orienter->SetInput(inputImage);
+    orienter->Update();
+
+    return orienter->GetOutput();
+  }
+
+  /**
+  \brief The reads the image according to the appropriate extension and outputs the result in ITK's RAI orientation for visualization
+
+  Usage:
+  \verbatim
+  using ExpectedImageType = itk::Image< float, 3 >;
+  std::string inputFileName = parser.getParameterValue("inputImage");
+  auto inputImage_1 = ReadImageWithOrientFix< ExpectedImageType >(inputFileName);
+  auto inputImage_2 = ReadImageWithOrientFix< ExpectedImageType >(inputFileName, ".nii.gz,.img");
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
+
+  \param fName File name of the image
+  \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
+  \return TImageType::Pointer templated over the same as requested by user
+  */
   template< class TImageType >
   typename TImageType::Pointer ReadImageWithOrientFix(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
   {
     std::string extension = cbica::getFilenameExtension(fName);
     if (cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom"))
     {
-      return GetDicomImage< TImageType >(fName);
+      return GetImageWithOrientFix<TImageType>(GetDicomImage< TImageType >(fName));
     }
     else
     {
-      typename TImageType::Pointer rval = GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
-      typename itk::OrientImageFilter<TImageType, TImageType>::Pointer orienter = itk::OrientImageFilter<TImageType, TImageType>::New();
-      orienter->UseImageDirectionOn();
-      orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI);
-      orienter->SetInput(rval);
-      orienter->Update();
-      rval = orienter->GetOutput();
-      return rval;
+      return GetImageWithOrientFix<TImageType>(GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput());
     }
   }
 
@@ -468,15 +562,14 @@ namespace cbica
 
   Usage:
   \verbatim
-  typedef itk::Image< float, 3 > ExpectedImageType;
+  using ExpectedImageType = itk::Image< float, 3 >;
   std::string inputFileName = parser.getParameterValue("inputImage");
-  ExpectedImageType::Pointer inputImage_1 = ReadImage< ExpectedImageType >(inputFileName);
-  ExpectedImageType::Pointer inputImage_2 = ReadImage< ExpectedImageType >(inputFileName, ".nii.gz,.img");
+  auto inputImage_1 = cbica::ReadImage< ExpectedImageType >(inputFileName);
+  auto inputImage_2 = cbica::ReadImage< ExpectedImageType >(inputFileName, ".nii.gz,.img");
   DoAwesomeStuffWithImage( inputImage );
   \endverbatim
 
-  This function calls Same as ReadImage internally
-  \param fName name of the image
+  \param fName File name of the image
   \param supportedExtensions Supported extensions, defaults to ".nii.gz,.nii"
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
