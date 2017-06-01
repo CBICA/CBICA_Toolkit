@@ -41,5 +41,12 @@ namespace cbica
   }  
   */
 
-  // ROC: https://github.com/vbalnt/cppROC
+  /**
+  \brief Calculates the ROC details (true positives and true negatives)
+
+  \param inputScoresAndLabels Data structure containing scores and corresponding labels
+
+  \return std::pair< TP, FP > A pair of float vectors, 1-by-N true-positive/positive ratios and 1-by-N false-positive/negative ratios
+  */
+  std::pair< std::vector< float >, std::vector< float > > ROC(const cv::Mat &inputScoresAndLabels);
 }
