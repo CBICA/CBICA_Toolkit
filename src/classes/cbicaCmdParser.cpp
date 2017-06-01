@@ -679,6 +679,10 @@ namespace cbica
       input_string = "v";
     }
 
+    if (!checkMaxLen)
+    {
+      getMaxLength();
+    }
     if (input_string.length() > m_maxLaconicLength)
     {
       input_string = cbica::stringReplace(input_string, "--", "");
