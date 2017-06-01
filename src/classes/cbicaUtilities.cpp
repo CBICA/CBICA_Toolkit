@@ -1215,13 +1215,13 @@ namespace cbica
   size_t numberOfColsInFile(const std::string &csvFileName, const std::string & delim)
   {
     std::vector< std::string > rowVec;
-    //std::ifstream inFile(csvFileName.c_str());
-    //std::string line;
-    //std::getline(inFile, line, '\n');
-    //line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
-    //
-    //// read a single row
-    //rowVec = stringSplit(line, delim);
+    std::ifstream inFile(csvFileName.c_str());
+    std::string line;
+    std::getline(inFile, line, '\n');
+    line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
+    
+    // read a single row
+    rowVec = stringSplit(line, delim);
     
     return rowVec.size();
   }
@@ -1363,6 +1363,33 @@ namespace cbica
     }
 
     return return_CSVDict;
+  }
+
+  std::vector< std::vector< std::string > > readCSVDataFile(const std::string &csvFileName)
+  {
+    const size_t rows = numberOfRowsInFile(csvFileName);
+    const size_t cols = numberOfColsInFile(csvFileName);
+
+    std::vector< std::vector< std::string > > returnVector;
+    std::ifstream data(csvFileName.c_str());
+    std::string line, cell;
+
+    returnVector.resize(rows);
+    size_t i = 0, j = 0;
+    while (std::getline(data, line))
+    {
+      j = 0;
+      returnVector[i].resize(cols);
+      std::stringstream lineStream(line);
+      while (std::getline(lineStream, cell, ','))
+      {
+        returnVector[i][j] = cell;
+        j++;
+      }
+      i++;
+    }
+
+    return returnVector;
   }
 
   //inline std::string iterateOverStringAndSeparators(const std::string &inputString, size_t &count, int enum_separator = 10)

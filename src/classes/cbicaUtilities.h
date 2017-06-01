@@ -15,9 +15,11 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #pragma once
 
 #include <string>
+#include <typeinfo>
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <stdexcept>
 #include <iterator>
@@ -609,6 +611,50 @@ namespace cbica
   \return Vector of CSV Dictionary items: Collection of input images are respective labels
   */
   std::vector< CSVDict > parseCSVFile(const std::string &csvFileName, const std::string &inputColumns, const std::string &inputLabels, bool checkFile = true, bool pathsRelativeToCSV = false, const std::string &rowsDelimiter = "\n", const std::string &colsDelimiter = ",", const std::string &optionsDelimiter = ",");
+
+  /**
+  \brief Read a CSV file which has no header information
+
+  To read CSV file with header information, check parseCSVFile() function. This should not be used for obtaining strings
+
+  \param csvFileName The full path of the file to parse, all paths are absolute or relative to current working directory
+  */
+  template< class TDataType = double >
+  std::vector< std::vector< TDataType > > readCSVDataFile(const std::string &csvFileName)
+  {
+    const size_t rows = numberOfRowsInFile(csvFileName);
+    const size_t cols = numberOfColsInFile(csvFileName);
+
+    std::vector< std::vector< std::string > > returnVector;
+    std::ifstream data(csvFileName.c_str());
+    std::string line, cell;
+
+    returnVector.resize(rows);
+    size_t i = 0, j = 0;
+    while (std::getline(data, line))
+    {
+      j = 0;
+      returnVector[i].resize(cols);
+      std::stringstream lineStream(line);
+      while (std::getline(lineStream, cell, ','))
+      {
+        returnVector[i][j] = static_cast<TDataType>(std::atof(cell.c_str()));
+        j++;
+      }
+      i++;
+    }
+
+    return returnVector;
+  }
+
+  /**
+  \brief Read a CSV file which has no header information
+
+  To read CSV file with header information, check parseCSVFile() function. This should be used for obtaining strings
+
+  \param csvFileName The full path of the file to parse, all paths are absolute or relative to current working directory
+  */
+  std::vector< std::vector< std::string > > readCSVDataFile(const std::string &csvFileName);
 
   /**
   \brief Get current local time as string delineated as YYYY:MM:DD
