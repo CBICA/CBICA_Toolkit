@@ -52,6 +52,9 @@ ADD_TEST( NAME CreateFolder_Test COMMAND ${TEST_EXE_NAME} -createFolder ${CMAKE_
 # Test for CSV Parser
 ADD_TEST( NAME CSVParser_Test COMMAND ${TEST_EXE_NAME} -csvParser "${DATA_DIR}/list.csv")
 
+# Test for CSV Parser
+ADD_TEST( NAME CSVParser_Test COMMAND ${TEST_EXE_NAME} -csvParserRaw "${DATA_DIR}/roc.csv")
+
 # Test for file delete functions
 ADD_TEST( NAME DeleteFile_Test COMMAND ${TEST_EXE_NAME} -deleteFile ${CMAKE_CURRENT_BINARY_DIR}/test_File.txt )
 

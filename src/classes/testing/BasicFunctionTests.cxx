@@ -42,6 +42,7 @@ int main(int argc, const char** argv)
   parser.addOptionalParameter("f2", "createFile", cbica::Parameter::NONE, "", "createFile Test");
   parser.addOptionalParameter("f1", "createFolder", cbica::Parameter::NONE, "", "createFolder Test");
   parser.addOptionalParameter("p2", "csvParser", cbica::Parameter::NONE, "", "envName Test");
+  parser.addOptionalParameter("p3", "csvParserRaw", cbica::Parameter::NONE, "", "envName Test");
   parser.addOptionalParameter("d2", "deleteFile", cbica::Parameter::NONE, "", "deleteFile Test");
   parser.addOptionalParameter("d1", "deleteFolder", cbica::Parameter::NONE, "", "deleteFolder Test");
   parser.addOptionalParameter("e", "envName", cbica::Parameter::NONE, "", "envName Test");
@@ -286,6 +287,25 @@ int main(int argc, const char** argv)
     if (csv_test[0].inputLabels.size() != 1)
     {
       return EXIT_FAILURE;
+    }
+  }
+
+  if (parser.compareParameter("csvParserRaw", tempPostion))
+  {
+    std::string csvFileName = argv[tempPostion + 1];
+    auto parsedCsv = cbica::readCSVDataFile< double >(csvFileName);
+
+    if (parsedCsv.size() != 100)
+    {
+      return EXIT_FAILURE;
+    }
+    
+    for (size_t i = 0; i < parsedCsv.size(); i++)
+    {
+      if (parsedCsv[i].size() != 2)
+      {
+        return EXIT_FAILURE;
+      }
     }
   }
 
