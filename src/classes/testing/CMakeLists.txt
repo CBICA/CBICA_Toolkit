@@ -53,7 +53,7 @@ ADD_TEST( NAME CreateFolder_Test COMMAND ${TEST_EXE_NAME} -createFolder ${CMAKE_
 ADD_TEST( NAME CSVParser_Test COMMAND ${TEST_EXE_NAME} -csvParser "${DATA_DIR}/list.csv")
 
 # Test for CSV Parser
-ADD_TEST( NAME CSVParser_Test COMMAND ${TEST_EXE_NAME} -csvParserRaw "${DATA_DIR}/roc.csv")
+ADD_TEST( NAME CSVParserRaw_Test COMMAND ${TEST_EXE_NAME} -csvParserRaw "${DATA_DIR}/roc.csv")
 
 # Test for file delete functions
 ADD_TEST( NAME DeleteFile_Test COMMAND ${TEST_EXE_NAME} -deleteFile ${CMAKE_CURRENT_BINARY_DIR}/test_File.txt )
@@ -86,6 +86,9 @@ IF( (MSVC_VERSION GREATER 1700) OR (UNIX) )
   # Test for Variadic template
   ADD_TEST( NAME Variadic_Test COMMAND ${TEST_EXE_NAME} -variadic "random")
 ENDIF()
+
+# Test for temporary folder creation
+#ADD_TEST( NAME ROC_Test COMMAND ${TEST_EXE_NAME} -roc "${DATA_DIR}/roc.csv")
 
 # Test for Split File Name
 ADD_TEST( NAME SplitFileName_Test COMMAND ${TEST_EXE_NAME} -buffer "random") # no test is needed since previous tests have used this function

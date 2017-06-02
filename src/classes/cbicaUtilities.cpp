@@ -1392,6 +1392,126 @@ namespace cbica
     return returnVector;
   }
 
+  std::map< std::string, size_t > ConfusionMatrix(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels)
+  {
+    std::map< std::string, size_t > returnConfusionMatrix;
+
+    if (inputRealLabels.size() != inputPredictedLabels.size())
+    {
+      std::cerr << "The sizes of the real and predicted labels do not match; exiting.\n";
+      return returnConfusionMatrix;
+    }
+
+    size_t TP = 0, TN = 0, FP = 0, FN = 0, RP = 0, PP = 0;
+
+    for (size_t i = 0; i < inputRealLabels.size(); i++)
+    {
+      if (inputRealLabels[i] == 1)
+      {
+        RP++;
+      }
+      if (inputPredictedLabels[i] == 1)
+      {
+        PP++;
+      }
+
+      // both real and predicted labels are equal means it is a "true" prediction
+      if (inputRealLabels[i] == inputPredictedLabels[i])
+      {
+        if (inputRealLabels[i] == 1)
+        {
+          TP++;
+        }
+        else
+        {
+          TN++;
+        }
+      }
+      else
+      {
+        if (inputRealLabels[i] == 1)
+        {
+          FN++;
+        }
+        else
+        {
+          FP++;
+        }
+      }
+    }
+
+    // construct the return structure
+    returnConfusionMatrix["TP"] = TP;
+    returnConfusionMatrix["FP"] = FP;
+    returnConfusionMatrix["TN"] = TN;
+    returnConfusionMatrix["FN"] = FN;
+    returnConfusionMatrix["RP"] = RP;
+    returnConfusionMatrix["PP"] = PP;
+
+    return returnConfusionMatrix;
+  }
+
+  std::map< std::string, float > ROC_Values(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels)
+  {
+    std::map< std::string, float > returnStatistics;
+
+    auto confusionMatrix = ConfusionMatrix(inputRealLabels, inputPredictedLabels);
+    returnStatistics["TP"] = static_cast<float>(confusionMatrix["TP"]);
+    returnStatistics["FP"] = static_cast<float>(confusionMatrix["FP"]);
+    returnStatistics["TN"] = static_cast<float>(confusionMatrix["TN"]);
+    returnStatistics["FN"] = static_cast<float>(confusionMatrix["FN"]);
+    returnStatistics["RP"] = static_cast<float>(confusionMatrix["RP"]);
+    returnStatistics["PP"] = static_cast<float>(confusionMatrix["PP"]);
+
+    // https://en.wikipedia.org/wiki/Accuracy_and_precision
+    returnStatistics["Accuracy"] = (returnStatistics["TP"] + returnStatistics["TN"]) / inputRealLabels.size();
+
+    // https://en.wikipedia.org/wiki/Positive_and_negative_predictive_values
+    returnStatistics["PPV"] = returnStatistics["TP"] / returnStatistics["PP"];
+    returnStatistics["Precision"] = returnStatistics["PPV"];
+
+    // https://en.wikipedia.org/wiki/False_discovery_rate
+    returnStatistics["FDR"] = returnStatistics["TP"] / returnStatistics["PP"];
+
+    // https://en.wikipedia.org/wiki/Positive_and_negative_predictive_values#false_omission_rate
+    returnStatistics["FOR"] = returnStatistics["FN"] / ( inputPredictedLabels.size() - returnStatistics["PP"]);
+
+    // https://en.wikipedia.org/wiki/Positive_and_negative_predictive_values
+    returnStatistics["NPV"] = returnStatistics["TN"] / (inputPredictedLabels.size() - returnStatistics["PP"]);
+
+    // https://en.wikipedia.org/wiki/Prevalence
+    returnStatistics["Prevalence"] = returnStatistics["RP"] / inputRealLabels.size();
+
+    // https://en.wikipedia.org/wiki/Sensitivity_and_specificity
+    returnStatistics["TPR"] = returnStatistics["TP"] / returnStatistics["RP"];
+    returnStatistics["Sensitivity"] = returnStatistics["TPR"];
+    returnStatistics["Recall"] = returnStatistics["TPR"];
+    returnStatistics["POD"] = returnStatistics["TPR"];
+
+    // https://en.wikipedia.org/wiki/False_positive_rate
+    returnStatistics["FPR"] = returnStatistics["FP"] / (inputPredictedLabels.size() - returnStatistics["RP"]);
+    returnStatistics["Fall-Out"] = returnStatistics["FPR"];
+
+    // https://en.wikipedia.org/wiki/False_positives_and_false_negatives#False_positive_and_false_negative_rates
+    returnStatistics["FNR"] = returnStatistics["FN"] / returnStatistics["RP"];
+    returnStatistics["FNR"] = returnStatistics["FNR"];
+
+    // https://en.wikipedia.org/wiki/Sensitivity_and_specificity
+    returnStatistics["TNR"] = returnStatistics["TN"] / returnStatistics["RP"];
+    returnStatistics["Specificity"] = returnStatistics["TNR"];
+
+    // https://en.wikipedia.org/wiki/Likelihood_ratios_in_diagnostic_testing#positive_likelihood_ratio
+    returnStatistics["LR+"] = returnStatistics["TPR"] / returnStatistics["FPR"];
+
+    // https://en.wikipedia.org/wiki/Likelihood_ratios_in_diagnostic_testing#negative_likelihood_ratio
+    returnStatistics["LR-"] = returnStatistics["FNR"] / returnStatistics["TNR"];
+
+    // https://en.wikipedia.org/wiki/Diagnostic_odds_ratio
+    returnStatistics["DOR"] = returnStatistics["LR+"] / returnStatistics["LR-"];
+
+    return returnStatistics;
+  }
+
   //inline std::string iterateOverStringAndSeparators(const std::string &inputString, size_t &count, int enum_separator = 10)
   //{
   //  std::string returnString = "";

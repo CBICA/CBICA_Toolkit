@@ -1,4 +1,4 @@
-/**
+﻿/**
 \file  cbicaUtilities.h
 
 \brief Some basic utility functions.
@@ -25,6 +25,7 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <iterator>
 #include <cmath>
 #include <memory.h>
+#include <map>
 
 //#include <type_traits>
 
@@ -618,27 +619,53 @@ namespace cbica
   To read CSV file with header information, check parseCSVFile() function. This should not be used for obtaining strings
 
   \param csvFileName The full path of the file to parse, all paths are absolute or relative to current working directory
+  \param columnMajor If true, then return is a vector of all the columns; otherwise it is a vector of the rows
   */
   template< class TDataType = double >
-  std::vector< std::vector< TDataType > > readCSVDataFile(const std::string &csvFileName)
+  std::vector< std::vector< TDataType > > readCSVDataFile(const std::string &csvFileName, bool columnMajor = false)
   {
     const size_t rows = numberOfRowsInFile(csvFileName);
     const size_t cols = numberOfColsInFile(csvFileName);
 
-    std::vector< std::vector< std::string > > returnVector;
+    std::vector< std::vector< TDataType > > returnVector;
     std::ifstream data(csvFileName.c_str());
     std::string line, cell;
+    
+    if (columnMajor)
+    {
+      returnVector.resize(cols);
+    }
+    else
+    {
+      returnVector.resize(rows);
+    }
 
-    returnVector.resize(rows);
     size_t i = 0, j = 0;
     while (std::getline(data, line))
     {
       j = 0;
-      returnVector[i].resize(cols);
+      if (!columnMajor)
+      {
+        returnVector[i].resize(cols);
+      }
       std::stringstream lineStream(line);
       while (std::getline(lineStream, cell, ','))
       {
-        returnVector[i][j] = static_cast<TDataType>(std::atof(cell.c_str()));
+        if (columnMajor && returnVector[j].empty())
+        {
+          returnVector[j].resize(rows);
+        }
+
+        auto temp = static_cast< TDataType >(std::atof(cell.c_str()));
+
+        if (columnMajor)
+        {
+          returnVector[j][i] = temp;
+        }
+        else
+        {
+          returnVector[i][j] = temp;
+        }
         j++;
       }
       i++;
@@ -817,6 +844,7 @@ namespace cbica
 
 #endif
 
+  //==================================== Statistical/Compute stuff ==================================//
   /**
   \brief Compute the MD5 checksum for supplied file
 
@@ -824,7 +852,34 @@ namespace cbica
   */
   std::string computeMD5Sum(const std::string &fileName);
 
+  /**
+  \brief Calculates the Confusion Matrix for a set of real and predicted labels
 
+  Values returned: True Positive (TP), False Positive (FP), True Negative (TN), False Negative (FN), Real Positive (RP), Preditcted Positive (PP)
+
+  \param inputRealLabels Vector structure containing real labels
+  \param inputPredictedLabels Vector structure containing predicted labels
+
+  \return std::map< string, size_t > A map of string and corresponding non-negative values of 
+  */
+  std::map< std::string, size_t > ConfusionMatrix(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
+  
+  /**
+  \brief Calculates the ROC Values (see https://en.wikipedia.org/wiki/Receiver_operating_characteristic of all estimates) for a set of real and predicted labels
+
+  Values returned: 
+  True Positive (TP), False Positive (FP), True Negative (TN), False Negative (FN), Real Positive (RP), Preditcted Positive (PP) [all from ConfusionMatrix()],
+  Accuracy, Positive Predictive Value (PPV) [aka Precision], False Discovery Rate (FDR), False Omission Rate (FOR), 
+  Negative Predictive Value (NPV), Prevalence, True Positive Rate (TPR) [aka Sensitivity, Recall, Probability of Detection (POD)], 
+  False Positive Rate (FPR) [aka Fall-out], False Negative Rate (FNR) [aka Miss Rate],  True Negative Rate (TNR) [aka Specificity], 
+  Positive Likelihood Ratio (LR+), Negative Likelihood Ratio (LR−), Diagnostic Odds Ratio (DOR)
+  
+  \param inputRealLabels Vector structure containing real labels
+  \param inputPredictedLabels Vector structure containing predicted labels
+
+  \return std::map< string, size_t > A map of string and corresponding float values 
+  */
+  std::map< std::string, float > ROC_Values(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
 };
 
 /**

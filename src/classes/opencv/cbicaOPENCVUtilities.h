@@ -19,6 +19,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "opencv2/core.hpp"
 
+#include "cbicaUtilities.h"
+
 namespace cbica
 {
   /*
@@ -42,11 +44,14 @@ namespace cbica
   */
 
   /**
-  \brief Calculates the ROC details (true positives and true negatives)
+  \brief Calculates the Confusion Matrix for a set of real and predicted labels
 
-  \param inputScoresAndLabels Data structure containing scores and corresponding labels
+  Values returned: True Positive (TP), False Positive (FP), True Negative (TN), False Negative (FN), Real Positive (RP), Preditcted Positive (PP)
 
-  \return std::pair< TP, FP > A pair of float vectors, 1-by-N true-positive/positive ratios and 1-by-N false-positive/negative ratios
+  \param inputRealAndPredictedLabels A 2xN or Nx2 matrix containing real labels in the first column/row and then the predicted labels
+
+  \return std::map< string, size_t > A map of string and corresponding non-negative values 
   */
-  std::pair< std::vector< float >, std::vector< float > > ROC(const cv::Mat &inputScoresAndLabels);
+  std::map< std::string, size_t > ConfusionMatrix(const cv::Mat &inputRealAndPredictedLabels);
+
 }

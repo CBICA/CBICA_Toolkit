@@ -53,6 +53,7 @@ int main(int argc, const char** argv)
   parser.addOptionalParameter("s1", "symbolic", cbica::Parameter::NONE, "", "symbolic Test");
   parser.addOptionalParameter("s2", "subDir", cbica::Parameter::NONE, "", "subDir Test");
   parser.addOptionalParameter("v", "variadic", cbica::Parameter::NONE, "", "variadic Test");
+  parser.addOptionalParameter("r", "roc", cbica::Parameter::NONE, "", "ROC test");
 
   int tempPostion;
   if (parser.isPresent("u"))
@@ -307,6 +308,22 @@ int main(int argc, const char** argv)
         return EXIT_FAILURE;
       }
     }
+
+    // check column major implementation as well
+    auto parsedCsv_col = cbica::readCSVDataFile< double >(csvFileName, true);
+
+    if (parsedCsv_col.size() != 2)
+    {
+      return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < parsedCsv_col.size(); i++)
+    {
+      if (parsedCsv_col[i].size() != 100)
+      {
+        return EXIT_FAILURE;
+      }
+    }
   }
 
   if (parser.compareParameter("deleteFile", tempPostion))
@@ -496,6 +513,27 @@ int main(int argc, const char** argv)
     }
   }
 #endif
+
+  if (parser.isPresent("roc"))
+  {
+    const std::string rocFile = argv[2];
+
+    auto samplesAndLabels = cbica::readCSVDataFile< float >(rocFile, true);
+
+    auto output = cbica::ROC(samplesAndLabels[0], samplesAndLabels[1]);
+
+    std::ofstream myfile;
+    auto path = cbica::getFilenamePath(rocFile);
+    myfile.open(path + "TPandFP.csv");
+    myfile << "TP,FP\n";
+    for (size_t i = 0; i < output.first.size(); i++)
+    {
+      myfile << output.first[i] << "," << output.second[i] << "\n";
+    }
+    myfile.close();
+
+    int blah = 1;
+  }
 
 
   return EXIT_SUCCESS;
