@@ -24,6 +24,7 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <stdexcept>
 #include <iterator>
 #include <cmath>
+#include <numeric>
 #include <memory.h>
 #include <map>
 
@@ -860,7 +861,7 @@ namespace cbica
   \param inputRealLabels Vector structure containing real labels
   \param inputPredictedLabels Vector structure containing predicted labels
 
-  \return std::map< string, size_t > A map of string and corresponding non-negative values of 
+  \return std::map< string, size_t > A map of string and corresponding non-negative values 
   */
   std::map< std::string, size_t > ConfusionMatrix(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
   
@@ -880,6 +881,37 @@ namespace cbica
   \return std::map< string, size_t > A map of string and corresponding float values 
   */
   std::map< std::string, float > ROC_Values(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
+
+  /**
+  \brief Calculate the Z-score of an array
+
+  \param inputArray A vector of floats on which z-scores are to be calculated
+  */
+  template <class TDataType>
+  std::vector< TDataType > Z_Scores(const std::vector< TDataType > &inputArray)
+  {
+    double sum = std::accumulate(std::begin(inputArray), std::end(inputArray), 0.0);
+    double mean = sum / inputArray.size();
+
+    double accum = 0.0;
+    std::for_each(std::begin(inputArray), std::end(inputArray), [&](const TDataType d)
+    {
+      accum += (d - mean) * (d - mean);
+    });
+
+    double stdev = std::sqrt(accum / (inputArray.size() - 1));
+
+    std::vector< TDataType > returnVector;
+
+    std::for_each(std::begin(inputArray), std::end(inputArray), [&](const TDataType d)
+    {
+      returnVector.push_back((d - mean) / stdev);
+    });
+
+    return returnVector;
+  }
+  
+
 };
 
 /**
