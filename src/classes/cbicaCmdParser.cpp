@@ -438,6 +438,8 @@ namespace cbica
       m_maxLaconicLength = m_maxLaconicLength < m_requiredParameters[i].laconic.length() ? m_requiredParameters[i].laconic.length() : m_maxLaconicLength;
     }
 
+    m_maxLength++;
+
     checkMaxLen = true; // trigger flag for future checks
 
     if (!helpRequested && (m_argc != 1))
@@ -552,10 +554,14 @@ namespace cbica
         spaces_lac.append(" ");
       }
 
-      for (size_t n = 0; n < m_maxLength - inputParameters[i].length - spaces_lac.length(); n++)
+      if (inputParameters[i].length < m_maxLength)
       {
-        spaces_verb.append(" ");
+        for (size_t n = 0; n < m_maxLength - inputParameters[i].length - spaces_lac.length(); n++)
+        {
+          spaces_verb.append(" ");
+        }
       }
+
 
       std::cout << "[" << spaces_lac << "-" << inputParameters[i].laconic << ", --" <<
         inputParameters[i].verbose << spaces_verb << "]  " <<
