@@ -55,5 +55,5 @@ namespace cbica
 
   \param inputVector Vector in a cv::Mat structure
   */
-  cv::Mat Z_Scores(const cv::Mat &inputVector);
+  cv::Mat ZScores(const cv::Mat &inputVector);
 }

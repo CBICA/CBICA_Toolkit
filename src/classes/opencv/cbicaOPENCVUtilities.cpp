@@ -86,7 +86,7 @@ namespace cbica
     }
 
     // get output from cbica::Utilities
-    auto outputZScores = cbica::Z_Scores(actualData);
+    auto outputZScores = cbica::ZScores(actualData);
     
     // popoulate returnMat with the output
     for (size_t i = 0; i < returnMat.rows; i++)

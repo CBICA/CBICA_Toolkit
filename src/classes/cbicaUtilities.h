@@ -894,7 +894,7 @@ namespace cbica
   \param inputArray A vector of floats on which z-scores are to be calculated
   */
   template <class TDataType>
-  std::vector< TDataType > Z_Scores(const std::vector< TDataType > &inputArray)
+  std::vector< TDataType > ZScores(const std::vector< TDataType > &inputArray)
   {
     double sum = std::accumulate(std::begin(inputArray), std::end(inputArray), 0.0);
     double mean = sum / inputArray.size();
