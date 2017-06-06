@@ -948,6 +948,27 @@ namespace cbica
     }
   }
 
+  void CmdParser::getParameterValue(const std::string &execParamToCheck, size_t &parameterValue)
+  {
+    if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::INTEGER)
+    {
+      std::cerr << "The data type of the requested parameter, '" << execParamToCheck << "' is classified as '" << getDataTypeAsString(execParamToCheck) <<
+        "' and cannot be returned as a INTEGER.\n";
+      exit(EXIT_FAILURE);
+    }
+    int position;
+    if (compareParameter(execParamToCheck, position))
+    {
+      parameterValue = std::atoi(m_argv[position + 1].c_str()); // return value is an integer
+      return;
+    }
+    else
+    {
+      parameterValue = 0;
+      return;
+    }
+  }
+
   void CmdParser::getParameterValue(const std::string &execParamToCheck, float &parameterValue)
   {
     if (getDataTypeAsEnumCode(execParamToCheck) != cbica::Parameter::FLOAT)

@@ -1182,7 +1182,7 @@ namespace cbica
 
     while ((dirp = readdir(dp)) != NULL)
     {
-      if (recursiveSearch && (dirp->d_type == DT_DIR) && (dirp->d_name[0] != '.') && && (dirp->d_name != ".svn"))
+      if (recursiveSearch && (dirp->d_type == DT_DIR) && (dirp->d_name[0] != '.') && (dirp->d_name != std::string(".svn").c_str()))
       {
         std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + dirp->d_name, true);
         allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
