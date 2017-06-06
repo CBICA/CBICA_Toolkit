@@ -44,7 +44,7 @@ int main(int argc, char** argv)
       inputData.ptr< float >(i)[1] = samplesAndLabels[1][i];
     }
 
-    auto output = cbica::ROC(inputData);
+    auto output = cbica::ROC_Values(inputData);
 
     int blah = 1;
   }

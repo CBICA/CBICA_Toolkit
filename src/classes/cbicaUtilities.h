@@ -625,10 +625,16 @@ namespace cbica
   template< class TDataType = double >
   std::vector< std::vector< TDataType > > readCSVDataFile(const std::string &csvFileName, bool columnMajor = false)
   {
+    std::vector< std::vector< TDataType > > returnVector;
+    if (!cbica::isFile(csvFileName))
+    {
+      std::cerr << "Supplied file wasn't found.\n";
+      return returnVector;
+    }
+
     const size_t rows = numberOfRowsInFile(csvFileName);
     const size_t cols = numberOfColsInFile(csvFileName);
 
-    std::vector< std::vector< TDataType > > returnVector;
     std::ifstream data(csvFileName.c_str());
     std::string line, cell;
     

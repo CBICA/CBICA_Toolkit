@@ -520,17 +520,14 @@ int main(int argc, const char** argv)
 
     auto samplesAndLabels = cbica::readCSVDataFile< float >(rocFile, true);
 
-    auto output = cbica::ROC(samplesAndLabels[0], samplesAndLabels[1]);
+    auto output = cbica::ROC_Values(samplesAndLabels[0], samplesAndLabels[1]);
 
-    std::ofstream myfile;
-    auto path = cbica::getFilenamePath(rocFile);
-    myfile.open(path + "TPandFP.csv");
-    myfile << "TP,FP\n";
-    for (size_t i = 0; i < output.first.size(); i++)
+    auto test = output.size();
+
+    if (output.empty())
     {
-      myfile << output.first[i] << "," << output.second[i] << "\n";
+      return EXIT_FAILURE;
     }
-    myfile.close();
 
     int blah = 1;
   }
