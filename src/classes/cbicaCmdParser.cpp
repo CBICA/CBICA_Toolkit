@@ -20,7 +20,7 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <filesystem>
 #define GetCurrentDir _getcwd
 //static bool WindowsDetected = true;
-static const char  cSeparator  = '\\';
+static const char  cSeparator = '\\';
 //  static const char* cSeparators = "\\/";
 #else
 #include <dirent.h>
@@ -365,7 +365,7 @@ namespace cbica
   {
     if (m_argv.empty())
     {
-      for (int i = 0; i < argc; i ++)
+      for (int i = 0; i < argc; i++)
       {
         m_argv.push_back(std::string(argv[i]));
       }
@@ -416,7 +416,7 @@ namespace cbica
       "See COPYING file or http://www.med.upenn.edu/sbia/software/license.html" <<
       "\n==========================================================================\n";
   }
-  
+
   inline void CmdParser::getMaxLength()
   {
     m_minVerboseLength = 1024;
@@ -629,12 +629,12 @@ namespace cbica
 #ifdef _WIN32
     m_exeName_wrap = m_exeName + ".exe";
 #else
-    m_exeName_wrap = "./" + m_exeName;
+    m_exeName_wrap = m_exeName;
 #endif
 
     if (m_exampleOfUsage != "")
     {
-      std::cout << "For example: \n\n" << 
+      std::cout << "For example: \n\n" <<
         m_exeName_wrap << " " << m_exampleOfUsage << "\n";
     }
 
@@ -842,7 +842,7 @@ namespace cbica
     size_t i = 0;
     while ((i < m_requiredParameters.size()) && (noMoreChecks < 1))
     {
-      if ((m_requiredParameters[i].laconic == execParamToCheck)  ||
+      if ((m_requiredParameters[i].laconic == execParamToCheck) ||
         (m_requiredParameters[i].verbose == execParamToCheck))
       {
         return m_requiredParameters[i].dataType_string;
@@ -1050,19 +1050,19 @@ namespace cbica
 
     std::string fileName = dirName_wrap + m_exeName + ".txt";
 
-//#if (_WIN32)
-//    if (_access(fileName.c_str(), 6) == -1)
-//    {
-//      std::cerr << "No write permission for the specified config file.\n";
-//      exit(EXIT_FAILURE);
-//    }
-//#else
-//    if (access(fileName.c_str(), R_OK && W_OK) != 0)
-//    {
-//      std::cerr << "No write permission for the specified config file.\n";
-//      exit(EXIT_FAILURE);
-//    }
-//#endif
+    //#if (_WIN32)
+    //    if (_access(fileName.c_str(), 6) == -1)
+    //    {
+    //      std::cerr << "No write permission for the specified config file.\n";
+    //      exit(EXIT_FAILURE);
+    //    }
+    //#else
+    //    if (access(fileName.c_str(), R_OK && W_OK) != 0)
+    //    {
+    //      std::cerr << "No write permission for the specified config file.\n";
+    //      exit(EXIT_FAILURE);
+    //    }
+    //#endif
 
     std::ofstream file;
     file.open(fileName.c_str());
