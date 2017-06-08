@@ -54,6 +54,7 @@ int main(int argc, const char** argv)
   parser.addOptionalParameter("s2", "subDir", cbica::Parameter::NONE, "", "subDir Test");
   parser.addOptionalParameter("v", "variadic", cbica::Parameter::NONE, "", "variadic Test");
   parser.addOptionalParameter("r", "roc", cbica::Parameter::NONE, "", "ROC test");
+  parser.addOptionalParameter("z", "zscore", cbica::Parameter::NONE, "", "ZScore test");
 
   int tempPostion;
   if (parser.isPresent("u"))
@@ -529,6 +530,39 @@ int main(int argc, const char** argv)
       return EXIT_FAILURE;
     }
 
+    int blah = 1;
+  }
+
+  if (parser.isPresent("zscore"))
+  {
+    const std::string dataDir = argv[2];
+
+    const std::string inputFile = dataDir + "/input.csv";
+    const std::string compareFile = dataDir + "/zscores.csv";
+
+    auto input = cbica::readCSVDataFile< float >(inputFile, true);
+    auto compare = cbica::readCSVDataFile< float >(compareFile, true);
+
+    auto output = cbica::ZScores(input[0]);
+    
+    if (output.empty())
+    {
+      return EXIT_FAILURE;
+    }
+
+    if (output.size() != compare[0].size())
+    {
+      return EXIT_FAILURE;
+    }
+
+    for (size_t i = 0; i < output.size(); i++)
+    {
+      auto meanSqDiff = std::pow((output[i] - compare[0][i]), 2);
+      if (meanSqDiff > 1e-5) // arbitrary threshold set here
+      {
+        return EXIT_FAILURE;
+      }
+    }
     int blah = 1;
   }
 
