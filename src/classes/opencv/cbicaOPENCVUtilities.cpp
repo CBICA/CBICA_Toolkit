@@ -59,20 +59,8 @@ namespace cbica
 
   cv::Mat Z_Scores(const cv::Mat &inputMat)
   {
-    auto inputData = GetVectorFromMat< float >(inputMat);
-
-    // construct the returnMat with the appropriate size
-    cv::Mat returnMat = cv::Mat::zeros(inputMat.size(), inputMat.depth());
-
-    // get output from cbica::Utilities
-    auto outputZScores = cbica::ZScores(inputData);
-    
-    // popoulate returnMat with the output
-    for (int i = 0; i < returnMat.rows; i++)
-    {
-      returnMat.ptr< float >(i)[0] = outputZScores[i];
-    }
-
-    return GetMatFromVector(outputZScores, inputMat.size());
+    return GetMatFromVector(
+      cbica::ZScores(GetVectorFromMat< float >(inputMat)) // vectorize the input and then calculate the zscores from cbica::utilities
+      , inputMat.size()); // adjust the size of the return in accordance with the input
   }
 }
