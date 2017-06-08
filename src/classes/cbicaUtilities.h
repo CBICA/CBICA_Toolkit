@@ -878,8 +878,8 @@ namespace cbica
   True Positive (TP), False Positive (FP), True Negative (TN), False Negative (FN), Real Positive (RP), Preditcted Positive (PP) [all from ConfusionMatrix()],
   Accuracy, Positive Predictive Value (PPV) [aka Precision], False Discovery Rate (FDR), False Omission Rate (FOR), 
   Negative Predictive Value (NPV), Prevalence, True Positive Rate (TPR) [aka Sensitivity, Recall, Probability of Detection (POD)], 
-  False Positive Rate (FPR) [aka Fall-out], False Negative Rate (FNR) [aka Miss Rate],  True Negative Rate (TNR) [aka Specificity], 
-  Positive Likelihood Ratio (LR+), Negative Likelihood Ratio (LR−), Diagnostic Odds Ratio (DOR)
+  False Positive Rate (FPR) [aka Fall-out], False Negative Rate (FNR) [aka Miss Rate (MR)],  True Negative Rate (TNR) [aka Specificity], 
+  Positive Likelihood Ratio (LR+), Negative Likelihood Ratio (LR−), Diagnostic Odds Ratio (DOR), Dice Score (Dice), Jaccard ratio/index (JR)
   
   \param inputRealLabels Vector structure containing real labels
   \param inputPredictedLabels Vector structure containing predicted labels
@@ -893,26 +893,34 @@ namespace cbica
 
   \param inputArray A vector of floats on which z-scores are to be calculated
   */
-  template <class TDataType>
+  template <class TDataType = float>
   std::vector< TDataType > ZScores(const std::vector< TDataType > &inputArray)
   {
     double sum = std::accumulate(std::begin(inputArray), std::end(inputArray), 0.0);
     double mean = sum / inputArray.size();
 
     double accum = 0.0;
-    std::for_each(std::begin(inputArray), std::end(inputArray), [&](const TDataType d)
+    for (size_t i = 0; i < inputArray.size(); i++)
     {
-      accum += (d - mean) * (d - mean);
-    });
+      accum += std::pow((static_cast<double>(inputArray[i]) - mean), 2);
+    }
+    //std::for_each(std::begin(inputArray), std::end(inputArray), [&](const TDataType d)
+    //{
+    //  accum += (d - mean) * (d - mean);
+    //});
 
     double stdev = std::sqrt(accum / (inputArray.size() - 1));
 
     std::vector< TDataType > returnVector;
 
-    std::for_each(std::begin(inputArray), std::end(inputArray), [&](const TDataType d)
+    for (size_t i = 0; i < inputArray.size(); i++)
     {
-      returnVector.push_back((d - mean) / stdev);
-    });
+      returnVector.push_back((inputArray[i] - static_cast<float>(mean)) / static_cast<float>(stdev));
+    }
+    //std::for_each(std::begin(inputArray), std::end(inputArray), [&](const TDataType d)
+    //{
+    //  returnVector.push_back((d - mean) / stdev);
+    //});
 
     return returnVector;
   }

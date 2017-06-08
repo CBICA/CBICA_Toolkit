@@ -1494,7 +1494,7 @@ namespace cbica
 
     // https://en.wikipedia.org/wiki/False_positives_and_false_negatives#False_positive_and_false_negative_rates
     returnStatistics["FNR"] = returnStatistics["FN"] / returnStatistics["RP"];
-    returnStatistics["FNR"] = returnStatistics["FNR"];
+    returnStatistics["MR"] = returnStatistics["FNR"];
 
     // https://en.wikipedia.org/wiki/Sensitivity_and_specificity
     returnStatistics["TNR"] = returnStatistics["TN"] / returnStatistics["RP"];
@@ -1508,6 +1508,12 @@ namespace cbica
 
     // https://en.wikipedia.org/wiki/Diagnostic_odds_ratio
     returnStatistics["DOR"] = returnStatistics["LR+"] / returnStatistics["LR-"];
+
+    // https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient
+    returnStatistics["Dice"] = 2 * returnStatistics["TP"] / (2 * returnStatistics["TP"] + returnStatistics["FP"] + returnStatistics["FN"]);
+
+    // https://en.wikipedia.org/wiki/Jaccard_index
+    returnStatistics["JR"] = 2 * returnStatistics["TP"] / (returnStatistics["TP"] + returnStatistics["FP"] + returnStatistics["FN"]);
 
     return returnStatistics;
   }
