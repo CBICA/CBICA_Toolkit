@@ -294,7 +294,7 @@ int main(int argc, const char** argv)
 
   if (parser.compareParameter("csvParserRaw", tempPostion))
   {
-    std::string csvFileName = argv[tempPostion + 1];
+    const std::string csvFileName = std::string(argv[2]) + "/zscores.csv";
     auto parsedCsv = cbica::readCSVDataFile< double >(csvFileName);
 
     if (parsedCsv.size() != 100)
@@ -304,7 +304,7 @@ int main(int argc, const char** argv)
     
     for (size_t i = 0; i < parsedCsv.size(); i++)
     {
-      if (parsedCsv[i].size() != 2)
+      if (parsedCsv[i].size() != 1)
       {
         return EXIT_FAILURE;
       }
@@ -313,7 +313,7 @@ int main(int argc, const char** argv)
     // check column major implementation as well
     auto parsedCsv_col = cbica::readCSVDataFile< double >(csvFileName, true);
 
-    if (parsedCsv_col.size() != 2)
+    if (parsedCsv_col.size() != 1)
     {
       return EXIT_FAILURE;
     }
@@ -517,19 +517,38 @@ int main(int argc, const char** argv)
 
   if (parser.isPresent("roc"))
   {
-    const std::string rocFile = argv[2];
+    const std::string dataDir = argv[2];
+    const std::string realLabelFile = dataDir + "/labels_real.csv";
+    const std::string predLabelFile = dataDir + "/labels_predicted.csv";
+    const std::string comparisonFile = dataDir + "/roc_compare.csv";
 
-    auto samplesAndLabels = cbica::readCSVDataFile< float >(rocFile, true);
+    auto realLabels = cbica::readCSVDataFile< float >(realLabelFile, true);
+    auto predLabels = cbica::readCSVDataFile< float >(predLabelFile, true);
+    auto comparisonValues = cbica::readCSVDataFile(comparisonFile);
 
-    auto output = cbica::ROC_Values(samplesAndLabels[0], samplesAndLabels[1]);
+    auto output = cbica::ROC_Values(realLabels[0], predLabels[0]);
 
-    auto test = output.size();
-
+    // fail if the output is empty
     if (output.empty())
     {
       return EXIT_FAILURE;
     }
 
+    // fail if the same number of statistics haven't been generated - this means that the comparisonFile is out of date
+    if (output.size() != comparisonValues.size() - 1)
+    {
+      return EXIT_FAILURE;
+    }
+
+    for (size_t i = 1; i < comparisonValues.size(); ++i)
+    {
+      auto meanSqDiff = std::pow((output[comparisonValues[i][0]] - std::atof(comparisonValues[i][1].c_str())), 2);
+      if (meanSqDiff > 1e-5) // arbitrary threshold set here
+      {
+        return EXIT_FAILURE;
+      }
+    }
+    
     int blah = 1;
   }
 
