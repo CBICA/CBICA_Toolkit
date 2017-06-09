@@ -933,7 +933,7 @@ namespace cbica
   \param end End value of range; defaults to 1
   */
   template< class TDataType = float >
-  std::vector< TDataType > rand(const TDataType start = 0, const TDataType end = 1, size_t sizeOfReturn = 1)
+  std::vector< TDataType > randn(const TDataType start = 0, const TDataType end = 1, size_t sizeOfReturn = 1)
   {
     std::vector< TDataType > returnVec;
     returnVec.resize(sizeOfReturn);
