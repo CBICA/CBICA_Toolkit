@@ -933,13 +933,20 @@ namespace cbica
   \param end End value of range; defaults to 1
   */
   template< class TDataType = float >
-  TDataType rand(const TDataType start = 0, const TDataType end = 1)
+  std::vector< TDataType > rand(const TDataType start = 0, const TDataType end = 1, size_t sizeOfReturn = 1)
   {
+    std::vector< TDataType > returnVec;
+    returnVec.resize(sizeOfReturn);
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 eng(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(start, end); // define the range
+    std::normal_distribution< TDataType > distr(start, end); // define the range
 
-    return distr(eng);
+    for (size_t i = 0; i < returnVec.size(); i++)
+    {
+      returnVec[i] = distr(eng);
+    }
+
+    return returnVec;
   }
 
 };
