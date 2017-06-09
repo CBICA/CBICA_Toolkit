@@ -638,7 +638,7 @@ namespace cbica
 
     std::ifstream data(csvFileName.c_str());
     std::string line, cell;
-    
+
     if (columnMajor)
     {
       returnVector.resize(cols);
@@ -774,7 +774,7 @@ namespace cbica
     = int
 #endif
 >
-  /*typename*/ TConvertType convertCharacter(const std::string &input_string)
+/*typename*/ TConvertType convertCharacter(const std::string &input_string)
   {
     return static_cast<TConvertType>(input_string[0]);
   }
@@ -794,7 +794,7 @@ namespace cbica
 
     return return_vector;
   }
-  
+
 #if (_MSC_VER >= 1800) || __GXX_EXPERIMENTAL_CXX0X__ || (__GNUC__ > 4)
   /**
   \brief Base for compareEqual(...)
@@ -868,24 +868,24 @@ namespace cbica
   \param inputRealLabels Vector structure containing real labels
   \param inputPredictedLabels Vector structure containing predicted labels
 
-  \return std::map< string, size_t > A map of string and corresponding non-negative values 
+  \return std::map< string, size_t > A map of string and corresponding non-negative values
   */
   std::map< std::string, size_t > ConfusionMatrix(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
-  
+
   /**
   \brief Calculates the ROC Values (see https://en.wikipedia.org/wiki/Receiver_operating_characteristic of all estimates) for a set of real and predicted labels
 
-  Values returned: 
+  Values returned:
   True Positive (TP), False Positive (FP), True Negative (TN), False Negative (FN), Real Positive (RP), Preditcted Positive (PP) [all from ConfusionMatrix()],
-  Accuracy, Positive Predictive Value (PPV) [aka Precision], False Discovery Rate (FDR), False Omission Rate (FOR), 
-  Negative Predictive Value (NPV), Prevalence, True Positive Rate (TPR) [aka Sensitivity, Recall, Probability of Detection (POD)], 
-  False Positive Rate (FPR) [aka Fall-out], False Negative Rate (FNR) [aka Miss Rate (MR)],  True Negative Rate (TNR) [aka Specificity], 
+  Accuracy, Positive Predictive Value (PPV) [aka Precision], False Discovery Rate (FDR), False Omission Rate (FOR),
+  Negative Predictive Value (NPV), Prevalence, True Positive Rate (TPR) [aka Sensitivity, Recall, Probability of Detection (POD)],
+  False Positive Rate (FPR) [aka Fall-out], False Negative Rate (FNR) [aka Miss Rate (MR)],  True Negative Rate (TNR) [aka Specificity],
   Positive Likelihood Ratio (LR+), Negative Likelihood Ratio (LR−), Diagnostic Odds Ratio (DOR), Dice Score (Dice), Jaccard ratio/index (JR)
-  
+
   \param inputRealLabels Vector structure containing real labels
   \param inputPredictedLabels Vector structure containing predicted labels
 
-  \return std::map< string, size_t > A map of string and corresponding float values 
+  \return std::map< string, size_t > A map of string and corresponding float values
   */
   std::map< std::string, float > ROC_Values(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
 
@@ -925,21 +925,44 @@ namespace cbica
 
     return returnVector;
   }
-  
+
   /**
   \brief A good random number generator using c++11 that gives a random value within a range
 
   \param start Start value of range; defaults to 0
   \param end End value of range; defaults to 1
+  \param sizeOfReturn Size of the returned vector
   */
   template< class TDataType = float >
-  std::vector< TDataType > randn(const TDataType start = 0, const TDataType end = 1, size_t sizeOfReturn = 1)
+  std::vector< TDataType > randn(const TDataType start, const TDataType end, size_t sizeOfReturn = 1)
   {
     std::vector< TDataType > returnVec;
     returnVec.resize(sizeOfReturn);
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 eng(rd()); // seed the generator
     std::normal_distribution< TDataType > distr(start, end); // define the range
+
+    for (size_t i = 0; i < returnVec.size(); i++)
+    {
+      returnVec[i] = distr(eng);
+    }
+
+    return returnVec;
+  }
+
+  /**
+  \brief A good random number generator using c++11 that gives a random value within a range
+
+  \param sizeOfReturn Size of the returned vector
+  */
+  template< class TDataType = float >
+  std::vector< TDataType > randn(size_t sizeOfReturn = 1)
+  {
+    std::vector< TDataType > returnVec;
+    returnVec.resize(sizeOfReturn);
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 eng(rd()); // seed the generator
+    std::normal_distribution< TDataType > distr(); // define the range
 
     for (size_t i = 0; i < returnVec.size(); i++)
     {
