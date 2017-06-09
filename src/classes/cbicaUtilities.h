@@ -27,6 +27,7 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <numeric>
 #include <memory.h>
 #include <map>
+#include <random>
 
 //#include <type_traits>
 
@@ -925,6 +926,21 @@ namespace cbica
     return returnVector;
   }
   
+  /**
+  \brief A good random number generator using c++11 that gives a random value within a range
+
+  \param start Start value of range; defaults to 0
+  \param end End value of range; defaults to 1
+  */
+  template< class TDataType = float >
+  TDataType rand(const TDataType start = 0, const TDataType end = 1)
+  {
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 eng(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(start, end); // define the range
+
+    return distr(eng);
+  }
 
 };
 
