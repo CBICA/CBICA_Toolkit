@@ -1,5 +1,5 @@
 Statistic,Value
-Accuracy,0.450000
+Accuracy,0.225000
 DOR,0.838303
 Dice,0.408602
 FDR,0.387755
@@ -18,7 +18,7 @@ POD,0.431818
 PP,49.000000
 PPV,0.387755
 Precision,0.387755
-Prevalence,0.440000
+Prevalence,0.220000
 RP,44.000000
 Recall,0.431818
 Sensitivity,0.431818
