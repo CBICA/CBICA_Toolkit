@@ -34,7 +34,7 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 ## 2.1 Basic Functions
 
-For a full list, please see the documentation of cbicaUtilities.h file.
+For a full list, please see the <b>Functions</b> section of <a href="cbicaUtilities_8h.html">cbicaUtilities.h</a> file.
 
 ### 2.1.1 Folder/File operations
 
