@@ -1455,6 +1455,12 @@ namespace cbica
   {
     std::map< std::string, float > returnStatistics;
 
+    if (inputRealLabels.size() != inputPredictedLabels.size())
+    {
+      std::cerr << "The sizes of the real and predicted labels do not match; exiting.\n";
+      return returnStatistics;
+    }
+
     auto confusionMatrix = ConfusionMatrix(inputRealLabels, inputPredictedLabels);
     returnStatistics["TP"] = static_cast<float>(confusionMatrix["TP"]);
     returnStatistics["FP"] = static_cast<float>(confusionMatrix["FP"]);
@@ -1464,7 +1470,7 @@ namespace cbica
     returnStatistics["PP"] = static_cast<float>(confusionMatrix["PP"]);
 
     // https://en.wikipedia.org/wiki/Accuracy_and_precision
-    returnStatistics["Accuracy"] = (returnStatistics["TP"] + returnStatistics["TN"]) / inputRealLabels.size();
+    returnStatistics["Accuracy"] = (returnStatistics["TP"] + returnStatistics["TN"]) / (2 * inputRealLabels.size());
 
     // https://en.wikipedia.org/wiki/Positive_and_negative_predictive_values
     returnStatistics["PPV"] = returnStatistics["TP"] / returnStatistics["PP"];
@@ -1480,7 +1486,7 @@ namespace cbica
     returnStatistics["NPV"] = returnStatistics["TN"] / (inputPredictedLabels.size() - returnStatistics["PP"]);
 
     // https://en.wikipedia.org/wiki/Prevalence
-    returnStatistics["Prevalence"] = returnStatistics["RP"] / inputRealLabels.size();
+    returnStatistics["Prevalence"] = returnStatistics["RP"] / (2 * inputRealLabels.size());
 
     // https://en.wikipedia.org/wiki/Sensitivity_and_specificity
     returnStatistics["TPR"] = returnStatistics["TP"] / returnStatistics["RP"];
