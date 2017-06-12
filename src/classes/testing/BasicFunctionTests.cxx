@@ -548,8 +548,6 @@ int main(int argc, const char** argv)
         return EXIT_FAILURE;
       }
     }
-    
-    int blah = 1;
   }
 
   if (parser.isPresent("zscore"))
