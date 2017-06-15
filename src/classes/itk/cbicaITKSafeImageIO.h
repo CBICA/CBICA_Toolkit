@@ -23,6 +23,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageIOBase.h"
 #include "itkImageIOFactory.h"
 #include "itkGDCMImageIO.h"
+#include "itkNiftiImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
 #include "itkNumericSeriesFileNames.h"
 #include "itkOrientImageFilter.h"
@@ -54,7 +55,7 @@ namespace cbica
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType = ImageTypeFloat3D >
-  typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  typename itk::ImageFileReader< TImageType >::Pointer GetImageReader(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii,.dcm", const std::string &delimitor = ",")
   {
     //// check read access
     //if (((_access(fName.c_str(), 4)) == -1) || ((_access(fName.c_str(), 6)) == -1))
@@ -63,6 +64,8 @@ namespace cbica
     //  exit(EXIT_FAILURE);
     //}
 
+    const std::string fileExtension = cbica::getFilenameExtension(fName);
+
     if (supportedExtensions != "")
     {
       std::vector< std::string > extensions = cbica::stringSplit(supportedExtensions, delimitor);
@@ -70,7 +73,7 @@ namespace cbica
       bool supportedExtensionFound = false;
       for (size_t i = 0; i < extensions.size(); i++)
       {
-        if (extensions[i] == cbica::getFilenameExtension(fName))
+        if (extensions[i] == fileExtension)
         {
           supportedExtensionFound = true;
         }
@@ -87,7 +90,8 @@ namespace cbica
     auto imageInfo = cbica::ImageInfo(fName);
 
     // perform basic sanity check
-    if (imageInfo.GetImageDimensions() != TImageType::ImageDimension)
+    if ((imageInfo.GetImageDimensions() != TImageType::ImageDimension) && 
+      !((TImageType::ImageDimension == 2) && (imageInfo.GetImageSize()[2] == 1))) // this to check for a 2D DICOM
     {
       std::cerr << "Image Dimension mismatch. Return image is expected to be '" << TImageType::ImageDimension <<
         "'D and doesn't match the image dimension read from the input file, which is '" << imageInfo.GetImageDimensions() << "'.\n";
@@ -97,6 +101,18 @@ namespace cbica
     typedef itk::ImageFileReader< TImageType > ImageReaderType;
     typename ImageReaderType::Pointer reader = ImageReaderType::New();
     reader->SetFileName(fName);
+
+    // set image IO type
+    if ((fileExtension == ".dcm") || (fileExtension == ".dicom"))
+    {
+      auto ioType = itk::GDCMImageIO::New();
+      reader->SetImageIO(ioType);
+    }
+    else if ((fileExtension == ".nii") || (fileExtension == ".nii.gz"))
+    {
+      auto ioType = itk::NiftiImageIO::New();
+      reader->SetImageIO(ioType);
+    }
 
     try
     {
@@ -496,10 +512,10 @@ namespace cbica
   \return itk::ImageFileReader::Pointer templated over the same as requested by user
   */
   template <class TImageType = ImageTypeFloat3D >
-  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii", const std::string &delimitor = ",")
+  typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii,.dcm", const std::string &delimitor = ",")
   {
     std::string extension = cbica::getFilenameExtension(fName);
-    if (cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom"))
+    if ((cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom")) && (TImageType::ImageDimension > 2))
     {
       return GetDicomImage< TImageType >(fName);
     }
