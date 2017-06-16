@@ -68,7 +68,7 @@ namespace cbica
 
     if (supportedExtensions != "")
     {
-      std::vector< std::string > extensions = cbica::stringSplit(supportedExtensions, delimitor);
+      auto extensions = cbica::stringSplit(supportedExtensions, delimitor);
 
       bool supportedExtensionFound = false;
       for (size_t i = 0; i < extensions.size(); i++)
@@ -98,8 +98,7 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
 
-    typedef itk::ImageFileReader< TImageType > ImageReaderType;
-    typename ImageReaderType::Pointer reader = ImageReaderType::New();
+    auto reader = itk::ImageFileReader< TImageType >::New();
     reader->SetFileName(fName);
 
     // set image IO type
@@ -144,7 +143,7 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName)
   {
-    std::string dirName_wrap = dirName;
+    auto dirName_wrap = dirName;
     if (!cbica::isDir(dirName_wrap))
     {
       dirName_wrap = cbica::getFilenamePath(dirName);
@@ -309,13 +308,11 @@ namespace cbica
     //  return;
     //}
 
-    typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
-    typename CastFilterType::Pointer filter = CastFilterType::New();
+    auto filter = typename itk::CastImageFilter<ComputedImageType, ExpectedImageType>::New();
     filter->SetInput(imageToWrite);
     filter->Update();
 
-    typedef typename itk::ImageFileWriter<ExpectedImageType> WriterType;
-    typename WriterType::Pointer writer = WriterType::New();
+    auto writer = typename itk::ImageFileWriter<ExpectedImageType>::New();
     writer->SetInput(filter->GetOutput());
     writer->SetFileName(fileName);
 
@@ -395,8 +392,7 @@ namespace cbica
     //}
 
     using ExpectedImageType = itk::Image< short, ComputedImageType::ImageDimension >; // this is needed because DICOM currently only supports short/int
-    typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
-    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    auto castFilter = typename itk::CastImageFilter<ComputedImageType, ExpectedImageType>::New();
     castFilter->SetInput(imageToWrite);
     castFilter->Update();
 
