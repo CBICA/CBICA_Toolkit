@@ -853,13 +853,6 @@ namespace cbica
 
   //==================================== Statistical/Compute stuff ==================================//
   /**
-  \brief Compute the MD5 checksum for supplied file
-
-  This class uses the gdcm::MD5 class and that is a dependency for this function.
-  */
-  std::string computeMD5Sum(const std::string &fileName);
-
-  /**
   \brief Calculates the Confusion Matrix for a set of real and predicted labels
 
   Values returned: True Positive (TP), False Positive (FP), True Negative (TN), False Negative (FN), Real Positive (RP), Preditcted Positive (PP)

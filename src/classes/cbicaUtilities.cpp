@@ -1878,15 +1878,6 @@ namespace cbica
     return cbica::constCharToChar(std::string(input));
   }
 
-  std::string computeMD5Sum(const std::string &fileName)
-  {
-    //gdcm::MD5 md5Computer;
-    //char digStr[_MAX_PATH];
-    //md5Computer.ComputeFile(fileName.c_str(), digStr);
-    //return std::string(digStr);
-    return "";
-  }
-
   //! Cross platform Sleep
   void sleep(size_t ms)
   {
