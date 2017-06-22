@@ -3,7 +3,7 @@
 
 \brief Some basic utility functions.
 
-Dependecies: ITK (module_review enabled), OpenMP
+Dependecies: ITK (module_review, module_skullstrip enabled), OpenMP
 
 https://www.cbica.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
@@ -32,6 +32,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkBSplineInterpolateImageFunction.h"
 #include "itkNearestNeighborInterpolateImageFunction.h"
 
+#include "itkStripTsImageFilter.h"
+#include "itkMaskImageFilter.h"
 
 #include "gdcmMD5.h"
 
@@ -375,5 +377,52 @@ namespace cbica
     return warper->GetOutput();
   }
 
+  /**
+  \brief Get skull stripped image
+
+  Templated over InputImageType, AtlasImageType and AtlasLabelType
+
+  \param inputImage The input image on which to run the skull stripping
+  \param atlasImage The atlas image
+  \param atlasLabelImage The atlas label 
+  */
+  template< class TImageType, class TAtlasImageType, class TAtlasLabelType >
+  typename TImageType::Pointer GetSkullStrippedImage(const typename TImageType::Pointer inputImage, 
+    const typename TAtlasImageType::Pointer atlasImage, const typename TAtlasLabelType::Pointer atlasLabelImage)
+  {
+    // skull stripping initialization
+    auto skullStripper = typename itk::StripTsImageFilter< TImageType, TAtlasImageType, TAtlasLabelType>::New();
+    skullStripper->SetInput(inputImage);
+    skullStripper->SetAtlasImage(atlasImage);
+    skullStripper->SetAtlasBrainMask(atlasLabelImage);
+
+    // actually do the skull stripping
+    try
+    {
+      skullStripper->Update();
+    }
+    catch (itk::ExceptionObject &exception)
+    {
+      std::cerr << "Exception caught: " << exception << "\n";
+      return inputImage;
+    }
+
+    // apply the generated mask
+    auto masker = typename itk::MaskImageFilter< TImageType, TAtlasLabelType, TImageType >::New();
+    masker->SetInput(inputImage);
+    masker->SetMaskImage(skullStripper->GetOutput());
+
+    try
+    {
+      masker->Update();
+    }
+    catch (itk::ExceptionObject &exception)
+    {
+      std::cerr << "Exception caught: " << exception << "\n";
+      return inputImage;
+    }
+
+    return masker->GetOutput();
+  }
 
 }
