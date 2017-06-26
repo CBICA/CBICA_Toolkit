@@ -52,6 +52,10 @@ enum InterpolatorType
   Linear, NearestNeighbor, BSpline
 };
 
+/*
+\namespace cbica
+\brief Namespace for differentiating functions written for internal use
+*/
 namespace cbica
 {
   /**

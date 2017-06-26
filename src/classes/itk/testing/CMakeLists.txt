@@ -47,6 +47,12 @@ ADD_TEST( NAME ItkReadUnknownImage_Test COMMAND ${ITK_TEST_EXE_NAME} -readImage 
 #Test for the ReadImage function
 ADD_TEST( NAME ItkWriteUnknownImage_Test COMMAND ${ITK_TEST_EXE_NAME} -writeImage "${DATA_DIR}/1.nii" "${DATA_DIR}/1_test.nii")
 
+##Test for the ReadImage function
+#ADD_TEST( NAME ItkDeformReg_Test COMMAND ${ITK_TEST_EXE_NAME} -deform "${DATA_DIR}/deform/ref.nii.gz ${DATA_DIR}/deform/mov.nii.gz ${DATA_DIR}/deform/expected.nii.gz")
+
+##Test for the ReadImage function
+#ADD_TEST( NAME ItkDeformReg_Test COMMAND ${ITK_TEST_EXE_NAME} -skullStrip "${DATA_DIR}/deform/input.nii.gz ${DATA_DIR}/deform/atlasImage.nii.gz ${DATA_DIR}/deform/atlasLabel.nii.gz ${DATA_DIR}/deform/expected.nii.gz")
+
 SET_TARGET_PROPERTIES( ${ITK_TEST_EXE_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY  "${PROJECT_BINARY_DIR}/testing/" )
 SET_TARGET_PROPERTIES( ${ITK_TEST_EXE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/testing/" )
 SET_TARGET_PROPERTIES( ${ITK_TEST_EXE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG "${PROJECT_BINARY_DIR}/testing/" )

@@ -28,6 +28,10 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 //typedef itk::Image<double, 3> TImageType;
 
+/*
+\namespace cbica
+\brief Namespace for differentiating functions written for internal use
+*/
 namespace cbica
 {
   /**
@@ -45,9 +49,9 @@ namespace cbica
     = itk::Image< float, 3 >
 #endif
   >
-  cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages, 
-    const std::vector< typename TImageType::Pointer > maskImages, 
-    const bool columnMajor, const bool appendInputImagesFromSubjects, const bool maskDefinedPerSubject)
+  cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
+  const std::vector< typename TImageType::Pointer > maskImages,
+  const bool columnMajor, const bool appendInputImagesFromSubjects, const bool maskDefinedPerSubject)
   {
     if (inputSubjectsAndImages.size() != maskImages.size())
     {
@@ -88,7 +92,7 @@ namespace cbica
         }
         if (!appendInputImagesFromSubjects)
         {
-          returnMat.push_back(tempMat); 
+          returnMat.push_back(tempMat);
         }
       }
       if (appendInputImagesFromSubjects)
@@ -118,10 +122,10 @@ namespace cbica
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
-  >
-  cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
-    const std::vector< std::vector< typename TImageType::IndexType > > maskIndeces,
-    const bool appendInputImagesFromSubjects = false, const bool columnMajor = false, const bool maskDefinedPerSubject = false)
+      >
+      cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
+      const std::vector< std::vector< typename TImageType::IndexType > > maskIndeces,
+      const bool appendInputImagesFromSubjects = false, const bool columnMajor = false, const bool maskDefinedPerSubject = false)
   {
     if (maskDefinedPerSubject)
     {
@@ -193,9 +197,9 @@ namespace cbica
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = itk::Image< float, 3 >
 #endif
-  >
-  cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
-    const bool columnMajor = false, const bool appendInputImagesFromSubjects = false)
+        >
+        cv::Mat VectorizeImages(const std::vector< std::vector< typename TImageType::Pointer > > inputSubjectsAndImages,
+        const bool columnMajor = false, const bool appendInputImagesFromSubjects = false)
   {
     cv::Mat returnMat; // pre-allocate this and then parallelize the next big i-loop
 
@@ -245,8 +249,8 @@ namespace cbica
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = double
 #endif
-  >
-  std::vector< TDataType > L2normalize(const std::vector< TDataType > &inputVector)
+      >
+      std::vector< TDataType > L2normalize(const std::vector< TDataType > &inputVector)
   {
     std::vector< TDataType > returnVector;
     float norm = cv::norm(inputVector, cv::NORM_L2);
@@ -257,7 +261,7 @@ namespace cbica
     }
     returnVector.resize(inputVector.size());
     std::transform(inputVector.begin(), inputVector.end(), returnVector.begin(), std::bind1st(std::divides< float >(), norm));
-    
+
     return returnVector;
   }
 

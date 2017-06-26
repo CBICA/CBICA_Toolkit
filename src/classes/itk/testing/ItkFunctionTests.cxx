@@ -122,6 +122,7 @@ int main(int argc, char** argv)
     auto refImage = cbica::ReadImage< ImageTypeFloat3D >(file_referenceImage);
     auto movImage = cbica::ReadImage< ImageTypeFloat3D >(file_movingImage);
 
+    // run deformable registration with default values
     auto deformedImage = cbica::GetDeformRegisteredImage(movImage, refImage);
 
     // run image comparator with default values
@@ -142,14 +143,14 @@ int main(int argc, char** argv)
     auto atlasLabel = cbica::ReadImage< ImageTypeFloat3D >(file_atlasLabel);
     auto referenceOutput = cbica::ReadImage< ImageTypeFloat3D >(file_referenceOutput);
 
+    // run skull stripping with default values
     auto skullStrippedImage = cbica::GetSkullStrippedImage(inputImage, atlasImage, atlasLabel);
 
-    if (!cbica::GetResultOfImageComparasion(referenceOutput, skullStrippedImage)) // run image comparator with default values
+    // run image comparator with default values
+    if (!cbica::GetResultOfImageComparasion(referenceOutput, skullStrippedImage))
     {
       return EXIT_FAILURE;
     }
-
-    // compare skullStrippedImage with a reference input image
   }
 
   return EXIT_SUCCESS;

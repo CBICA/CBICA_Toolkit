@@ -36,6 +36,10 @@ using ImageTypeFloat3D = itk::Image< float, 3 >;
 using TImageType = ImageTypeFloat3D;
 using MaskType = itk::Image<unsigned int, 3>;
 
+/*
+\namespace cbica
+\brief Namespace for differentiating functions written for internal use
+*/
 namespace cbica
 {
   /**

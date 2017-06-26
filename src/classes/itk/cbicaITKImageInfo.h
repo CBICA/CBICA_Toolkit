@@ -21,6 +21,10 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 
+/*
+\namespace cbica 
+\brief Namespace for differentiating functions written for internal use
+*/
 namespace cbica
 {  
   /**

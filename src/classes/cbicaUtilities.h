@@ -63,6 +63,10 @@ struct CSVDict
     inputImages(inputImagesVector), inputLabels(inputLabelVector) {};
 };
 
+/*
+\namespace cbica 
+\brief Namespace for differentiating functions written for internal use
+*/
 namespace cbica
 {
   //====================================== String stuff ====================================//

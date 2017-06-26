@@ -56,6 +56,10 @@ static const char  cSeparator = '/';
 #endif
 
 
+/*
+\namespace cbica
+\brief Namespace for differentiating functions written for internal use
+*/
 namespace cbica
 {
   //! copied from cbicaUtilities to ensure CmdParser stays header-only
