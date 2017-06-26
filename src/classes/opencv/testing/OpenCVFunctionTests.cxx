@@ -36,12 +36,12 @@ int main(int argc, char** argv)
     auto samplesAndLabels = cbica::readCSVDataFile< float >(rocFile, true);
 
     std::vector< float > inputScores, inputLabels;
-    cv::Mat inputData = cv::Mat(samplesAndLabels[0].size(), samplesAndLabels.size(), CV_32F);
+    cv::Mat inputData = cv::Mat(static_cast< int >(samplesAndLabels[0].size()), static_cast< int >(samplesAndLabels.size()), CV_32F);
 
-    for (size_t i = 0; i < inputData.rows; i++)
+    for (int i = 0; i < inputData.rows; i++)
     {
-      inputData.ptr< float >(i)[0] = samplesAndLabels[0][i];
-      inputData.ptr< float >(i)[1] = samplesAndLabels[1][i];
+      inputData.ptr< float >(i)[0] = static_cast< float >(samplesAndLabels[0][i]);
+      inputData.ptr< float >(i)[1] = static_cast< float >(samplesAndLabels[1][i]);
     }
 
     auto output = cbica::ROC_Values(inputData);

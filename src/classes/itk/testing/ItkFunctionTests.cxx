@@ -114,9 +114,22 @@ int main(int argc, char** argv)
     }
   }
 
-  if (parser.compareParameter("writeImage", tempPosition))
+  if (parser.compareParameter("deform", tempPosition))
   {
-    const std::string file_referenceImage = argv[tempPosition + 1], file_movingImage = argv[tempPosition + 2];
+    const std::string file_referenceImage = argv[tempPosition + 1], file_movingImage = argv[tempPosition + 2], 
+      file_referenceOutput = argv[tempPosition + 3];
+
+    auto refImage = cbica::ReadImage< ImageTypeFloat3D >(file_referenceImage);
+    auto movImage = cbica::ReadImage< ImageTypeFloat3D >(file_movingImage);
+
+    auto deformedImage = cbica::GetDeformRegisteredImage(movImage, refImage);
+
+    // run image comparator with default values
+    if (!cbica::GetResultOfImageComparasion(cbica::ReadImage< ImageTypeFloat3D >(file_referenceOutput), deformedImage)) 
+    {
+      return EXIT_FAILURE;
+    }
+
   }
 
   if (parser.isPresent("skullStrip"))

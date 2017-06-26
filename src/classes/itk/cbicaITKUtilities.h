@@ -261,10 +261,10 @@ namespace cbica
   \param averageIntensityDifference The maximum allowed average intensity difference between both images; default is 0
   \return True if images are similar in accordance with passed parameters
   */
-  using TImageType = ImageTypeFloat3D;
-  bool GetResultOfImageComparasion(const TImageType::Pointer referenceImage, const TImageType::Pointer checkImage,
-    const TImageType::PixelType differenceThreshold = 0, const unsigned int toleranceRadius = 0,
-    const unsigned long long numberOfPixelsTolerance = 10, const TImageType::PixelType averageIntensityDifference = 0)
+  template< class TImageType = ImageTypeFloat3D >
+  bool GetResultOfImageComparasion(const typename TImageType::Pointer referenceImage, const typename TImageType::Pointer checkImage,
+    const typename TImageType::PixelType differenceThreshold = 0, const unsigned int toleranceRadius = 0,
+    const unsigned long long numberOfPixelsTolerance = 10, const typename TImageType::PixelType averageIntensityDifference = 0)
   {
     // check if sizes are different - that is a clear indicator that the images are NOT similar
     if (referenceImage->GetLargestPossibleRegion().GetSize() != checkImage->GetLargestPossibleRegion().GetSize())
@@ -273,7 +273,7 @@ namespace cbica
     }
 
     // initialize the comparator
-    auto diff = itk::Testing::ComparisonImageFilter< ImageTypeFloat3D, ImageTypeFloat3D >::New();
+    auto diff = typename itk::Testing::ComparisonImageFilter< ImageTypeFloat3D, ImageTypeFloat3D >::New();
     diff->SetValidInput(referenceImage);
     diff->SetTestInput(checkImage);
     diff->SetDifferenceThreshold(differenceThreshold);
@@ -281,7 +281,7 @@ namespace cbica
     diff->UpdateLargestPossibleRegion();
 
     // check for different conditions 
-    if (static_cast< TImageType::PixelType >(diff->GetTotalDifference()) > averageIntensityDifference)
+    if (static_cast< typename TImageType::PixelType >(diff->GetTotalDifference()) > averageIntensityDifference)
     {
       // if there is an appreciable intensity difference between the images, check the number of difference pixels
       if (diff->GetNumberOfPixelsWithDifferences() > numberOfPixelsTolerance)
