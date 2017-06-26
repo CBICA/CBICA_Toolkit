@@ -24,6 +24,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "classes/itk/cbicaITKImageInfo.h"
 #include "classes/itk/cbicaITKSafeImageIO.h"
+#include "classes/itk/cbicaITKUtilities.h"
 
 #include "itkImage.h"
 #include "gdcmImage.h"
@@ -35,6 +36,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageFileWriter.h"
 #include "itkMinimumMaximumImageCalculator.h"
 #include "itkDiffusionTensor3DReconstructionImageFilter.h"
+#include "itkTestingComparisonImageFilter.h"
 
 
 int main(int argc, char** argv)
@@ -43,14 +45,16 @@ int main(int argc, char** argv)
   parser.addOptionalParameter("i", "imageInfo", cbica::Parameter::NONE, "", "ImageInfo Test");
   parser.addOptionalParameter("w", "writeImage", cbica::Parameter::NONE, "", "writeImage Test");
   parser.addOptionalParameter("r", "readImage", cbica::Parameter::NONE, "", "readImage Test");
+  parser.addOptionalParameter("d", "deform", cbica::Parameter::NONE, "", "Deformable registration Test");
+  parser.addOptionalParameter("s", "skullStrip", cbica::Parameter::NONE, "", "Skull stripping Test");
 
   int tempPosition;
   if (parser.compareParameter("imageInfo", tempPosition))
   {
-    cbica::ImageInfo test_image = cbica::ImageInfo(argv[tempPosition + 1]);
-    itk::SmartPointer<itk::ImageIOBase> io_base = test_image.GetImageIOBase();
-    std::vector<itk::SizeValueType> size = test_image.GetImageSize();
-    std::vector<double> spacings = test_image.GetImageSpacings();
+    auto test_image = cbica::ImageInfo(argv[tempPosition + 1]);
+    auto io_base = test_image.GetImageIOBase();
+    auto size = test_image.GetImageSize();
+    auto spacings = test_image.GetImageSpacings();
     const int dimensions = test_image.GetImageDimensions();
 
     if (dimensions == 0)
@@ -66,12 +70,10 @@ int main(int argc, char** argv)
   if (parser.compareParameter("readImage", tempPosition))
   {
     const std::string inputFile = argv[tempPosition + 1];
-    typedef float ExpectedPixelType;
-    typedef itk::Image<ExpectedPixelType, 3> ExpectedImageType;
-    ExpectedImageType::Pointer inputImage = cbica::ReadImage<ExpectedImageType>(inputFile);
+    using ExpectedImageType = itk::Image<float, 3>;
+    auto inputImage = cbica::ReadImage<ExpectedImageType>(inputFile);
 
-    typedef itk::MinimumMaximumImageCalculator< ExpectedImageType > CalculatorType;
-    CalculatorType::Pointer calculator = CalculatorType::New();
+    auto calculator = itk::MinimumMaximumImageCalculator< ExpectedImageType >::New();
     calculator->SetImage(inputImage);
     calculator->Compute();
 
@@ -94,11 +96,7 @@ int main(int argc, char** argv)
   {
     const std::string inputFile = argv[tempPosition + 1], fileToWrite = argv[tempPosition + 2];
     typedef itk::Image<int, 3> ExpectedImageType;
-    typedef itk::ImageFileReader< ExpectedImageType > ReaderType;
-    ReaderType::Pointer reader = ReaderType::New();
-    reader->SetFileName(inputFile);
-    reader->Update();
-    ExpectedImageType::Pointer inputImage = reader->GetOutput();
+    auto inputImage = cbica::ReadImage< ExpectedImageType >(inputFile);
 
     typedef itk::Image<float, 3> OutputImageType;
     cbica::WriteImage<ExpectedImageType, OutputImageType>(inputImage, fileToWrite);
@@ -114,6 +112,31 @@ int main(int argc, char** argv)
       if (writtenImage->GetSpacing()[i] != inputImage->GetSpacing()[i])
         return EXIT_FAILURE;
     }
+  }
+
+  if (parser.compareParameter("writeImage", tempPosition))
+  {
+    const std::string file_referenceImage = argv[tempPosition + 1], file_movingImage = argv[tempPosition + 2];
+  }
+
+  if (parser.isPresent("skullStrip"))
+  {
+    const std::string file_inputImage = argv[tempPosition + 1], file_atlasImage = argv[tempPosition + 2],
+      file_atlasLabel = argv[tempPosition + 3], file_referenceOutput = argv[tempPosition + 4];
+
+    auto inputImage = cbica::ReadImage< ImageTypeFloat3D >(file_inputImage);
+    auto atlasImage = cbica::ReadImage< ImageTypeFloat3D >(file_atlasImage);
+    auto atlasLabel = cbica::ReadImage< ImageTypeFloat3D >(file_atlasLabel);
+    auto referenceOutput = cbica::ReadImage< ImageTypeFloat3D >(file_referenceOutput);
+
+    auto skullStrippedImage = cbica::GetSkullStrippedImage(inputImage, atlasImage, atlasLabel);
+
+    if (!cbica::GetResultOfImageComparasion(referenceOutput, skullStrippedImage)) // run image comparator with default values
+    {
+      return EXIT_FAILURE;
+    }
+
+    // compare skullStrippedImage with a reference input image
   }
 
   return EXIT_SUCCESS;

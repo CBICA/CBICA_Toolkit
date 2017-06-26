@@ -259,6 +259,7 @@ namespace cbica
   \param toleranceRadius The maximum distance to look for a matching pixel; default is 0
   \param numberOfPixelsTolerance The maximum maximum number of pixels that can be different; default is 10
   \param averageIntensityDifference The maximum allowed average intensity difference between both images; default is 0
+  \return True if images are similar in accordance with passed parameters
   */
   using TImageType = ImageTypeFloat3D;
   bool GetResultOfImageComparasion(const TImageType::Pointer referenceImage, const TImageType::Pointer checkImage,
