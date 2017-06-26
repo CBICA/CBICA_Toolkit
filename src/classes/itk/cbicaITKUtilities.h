@@ -31,6 +31,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkBSplineInterpolateImageFunction.h"
 #include "itkNearestNeighborInterpolateImageFunction.h"
+#include "itkTestingComparisonImageFilter.h"
 
 #include "itkStripTsImageFilter.h"
 #include "itkMaskImageFilter.h"
@@ -69,7 +70,7 @@ namespace cbica
     // made parallel for efficiency
     int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
     threads > inputModalitiesAndImages.size() ? threads = inputModalitiesAndImages.size() : threads = threads;
-//#pragma omp parallel for num_threads(threads)
+    //#pragma omp parallel for num_threads(threads)
     for (int i = 0; i < inputModalitiesAndImages.size(); i++)
     {
       VectorType means;
@@ -137,7 +138,7 @@ namespace cbica
     // made parallel for efficiency
     int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
     threads > returnVector.size() ? threads = returnVector.size() : threads = threads;
-//#pragma omp parallel for num_threads(threads)
+    //#pragma omp parallel for num_threads(threads)
     for (int i = 0; i < returnVector.size(); i++)
     {
       imageIterator.SetIndex(indeces[i]);
@@ -155,7 +156,7 @@ namespace cbica
   {
     return GetPixelValuesFromIndeces< TImageType >(inputImage, indeces);
   }
-  
+
   /**
   \brief Get MD5 sum of a supplied file
 
@@ -187,7 +188,7 @@ namespace cbica
     std::vector< typename TImageType::IndexType > returnVector;
 
     itk::ImageRegionConstIterator< TImageType > iterator(inputImage, inputImage->GetLargestPossibleRegion());
-    for (iterator.GoToBegin(); !iterator.IsAtEnd();++iterator)
+    for (iterator.GoToBegin(); !iterator.IsAtEnd(); ++iterator)
     {
       if (iterator.Get() != 0)
       {
@@ -202,12 +203,12 @@ namespace cbica
   \brief Get the indeces of the image which are not zero
 
   \param inputImage The input image on which the matching needs to be done
-  \param referenceImage The reference image based on which the 
+  \param referenceImage The reference image based on which the
   \param numberOfMatchPoints Governs the number of quantile values to be matched
   \param numberOfHistogramLevels Sets the number of bins used when creating histograms of the source and reference images
   */
   template < typename TImageType = ImageTypeFloat3D >
-  typename TImageType::Pointer GetHistogramMatchedImage(const typename TImageType::Pointer inputImage, const typename TImageType::Pointer referenceImage, 
+  typename TImageType::Pointer GetHistogramMatchedImage(const typename TImageType::Pointer inputImage, const typename TImageType::Pointer referenceImage,
     const int numberOfMatchPoints = 40, const int numberOfHistogramLevels = 100)
   {
     auto filter = itk::HistogramMatchingImageFilter< TImageType, TImageType >::New();
@@ -248,6 +249,50 @@ namespace cbica
   }
 
   /**
+  \brief Get result of Image comparison between 2 images
+
+  This runs itk::Testing::ComparisonImageFilter inside so the inputs are identical. Always updates the largest possible region.
+
+  \param referenceImage The reference image for comparison
+  \param checkImage The image to check
+  \param differenceThreshold The minimum number of different pixels among both images; default is 0
+  \param toleranceRadius The maximum distance to look for a matching pixel; default is 0
+  \param numberOfPixelsTolerance The maximum maximum number of pixels that can be different; default is 10
+  \param averageIntensityDifference The maximum allowed average intensity difference between both images; default is 0
+  */
+  using TImageType = ImageTypeFloat3D;
+  bool GetResultOfImageComparasion(const TImageType::Pointer referenceImage, const TImageType::Pointer checkImage,
+    const TImageType::PixelType differenceThreshold = 0, const unsigned int toleranceRadius = 0,
+    const unsigned long long numberOfPixelsTolerance = 10, const TImageType::PixelType averageIntensityDifference = 0)
+  {
+    // check if sizes are different - that is a clear indicator that the images are NOT similar
+    if (referenceImage->GetLargestPossibleRegion().GetSize() != checkImage->GetLargestPossibleRegion().GetSize())
+    {
+      return false;
+    }
+
+    // initialize the comparator
+    auto diff = itk::Testing::ComparisonImageFilter< ImageTypeFloat3D, ImageTypeFloat3D >::New();
+    diff->SetValidInput(referenceImage);
+    diff->SetTestInput(checkImage);
+    diff->SetDifferenceThreshold(differenceThreshold);
+    diff->SetToleranceRadius(toleranceRadius);
+    diff->UpdateLargestPossibleRegion();
+
+    // check for different conditions 
+    if (static_cast< TImageType::PixelType >(diff->GetTotalDifference()) > averageIntensityDifference)
+    {
+      // if there is an appreciable intensity difference between the images, check the number of difference pixels
+      if (diff->GetNumberOfPixelsWithDifferences() > numberOfPixelsTolerance)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
   \brief Perform the deformable registration
 
   \param movingImage The moving image for registration
@@ -261,7 +306,7 @@ namespace cbica
   */
   template< class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer GetDeformRegisteredImage(const typename TImageType::Pointer movingImage, const typename TImageType::Pointer referenceImage,
-    const unsigned int multiResLevels = 5, 
+    const unsigned int multiResLevels = 5,
     const unsigned int iterationStart = 10, const unsigned int iterationStep = 10, const unsigned int iterationEnd = 50,
     const int regType = Demons, const int interpolatorType = Linear)
   {
@@ -270,7 +315,7 @@ namespace cbica
 
     // setup the displacement field
     using VectorPixelType = itk::Vector< float, TImageType::ImageDimension >;
-    using DisplacementFieldType =  itk::Image< VectorPixelType, TImageType::ImageDimension >;
+    using DisplacementFieldType = itk::Image< VectorPixelType, TImageType::ImageDimension >;
 
     auto multiRes = typename itk::MultiResolutionPDEDeformableRegistration< TImageType, TImageType, DisplacementFieldType >::New();
 
@@ -331,7 +376,7 @@ namespace cbica
       std::cerr << excp << std::endl;
       return referenceImage;
     }
-    
+
     // warp the moving image
     auto warper = typename itk::WarpImageFilter< TImageType, TImageType, DisplacementFieldType >::New();
     warper->SetInput(movingImage);
@@ -384,10 +429,10 @@ namespace cbica
 
   \param inputImage The input image on which to run the skull stripping
   \param atlasImage The atlas image
-  \param atlasLabelImage The atlas label 
+  \param atlasLabelImage The atlas label
   */
-  template< class TImageType, class TAtlasImageType, class TAtlasLabelType >
-  typename TImageType::Pointer GetSkullStrippedImage(const typename TImageType::Pointer inputImage, 
+  template< class TImageType = ImageTypeFloat3D, class TAtlasImageType = TImageType, class TAtlasLabelType = TImageType >
+  typename TImageType::Pointer GetSkullStrippedImage(const typename TImageType::Pointer inputImage,
     const typename TAtlasImageType::Pointer atlasImage, const typename TAtlasLabelType::Pointer atlasLabelImage)
   {
     // skull stripping initialization
