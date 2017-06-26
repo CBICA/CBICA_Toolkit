@@ -34,7 +34,7 @@ SET( BASIC_CLASS_DIRECTORY ${SOURCE_DIRECTORY}/classes )
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ## Do you want to build the ITK classes as well?
-SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.7.0+)?" )
+SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.10.0+)?" )
 IF( BUILD_CBICA_ITK_CLASSES )
   ADD_DEFINITIONS( -DBUILD_CBICA_ITK_CLASSES=1 )
 ELSE()
@@ -61,7 +61,7 @@ IF( BUILD_CBICA_ITK_CLASSES )
 ENDIF( BUILD_CBICA_ITK_CLASSES ) 
 
 ## Do you want to build the OpenCV classes as well?
-SET( BUILD_CBICA_OPENCV_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.7.0+)?" )
+SET( BUILD_CBICA_OPENCV_CLASSES ON CACHE BOOL "Do you want to build the CBICA OpenCV classes (needs OpenCV 3.0+)?" )
 IF( BUILD_CBICA_OPENCV_CLASSES )
   ADD_DEFINITIONS( -BUILD_CBICA_OPENCV_CLASSES=1 )
 ELSE()
