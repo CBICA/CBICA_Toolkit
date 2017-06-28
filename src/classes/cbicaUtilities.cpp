@@ -51,7 +51,9 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <stdexcept>
 #include <algorithm>
 #include <string>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 #include "cbicaUtilities.h"
 

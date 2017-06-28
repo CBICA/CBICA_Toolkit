@@ -16,7 +16,9 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include <algorithm>
 #include <functional>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 #include "itkImage.h"
 #include "itkImageRegionIterator.h"
