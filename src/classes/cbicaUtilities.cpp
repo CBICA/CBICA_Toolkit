@@ -1304,11 +1304,13 @@ namespace cbica
     }
 
     // organize the data
+#ifdef _OPENMP
     int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
     // if the total number of rows in CSV file are less than the available number of threads on machine (happens for testing),
     // use only the number of rows where meaningful data is present - this avoids extra thread overhead
     threads > static_cast<int>(numberOfRows) ? threads = static_cast<int>(numberOfRows - 1) : threads = threads; 
 //#pragma omp parallel for num_threads(threads)
+#endif
     for (int rowCounter = 1; rowCounter < static_cast<int>(allRows.size()); rowCounter++)
     {
       return_CSVDict[rowCounter - 1].inputImages.resize(inputColumnIndeces.size()); // pre-initialize size to ensure thread-safety
