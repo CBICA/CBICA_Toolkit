@@ -114,4 +114,20 @@ namespace cbica
   */
   cv::Mat ZScores(const cv::Mat &inputMat);
 
+  /**
+  \brief Save input matrix as a csv
+
+  \param inputMat The input matrix to save
+  \param filename The filename to save the matrix to
+  */
+  void SaveAsCSV(const cv::Mat &inputMat, const std::string &filename);
+
+  /**
+  \brief Read CSV as a matrix 
+  
+  This function assumes no header information is present and is written using SaveAsCSV() function.
+
+  \param filename The filename to read
+  */
+  cv::Mat ReadFromCSV(const std::string &filename);
 }
