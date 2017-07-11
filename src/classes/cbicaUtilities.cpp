@@ -1475,10 +1475,14 @@ namespace cbica
 
     // https://en.wikipedia.org/wiki/Accuracy_and_precision
     returnStatistics["Accuracy"] = (returnStatistics["TP"] + returnStatistics["TN"]) / inputRealLabels.size();
+    returnStatistics["ACCURACY"] = returnStatistics["Accuracy"];
+    returnStatistics["accuracy"] = returnStatistics["Accuracy"];
 
     // https://en.wikipedia.org/wiki/Positive_and_negative_predictive_values
     returnStatistics["PPV"] = returnStatistics["TP"] / returnStatistics["PP"];
     returnStatistics["Precision"] = returnStatistics["PPV"];
+    returnStatistics["PRECISION"] = returnStatistics["PPV"];
+    returnStatistics["precision"] = returnStatistics["PPV"];
 
     // https://en.wikipedia.org/wiki/False_discovery_rate
     returnStatistics["FDR"] = returnStatistics["TP"] / returnStatistics["PP"];
@@ -1491,16 +1495,24 @@ namespace cbica
 
     // https://en.wikipedia.org/wiki/Prevalence
     returnStatistics["Prevalence"] = returnStatistics["RP"] / inputRealLabels.size();
+    returnStatistics["PREVALENCE"] = returnStatistics["Prevalence"];
+    returnStatistics["prevalence"] = returnStatistics["Prevalence"];
 
     // https://en.wikipedia.org/wiki/Sensitivity_and_specificity
     returnStatistics["TPR"] = returnStatistics["TP"] / returnStatistics["RP"];
     returnStatistics["Sensitivity"] = returnStatistics["TPR"];
+    returnStatistics["SENSITIVITY"] = returnStatistics["TPR"];
+    returnStatistics["sensitivity"] = returnStatistics["TPR"];
     returnStatistics["Recall"] = returnStatistics["TPR"];
+    returnStatistics["RECALL"] = returnStatistics["TPR"];
+    returnStatistics["recall"] = returnStatistics["TPR"];
     returnStatistics["POD"] = returnStatistics["TPR"];
 
     // https://en.wikipedia.org/wiki/False_positive_rate
     returnStatistics["FPR"] = returnStatistics["FP"] / (inputPredictedLabels.size() - returnStatistics["RP"]);
     returnStatistics["Fall-Out"] = returnStatistics["FPR"];
+    returnStatistics["FALL-OUT"] = returnStatistics["FPR"];
+    returnStatistics["fall-out"] = returnStatistics["FPR"];
 
     // https://en.wikipedia.org/wiki/False_positives_and_false_negatives#False_positive_and_false_negative_rates
     returnStatistics["FNR"] = returnStatistics["FN"] / returnStatistics["RP"];
@@ -1509,6 +1521,8 @@ namespace cbica
     // https://en.wikipedia.org/wiki/Sensitivity_and_specificity
     returnStatistics["TNR"] = returnStatistics["TN"] / returnStatistics["RP"];
     returnStatistics["Specificity"] = returnStatistics["TNR"];
+    returnStatistics["SPECIFICITY"] = returnStatistics["TNR"];
+    returnStatistics["specificity"] = returnStatistics["TNR"];
 
     // https://en.wikipedia.org/wiki/Likelihood_ratios_in_diagnostic_testing#positive_likelihood_ratio
     returnStatistics["LR+"] = returnStatistics["TPR"] / returnStatistics["FPR"];
