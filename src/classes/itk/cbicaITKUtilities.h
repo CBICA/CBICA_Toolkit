@@ -24,6 +24,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageRegionIterator.h"
 #include "itkHistogramMatchingImageFilter.h"
 #include "itkAdaptiveHistogramEqualizationImageFilter.h"
+#include "itkConnectedThresholdImageFilter.h"
+
 #include "itkMultiResolutionPDEDeformableRegistration.h"
 #include "itkDemonsRegistrationFilter.h"
 #include "itkDiffeomorphicDemonsRegistrationFilter.h"
@@ -37,6 +39,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "itkStripTsImageFilter.h"
 #include "itkMaskImageFilter.h"
+
+
 
 #include "gdcmMD5.h"
 
@@ -429,6 +433,261 @@ namespace cbica
     return warper->GetOutput();
   }
 
+  std::string GetImageOrientation(const TImageType::Pointer inputImage)
+  {
+    using namespace itk::SpatialOrientation;
+    auto orientFilter = itk::OrientImageFilter< TImageType, TImageType >::New();
+    orientFilter->SetInput(inputImage);
+    orientFilter->SetDesiredCoordinateOrientation(ITK_COORDINATE_ORIENTATION_RAI);
+    orientFilter->Update();
+
+    std::string returnString;
+
+    switch (orientFilter->GetGivenCoordinateOrientation())
+    {
+    case ITK_COORDINATE_ORIENTATION_RIP:
+    {
+      returnString = "RIP";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_LIP:
+    {
+      returnString = "LIP";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_RSP:
+    {
+      returnString = "RSP";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_LSP:
+    {
+      returnString = "LSP";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_RIA:
+    {
+      returnString = "RIA";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_LIA:
+    {
+      returnString = "LIA";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_LSA:
+    {
+      returnString = "LSA";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_IRP:
+    {
+      returnString = "IRP";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_ILP:
+    {
+      returnString = "ILP";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_SRP:
+    {
+      returnString = "SRP";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_SLP:
+    {
+      returnString = "SLP";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_IRA:
+    {
+      returnString = "IRA";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_ILA:
+    {
+      returnString = "ILA";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_SRA:
+    {
+      returnString = "SRA";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_SLA:
+    {
+      returnString = "SLA";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_RPI:
+    {
+      returnString = "RPI";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_LPI:
+    {
+      returnString = "LPI";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_RAI:
+    {
+      returnString = "RAI";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_LAI:
+    {
+      returnString = "LAI";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_RPS:
+    {
+      returnString = "RPS";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_LPS:
+    {
+      returnString = "LPS";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_RAS:
+    {
+      returnString = "RAS";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_LAS:
+    {
+      returnString = "LAS";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_PRI:
+    {
+      returnString = "PRI";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_PLI:
+    {
+      returnString = "PLI";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_ARI:
+    {
+      returnString = "ARI";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_ALI:
+    {
+      returnString = "ALI";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_PRS:
+    {
+      returnString = "PRS";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_PLS:
+    {
+      returnString = "PLS";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_ARS:
+    {
+      returnString = "ARS";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_ALS:
+    {
+      returnString = "ALS";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_IPR:
+    {
+      returnString = "IPR";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_SPR:
+    {
+      returnString = "SPR";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_IAR:
+    {
+      returnString = "IAR";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_SAR:
+    {
+      returnString = "SAR";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_IPL:
+    {
+      returnString = "IPL";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_SPL:
+    {
+      returnString = "SPL";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_IAL:
+    {
+      returnString = "IAL";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_SAL:
+    {
+      returnString = "SAL";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_PIR:
+    {
+      returnString = "PIR";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_PSR:
+    {
+      returnString = "PSR";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_AIR:
+    {
+      returnString = "AIR";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_ASR:
+    {
+      returnString = "ASR";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_PIL:
+    {
+      returnString = "PIL";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_PSL:
+    {
+      returnString = "PSL";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_AIL:
+    {
+      returnString = "AIL";
+      break;
+    }
+    case ITK_COORDINATE_ORIENTATION_ASL:
+    {
+      returnString = "ASL";
+      break;
+    }
+    default:
+    {
+      returnString = "UNKNOWN";
+      break;
+    }
+    }
+  }
+
   /**
   \brief Get skull stripped image
 
@@ -475,6 +734,41 @@ namespace cbica
     }
 
     return masker->GetOutput();
+  }
+
+  /**
+  \brief
+  */
+  void GetMaxDistanceInLabelMap(const TImageType::Pointer inputLabelMap, const TImageType::IndexType indexForComputation)
+  {
+    // setup the connected component segmentation
+    auto connectedComponentFilter = itk::ConnectedThresholdImageFilter< TImageType, TImageType >::New();
+    connectedComponentFilter->SetInput(inputLabelMap);
+    connectedComponentFilter->SetSeed(indexForComputation);
+    connectedComponentFilter->SetReplaceValue(1);
+    // we only want the selected voxel value to be segmented and nothing else
+    connectedComponentFilter->SetLower(inputLabelMap->GetPixel(indexForComputation));
+    connectedComponentFilter->SetUpper(inputLabelMap->GetPixel(indexForComputation));
+
+    //// always ensure that the radius is '1'
+    //TImageType::SizeType radius;
+    //for (size_t i = 0; i < TImageType::ImageDimension; i++)
+    //{
+    //  radius[i] = 1;
+    //}
+    //connectedComponentFilter->SetRadius(radius);
+    connectedComponentFilter->Update();
+
+    auto minMaxCalc = itk::MinimumMaximumImageCalculator< TImageType >::New();
+    minMaxCalc->SetImage(connectedComponentFilter->GetOutput());
+    minMaxCalc->ComputeMaximum();
+
+    if (minMaxCalc->GetMaximum() > 0)
+    {
+      cbica::WriteImage< TImageType >(connectedComponentFilter->GetOutput(), "E:/Projects/CBICA_Toolkit/trunk/data/distCalc/connectedOut.nii.gz");
+    }
+
+    auto blah = 1;
   }
 
 }

@@ -91,7 +91,7 @@ namespace cbica
       while (getline(temp, single_value, ','))
       {
         // convert the string element to a integer value
-        values.push_back(atoi(single_value.c_str()));
+        values.push_back(atof(single_value.c_str()));
       }
       // add the row to the complete data vector
       if (!values.empty())
