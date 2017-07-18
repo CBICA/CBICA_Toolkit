@@ -433,7 +433,13 @@ namespace cbica
     return warper->GetOutput();
   }
 
-  std::string GetImageOrientation(const TImageType::Pointer inputImage)
+  /**
+  \brief Get the image orientation 
+
+  \param inputImage The input image
+  \return A pair of string (which represents the orientation) and an itk::Image which represents the inputImage in RAI form
+  */
+  std::pair< std::string, TImageType::Pointer > GetImageOrientation(const TImageType::Pointer inputImage)
   {
     using namespace itk::SpatialOrientation;
     auto orientFilter = itk::OrientImageFilter< TImageType, TImageType >::New();
@@ -686,6 +692,8 @@ namespace cbica
       break;
     }
     }
+
+    return std::make_pair(returnString, orientFilter->GetOutput());
   }
 
   /**
