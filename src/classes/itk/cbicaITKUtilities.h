@@ -434,7 +434,7 @@ namespace cbica
   }
 
   /**
-  \brief Get the image orientation 
+  \brief Get the image orientation
 
   \param inputImage The input image
   \return A pair of string (which represents the orientation) and an itk::Image which represents the inputImage in RAI form
@@ -745,38 +745,102 @@ namespace cbica
   }
 
   /**
-  \brief
+  \brief Get the distance between 2 indeces of an itk::Image
   */
-  void GetMaxDistanceInLabelMap(const TImageType::Pointer inputLabelMap, const TImageType::IndexType indexForComputation)
+  template< class TImageType = ImageTypeFloat3D >
+  float GetDistanceBetweenIndeces(const typename TImageType::IndexType point1, const typename TImageType::IndexType point2)
   {
+    float currentDist = 0.0;
+    for (size_t i = 0; i < TImageType::ImageDimension; i++)
+    {
+      currentDist += std::powf(point1[i] - point2[i], 2);
+    }
+    currentDist = std::sqrtf(currentDist);
+
+    return currentDist;
+  }
+
+  /**
+  \brief Get the distance between 2 itk::P of an itk::Image
+  */
+  float GetDistanceBetweenIndeces(const float* point1, const float* point2)
+  {
+    float currentDist = 0.0;
+    for (size_t i = 0; i < TImageType::ImageDimension; i++)
+    {
+      currentDist += std::powf(point1[i] - point2[i], 2);
+    }
+    currentDist = std::sqrtf(currentDist);
+
+    return currentDist;
+  }
+
+  /**
+  \brief Get the maximum distance and corresponding coordinate from a seed point in a label map
+
+  \param inputLabelMap The label map on which to do the calculation
+  \param indexForComputation The index of the seed point from where to do the distance measurements
+  \param realCoordinatesPassed Bool which denotes if indexForComputation is real (e.g. the tumorPoints used by GLISTR) or an image index
+
+  \return The maximum distance and the corrensponding index
+  */
+  template< class TImageType = ImageTypeFloat3D >
+  std::pair< float, typename TImageType::IndexType > GetMaxDistanceInLabelMap(const typename TImageType::Pointer inputLabelMap, 
+    const typename TImageType::IndexType indexForComputation,
+    bool realCoordinateInput = false, bool realCoordinateOutput = false)
+  {
+    auto indexToUse = indexForComputation;
+    if (realCoordinateInput)
+    {
+      for (size_t i = 0; i < TImageType::ImageDimension; i++)
+      {
+        // gets the index of the point in question
+        indexToUse[i] = std::abs((indexToUse[i] * inputLabelMap->GetSpacing()[i]) + inputLabelMap->GetOrigin()[i]);
+      }
+    }
     // setup the connected component segmentation
-    auto connectedComponentFilter = itk::ConnectedThresholdImageFilter< TImageType, TImageType >::New();
+    auto connectedComponentFilter = typename itk::ConnectedThresholdImageFilter< TImageType, TImageType >::New();
     connectedComponentFilter->SetInput(inputLabelMap);
-    connectedComponentFilter->SetSeed(indexForComputation);
+    connectedComponentFilter->SetSeed(indexToUse);
     connectedComponentFilter->SetReplaceValue(1);
     // we only want the selected voxel value to be segmented and nothing else
-    connectedComponentFilter->SetLower(inputLabelMap->GetPixel(indexForComputation));
-    connectedComponentFilter->SetUpper(inputLabelMap->GetPixel(indexForComputation));
-
-    //// always ensure that the radius is '1'
-    //TImageType::SizeType radius;
-    //for (size_t i = 0; i < TImageType::ImageDimension; i++)
-    //{
-    //  radius[i] = 1;
-    //}
-    //connectedComponentFilter->SetRadius(radius);
+    auto currentPixelVal = inputLabelMap->GetPixel(indexToUse);
+    connectedComponentFilter->SetLower(currentPixelVal);
+    connectedComponentFilter->SetUpper(currentPixelVal);
     connectedComponentFilter->Update();
 
-    auto minMaxCalc = itk::MinimumMaximumImageCalculator< TImageType >::New();
-    minMaxCalc->SetImage(connectedComponentFilter->GetOutput());
-    minMaxCalc->ComputeMaximum();
+    itk::ImageRegionConstIterator <TImageType> iterator(connectedComponentFilter->GetOutput(), connectedComponentFilter->GetOutput()->GetLargestPossibleRegion());
 
-    if (minMaxCalc->GetMaximum() > 0)
+    float maxDist = 0;
+    typename TImageType::IndexType index_maxDist;
+
+    // iterate through the whole image and find maximum distance
+    for (iterator.GoToBegin(); !iterator.IsAtEnd(); ++iterator)
     {
-      cbica::WriteImage< TImageType >(connectedComponentFilter->GetOutput(), "E:/Projects/CBICA_Toolkit/trunk/data/distCalc/connectedOut.nii.gz");
+      if (iterator.Get() > 0)
+      {
+        auto currentIndex = iterator.GetIndex();
+        float currentDist = GetDistanceBetweenIndeces(currentIndex, indexToUse);
+
+        if (currentDist > maxDist)
+        {
+          maxDist = currentDist;
+          index_maxDist = currentIndex;
+        }
+      }
     }
 
-    auto blah = 1;
+    if (realCoordinateOutput)
+    {
+      index_maxDist;
+      for (size_t i = 0; i < TImageType::ImageDimension; i++)
+      {
+        // gets the index of the point in question
+        index_maxDist[i] = (index_maxDist[i] * inputLabelMap->GetSpacing()[i]) + inputLabelMap->GetOrigin()[i];
+      }
+    }
+
+    return std::make_pair(maxDist, index_maxDist);
   }
 
 }
