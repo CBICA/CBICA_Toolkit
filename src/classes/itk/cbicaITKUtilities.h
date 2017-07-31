@@ -16,6 +16,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include <algorithm>
 #include <functional>
+#include <cmath>
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -24,12 +25,14 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageRegionIterator.h"
 #include "itkHistogramMatchingImageFilter.h"
 #include "itkAdaptiveHistogramEqualizationImageFilter.h"
+
 #include "itkConnectedThresholdImageFilter.h"
+#include "itkOrientImageFilter.h"
 
 #include "itkMultiResolutionPDEDeformableRegistration.h"
 #include "itkDemonsRegistrationFilter.h"
-#include "itkDiffeomorphicDemonsRegistrationFilter.h"
-#include "itkFastSymmetricForcesDemonsRegistrationFilter.h"
+//#include "itkDiffeomorphicDemonsRegistrationFilter.h"
+//#include "itkFastSymmetricForcesDemonsRegistrationFilter.h"
 #include "itkSymmetricForcesDemonsRegistrationFilter.h"
 
 #include "itkLinearInterpolateImageFunction.h"
@@ -40,13 +43,13 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkStripTsImageFilter.h"
 #include "itkMaskImageFilter.h"
 
-
+#include "cbicaUtilities.h"
 
 #include "gdcmMD5.h"
 
 using ImageTypeFloat3D = itk::Image< float, 3 >;
-unsigned int RmsCounter = 0;
-double MaxRmsE[4] = { 0.8, 0.75, 0.4, 0.2 };
+//unsigned int RmsCounter = 0;
+//double MaxRmsE[4] = { 0.8, 0.75, 0.4, 0.2 };
 
 enum DeformRegType
 {
@@ -83,9 +86,9 @@ namespace cbica
     //#pragma omp parallel for num_threads(threads)
     for (int i = 0; i < inputModalitiesAndImages.size(); i++)
     {
-      VectorType means;
+      std::vector< float > means;
       std::vector< typename TImageType::IndexType > tempIndeces;
-      TImageType::SizeType size = inputModalitiesAndImages[i][0]->GetLargestPossibleRegion().GetSize();
+      typename TImageType::SizeType size = inputModalitiesAndImages[i][0]->GetLargestPossibleRegion().GetSize();
       size_t totalImageSize = size[0] * size[1] * size[2];
       means.resize(totalImageSize);
       //std::fill(means.begin(), means.end(), 0);
@@ -93,7 +96,7 @@ namespace cbica
 
       for (size_t j = 0; j < inputModalitiesAndImages[i].size(); j++)
       {
-        VectorType tempVec;
+        std::vector< float > tempVec;
         itk::ImageRegionIterator< TImageType > it(inputModalitiesAndImages[i][j], inputModalitiesAndImages[i][j]->GetLargestPossibleRegion());
         it.GoToBegin();
 
@@ -173,10 +176,10 @@ namespace cbica
   \param fileName The input file
   \return The MD5 checksum
   */
-  std::string GetMD5Sum(const std::string &fileName)
+  inline std::string GetMD5Sum(const std::string &fileName)
   {
     gdcm::MD5 md5Computer;
-    char digStr[MAX_PATH];
+    char digStr[1024/*MAX_PATH*/];
     md5Computer.ComputeFile(fileName.c_str(), digStr);
     return std::string(digStr);
   }
@@ -184,7 +187,7 @@ namespace cbica
   /**
   \brief Wrap of GetMD5Sum()
   */
-  std::string ComputeMD5Sum(const std::string &fileName)
+  inline std::string ComputeMD5Sum(const std::string &fileName)
   {
     return GetMD5Sum(fileName);
   }
@@ -283,7 +286,7 @@ namespace cbica
     }
 
     // initialize the comparator
-    auto diff = typename itk::Testing::ComparisonImageFilter< ImageTypeFloat3D, ImageTypeFloat3D >::New();
+    auto diff = typename itk::Testing::ComparisonImageFilter< TImageType, TImageType >::New();
     diff->SetValidInput(referenceImage);
     diff->SetTestInput(checkImage);
     diff->SetDifferenceThreshold(differenceThreshold);
@@ -315,7 +318,7 @@ namespace cbica
   \param regType The type of registration to perform, defaults to 'Demons'
   \param interpolatorType The type of interpolator to use, defaults to 'Linear'
   */
-  template< class TImageType = ImageTypeFloat3D >
+  /*template< class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer GetDeformRegisteredImage(const typename TImageType::Pointer movingImage, const typename TImageType::Pointer referenceImage,
     const unsigned int multiResLevels = 5,
     const unsigned int iterationStart = 10, const unsigned int iterationStep = 10, const unsigned int iterationEnd = 50,
@@ -431,7 +434,7 @@ namespace cbica
     }
 
     return warper->GetOutput();
-  }
+  }*/
 
   /**
   \brief Get the image orientation
@@ -439,10 +442,11 @@ namespace cbica
   \param inputImage The input image
   \return A pair of string (which represents the orientation) and an itk::Image which represents the inputImage in RAI form
   */
-  std::pair< std::string, TImageType::Pointer > GetImageOrientation(const TImageType::Pointer inputImage)
+  template< class TImageType = ImageTypeFloat3D >
+  std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const typename TImageType::Pointer inputImage)
   {
     using namespace itk::SpatialOrientation;
-    auto orientFilter = itk::OrientImageFilter< TImageType, TImageType >::New();
+    auto orientFilter =  itk::OrientImageFilter< TImageType, TImageType >::New();
     orientFilter->SetInput(inputImage);
     orientFilter->SetDesiredCoordinateOrientation(ITK_COORDINATE_ORIENTATION_RAI);
     orientFilter->Update();
@@ -753,9 +757,9 @@ namespace cbica
     float currentDist = 0.0;
     for (size_t i = 0; i < TImageType::ImageDimension; i++)
     {
-      currentDist += std::powf(point1[i] - point2[i], 2);
+      currentDist += powf(point1[i] - point2[i], 2);
     }
-    currentDist = std::sqrtf(currentDist);
+    currentDist = sqrtf(currentDist);
 
     return currentDist;
   }
@@ -763,14 +767,14 @@ namespace cbica
   /**
   \brief Get the distance between 2 itk::P of an itk::Image
   */
-  float GetDistanceBetweenIndeces(const float* point1, const float* point2)
+  inline float GetDistanceBetweenIndeces(const float* point1, const float* point2)
   {
     float currentDist = 0.0;
-    for (size_t i = 0; i < TImageType::ImageDimension; i++)
+    for (size_t i = 0; i < 3; i++)
     {
-      currentDist += std::powf(point1[i] - point2[i], 2);
+      currentDist += powf(point1[i] - point2[i], 2);
     }
-    currentDist = std::sqrtf(currentDist);
+    currentDist = sqrtf(currentDist);
 
     return currentDist;
   }
@@ -799,7 +803,7 @@ namespace cbica
       }
     }
     // setup the connected component segmentation
-    auto connectedComponentFilter = typename itk::ConnectedThresholdImageFilter< TImageType, TImageType >::New();
+    auto connectedComponentFilter =  itk::ConnectedThresholdImageFilter< TImageType, TImageType >::New();
     connectedComponentFilter->SetInput(inputLabelMap);
     connectedComponentFilter->SetSeed(indexToUse);
     connectedComponentFilter->SetReplaceValue(1);
@@ -820,7 +824,8 @@ namespace cbica
       if (iterator.Get() > 0)
       {
         auto currentIndex = iterator.GetIndex();
-        float currentDist = GetDistanceBetweenIndeces(currentIndex, indexToUse);
+        float currentDist = 0.0;// TBD  gcc is unable to deduce sutable type. Please fix this -> GetDistanceBetweenIndeces(currentIndex, indexToUse);
+	      currentDist = GetDistanceBetweenIndeces<TImageType>(currentIndex, indexToUse);
 
         if (currentDist > maxDist)
         {
@@ -832,7 +837,6 @@ namespace cbica
 
     if (realCoordinateOutput)
     {
-      index_maxDist;
       for (size_t i = 0; i < TImageType::ImageDimension; i++)
       {
         // gets the index of the point in question
