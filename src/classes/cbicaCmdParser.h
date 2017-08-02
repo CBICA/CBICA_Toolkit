@@ -484,6 +484,8 @@ namespace cbica
     bool checkMaxLen;
     //! Flag to check for requested help/usage
     bool helpRequested;
+    //! Flag to check for requested help/usage
+    bool firstRun;
     //! Initialize the class
     inline void initializeClass(int &input_argc, std::vector< std::string > &input_argv, const std::string &input_exeName = "");
     //! Get max length

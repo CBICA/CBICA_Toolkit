@@ -358,6 +358,7 @@ namespace cbica
     m_maxLength = 0;
     checkMaxLen = false;
     helpRequested = false;
+    firstRun = true;
     m_exampleOfUsage = "";
 
     m_optionalParameters.push_back(Parameter("u", "usage", cbica::Parameter::NONE, "", "Prints basic usage message.", "", "", "", ""));
@@ -714,6 +715,25 @@ namespace cbica
 
   bool CmdParser::compareParameter(const std::string &execParamToCheck, int &position)
   {
+    // check for argc values during the first run otherwise don't
+    if (firstRun)
+    {
+      if (m_argc > static_cast< int >(m_optionalParameters.size() + m_requiredParameters.size() + 2))
+      {
+        std::cerr << "Extra parameters passed, please check usage. Exiting.\n\n";
+        echoUsage();
+        exit(EXIT_FAILURE);
+      }
+
+      if (m_argc < 2)
+      {
+        std::cerr << "Insufficient parameters passed, please check usage. Exiting.\n\n";
+        echoUsage();
+        exit(EXIT_FAILURE);
+      }
+      firstRun = false;
+    }
+
     std::string execParamToCheck_wrap = execParamToCheck;
     verbose_check(execParamToCheck_wrap);
 
