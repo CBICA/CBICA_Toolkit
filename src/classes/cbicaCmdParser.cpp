@@ -718,7 +718,7 @@ namespace cbica
     // check for argc values during the first run otherwise don't
     if (firstRun)
     {
-      if (m_argc > static_cast< int >(m_optionalParameters.size() + m_requiredParameters.size() + 2))
+      if (m_argc > static_cast< int >(m_optionalParameters.size() + m_requiredParameters.size() - 3))
       {
         std::cerr << "Extra parameters passed, please check usage. Exiting.\n\n";
         echoUsage();
