@@ -741,10 +741,28 @@ namespace cbica
     {
       std::string inputParamToCheck = m_argv[i];
       verbose_check(inputParamToCheck);
-      if ((inputParamToCheck == "u") || (inputParamToCheck == "h") || (inputParamToCheck == "v"))
+      if (inputParamToCheck == "u")
       {
         helpRequested = true;
         position = i;
+        echoUsage();
+        exit(EXIT_SUCCESS);
+        //return true;
+      }
+      if (inputParamToCheck == "h")
+      {
+        helpRequested = true;
+        position = i;
+        echoHelp();
+        exit(EXIT_SUCCESS);
+        //return true;
+      }
+      if (inputParamToCheck == "v")
+      {
+        helpRequested = true;
+        position = i;
+        echoVersion();
+        exit(EXIT_SUCCESS);
         //return true;
       }
       if (!checkMaxLen)
