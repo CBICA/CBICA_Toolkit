@@ -21,10 +21,6 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 
-/*
-\namespace cbica 
-\brief Namespace for differentiating functions written for internal use
-*/
 namespace cbica
 {  
   /**
@@ -70,6 +66,13 @@ namespace cbica
     std::vector<itk::SizeValueType> GetImageSize();
     
     /**
+    \brief Get the Spacing of the specified image
+
+    \return A vector of itk::SizeValueType which gets overwritten with information
+    */
+    std::vector<itk::SizeValueType> GetImageSpacing();
+    /**
+
     \brief Get the dimensions of the specified image
     
     \return A const unsigned int with the number of dimensions of the image
@@ -77,6 +80,7 @@ namespace cbica
     const unsigned int GetImageDimensions()
     { 
       return m_itkImageIOBase->GetNumberOfDimensions();
+
     };
     
     /**
@@ -86,6 +90,13 @@ namespace cbica
     */
     std::vector<double> GetImageSpacings();
     
+    /**
+    \brief Get the Origins of the specified image
+
+    \return A vector of double which gets overwritten with information
+    */
+    std::vector<double> GetImageOrigins();
+
     /**
     \brief Get the type of pixel in the image as a string
 
@@ -118,6 +129,7 @@ namespace cbica
     std::string m_fileName;
     itk::SmartPointer<itk::ImageIOBase> m_itkImageIOBase;
     std::vector<double> m_spacings;
+    std::vector<double> m_origins;
     std::vector<itk::SizeValueType> m_size;
     unsigned int m_dimensions;
     std::string m_pixelType_asString, m_IOComponentType_asString;

@@ -46,8 +46,10 @@ namespace cbica
     for (size_t i = 0; i<m_itkImageIOBase->GetNumberOfDimensions(); i++)
     {
       m_spacings.push_back(m_itkImageIOBase->GetSpacing(i));
+      m_origins.push_back(m_itkImageIOBase->GetOrigin(i));
       m_size.push_back(m_itkImageIOBase->GetDimensions(i));
     }
+
   }
   
   ImageInfo::~ImageInfo()
@@ -68,6 +70,11 @@ namespace cbica
   std::vector<double> ImageInfo::GetImageSpacings()
   {
     return m_spacings;
+  }
+
+  std::vector<double> ImageInfo::GetImageOrigins()
+  {
+    return m_origins;
   }
 
   std::string ImageInfo::GetComponentTypeAsString()
