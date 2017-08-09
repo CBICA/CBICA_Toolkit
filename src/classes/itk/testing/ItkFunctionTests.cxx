@@ -16,6 +16,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include <stdlib.h>
 #include <string>
 #include <algorithm>
+#include <fstream>
 
 #include "itkImage.h"
 
@@ -47,6 +48,7 @@ int main(int argc, char** argv)
   parser.addOptionalParameter("r", "readImage", cbica::Parameter::NONE, "", "readImage Test");
   parser.addOptionalParameter("d", "deform", cbica::Parameter::NONE, "", "Deformable registration Test");
   parser.addOptionalParameter("s", "skullStrip", cbica::Parameter::NONE, "", "Skull stripping Test");
+  parser.addOptionalParameter("l", "labelDist", cbica::Parameter::NONE, "", "Label distance calculator Test");
 
   int tempPosition;
   if (parser.compareParameter("imageInfo", tempPosition))
@@ -133,7 +135,7 @@ int main(int argc, char** argv)
 
   }
 
-  if (parser.isPresent("skullStrip"))
+  if (parser.compareParameter("skullStrip", tempPosition))
   {
     const std::string file_inputImage = argv[tempPosition + 1], file_atlasImage = argv[tempPosition + 2],
       file_atlasLabel = argv[tempPosition + 3], file_referenceOutput = argv[tempPosition + 4];
@@ -151,6 +153,50 @@ int main(int argc, char** argv)
     {
       return EXIT_FAILURE;
     }
+  }
+
+  if (parser.compareParameter("labelDist", tempPosition))
+  {
+    const std::string dataDir = argv[tempPosition + 1], file_inputLabel = dataDir + argv[tempPosition + 2],
+      file_inputSeeds = dataDir + "inputSeeds.txt";
+
+    using ImageType = ImageTypeFloat3D;
+
+    auto image_inputLabel = cbica::ReadImage< ImageType >(file_inputLabel);
+
+    // read the coordinates from file and put them as a vector of ImageType::IndexType
+    std::vector< std::string > string_coordinates;
+    std::ifstream myfile(file_inputSeeds);
+    if (myfile.is_open())
+    {
+      std::string line;
+      while (getline(myfile, line))
+      {
+        string_coordinates.push_back(line);
+      }
+      myfile.close();
+    }
+    std::vector< ImageType::IndexType > coordinates, coordinates_real;
+    coordinates.resize(string_coordinates.size());
+    coordinates_real.resize(string_coordinates.size());
+    for (size_t i = 0; i < string_coordinates.size(); i++)
+    {
+      auto temp_coords = cbica::stringSplit(string_coordinates[i], " ");
+      for (size_t j = 0; j < ImageType::ImageDimension; j++)
+      {
+        // gets the index of the point in question
+        coordinates[i][j] = std::abs((std::atof(temp_coords[j].c_str()) * image_inputLabel->GetSpacing()[j]) + image_inputLabel->GetOrigin()[j]);
+        coordinates_real[i][j] = std::atof(temp_coords[j].c_str());
+      }
+    }
+
+    std::vector< std::pair< float, ImageType::IndexType > > distsAndIndeces;
+    for (size_t i = 0; i < coordinates.size(); i++)
+    {
+      distsAndIndeces.push_back(cbica::GetMaxDistanceInLabelMap(image_inputLabel, coordinates[i]));
+    }
+
+    auto blah = 1;
   }
 
   return EXIT_SUCCESS;
