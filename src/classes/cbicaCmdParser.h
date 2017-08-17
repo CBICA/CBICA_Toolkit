@@ -464,6 +464,12 @@ namespace cbica
     \param parameterValue The return value of the parameter as std::string (valid for Parameter::Type::FILE, Parameter::Type::DIRECTORY, Parameter::Type::STRING)
     */
     void getParameterValue(const std::string &execParamToCheck, std::string &parameterValue);
+    
+    //! This function ensures that argc < 2 isn't checked
+    void ignoreArgc1()
+    {
+      argc1ignore = true;
+    }
 
   private:
     //! Executable name
@@ -486,6 +492,8 @@ namespace cbica
     bool helpRequested;
     //! Flag to check for requested help/usage
     bool firstRun;
+    //! check argc stuff internally
+    bool argc1ignore;
     //! Initialize the class
     inline void initializeClass(int &input_argc, std::vector< std::string > &input_argv, const std::string &input_exeName = "");
     //! Get max length

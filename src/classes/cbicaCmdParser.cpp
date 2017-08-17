@@ -359,6 +359,7 @@ namespace cbica
     checkMaxLen = false;
     helpRequested = false;
     firstRun = true;
+    argc1ignore = false;
     m_exampleOfUsage = "";
 
     m_optionalParameters.push_back(Parameter("u", "usage", cbica::Parameter::NONE, "", "Prints basic usage message.", "", "", "", ""));
@@ -725,12 +726,16 @@ namespace cbica
         exit(EXIT_FAILURE);
       }
 
-      if (m_argc < 2)
+      if (!argc1ignore)
       {
-        std::cerr << "Insufficient parameters passed, please check usage. Exiting.\n\n";
-        echoUsage();
-        exit(EXIT_FAILURE);
+        if (m_argc < 2)
+        {
+          std::cerr << "Insufficient parameters passed, please check usage. Exiting.\n\n";
+          echoUsage();
+          exit(EXIT_FAILURE);
+        }
       }
+
       firstRun = false;
     }
 
