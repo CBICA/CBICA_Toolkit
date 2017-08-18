@@ -64,7 +64,7 @@ namespace cbica
     //  exit(EXIT_FAILURE);
     //}
 
-    const std::string fileExtension = cbica::getFilenameExtension(fName);
+    std::string fileExtension = cbica::getFilenameExtension(fName);
     std::transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
 
     if (supportedExtensions != "")
