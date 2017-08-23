@@ -714,7 +714,7 @@ namespace cbica
     const typename TAtlasImageType::Pointer atlasImage, const typename TAtlasLabelType::Pointer atlasLabelImage)
   {
     // skull stripping initialization
-    auto skullStripper = typename itk::StripTsImageFilter< TImageType, TAtlasImageType, TAtlasLabelType>::New();
+    auto skullStripper = itk::StripTsImageFilter< TImageType, TAtlasImageType, TAtlasLabelType>::New();
     skullStripper->SetInput(inputImage);
     skullStripper->SetAtlasImage(atlasImage);
     skullStripper->SetAtlasBrainMask(atlasLabelImage);
@@ -731,7 +731,7 @@ namespace cbica
     }
 
     // apply the generated mask
-    auto masker = typename itk::MaskImageFilter< TImageType, TAtlasLabelType, TImageType >::New();
+    auto masker = itk::MaskImageFilter< TImageType, TAtlasLabelType, TImageType >::New();
     masker->SetInput(inputImage);
     masker->SetMaskImage(skullStripper->GetOutput());
 
