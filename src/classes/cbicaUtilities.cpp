@@ -298,7 +298,7 @@ namespace cbica
     
       return 0;
     #else   
-    std::string passString = "rm -r " + dirname;
+    std::string passString = "rmdir " + dirname;
     system(passString.c_str());
     #endif
       return 0;
