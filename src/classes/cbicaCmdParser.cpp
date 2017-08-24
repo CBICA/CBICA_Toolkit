@@ -547,7 +547,7 @@ namespace cbica
   inline void CmdParser::writeParameters(const std::vector< Parameter > &inputParameters, bool verbose)
   {
     std::string spaces_verb_line2;
-    for (size_t n = 0; n < m_maxLength + 9; n++)
+    for (size_t n = 0; n < m_maxLength +9; n++)
     {
       spaces_verb_line2.append(" ");
     }
@@ -562,7 +562,7 @@ namespace cbica
 
       if (inputParameters[i].length < m_maxLength)
       {
-        for (size_t n = 0; n < m_maxLength - inputParameters[i].length - spaces_lac.length(); n++)
+        for (size_t n = 0; n <  std::abs(static_cast<int>(m_maxLength - inputParameters[i].length - spaces_lac.size())); n++)
         {
           spaces_verb.append(" ");
         }
