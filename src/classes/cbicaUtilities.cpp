@@ -131,6 +131,18 @@ namespace cbica
     return returnString;
   }
 
+  std::string getCurrentProcessID()
+  {
+    return
+#if _WIN32
+      std::to_string(_getpid())
+#else
+      std::to_string(getpid())
+#endif
+      ;
+
+  }
+
   std::string createTmpDir()
   {
     std::string returnDir = "", tempCheck, homeEnv;
@@ -140,8 +152,13 @@ namespace cbica
     homeEnv = "HOME";
 #endif    
 
-    tempCheck = cbica::getEnvironmentVariableValue(homeEnv);
-    tempCheck += "/tmp";
+    tempCheck = cbica::getEnvironmentVariableValue(homeEnv) + "/" + cbica::getExecutableName() + "/tmp_" + getCurrentProcessID();
+
+    if (cbica::directoryExists(tempCheck))
+    {
+      auto temp = cbica::stringSplit(cbica::getCurrentLocalTime(), ":");
+      tempCheck += temp[0] + temp[1] + temp[2] + "/";
+    }
 
     if (isDir(tempCheck))
     {

@@ -28,6 +28,7 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <memory.h>
 #include <map>
 #include <random>
+#include <process.h>
 
 //#include <type_traits>
 
@@ -63,10 +64,6 @@ struct CSVDict
     inputImages(inputImagesVector), inputLabels(inputLabelVector) {};
 };
 
-/*
-\namespace cbica 
-\brief Namespace for differentiating functions written for internal use
-*/
 namespace cbica
 {
   //====================================== String stuff ====================================//
@@ -186,9 +183,11 @@ namespace cbica
   /**
   \brief Create a temporary directory
 
-  \param returnDir Path of temporary directory
+  Creates a user-writable file using the following format: USER_HOME_DIR + EXE_NAME + tmp_ + processID;
+  
+  If this file is existing, for whatever reason, then a new is created which has the time stamp appended.
 
-  \return True if success
+  \return Path of temporary directory
   */
   std::string createTmpDir();
 
@@ -728,6 +727,13 @@ namespace cbica
   \brief Get current Year as string delineated as YYYY
   */
   std::string getCurrentYear();
+
+  /**
+  \brief Get the current process ID
+
+  Provides wraps to _getpid() in OS-specific ways
+  */
+  std::string getCurrentProcessID();
 
   /**
   \brief Cross platform sleep
