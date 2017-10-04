@@ -426,6 +426,7 @@ namespace cbica
   inline void CmdParser::getMaxLength()
   {
     m_minVerboseLength = 1024;
+    m_maxVerboseLength = 0;
     m_maxLaconicLength = 0;
     m_maxLength = 0; // maximum length of laconic + verbose
 
@@ -434,6 +435,7 @@ namespace cbica
     {
       m_maxLength = m_maxLength < m_optionalParameters[i].length ? m_optionalParameters[i].length : m_maxLength;
       m_minVerboseLength = m_minVerboseLength > m_optionalParameters[i].verbose.length() ? m_optionalParameters[i].verbose.length() : m_minVerboseLength;
+      m_maxVerboseLength = m_maxVerboseLength < m_optionalParameters[i].verbose.length() ? m_optionalParameters[i].verbose.length() : m_minVerboseLength;
       m_maxLaconicLength = m_maxLaconicLength < m_optionalParameters[i].laconic.length() ? m_optionalParameters[i].laconic.length() : m_maxLaconicLength;
     }
 
@@ -441,10 +443,11 @@ namespace cbica
     {
       m_maxLength = m_maxLength < m_requiredParameters[i].length ? m_requiredParameters[i].length : m_maxLength;
       m_minVerboseLength = m_minVerboseLength > m_requiredParameters[i].verbose.length() ? m_requiredParameters[i].verbose.length() : m_minVerboseLength;
+      m_maxVerboseLength = m_maxVerboseLength < m_requiredParameters[i].verbose.length() ? m_requiredParameters[i].verbose.length() : m_minVerboseLength;
       m_maxLaconicLength = m_maxLaconicLength < m_requiredParameters[i].laconic.length() ? m_requiredParameters[i].laconic.length() : m_maxLaconicLength;
     }
 
-    m_maxLength++;
+    m_maxLength += 5;
 
     checkMaxLen = true; // trigger flag for future checks
 
@@ -547,7 +550,7 @@ namespace cbica
   inline void CmdParser::writeParameters(const std::vector< Parameter > &inputParameters, bool verbose)
   {
     std::string spaces_verb_line2;
-    for (size_t n = 0; n < m_maxLength + 9; n++)
+    for (size_t n = 0; n < m_maxLength + 6; n++)
     {
       spaces_verb_line2.append(" ");
     }
@@ -560,14 +563,10 @@ namespace cbica
         spaces_lac.append(" ");
       }
 
-      if (inputParameters[i].length < m_maxLength)
+      for (size_t n = 0; n < m_maxLength - inputParameters[i].length - spaces_lac.length() - 3; n++)
       {
-        for (size_t n = 0; n < m_maxLength - inputParameters[i].length - spaces_lac.length(); n++)
-        {
-          spaces_verb.append(" ");
-        }
+        spaces_verb.append(" ");
       }
-
 
       std::cout << "[" << spaces_lac << "-" << inputParameters[i].laconic << ", --" <<
         inputParameters[i].verbose << spaces_verb << "]  " <<

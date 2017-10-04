@@ -504,7 +504,8 @@ namespace cbica
     inline void writeParameters(const std::vector< Parameter > &inputParameters, bool verbose);
 
     size_t m_maxLaconicLength, //! maximum length of laconic parameters
-      m_minVerboseLength; //! maximum length of verbose parameters
+      m_minVerboseLength,
+      m_maxVerboseLength; //! maximum length of verbose parameters
 
   };
 }
