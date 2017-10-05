@@ -28,6 +28,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
 #define TEST_DATA "/nifit1/"
 
 #include "cbicaUtilities.h"
+#include "cbicaStatistics.h"
 #include "cbicaLogging.h"
 #include "cbicaCmdParser.h"
 
@@ -560,7 +561,8 @@ int main(int argc, const char** argv)
     auto input = cbica::readCSVDataFile< float >(inputFile, true);
     auto compare = cbica::readCSVDataFile< float >(compareFile, true);
 
-    auto output = cbica::ZScores(input[0]);
+    cbica::Statistics< float > statistics(input[0]);
+    auto output = statistics.GetZScores();
     
     if (output.empty())
     {
