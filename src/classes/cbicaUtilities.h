@@ -28,7 +28,10 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <memory.h>
 #include <map>
 #include <random>
+
+#if _WIN32
 #include <process.h>
+#endif
 
 //#include <type_traits>
 
@@ -184,7 +187,7 @@ namespace cbica
   \brief Create a temporary directory
 
   Creates a user-writable file using the following format: USER_HOME_DIR + EXE_NAME + tmp_ + processID;
-  
+
   If this file is existing, for whatever reason, then a new is created which has the time stamp appended.
 
   \return Path of temporary directory
@@ -666,7 +669,7 @@ namespace cbica
           returnVector[j].resize(rows);
         }
 
-        auto temp = static_cast< TDataType >(std::atof(cell.c_str()));
+        auto temp = static_cast<TDataType>(std::atof(cell.c_str()));
 
         if (columnMajor)
         {
@@ -778,7 +781,7 @@ namespace cbica
   \param input_string Input character to be converted
   \return Templated to the type of return required
   */
-  template<typename TConvertType
+  template < typename TConvertType
 #if (_MSC_VER >= 1800) || (__GNUC__ > 4)
     = int
 #endif
@@ -798,7 +801,7 @@ namespace cbica
   std::vector</*typename*/ TConvertType> convertString(const std::string &input_string)
   {
     std::vector</*typename*/TConvertType>return_vector;
-    for (int i = 0; i<input_string.length(); ++i)
+    for (int i = 0; i < input_string.length(); ++i)
       return_vector.push_back(static_cast<TConvertType>(input_string[i]));
 
     return return_vector;
@@ -890,43 +893,6 @@ namespace cbica
   \return std::map< string, size_t > A map of string and corresponding float values
   */
   std::map< std::string, float > ROC_Values(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
-
-  /**
-  \brief Calculate the Z-score of an array
-
-  \param inputArray A vector of floats on which z-scores are to be calculated
-  */
-  template <class TDataType = float>
-  std::vector< TDataType > ZScores(const std::vector< TDataType > &inputArray)
-  {
-    double sum = std::accumulate(std::begin(inputArray), std::end(inputArray), 0.0);
-    double mean = sum / inputArray.size();
-
-    double accum = 0.0;
-    for (size_t i = 0; i < inputArray.size(); i++)
-    {
-      accum += std::pow((static_cast<double>(inputArray[i]) - mean), 2);
-    }
-    //std::for_each(std::begin(inputArray), std::end(inputArray), [&](const TDataType d)
-    //{
-    //  accum += (d - mean) * (d - mean);
-    //});
-
-    double stdev = std::sqrt(accum / (inputArray.size() - 1));
-
-    std::vector< TDataType > returnVector;
-
-    for (size_t i = 0; i < inputArray.size(); i++)
-    {
-      returnVector.push_back((inputArray[i] - static_cast<float>(mean)) / static_cast<float>(stdev));
-    }
-    //std::for_each(std::begin(inputArray), std::end(inputArray), [&](const TDataType d)
-    //{
-    //  returnVector.push_back((d - mean) / stdev);
-    //});
-
-    return returnVector;
-  }
 
   /**
   \brief A good random number generator using c++11 that gives a random value within a range
