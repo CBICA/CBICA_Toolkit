@@ -16,9 +16,11 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 
 #include <algorithm>
 #include <string>
+#include <vector>
 //#include <tuple>
 
 #include "itkImage.h"
+#include "itkImageIOBase.h"
 #include "itkImageFileReader.h"
 
 namespace cbica

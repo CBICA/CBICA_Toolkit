@@ -22,12 +22,21 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageFileWriter.h"
 #include "itkImageIOBase.h"
 #include "itkImageIOFactory.h"
-#include "itkGDCMImageIO.h"
 #include "itkNiftiImageIO.h"
+#include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
+#include "itkDCMTKImageIO.h"
+#include "itkDCMTKSeriesFileNames.h"
 #include "itkNumericSeriesFileNames.h"
 #include "itkOrientImageFilter.h"
 #include "itkChangeInformationImageFilter.h"
+
+#if ITK_VERSION_MAJOR >= 4
+#include "gdcmUIDGenerator.h"
+#else
+#include "gdcm/src/gdcmFile.h"
+#include "gdcm/src/gdcmUtil.h"
+#endif
 
 #include "cbicaUtilities.h"
 #include "cbicaITKImageInfo.h"
@@ -106,7 +115,7 @@ namespace cbica
     // set image IO type
     if ((fileExtension == ".dcm") || (fileExtension == ".dicom"))
     {
-      auto ioType = itk::GDCMImageIO::New();
+      auto ioType = itk::DCMTKImageIO::New();
       reader->SetImageIO(ioType);
     }
     else if ((fileExtension == ".nii") || (fileExtension == ".nii.gz"))
@@ -135,8 +144,8 @@ namespace cbica
   \verbatim
   typedef itk::Image< float, 3 > ExpectedImageType;
   std::string inputDirName = parser.getParameterValue("inputDirName");
-  ExpectedImageType::Pointer inputImage = GetDicomImageReader< ExpectedImageType >(inputDirName)->GetOutput(); // reads MRI and perfusion data by default tags "0008|0021,0020|0012"
-  ExpectedImageType::Pointer inputImage = GetDicomImageReader< ExpectedImageType >(inputDirName, "0008|0021")->GetOutput(); // only reads images with tag "0008|0021"
+  auto inputImageReader = GetDicomImageReader< ExpectedImageType >(inputDirName); // reads *all* DICOM images
+  auto inputImage = inputImageReader->GetOutput();
   DoAwesomeStuffWithImage( inputImage );
   \endverbatim
 
@@ -145,12 +154,13 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName)
   {
-    std::string dirName_wrap = dirName;
+    std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
     if (!cbica::isDir(dirName_wrap))
     {
       dirName_wrap = cbica::getFilenamePath(dirName);
     }
-    dirName_wrap.pop_back(); // this is done to ensure the last "/" isn't taken into account for file name generation
+    if (dirName_wrap[dirName_wrap.length() - 1] == '/')
+      dirName_wrap.pop_back(); // this is done to ensure the last "/" isn't taken into account for file name generation
 
     //// check read access
     //if (((_access(dirName_wrap.c_str(), 4)) == -1) || ((_access(dirName_wrap.c_str(), 6)) == -1))
@@ -159,16 +169,17 @@ namespace cbica
     //  exit(EXIT_FAILURE);
     //}
 
-    auto inputNames = itk::GDCMSeriesFileNames::New();
+    auto dicomIO = itk::DCMTKImageIO::New();
+    auto inputNames = itk::DCMTKSeriesFileNames::New();
     inputNames->SetInputDirectory(dirName_wrap);
     //inputNames->SetLoadPrivateTags(true);
-    auto seriesReader = itk::ImageSeriesReader< TImageType >::New();
 
-    auto dicomIO = itk::GDCMImageIO::New();
-    seriesReader->SetImageIO(dicomIO);
     auto filenames = inputNames->GetInputFileNames();
 
+    auto seriesReader = typename itk::ImageSeriesReader< TImageType >::New();
+    seriesReader->SetImageIO(dicomIO);
     seriesReader->SetFileNames(filenames);
+
     try
     {
       seriesReader->Update();
@@ -200,61 +211,83 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer ReadDicomImage(const std::string &dirName)
   {
-    auto dicomReader = GetDicomImageReader< TImageType >(dirName);
+    auto dicomIO = itk::DCMTKImageIO::New();
+    auto inputNames = itk::DCMTKSeriesFileNames::New();
+    inputNames->SetInputDirectory(cbica::replaceString(dirName, "\\", "/"));
+    //inputNames->SetLoadPrivateTags(true);
 
-    auto inputDict = (*(dicomReader->GetMetaDataDictionaryArray()))[0];
-    std::string origin, pixelSpacing, direction, sliceSpacing_1, sliceSpacing_2;
-    typename TImageType::SpacingType outputSpacing;
-    typename TImageType::PointType outputOrigin, outputDirection;
+    auto filenames = inputNames->GetInputFileNames();
 
-    itk::ExposeMetaData<std::string>(*inputDict, "0020|0032", origin);
-    itk::ExposeMetaData<std::string>(*inputDict, "0028|0030", pixelSpacing);
-    //itk::ExposeMetaData<std::string>(*inputDict, "0020|0037", direction);
+    auto seriesReader = itk::ImageSeriesReader< TImageType >::New();
+    seriesReader->SetImageIO(dicomIO);
+    seriesReader->SetFileNames(filenames);
 
-    if (TImageType::ImageDimension > 2)
+    try
     {
-      itk::ExposeMetaData<std::string>(*inputDict, "0018|0050", sliceSpacing_1);
-      itk::ExposeMetaData<std::string>(*inputDict, "0018|0088", sliceSpacing_2);
-      if (sliceSpacing_1 == sliceSpacing_2)
-      {
-        outputSpacing[2] = static_cast< typename TImageType::PixelType >(std::atof(sliceSpacing_1.c_str()));
-      }
+      seriesReader->Update();
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      std::cerr << "Error while loading DICOM images: " << err.what() << "\n";
     }
 
-    if (!pixelSpacing.empty())
-    {
-      auto temp = cbica::stringSplit(pixelSpacing, "\\");
-      outputSpacing[0] = std::atof(temp[0].c_str());
-      outputSpacing[1] = std::atof(temp[1].c_str());
-    }
+    return seriesReader->GetOutput();
 
-    if (!origin.empty())
-    {
-      auto temp = cbica::stringSplit(origin, "\\");
-      for (unsigned int i = 0; i < TImageType::ImageDimension; i++)
-      {
-        outputOrigin[i] = std::atof(temp[i].c_str());
-      }
-    }
+    //auto dicomReader = GetDicomImageReader< TImageType >(dirName);
 
-    //if (!direction.empty())
+    //auto inputDict = (*(dicomReader->GetMetaDataDictionaryArray()))[0];
+    //std::string origin, pixelSpacing, direction, sliceSpacing_1, sliceSpacing_2;
+    //typename TImageType::SpacingType outputSpacing;
+    //typename TImageType::PointType outputOrigin, outputDirection;
+
+    //itk::ExposeMetaData<std::string>(*inputDict, "0020|0032", origin);
+    //itk::ExposeMetaData<std::string>(*inputDict, "0028|0030", pixelSpacing);
+    ////itk::ExposeMetaData<std::string>(*inputDict, "0020|0037", direction);
+
+    //if (TImageType::ImageDimension > 2)
     //{
-    //  auto temp = cbica::stringSplit(direction, "\\");
-    //  for (auto i = 0; i < TImageType::ImageDimension; i++)
+    //  itk::ExposeMetaData<std::string>(*inputDict, "0018|0050", sliceSpacing_1);
+    //  itk::ExposeMetaData<std::string>(*inputDict, "0018|0088", sliceSpacing_2);
+    //  if (sliceSpacing_1 == sliceSpacing_2)
+    //  {
+    //    outputSpacing[2] = static_cast< typename TImageType::PixelType >(std::atof(sliceSpacing_1.c_str()));
+    //  }
+    //}
+
+    //if (!pixelSpacing.empty())
+    //{
+    //  auto temp = cbica::stringSplit(pixelSpacing, "\\");
+    //  outputSpacing[0] = std::atof(temp[0].c_str());
+    //  outputSpacing[1] = std::atof(temp[1].c_str());
+    //}
+
+    //if (!origin.empty())
+    //{
+    //  auto temp = cbica::stringSplit(origin, "\\");
+    //  for (unsigned int i = 0; i < TImageType::ImageDimension; i++)
     //  {
     //    outputOrigin[i] = std::atof(temp[i].c_str());
     //  }
     //}
 
-    auto infoChangeFilter = itk::ChangeInformationImageFilter< TImageType >::New();
-    infoChangeFilter->SetInput(dicomReader->GetOutput());
-    infoChangeFilter->SetChangeOrigin(true);
-    infoChangeFilter->SetChangeSpacing(true);
-    infoChangeFilter->SetOutputOrigin(outputOrigin);
-    infoChangeFilter->SetOutputSpacing(outputSpacing);
-    infoChangeFilter->Update();
+    ////if (!direction.empty())
+    ////{
+    ////  auto temp = cbica::stringSplit(direction, "\\");
+    ////  for (auto i = 0; i < TImageType::ImageDimension; i++)
+    ////  {
+    ////    outputOrigin[i] = std::atof(temp[i].c_str());
+    ////  }
+    ////}
 
-    return infoChangeFilter->GetOutput();
+    //auto infoChangeFilter = itk::ChangeInformationImageFilter< TImageType >::New();
+    //infoChangeFilter->SetInput(dicomReader->GetOutput());
+    //infoChangeFilter->SetChangeOrigin(true);
+    //infoChangeFilter->SetChangeSpacing(true);
+    //infoChangeFilter->SetOutputOrigin(outputOrigin);
+    //infoChangeFilter->SetOutputSpacing(outputSpacing);
+    //infoChangeFilter->Update();
+
+    //return infoChangeFilter->GetOutput();
   }
 
   /**
@@ -403,7 +436,7 @@ namespace cbica
 
     //  typedef typename ExpectedImageType::PixelType DicomPixelType;
 
-    auto dicomIO = itk::GDCMImageIO::New();
+    auto dicomIO = itk::DCMTKImageIO::New();
     //auto dicomIO = MyGDCMImageIO::New();
     dicomIO->SetComponentType(itk::ImageIOBase::IOComponentType::SHORT);
 
