@@ -862,6 +862,8 @@ namespace cbica
   /**
   \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
 
+  See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
+
   \param dicomFile This can be any of the files in the DICOM folder
   \param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
   \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
@@ -889,6 +891,8 @@ namespace cbica
   /**
   \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
 
+  See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
+
   \param dicomFile This can be any of the files in the DICOM folder
   \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' as unsigned short (no parentheses)
   */
@@ -899,6 +903,8 @@ namespace cbica
 
   /**
   \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
 
   \param dicomFile This can be any of the files in the DICOM folder
   \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' as unsigned short (no parentheses)
@@ -914,6 +920,8 @@ namespace cbica
 
   /**
   \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
 
   \param dicomFile This can be any of the files in the DICOM folder
   \param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
