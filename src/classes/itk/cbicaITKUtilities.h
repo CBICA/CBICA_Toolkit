@@ -43,6 +43,18 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkStripTsImageFilter.h"
 #include "itkMaskImageFilter.h"
 
+// DCMTK headers 
+#include "dcmtk/config/osconfig.h"   
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcuid.h"     
+#include "dcmtk/dcmdata/dcistrmz.h"  
+#include "dcmtk/ofstd/ofstdinc.h"
+
+
 #include "cbicaUtilities.h"
 
 #include "gdcmMD5.h"
@@ -847,4 +859,46 @@ namespace cbica
     return std::make_pair(maxDist, index_maxDist);
   }
 
+  /**
+  \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  \param dicomFile This can be any of the files in the DICOM folder
+  \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' in unsigned int format (no parentheses)
+  */
+  std::string GetDICOMTagValue(const std::string &dicomFile, const std::vector< unsigned short > &dicomKey)
+  {
+    OFString tagValue = "";
+    DcmFileFormat fileformat;
+    OFCondition status = fileformat.loadFile(dicomFile.c_str());
+    if (status.good())
+    {
+      if (!fileformat.getDataset()->findAndGetOFString(DcmTagKey(dicomKey[0], dicomKey[1]), tagValue).good())
+      {
+        std::cerr << "Error reading DICOM key '" << std::to_string(dicomKey[0]) << "," << std::to_string(dicomKey[1]) << "'\n";
+      }
+    }
+    else
+    {
+      std::cerr << "Error reading DICOM file '" << dicomFile << "'\n";
+    }
+
+    return tagValue.c_str();
+  }
+
+  /**
+  \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  \param dicomFile This can be any of the files in the DICOM folder
+  \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' in unsigned int format (no parentheses)
+  */
+  std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey)
+  {
+    auto tags = cbica::stringSplit(dicomKey, ",");
+
+    return GetDICOMTagValue(dicomFile,
+      std::vector< unsigned short >{
+      static_cast<unsigned short>(std::atoi(tags[0].c_str())), static_cast<unsigned short>(std::atoi(tags[1].c_str()))
+    });
+  }
+  
 }
