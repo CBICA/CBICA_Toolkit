@@ -863,18 +863,19 @@ namespace cbica
   \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
 
   \param dicomFile This can be any of the files in the DICOM folder
-  \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' in unsigned int format (no parentheses)
+  \param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
+  \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
   */
-  std::string GetDICOMTagValue(const std::string &dicomFile, const std::vector< unsigned short > &dicomKey)
+  std::string GetDICOMTagValue(const std::string &dicomFile, const unsigned short dicomKey_group, const unsigned short dicomKey_element)
   {
     OFString tagValue = "";
     DcmFileFormat fileformat;
     OFCondition status = fileformat.loadFile(dicomFile.c_str());
     if (status.good())
     {
-      if (!fileformat.getDataset()->findAndGetOFString(DcmTagKey(dicomKey[0], dicomKey[1]), tagValue).good())
+      if (!fileformat.getDataset()->findAndGetOFString(DcmTagKey(dicomKey_group, dicomKey_element), tagValue).good())
       {
-        std::cerr << "Error reading DICOM key '" << std::to_string(dicomKey[0]) << "," << std::to_string(dicomKey[1]) << "'\n";
+        std::cerr << "Error reading DICOM key '" << std::to_string(dicomKey_group) << "," << std::to_string(dicomKey_element) << "'\n";
       }
     }
     else
@@ -889,16 +890,40 @@ namespace cbica
   \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
 
   \param dicomFile This can be any of the files in the DICOM folder
-  \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' in unsigned int format (no parentheses)
+  \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' as unsigned short (no parentheses)
+  */
+  std::string GetDICOMTagValue(const std::string &dicomFile, const std::vector< unsigned short > &dicomKey)
+  {
+    return GetDICOMTagValue(dicomFile, dicomKey[0], dicomKey[1]);
+  }
+
+  /**
+  \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  \param dicomFile This can be any of the files in the DICOM folder
+  \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' as unsigned short (no parentheses)
   */
   std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey)
   {
     auto tags = cbica::stringSplit(dicomKey, ",");
 
-    return GetDICOMTagValue(dicomFile,
-      std::vector< unsigned short >{
+    return GetDICOMTagValue(dicomFile, 
       static_cast<unsigned short>(std::atoi(tags[0].c_str())), static_cast<unsigned short>(std::atoi(tags[1].c_str()))
-    });
+      );
   }
-  
+
+  /**
+  \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  \param dicomFile This can be any of the files in the DICOM folder
+  \param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
+  \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
+  */
+  std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey_group, const std::string &dicomKey_element)
+  {
+    return GetDICOMTagValue(dicomFile,
+      static_cast<unsigned short>(std::atoi(dicomKey_group.c_str())), static_cast<unsigned short>(std::atoi(dicomKey_element.c_str()))
+      );
+  }
+
 }
