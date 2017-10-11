@@ -211,6 +211,12 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer ReadDicomImage(const std::string &dirName)
   {
+    if (cbica::isFile(dirName))
+    {
+      auto reader = GetImageReader< TImageType >(dirName);
+      return reader->GetOutput();
+    }
+
     auto dicomIO = itk::DCMTKImageIO::New();
     auto inputNames = itk::DCMTKSeriesFileNames::New();
     inputNames->SetInputDirectory(cbica::replaceString(dirName, "\\", "/"));
@@ -343,13 +349,18 @@ namespace cbica
     //  return;
     //}
 
-    typedef itk::CastImageFilter<ComputedImageType, ExpectedImageType> CastFilterType;
-    typename CastFilterType::Pointer filter = CastFilterType::New();
+    auto filter = typename itk::CastImageFilter<ComputedImageType, ExpectedImageType>::New();
     filter->SetInput(imageToWrite);
     filter->Update();
 
-    typedef typename itk::ImageFileWriter<ExpectedImageType> WriterType;
-    typename WriterType::Pointer writer = WriterType::New();
+    auto writer = typename itk::ImageFileWriter< ExpectedImageType >::New();
+
+    auto ext = cbica::getFilenameExtension(fileName);
+    if ((ext == ".nii") || (ext == ".nii.gz"))
+    {
+      writer->SetImageIO(itk::NiftiImageIO::New());
+    }
+
     writer->SetInput(filter->GetOutput());
     writer->SetFileName(fileName);
 
