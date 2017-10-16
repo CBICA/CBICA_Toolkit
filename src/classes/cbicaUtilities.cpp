@@ -1125,8 +1125,7 @@ namespace cbica
     }
     #if defined(_WIN32)
     {
-      dirName_wrap.append("*.*");
-      char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
+      char* search_path = cbica::constCharToChar((dirName_wrap + "*.*").c_str());
       WIN32_FIND_DATA fd;
       HANDLE hFind = ::FindFirstFile(search_path, &fd);
       if (hFind != INVALID_HANDLE_VALUE)
