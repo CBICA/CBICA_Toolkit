@@ -612,18 +612,25 @@ namespace cbica
 
   std::string getFilenamePath(const std::string &filename, bool checkFile)
   {
-    if (checkFile)
+    if (directoryExists(filename))
     {
-      if (!fileExists(filename))
-      {
-        std::cerr << "Supplied file name wasn't found.\n";
-        exit(EXIT_FAILURE);
-      }
+      return filename;
     }
-    std::string path, base, ext;
-    splitFileName(filename, path, base, ext);
-    
-    return path;
+    else
+    {
+      if (checkFile)
+      {
+        if (!fileExists(filename))
+        {
+          std::cerr << "Supplied file name wasn't found.\n";
+          exit(EXIT_FAILURE);
+        }
+      }
+      std::string path, base, ext;
+      splitFileName(filename, path, base, ext);
+
+      return path;
+    }    
   }
 
   std::string getExecutableName()
@@ -1103,7 +1110,7 @@ namespace cbica
     return cbica::setEnvironmentVariable(variable_name, "");
   }
 
-  std::vector< std::string > filesInDirectory( const std::string &dirName )
+  std::vector< std::string > filesInDirectory(const std::string &dirName, bool returnFullPath)
   {
     if (!cbica::directoryExists(dirName))
     {
@@ -1111,7 +1118,7 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     std::vector< std::string > allFiles;
-    std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
+    std::string dirName_wrap = cbica::normPath(dirName);
     if (dirName_wrap[dirName_wrap.length()-1] != '/')
     {
       dirName_wrap.append("/");
@@ -1120,23 +1127,30 @@ namespace cbica
     {
       dirName_wrap.append("*.*");
       char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
-      WIN32_FIND_DATA fd; 
-      HANDLE hFind = ::FindFirstFile(search_path, &fd); 
-      if(hFind != INVALID_HANDLE_VALUE) 
-      { 
-        do 
-        { 
-          if(! (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+      WIN32_FIND_DATA fd;
+      HANDLE hFind = ::FindFirstFile(search_path, &fd);
+      if (hFind != INVALID_HANDLE_VALUE)
+      {
+        do
+        {
+          if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
           {
-            allFiles.push_back(fd.cFileName);
+            if (returnFullPath)
+            {
+              allFiles.push_back(dirName_wrap + fd.cFileName);
+            }
+            else
+            {
+              allFiles.push_back(fd.cFileName);
+            }
           }
-        } while(::FindNextFile(hFind, &fd)); 
-        ::FindClose(hFind); 
-      } 
+        } while (::FindNextFile(hFind, &fd));
+        ::FindClose(hFind);
+      }
       return allFiles;
 
     }
-    #else
+#else
     {
       DIR *dp;
       struct dirent *dirp;
@@ -1145,10 +1159,17 @@ namespace cbica
         std::cerr << "Error(" << errno << ") occurred while opening directory '" << 
           dirName << "'\n";
       }
-      
+
       while ((dirp = readdir(dp)) != NULL) 
       {
-        allFiles.push_back(std::string(dirp->d_name));
+        if (returnFullPath)
+        {
+          allFiles.push_back(dirName_wrap + std::string(dirp->d_name));
+        }
+        else
+        {
+          allFiles.push_back(std::string(dirp->d_name));
+        }
       }
       closedir(dp);
       return allFiles;
@@ -1164,7 +1185,7 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     std::vector< std::string > allDirectories;
-    std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
+    std::string dirName_wrap = cbica::normPath(dirName);
     if (dirName_wrap[dirName_wrap.length() - 1] != '/')
     {
       dirName_wrap.append("/");

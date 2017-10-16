@@ -17,6 +17,7 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <string>
 #include <typeinfo>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -580,7 +581,7 @@ namespace cbica
 
   \param dirName The directory to do the search in
   */
-  std::vector< std::string > filesInDirectory(const std::string &dirName);
+  std::vector< std::string > filesInDirectory(const std::string &dirName, bool returnFullPath = true);
 
   /**
   \brief Find all sub-directories inside a directory
@@ -683,6 +684,28 @@ namespace cbica
       }
       i++;
     }
+
+    return returnVector;
+  }
+
+  /**
+  \brief Find the unique elements in a vector
+
+  Implementation incorporated from the SO answer in https://stackoverflow.com/a/1041939/1228757
+
+  \param inputVector The vector on which to search for unique elements 
+  \return An std::vector with unique elements
+  */
+  template< class TDataType = std::string >
+  std::vector< TDataType > GetUniqueElements(const std::vector< TDataType > &inputVector)
+  {
+    std::set< TDataType > s;
+    std::vector< TDataType > returnVector;
+    for (size_t i = 0; i < inputVector.size(); i++)
+    {
+      s.insert(inputVector[i]);
+    }
+    returnVector.assign(s.begin(), s.end());
 
     return returnVector;
   }
