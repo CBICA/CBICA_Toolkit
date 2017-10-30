@@ -40,6 +40,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "cbicaUtilities.h"
 #include "cbicaITKImageInfo.h"
+#include "cbicaITKUtilities.h"
 
 using ImageTypeFloat3D = itk::Image< float, 3 >;
 using TImageType = ImageTypeFloat3D;
@@ -73,8 +74,12 @@ namespace cbica
     //  exit(EXIT_FAILURE);
     //}
 
-    std::string fileExtension = cbica::getFilenameExtension(fName);
+    std::string fName_wrap = cbica::normPath(fName);
+
+    std::string fileExtension = cbica::getFilenameExtension(fName_wrap);
     std::transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
+
+    auto reader = typename itk::ImageFileReader< TImageType >::New();
 
     if (supportedExtensions != "")
     {
@@ -91,36 +96,44 @@ namespace cbica
 
       if (!supportedExtensionFound)
       {
-        std::cerr << "Supplied file name '" << fName << "' doesn't have a supported extension. \nSupported Extensions: " << supportedExtensions << "\n";
-        exit(EXIT_FAILURE);
+        std::cerr << "Supplied file name '" << fName_wrap << "' doesn't have a supported extension. \nSupported Extensions: " << supportedExtensions << "\n";
+        return reader;
       }
     }
 
     // ensure that the requested image dimensions and read image dimensions match up
-    auto imageInfo = cbica::ImageInfo(fName);
+    auto imageInfo = cbica::ImageInfo(fName_wrap);
 
     // perform basic sanity check
-    if ((imageInfo.GetImageDimensions() != TImageType::ImageDimension) && 
+    if ((imageInfo.GetImageDimensions() != TImageType::ImageDimension) &&
       !((TImageType::ImageDimension == 2) && (imageInfo.GetImageSize()[2] == 1))) // this to check for a 2D DICOM
     {
       std::cerr << "Image Dimension mismatch. Return image is expected to be '" << TImageType::ImageDimension <<
         "'D and doesn't match the image dimension read from the input file, which is '" << imageInfo.GetImageDimensions() << "'.\n";
-      exit(EXIT_FAILURE);
+      return reader;
     }
 
-    typedef itk::ImageFileReader< TImageType > ImageReaderType;
-    typename ImageReaderType::Pointer reader = ImageReaderType::New();
-    reader->SetFileName(fName);
+    reader->SetFileName(fName_wrap);
+
+    auto supportedExtsVector = cbica::stringSplit(supportedExtensions, ",");
+
+    if (std::find(supportedExtsVector.begin(), supportedExtsVector.end(), fileExtension) == supportedExtsVector.end())
+    {
+      std::cerr << "Extension of file doesn't match the supported extensions; can't read.\n";
+      return reader;
+    }
 
     // set image IO type
     if ((fileExtension == ".dcm") || (fileExtension == ".dicom"))
     {
       auto ioType = itk::DCMTKImageIO::New();
+      ioType->SetFileName(fName_wrap);
       reader->SetImageIO(ioType);
     }
     else if ((fileExtension == ".nii") || (fileExtension == ".nii.gz"))
     {
       auto ioType = itk::NiftiImageIO::New();
+      ioType->SetFileName(fName_wrap);
       reader->SetImageIO(ioType);
     }
 
@@ -130,11 +143,96 @@ namespace cbica
     }
     catch (itk::ExceptionObject& e)
     {
-      std::cerr << "Exception caught while reading the image '" << fName << "': " << e.what() << "\n";
-      exit(EXIT_FAILURE);
+      std::cerr << "Exception caught while reading the image '" << fName_wrap << "': " << e.what() << "\n";
+      return reader;
     }
 
     return reader;
+  }
+
+  /**
+  \brief Returns the unique series IDs in the specified directory
+
+  The check is only done on the DICOM tag provided, so if there are series with the same UID information (but are indeed different images),
+  this function will not able to handle it.
+
+  \param dirName The directory in question
+  \param tagToCheck The tag on the basis of which the test is done; defaults to "0x0020|0x00E"
+  \return Vectof of Series UIDs and fileName collection pairs, with each fileName collection corresponding to a UID
+  */
+  std::vector< std::pair< std::string , std::vector< std::string > > > GetDICOMSeriesAndFilesInDir(const std::string &dirName,
+    const std::string tagToCheck = "0x0020|0x00E")
+  {
+    std::vector< 
+      std::pair< 
+      std::string, // this is the series UID information
+      std::vector< std::string > > // these are the fileNames corresponding to each UID
+    > returnVector;
+
+    auto dirName_wrap = cbica::normPath(dirName);
+    auto allFilesInDir = cbica::filesInDirectory(dirName_wrap);
+    
+    // initialize the returnVector with the first series UID and fileName
+    returnVector.push_back(
+      std::make_pair(cbica::GetDICOMTagValue(allFilesInDir[0], tagToCheck), // get the first series UID 
+      std::vector< std::string >({ allFilesInDir[0] }) // construct a initial vector
+      ));
+
+    std::vector< std::string > volumeSeries;
+    const std::string volumeSeriesTag = "0x0018|0x1030";
+    volumeSeries.push_back(cbica::GetDICOMTagValue(allFilesInDir[0], volumeSeriesTag));
+
+    // looping through all the found files
+    for (size_t i = 1; i < allFilesInDir.size(); i++)
+    {
+      auto temp = cbica::GetDICOMTagValue(allFilesInDir[i], tagToCheck);
+      auto temp_volSeries = cbica::GetDICOMTagValue(allFilesInDir[i], volumeSeriesTag);
+
+      bool newUIDFound = true;
+      for (size_t j = 0; j < returnVector.size(); j++)
+      {
+        if (returnVector[j].first == temp)
+        {
+          bool newVolSeriesFound = true;
+          for (size_t k = 0; k < volumeSeries.size(); k++)
+          {
+            if (volumeSeries[k] == temp_volSeries)
+            {
+              newVolSeriesFound = false;
+            }
+          }
+          if (!newVolSeriesFound)
+          {
+            returnVector[j].second.push_back(allFilesInDir[i]);
+            newUIDFound = false;
+            break;
+          }
+          else
+          {
+            volumeSeries.push_back(temp_volSeries); // the new volume has same series UID information so nothing changes there
+          }
+        }
+      }
+      if (newUIDFound)
+      {
+        // add a new seriesUID-fileNames pair
+        returnVector.push_back(
+          std::make_pair(temp, // this is the UID
+          std::vector< std::string >({ allFilesInDir[i] }) // first filename corresponding to the UID
+          ));
+      }
+    }
+
+    return returnVector;
+
+    //// this implementation takes a *lot* of time
+    //auto dicomIO = itk::DCMTKImageIO::New();
+    //auto inputNames = itk::DCMTKSeriesFileNames::New();
+    //inputNames->SetInputDirectory(dirName_wrap);
+    //inputNames->SetLoadPrivateTags(true);
+    //auto UIDs = inputNames->GetSeriesUIDs(); // this is the primary bottle-neck, I think because it does checks on multiple different things
+
+    //return cbica::GetUniqueElements< std::string >(UIDs);
   }
 
   /**
@@ -154,7 +252,7 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName)
   {
-    std::string dirName_wrap = cbica::replaceString(dirName, "\\", "/");
+    std::string dirName_wrap = cbica::normPath(dirName);
     if (!cbica::isDir(dirName_wrap))
     {
       dirName_wrap = cbica::getFilenamePath(dirName);
@@ -171,6 +269,17 @@ namespace cbica
 
     auto dicomIO = itk::DCMTKImageIO::New();
     auto inputNames = itk::DCMTKSeriesFileNames::New();
+    inputNames->SetInputDirectory(dirName_wrap);
+    inputNames->SetLoadPrivateTags(true);
+    auto UIDs = inputNames->GetSeriesUIDs();
+
+    auto UIDs_unique = cbica::GetUniqueElements(UIDs);
+
+    if (UIDs_unique.size() > 1)
+    {
+      std::cout << "Multiple DICOM series detected.\n";
+    }
+
     inputNames->SetInputDirectory(dirName_wrap);
     //inputNames->SetLoadPrivateTags(true);
 
@@ -211,89 +320,71 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer ReadDicomImage(const std::string &dirName)
   {
+    auto dicomReader = typename itk::ImageSeriesReader< TImageType >::New();
     if (cbica::isFile(dirName))
     {
-      auto reader = GetImageReader< TImageType >(dirName);
+      auto reader =GetImageReader< TImageType >(dirName);
       return reader->GetOutput();
     }
-
-    auto dicomIO = itk::DCMTKImageIO::New();
-    auto inputNames = itk::DCMTKSeriesFileNames::New();
-    inputNames->SetInputDirectory(cbica::replaceString(dirName, "\\", "/"));
-    //inputNames->SetLoadPrivateTags(true);
-
-    auto filenames = inputNames->GetInputFileNames();
-
-    auto seriesReader = itk::ImageSeriesReader< TImageType >::New();
-    seriesReader->SetImageIO(dicomIO);
-    seriesReader->SetFileNames(filenames);
-
-    try
+    else
     {
-      seriesReader->Update();
-    }
-    catch (itk::ExceptionObject & err)
-    {
-      std::cerr << "Error while loading DICOM images: " << err.what() << "\n";
+      dicomReader = GetDicomImageReader< TImageType >(dirName);
     }
 
-    return seriesReader->GetOutput();
+    // the code below is to ensure that whatever ITK reads aligns with DICOM header information
+    auto inputDict = (*(dicomReader->GetMetaDataDictionaryArray()))[0];
+    std::string origin, pixelSpacing, direction, sliceSpacing_1, sliceSpacing_2;
+    typename TImageType::SpacingType outputSpacing;
+    typename TImageType::PointType outputOrigin, outputDirection;
 
-    //auto dicomReader = GetDicomImageReader< TImageType >(dirName);
+    itk::ExposeMetaData<std::string>(*inputDict, "0020|0032", origin);
+    itk::ExposeMetaData<std::string>(*inputDict, "0028|0030", pixelSpacing);
+    //itk::ExposeMetaData<std::string>(*inputDict, "0020|0037", direction);
 
-    //auto inputDict = (*(dicomReader->GetMetaDataDictionaryArray()))[0];
-    //std::string origin, pixelSpacing, direction, sliceSpacing_1, sliceSpacing_2;
-    //typename TImageType::SpacingType outputSpacing;
-    //typename TImageType::PointType outputOrigin, outputDirection;
+    if (TImageType::ImageDimension > 2)
+    {
+      itk::ExposeMetaData<std::string>(*inputDict, "0018|0050", sliceSpacing_1);
+      itk::ExposeMetaData<std::string>(*inputDict, "0018|0088", sliceSpacing_2);
+      if (sliceSpacing_1 == sliceSpacing_2)
+      {
+        outputSpacing[2] = static_cast< typename TImageType::PixelType >(std::atof(sliceSpacing_1.c_str()));
+      }
+    }
 
-    //itk::ExposeMetaData<std::string>(*inputDict, "0020|0032", origin);
-    //itk::ExposeMetaData<std::string>(*inputDict, "0028|0030", pixelSpacing);
-    ////itk::ExposeMetaData<std::string>(*inputDict, "0020|0037", direction);
+    if (!pixelSpacing.empty())
+    {
+      auto temp = cbica::stringSplit(pixelSpacing, "\\");
+      outputSpacing[0] = std::atof(temp[0].c_str());
+      outputSpacing[1] = std::atof(temp[1].c_str());
+    }
 
-    //if (TImageType::ImageDimension > 2)
+    if (!origin.empty())
+    {
+      auto temp = cbica::stringSplit(origin, "\\");
+      for (unsigned int i = 0; i < TImageType::ImageDimension; i++)
+      {
+        outputOrigin[i] = std::atof(temp[i].c_str());
+      }
+    }
+
+    //if (!direction.empty())
     //{
-    //  itk::ExposeMetaData<std::string>(*inputDict, "0018|0050", sliceSpacing_1);
-    //  itk::ExposeMetaData<std::string>(*inputDict, "0018|0088", sliceSpacing_2);
-    //  if (sliceSpacing_1 == sliceSpacing_2)
-    //  {
-    //    outputSpacing[2] = static_cast< typename TImageType::PixelType >(std::atof(sliceSpacing_1.c_str()));
-    //  }
-    //}
-
-    //if (!pixelSpacing.empty())
-    //{
-    //  auto temp = cbica::stringSplit(pixelSpacing, "\\");
-    //  outputSpacing[0] = std::atof(temp[0].c_str());
-    //  outputSpacing[1] = std::atof(temp[1].c_str());
-    //}
-
-    //if (!origin.empty())
-    //{
-    //  auto temp = cbica::stringSplit(origin, "\\");
-    //  for (unsigned int i = 0; i < TImageType::ImageDimension; i++)
+    //  auto temp = cbica::stringSplit(direction, "\\");
+    //  for (auto i = 0; i < TImageType::ImageDimension; i++)
     //  {
     //    outputOrigin[i] = std::atof(temp[i].c_str());
     //  }
     //}
 
-    ////if (!direction.empty())
-    ////{
-    ////  auto temp = cbica::stringSplit(direction, "\\");
-    ////  for (auto i = 0; i < TImageType::ImageDimension; i++)
-    ////  {
-    ////    outputOrigin[i] = std::atof(temp[i].c_str());
-    ////  }
-    ////}
+    auto infoChangeFilter = itk::ChangeInformationImageFilter< TImageType >::New();
+    infoChangeFilter->SetInput(dicomReader->GetOutput());
+    infoChangeFilter->SetChangeOrigin(true);
+    infoChangeFilter->SetChangeSpacing(true);
+    infoChangeFilter->SetOutputOrigin(outputOrigin);
+    infoChangeFilter->SetOutputSpacing(outputSpacing);
+    infoChangeFilter->Update();
 
-    //auto infoChangeFilter = itk::ChangeInformationImageFilter< TImageType >::New();
-    //infoChangeFilter->SetInput(dicomReader->GetOutput());
-    //infoChangeFilter->SetChangeOrigin(true);
-    //infoChangeFilter->SetChangeSpacing(true);
-    //infoChangeFilter->SetOutputOrigin(outputOrigin);
-    //infoChangeFilter->SetOutputSpacing(outputSpacing);
-    //infoChangeFilter->Update();
-
-    //return infoChangeFilter->GetOutput();
+    return infoChangeFilter->GetOutput();
   }
 
   /**

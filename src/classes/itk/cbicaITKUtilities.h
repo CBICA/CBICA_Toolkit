@@ -868,7 +868,7 @@ namespace cbica
   \param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
   \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
   */
-  std::string GetDICOMTagValue(const std::string &dicomFile, const unsigned short dicomKey_group, const unsigned short dicomKey_element)
+  inline std::string GetDICOMTagValue(const std::string &dicomFile, const unsigned short dicomKey_group, const unsigned short dicomKey_element)
   {
     OFString tagValue = "";
     DcmFileFormat fileformat;
@@ -896,7 +896,7 @@ namespace cbica
   \param dicomFile This can be any of the files in the DICOM folder
   \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' as unsigned short (no parentheses)
   */
-  std::string GetDICOMTagValue(const std::string &dicomFile, const std::vector< unsigned short > &dicomKey)
+  inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::vector< unsigned short > &dicomKey)
   {
     return GetDICOMTagValue(dicomFile, dicomKey[0], dicomKey[1]);
   }
@@ -907,14 +907,14 @@ namespace cbica
   See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
 
   \param dicomFile This can be any of the files in the DICOM folder
-  \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' as unsigned short (no parentheses)
+  \param dicomKey Needs to be in format '0x0010|0x0020' for 'group|element' as unsigned short (no parentheses)
   */
-  std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey)
+  inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey)
   {
-    auto tags = cbica::stringSplit(dicomKey, ",");
+    auto tags = cbica::stringSplit(dicomKey, "|");
 
     return GetDICOMTagValue(dicomFile, 
-      static_cast<unsigned short>(std::atoi(tags[0].c_str())), static_cast<unsigned short>(std::atoi(tags[1].c_str()))
+      static_cast<unsigned short>(std::stoul(tags[0].c_str(), nullptr, 16)), static_cast<unsigned short>(std::stoul(tags[1].c_str(), nullptr, 16))
       );
   }
 
@@ -927,7 +927,7 @@ namespace cbica
   \param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
   \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
   */
-  std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey_group, const std::string &dicomKey_element)
+  inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey_group, const std::string &dicomKey_element)
   {
     return GetDICOMTagValue(dicomFile,
       static_cast<unsigned short>(std::atoi(dicomKey_group.c_str())), static_cast<unsigned short>(std::atoi(dicomKey_element.c_str()))
