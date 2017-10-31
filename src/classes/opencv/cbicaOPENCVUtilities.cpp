@@ -59,9 +59,7 @@ namespace cbica
 
   cv::Mat Z_Scores(const cv::Mat &inputMat)
   {
-    return GetMatFromVector(
-      cbica::ZScores(GetVectorFromMat< float >(inputMat)) // vectorize the input and then calculate the zscores from cbica::utilities
-      , inputMat.size()); // adjust the size of the return in accordance with the input
+    return cbica::ZScores(inputMat);
   }
 
   void SaveAsCSV(const cv::Mat &inputMat, const std::string &filename)

@@ -69,7 +69,7 @@ namespace cbica
       
       cbica::ImageInfo imageIO = cbica::ImageInfo(m_inputFiles_parts[i].fullFileName);
 
-      if (m_componentType_asString == "")
+      if (m_componentType_asString .empty())
       {
         m_componentType = imageIO.GetComponentType();
         m_pixelType = imageIO.GetPixelType();
@@ -92,7 +92,7 @@ namespace cbica
       }
 
       
-      if (m_outputDir == "")
+      if (m_outputDir .empty())
       {
         cbica::replaceString(output, "\\", "/");
         //if (std::string(1, output.back()) == "/")

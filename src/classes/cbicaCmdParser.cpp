@@ -488,17 +488,17 @@ namespace cbica
     {
       return;
     }
-    if (laconic == "")
+    if (laconic .empty())
     {
       std::cerr << "Laconic parameter cannot be empty";
       exit(EXIT_FAILURE);
     }
-    if (verbose == "")
+    if (verbose .empty())
     {
       std::cerr << "Verbose parameter cannot be empty";
       exit(EXIT_FAILURE);
     }
-    if (description_line1 == "")
+    if (description_line1 .empty())
     {
       std::cerr << "Failure to initialize an empty string as description_line1";
       exit(EXIT_FAILURE);
@@ -518,17 +518,17 @@ namespace cbica
     {
       return;
     }
-    if (laconic == "")
+    if (laconic .empty())
     {
       std::cerr << "Laconic parameter cannot be empty";
       exit(EXIT_FAILURE);
     }
-    if (verbose == "")
+    if (verbose .empty())
     {
       std::cerr << "Verbose parameter cannot be empty";
       exit(EXIT_FAILURE);
     }
-    if (description_line1 == "")
+    if (description_line1 .empty())
     {
       std::cerr << "Failure to initialize an empty string as description_line1";
       exit(EXIT_FAILURE);
@@ -815,7 +815,7 @@ namespace cbica
   std::string CmdParser::getDescription(const std::string &execParamToCheck, bool NewLine = false)
   {
     int noMoreChecks = 0; // ensures that extra checks are not done for parameters
-    if (execParamToCheck == "")
+    if (execParamToCheck .empty())
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -877,7 +877,7 @@ namespace cbica
   std::string CmdParser::getDataTypeAsString(const std::string &execParamToCheck)
   {
     int noMoreChecks = 0; // ensures that extra checks are not done for parameters
-    if (execParamToCheck == "")
+    if (execParamToCheck .empty())
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -917,7 +917,7 @@ namespace cbica
   int CmdParser::getDataTypeAsEnumCode(const std::string &execParamToCheck)
   {
     bool noMoreChecks = false; // ensures that extra checks are not done for parameters
-    if (execParamToCheck == "")
+    if (execParamToCheck .empty())
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -968,7 +968,7 @@ namespace cbica
       std::string rawValue = m_argv[position + 1];
       if ((rawValue == "1") || (rawValue == "true") || (rawValue == "True") || (rawValue == "TRUE") ||
         (rawValue == "yes") || (rawValue == "Yes") || (rawValue == "YES") ||
-        (rawValue == "")) // if the parameter is just passed as a flag, assume that the user wants it enabled
+        (rawValue .empty())) // if the parameter is just passed as a flag, assume that the user wants it enabled
       {
         parameterValue = true; // return value is a bool
         return;
@@ -1086,7 +1086,7 @@ namespace cbica
     }
 
     std::string dirName_wrap;
-    if (!cbica::directoryExists(dirName) || (dirName == ""))
+    if (!cbica::directoryExists(dirName) || (dirName .empty()))
     {
       dirName_wrap = cbica::makeTempDir();
     }

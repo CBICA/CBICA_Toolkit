@@ -114,7 +114,7 @@ namespace cbica
 	{
     if (!consoleLogging)
     {
-      if (file_name_with_path_wrap == "")
+      if (file_name_with_path_wrap .empty())
       {
         file_name_with_path_wrap = cbica::createTmpDir() + "temp.log";
         std::cout << "Blank file name provided. A new file has been created with path: "
@@ -131,11 +131,11 @@ namespace cbica
       }
     }
 
-    if (exe_name_wrap == "")
+    if (exe_name_wrap .empty())
     {
       exe_name_wrap = cbica::getExecutableName();
     }
-    if (user_name_wrap == "")
+    if (user_name_wrap .empty())
     {
       user_name_wrap = cbica::getUserName();
     }

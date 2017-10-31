@@ -113,10 +113,10 @@ int main(int argc, const char** argv)
     //  return EXIT_FAILURE;
 
     //// description can be read
-    //if (parser2.getDescription("1p", false) == "")
+    //if (parser2.getDescription("1p", false) .empty())
     //  return EXIT_FAILURE;
 
-    //if (parser2.getDescription("2p", false) == "")
+    //if (parser2.getDescription("2p", false) .empty())
     //  return EXIT_FAILURE;
 
     //// data type can be deduced as enum code
@@ -380,8 +380,8 @@ int main(int argc, const char** argv)
     // check for certain conditions and fail if even one of them isn't met 
     if (!cbica::splitFileName(fName, path, base, ext) || // if splitFileName fails
       (ext != ".txt") || // if the extension is not txt
-      (path == "") || // if path is empty
-      (base == "")) // if base is empty
+      (path .empty()) || // if path is empty
+      (base .empty())) // if base is empty
     {
       return EXIT_FAILURE; // fail if detected extension is not a txt
     }
