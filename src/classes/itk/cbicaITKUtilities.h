@@ -894,7 +894,7 @@ namespace cbica
   See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
 
   \param dicomFile This can be any of the files in the DICOM folder
-  \param dicomKey Needs to be in format '0x0010,0x0020' for 'group,element' as unsigned short (no parentheses)
+  \param dicomKey Needs to be in format '0x0010|0x0020' for 'group|element' as unsigned short (no parentheses)
   */
   inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::vector< unsigned short > &dicomKey)
   {
