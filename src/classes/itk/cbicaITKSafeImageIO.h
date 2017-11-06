@@ -168,7 +168,7 @@ namespace cbica
 
   \param dirName The directory in question
   \param tagToCheck The tag on the basis of which the test is done; defaults to "0x0020|0x00E"
-  \return Vectof of Series UIDs and fileName collection pairs, with each fileName collection corresponding to a UID
+  \return Vector of Series UIDs and fileName collection pairs, with each fileName collection corresponding to a UID
   */
   std::vector< std::pair< std::string , std::vector< std::string > > > GetDICOMSeriesAndFilesInDir(const std::string &dirName,
     const std::string tagToCheck = "0x0020|0x00E")
