@@ -316,7 +316,8 @@ namespace cbica
       return 0;
     #else   
     std::string passString = "rmdir " + dirname;
-    system(passString.c_str());
+    if(system(passString.c_str()) != 0)
+      std::cerr << "Error during delete.\n";
     #endif
       return 0;
   }
