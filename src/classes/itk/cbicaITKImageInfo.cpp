@@ -21,24 +21,27 @@ namespace cbica
   
   ImageInfo::ImageInfo( const std::string &fName )
   {
-    if (cbica::isFile(fName))
+    auto fName_norm = cbica::normPath(fName);
+    auto fName_ext = cbica::getFilenameExtension(fName);
+
+    if (cbica::isFile(fName) && (fName_ext != ".dcm"))
     {
-      m_fileName = fName;
+      m_fileName = fName_norm;
      
-      m_itkImageIOBase = itk::ImageIOFactory::CreateImageIO(fName.c_str(), itk::ImageIOFactory::ReadMode);
+      m_itkImageIOBase = itk::ImageIOFactory::CreateImageIO(m_fileName.c_str(), itk::ImageIOFactory::ReadMode);
 
       // exception handling in case of NULL pointer initialization
       if (m_itkImageIOBase)
       {
-        m_itkImageIOBase->SetFileName(fName);
+        m_itkImageIOBase->SetFileName(m_fileName);
         m_itkImageIOBase->ReadImageInformation();
       }
       else
       {
-        itkGenericExceptionMacro("Could not read the input image information from '" << fName << "'\n");
+        itkGenericExceptionMacro("Could not read the input image information from '" << m_fileName << "'\n");
       }
 
-      m_itkImageIOBase->SetFileName(fName);
+      m_itkImageIOBase->SetFileName(m_fileName);
       m_itkImageIOBase->ReadImageInformation();
 
       m_IOComponentType = m_itkImageIOBase->GetComponentType();
@@ -53,31 +56,17 @@ namespace cbica
         m_size.push_back(m_itkImageIOBase->GetDimensions(i));
       }
     }
+    else if (fName_ext == ".dcm")
+    {
+      m_dicomDetected = true;
+      // nothing to do here
+      return;
+    }
     else
     {
-      auto dirName_wrap = cbica::replaceString(fName, "\\", "/");
-      auto filesInDir = cbica::filesInDirectory(dirName_wrap);
-
-      if (!filesInDir.empty())
-      {
-        auto firstFile =                                filesInDir[0];
-        auto ext_1 = ".dcm";
-        for (size_t i = 0; i < filesInDir.size(); i++)
-        {
-          auto currentFile = dirName_wrap + "/" + filesInDir[i];
-          if (cbica::getFilenameExtension(currentFile) != ext_1)
-          {
-            std::cerr << "Folder is passed but files other than DICOMs found; unable to read...\n";
-            return;
-          }
-        }
-        std::cout << "Multiple DICOM files detected...\n";
-      }
-
-      m_dicomDetected = true;
+      std::cerr << "Please pass a non-DICOM image file for this class.\n";
+      return;
     }
-
-
   }
   
   ImageInfo::~ImageInfo()

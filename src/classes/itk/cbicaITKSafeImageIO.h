@@ -81,6 +81,16 @@ namespace cbica
 
     auto reader = typename itk::ImageFileReader< TImageType >::New();
 
+    if (fileExtension == ".dcm")
+    {
+      auto filesInDir = cbica::filesInDirectory(cbica::getFilenamePath(fName_wrap));
+      if (filesInDir.size() > 1)
+      {
+        std::cerr << "Trying to read DICOM file. Please use DICOMImageReader.\n";
+        return reader;
+      }
+    }
+
     if (supportedExtensions != "")
     {
       std::vector< std::string > extensions = cbica::stringSplit(supportedExtensions, delimitor);
