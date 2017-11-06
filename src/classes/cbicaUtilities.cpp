@@ -670,7 +670,8 @@ namespace cbica
     #else
     	//! Initialize pointers to file and user names
     	char path[PATH_MAX];    
-    	::readlink("/proc/self/exe", path, sizeof(path)-1);
+      if(::readlink("/proc/self/exe", path, sizeof(path)-1) != 0)
+        std::cerr << "Error during getting full path..\n";
     #endif
 
     std::string return_string = std::string(path);
