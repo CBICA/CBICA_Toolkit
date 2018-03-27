@@ -185,7 +185,7 @@ namespace cbica
     bool consoleLogging;
     //! Flag to denote logging in GMT
     bool GMTLogging;
-    //! This writes out username(s) to the log
+    //! This writes out user and exe name(s) to the log
     bool m_multiUserLog = false;
 	};
 }
