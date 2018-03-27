@@ -148,11 +148,33 @@ namespace cbica
     std::string timeExeUser;
     if (GMTLogging)
     {
-      timeExeUser = cbica::getCurrentGMTDateAndTime() + ";" + exe_name_wrap + ";" + user_name_wrap + ";";
+      if (!m_multiUserLog)
+      {
+        timeExeUser = cbica::getCurrentGMT() + ";";
+      }
+      else
+      {
+        timeExeUser = cbica::getCurrentGMTDateAndTime() + ";";
+      }
     }
     else
     {
-      timeExeUser = cbica::getCurrentLocalDateAndTime() + ";" + exe_name_wrap + ";" + user_name_wrap + ";";
+      if (!m_multiUserLog)
+      {
+        timeExeUser = cbica::getCurrentLocalTime() + ";";
+      }
+      else
+      {
+        timeExeUser = cbica::getCurrentLocalDateAndTime() + ";";
+      }
+    }
+    if (!m_multiUserLog)
+    {
+      timeExeUser += user_name_wrap + ";";
+    }
+    else
+    {
+      timeExeUser += exe_name_wrap + ";" + user_name_wrap + ";";
     }
 
     if (consoleLogging)
