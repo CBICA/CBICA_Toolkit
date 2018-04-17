@@ -6,7 +6,7 @@
 http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
+Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 
 */
@@ -488,17 +488,17 @@ namespace cbica
     {
       return;
     }
-    if (laconic .empty())
+    if (laconic.empty())
     {
       std::cerr << "Laconic parameter cannot be empty";
       exit(EXIT_FAILURE);
     }
-    if (verbose .empty())
+    if (verbose.empty())
     {
       std::cerr << "Verbose parameter cannot be empty";
       exit(EXIT_FAILURE);
     }
-    if (description_line1 .empty())
+    if (description_line1.empty())
     {
       std::cerr << "Failure to initialize an empty string as description_line1";
       exit(EXIT_FAILURE);
@@ -518,17 +518,17 @@ namespace cbica
     {
       return;
     }
-    if (laconic .empty())
+    if (laconic.empty())
     {
       std::cerr << "Laconic parameter cannot be empty";
       exit(EXIT_FAILURE);
     }
-    if (verbose .empty())
+    if (verbose.empty())
     {
       std::cerr << "Verbose parameter cannot be empty";
       exit(EXIT_FAILURE);
     }
-    if (description_line1 .empty())
+    if (description_line1.empty())
     {
       std::cerr << "Failure to initialize an empty string as description_line1";
       exit(EXIT_FAILURE);
@@ -591,8 +591,13 @@ namespace cbica
 
       if (verbose && (inputParameters[i].laconic != "u") && (inputParameters[i].laconic != "h") && (inputParameters[i].laconic != "v"))
       {
+        std::string rangeIdStr = "Expected Range";
+        if (inputParameters[i].dataType_enumCode == Parameter::FILE)
+        {
+          rangeIdStr = "Expected Files";
+        }
         std::cout << spaces_verb_line2 << "Expected Type  :: " << inputParameters[i].dataType_string << "\n" <<
-          spaces_verb_line2 << "Expected Range :: " << inputParameters[i].dataRange << "\n";
+          spaces_verb_line2 << rangeIdStr << " :: " << inputParameters[i].dataRange << "\n";
       }
 
       std::cout << "\n"; // an extra to keep coherence
@@ -815,7 +820,7 @@ namespace cbica
   std::string CmdParser::getDescription(const std::string &execParamToCheck, bool NewLine = false)
   {
     int noMoreChecks = 0; // ensures that extra checks are not done for parameters
-    if (execParamToCheck .empty())
+    if (execParamToCheck.empty())
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -877,7 +882,7 @@ namespace cbica
   std::string CmdParser::getDataTypeAsString(const std::string &execParamToCheck)
   {
     int noMoreChecks = 0; // ensures that extra checks are not done for parameters
-    if (execParamToCheck .empty())
+    if (execParamToCheck.empty())
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -917,7 +922,7 @@ namespace cbica
   int CmdParser::getDataTypeAsEnumCode(const std::string &execParamToCheck)
   {
     bool noMoreChecks = false; // ensures that extra checks are not done for parameters
-    if (execParamToCheck .empty())
+    if (execParamToCheck.empty())
     {
       std::cerr << "Parameter cannot be an empty string. Please try again.\n";
       exit(EXIT_FAILURE);
@@ -968,7 +973,7 @@ namespace cbica
       std::string rawValue = m_argv[position + 1];
       if ((rawValue == "1") || (rawValue == "true") || (rawValue == "True") || (rawValue == "TRUE") ||
         (rawValue == "yes") || (rawValue == "Yes") || (rawValue == "YES") ||
-        (rawValue .empty())) // if the parameter is just passed as a flag, assume that the user wants it enabled
+        (rawValue.empty())) // if the parameter is just passed as a flag, assume that the user wants it enabled
       {
         parameterValue = true; // return value is a bool
         return;
@@ -1086,7 +1091,7 @@ namespace cbica
     }
 
     std::string dirName_wrap;
-    if (!cbica::directoryExists(dirName) || (dirName .empty()))
+    if (!cbica::directoryExists(dirName) || (dirName.empty()))
     {
       dirName_wrap = cbica::makeTempDir();
     }
