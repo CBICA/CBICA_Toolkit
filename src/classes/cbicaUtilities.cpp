@@ -507,15 +507,15 @@ namespace cbica
   {
     size_t f_size = 0;
 #if _WIN32
-    std::tr2::sys::path folderPath(rootFolder);
+    std::experimental::filesystem::path folderPath(rootFolder);
     if (exists(folderPath))
     {
-      std::tr2::sys::directory_iterator end_itr;
-      for (std::tr2::sys::directory_iterator dirIte(rootFolder); dirIte != end_itr; ++dirIte)
+		std::experimental::filesystem::directory_iterator end_itr;
+      for (std::experimental::filesystem::directory_iterator dirIte(rootFolder); dirIte != end_itr; ++dirIte)
       {
-        std::tr2::sys::path filePath;
+		  std::experimental::filesystem::path filePath;
 #if (_MSC_VER >= 1900)
-        filePath = std::tr2::sys::system_complete(dirIte->path());
+        filePath = std::experimental::filesystem::system_complete(dirIte->path());
 #else
         filePath = complete(dirIte->path(), folderPath);
 #endif
