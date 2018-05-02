@@ -52,6 +52,7 @@ static const char  cSeparator = '/';
 #include <algorithm>
 #include <string>
 #include <omp.h>
+#include <filesystem>
 
 #include "cbicaUtilities.h"
 
@@ -133,14 +134,7 @@ namespace cbica
 
   std::string getCurrentProcessID()
   {
-    return
-#if _WIN32
-      std::to_string(_getpid())
-#else
-      std::to_string(getpid())
-#endif
-      ;
-
+    return std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id()));
   }
 
   std::string createTmpDir()
