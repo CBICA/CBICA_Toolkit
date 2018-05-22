@@ -25,7 +25,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageRegionIterator.h"
 #include "itkHistogramMatchingImageFilter.h"
 #include "itkAdaptiveHistogramEqualizationImageFilter.h"
-
+#include "itkOtsuThresholdImageFilter.h"
 #include "itkConnectedThresholdImageFilter.h"
 #include "itkOrientImageFilter.h"
 
@@ -56,6 +56,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 
 #include "cbicaUtilities.h"
+#include "itkN3MRIBiasFieldCorrectionImageFilter.h"
 
 #include "gdcmMD5.h"
 
@@ -934,4 +935,142 @@ namespace cbica
       );
   }
 
+  /**
+  \brief This function applies the N3 Bias correction and returns the output
+  
+  Reference: http://www.insight-journal.org/browse/publication/640
+
+  \param inputImage The input image
+  \param maskImage The mask image; defaults to nullptr
+  \param numBins The number of bins for Otsu threshold which is used if Mask is null; defaults to 200
+  \param shrinkFactor The amount of shrink to apply to the image; defaults to 1
+  \param iterations Number of iterations to run for the bias correction
+  \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
+  */
+  //template< class TImageType = ImageTypeFloat3D >
+  //using TImageType = ImageTypeFloat3D;
+  //using TMaskImageType = ImageTypeFloat3D;
+  //TImageType::Pointer itkN3MRIBiasFieldCorrectionImageFilterTest(TImageType::Pointer inputImage, TMaskImageType::Pointer maskImage = nullptr,
+  //  unsigned int numBins = 200, unsigned int shrinkFactor = 1, unsigned int iterations = 5)
+  //{
+  //  typedef float RealType;
+  //  
+  //  auto shrinker = itk::ShrinkImageFilter<TImageType, TImageType>::New();
+  //  shrinker->SetInput(inputImage);
+  //  shrinker->SetShrinkFactors(shrinkFactor);
+
+  //  if (maskImage == nullptr)
+  //  {
+  //    auto otsu = itk::OtsuThresholdImageFilter< TImageType, TMaskImageType >::New();
+  //    otsu->SetInput(inputImage);
+  //    otsu->SetNumberOfHistogramBins(200);
+  //    otsu->SetInsideValue(0);
+  //    otsu->SetOutsideValue(1);
+  //    otsu->Update();
+
+  //    maskImage = otsu->GetOutput();
+  //  }
+
+  //  auto maskshrinker = itk::ShrinkImageFilter< TMaskImageType, TMaskImageType>::New();
+  //  maskshrinker->SetInput(maskImage);
+  //  maskshrinker->SetShrinkFactors(shrinkFactor);
+
+  //  shrinker->Update();
+  //  maskshrinker->Update();
+  //  
+  //  auto corrector = itk::N3MRIBiasFieldCorrectionImageFilter< TImageType, TMaskImageType, TImageType >::New();
+  //  corrector->SetInputImage(shrinker->GetOutput());
+  //  corrector->SetMaskImage(maskshrinker->GetOutput());
+  //  
+
+  //  if (argc > 6)
+  //  {
+  //    correcter->SetMaximumNumberOfIterations(atoi(argv[6]));
+  //  }
+  //  if (argc > 7)
+  //  {
+  //    correcter->SetNumberOfFittingLevels(atoi(argv[7]));
+  //  }
+
+
+  //  typedef CommandIterationUpdate<CorrecterType> CommandType;
+  //  typename CommandType::Pointer observer = CommandType::New();
+  //  correcter->AddObserver(itk::IterationEvent(), observer);
+
+  //  try
+  //  {
+  //    correcter->Update();
+  //  }
+  //  catch (...)
+  //  {
+  //    std::cerr << "Exception caught." << std::endl;
+  //    return EXIT_FAILURE;
+  //  }
+
+  //  //  correcter->Print( std::cout, 3 );
+
+  //  /**
+  //  * Reconstruct the bias field at full image resolution.  Divide
+  //  * the original input image by the bias field to get the final
+  //  * corrected image.
+  //  */
+  //  typedef itk::BSplineControlPointImageFilter<typename
+  //    CorrecterType::BiasFieldControlPointLatticeType, typename
+  //    CorrecterType::ScalarImageType> BSplinerType;
+  //  typename BSplinerType::Pointer bspliner = BSplinerType::New();
+  //  bspliner->SetInput(correcter->GetLogBiasFieldControlPointLattice());
+  //  bspliner->SetSplineOrder(correcter->GetSplineOrder());
+  //  bspliner->SetSize(
+  //    reader->GetOutput()->GetLargestPossibleRegion().GetSize());
+  //  bspliner->SetOrigin(reader->GetOutput()->GetOrigin());
+  //  bspliner->SetDirection(reader->GetOutput()->GetDirection());
+  //  bspliner->SetSpacing(reader->GetOutput()->GetSpacing());
+  //  bspliner->Update();
+
+  //  typename ImageType::Pointer logField = ImageType::New();
+  //  logField->SetOrigin(bspliner->GetOutput()->GetOrigin());
+  //  logField->SetSpacing(bspliner->GetOutput()->GetSpacing());
+  //  logField->SetRegions(
+  //    bspliner->GetOutput()->GetLargestPossibleRegion().GetSize());
+  //  logField->SetDirection(bspliner->GetOutput()->GetDirection());
+  //  logField->Allocate();
+
+  //  itk::ImageRegionIterator<typename CorrecterType::ScalarImageType> ItB(
+  //    bspliner->GetOutput(),
+  //    bspliner->GetOutput()->GetLargestPossibleRegion());
+  //  itk::ImageRegionIterator<ImageType> ItF(logField,
+  //    logField->GetLargestPossibleRegion());
+  //  for (ItB.GoToBegin(), ItF.GoToBegin(); !ItB.IsAtEnd(); ++ItB, ++ItF)
+  //  {
+  //    ItF.Set(ItB.Get()[0]);
+  //  }
+
+  //  typedef itk::ExpImageFilter<ImageType, ImageType> ExpFilterType;
+  //  typename ExpFilterType::Pointer expFilter = ExpFilterType::New();
+  //  expFilter->SetInput(logField);
+  //  expFilter->Update();
+
+  //  typedef itk::DivideImageFilter<ImageType, ImageType, ImageType> DividerType;
+  //  typename DividerType::Pointer divider = DividerType::New();
+  //  divider->SetInput1(reader->GetOutput());
+  //  divider->SetInput2(expFilter->GetOutput());
+  //  divider->Update();
+
+  //  typedef itk::ImageFileWriter<ImageType> WriterType;
+  //  typename WriterType::Pointer writer = WriterType::New();
+  //  writer->SetFileName(argv[3]);
+  //  writer->SetInput(divider->GetOutput());
+  //  writer->Update();
+
+  //  if (argc > 8)
+  //  {
+  //    typedef itk::ImageFileWriter<ImageType> WriterType;
+  //    typename WriterType::Pointer writer = WriterType::New();
+  //    writer->SetFileName(argv[8]);
+  //    writer->SetInput(expFilter->GetOutput());
+  //    writer->Update();
+  //  }
+
+  //  return EXIT_SUCCESS;
+  //}
 }

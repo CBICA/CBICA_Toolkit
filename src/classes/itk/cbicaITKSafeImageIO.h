@@ -456,7 +456,7 @@ namespace cbica
 
     auto writer = typename itk::ImageFileWriter< ExpectedImageType >::New();
 
-    auto ext = cbica::getFilenameExtension(fileName);
+    auto ext = cbica::getFilenameExtension(fileName, false);
     if ((ext == ".nii") || (ext == ".nii.gz"))
     {
       writer->SetImageIO(itk::NiftiImageIO::New());

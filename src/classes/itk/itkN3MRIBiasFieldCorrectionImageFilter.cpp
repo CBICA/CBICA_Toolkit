@@ -14,8 +14,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __itkN3MRIBiasFieldCorrectionImageFilter_txx
-#define __itkN3MRIBiasFieldCorrectionImageFilter_txx
+#ifndef __itkN3MRIBiasFieldCorrectionImageFilter_cpp
+#define __itkN3MRIBiasFieldCorrectionImageFilter_cpp
 
 #include "itkN3MRIBiasFieldCorrectionImageFilter.h"
 

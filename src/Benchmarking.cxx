@@ -85,7 +85,7 @@ int main(int argc, char** argv)
     for (size_t j = 0; j < filesPerSubject.size(); j++)
     {
       // FileNameParts is a custom struct that holds the full path, base and extensions of a particular file
-      const FileNameParts fileUnderConsideration = FileNameParts(subjectUnderConsideration + filesPerSubject[j]);
+      const FileNameParts fileUnderConsideration = FileNameParts(filesPerSubject[j]);
       
       // ensure file is present
       if (!cbica::fileExists(fileUnderConsideration.fullFileName))

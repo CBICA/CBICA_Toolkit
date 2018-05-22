@@ -29,6 +29,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 
 #include "itkImage.h"
 
+#include "itkMetaImageIO.h"
 #include "itkTranslationTransform.h"
 #include "itkImageFileReader.h"
 #include "itkNormalizeImageFilter.h"
