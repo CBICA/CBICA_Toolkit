@@ -324,7 +324,7 @@ namespace cbica
 
   Checks are done based on cbica::ImageInfo class
   */
-  bool ImageSanityCheck(const std::string &image1, const std::string &image2)
+  inline bool ImageSanityCheck(const std::string &image1, const std::string &image2)
   {
     auto imageInfo1 = cbica::ImageInfo(image1);
     auto imageInfo2 = cbica::ImageInfo(image2);
