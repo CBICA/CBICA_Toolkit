@@ -25,7 +25,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImageRegionIterator.h"
 #include "itkHistogramMatchingImageFilter.h"
 #include "itkAdaptiveHistogramEqualizationImageFilter.h"
-#include "itkOtsuThresholdImageFilter.h"
+
 #include "itkConnectedThresholdImageFilter.h"
 #include "itkOrientImageFilter.h"
 
@@ -40,19 +40,19 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkTestingComparisonImageFilter.h"
 
-#include "itkStripTsImageFilter.h"
+//#include "itkStripTsImageFilter.h"
 #include "itkMaskImageFilter.h"
 
 // DCMTK headers 
-#include "dcmtk/config/osconfig.h"   
-#include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/dcmdata/dcuid.h"     
-#include "dcmtk/dcmdata/dcistrmz.h"  
-#include "dcmtk/ofstd/ofstdinc.h"
+//#include "dcmtk/config/osconfig.h"   
+//#include "dcmtk/ofstd/ofstream.h"
+//#include "dcmtk/dcmdata/dctk.h"
+//#include "dcmtk/dcmdata/cmdlnarg.h"
+//#include "dcmtk/ofstd/ofconapp.h"
+//#include "dcmtk/ofstd/ofstd.h"
+//#include "dcmtk/dcmdata/dcuid.h"     
+//#include "dcmtk/dcmdata/dcistrmz.h"  
+//#include "dcmtk/ofstd/ofstdinc.h"
 
 
 #include "cbicaUtilities.h"
@@ -183,27 +183,27 @@ namespace cbica
     return GetPixelValuesFromIndeces< TImageType >(inputImage, indeces);
   }
 
-  /**
-  \brief Get MD5 sum of a supplied file
+  ///**
+  //\brief Get MD5 sum of a supplied file
 
-  \param fileName The input file
-  \return The MD5 checksum
-  */
-  inline std::string GetMD5Sum(const std::string &fileName)
-  {
-    gdcm::MD5 md5Computer;
-    char digStr[1024/*MAX_PATH*/];
-    md5Computer.ComputeFile(fileName.c_str(), digStr);
-    return std::string(digStr);
-  }
+  //\param fileName The input file
+  //\return The MD5 checksum
+  //*/
+  //inline std::string GetMD5Sum(const std::string &fileName)
+  //{
+  //  gdcm::MD5 md5Computer;
+  //  char digStr[1024/*MAX_PATH*/];
+  //  md5Computer.ComputeFile(fileName.c_str(), digStr);
+  //  return std::string(digStr);
+  //}
 
-  /**
-  \brief Wrap of GetMD5Sum()
-  */
-  inline std::string ComputeMD5Sum(const std::string &fileName)
-  {
-    return GetMD5Sum(fileName);
-  }
+  ///**
+  //\brief Wrap of GetMD5Sum()
+  //*/
+  //inline std::string ComputeMD5Sum(const std::string &fileName)
+  //{
+  //  return GetMD5Sum(fileName);
+  //}
 
   /**
   \brief Get the indeces of the image which are not zero
@@ -320,6 +320,54 @@ namespace cbica
   }
 
   /**
+  \brief Check properties of 2 images to see if they are defined in the same space, etc.
+
+  Checks are done based on cbica::ImageInfo class
+  */
+  bool ImageSanityCheck(const std::string &image1, const std::string &image2)
+  {
+    auto imageInfo1 = cbica::ImageInfo(image1);
+    auto imageInfo2 = cbica::ImageInfo(image2);
+
+    if (imageInfo1.GetImageDimensions() != imageInfo2.GetImageDimensions())
+    {
+      std::cout << "The dimensions of the image_1 (" << image1 << ") and image_2 (" << image2 << ") doesn't match.\n";
+      return false;
+    }
+
+    // check size, spacing and origin information as well
+    auto dims = imageInfo1.GetImageDimensions();
+
+    auto imageSize1 = imageInfo1.GetImageSize();
+    auto imageSize2 = imageInfo2.GetImageSize();
+
+    auto imageSpacing1 = imageInfo1.GetImageSpacing();
+    auto imageSpacing2 = imageInfo2.GetImageSpacing();
+
+    auto imageOrigin1 = imageInfo1.GetImageOrigins();
+    auto imageOrigin2 = imageInfo2.GetImageOrigins();
+    
+    for (size_t d = 0; d < dims; d++)
+    {
+      if (imageSize1[d] != imageSize2[d])
+      {
+        std::cout << "The size in dimension[" << d << "] of the image_1 (" << image1 << ") and image_2 (" << image2 << ") doesn't match.\n";
+        return false;
+      }
+      if (imageSpacing1[d] != imageSpacing2[d])
+      {
+        std::cout << "The spacing in dimension[" << d << "] of the image_1 (" << image1 << ") and image_2 (" << image2 << ") doesn't match.\n";
+        return false;
+      }
+      if (imageOrigin1[d] != imageOrigin2[d])
+      {
+        std::cout << "The origin in dimension[" << d << "] of the image_1 (" << image1 << ") and image_2 (" << image2 << ") doesn't match.\n";
+        return false;
+      }
+    }
+  }
+
+  /**
   \brief Perform the deformable registration
 
   \param movingImage The moving image for registration
@@ -333,120 +381,120 @@ namespace cbica
   */
   /*template< class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer GetDeformRegisteredImage(const typename TImageType::Pointer movingImage, const typename TImageType::Pointer referenceImage,
-    const unsigned int multiResLevels = 5,
-    const unsigned int iterationStart = 10, const unsigned int iterationStep = 10, const unsigned int iterationEnd = 50,
-    const int regType = Demons, const int interpolatorType = Linear)
+  const unsigned int multiResLevels = 5,
+  const unsigned int iterationStart = 10, const unsigned int iterationStep = 10, const unsigned int iterationEnd = 50,
+  const int regType = Demons, const int interpolatorType = Linear)
   {
-    // do histogram matchin of the 2 images
-    auto movingImage_histoMatched = GetHistogramMatchedImage< TImageType >(movingImage, referenceImage, 40, 1024);
+  // do histogram matchin of the 2 images
+  auto movingImage_histoMatched = GetHistogramMatchedImage< TImageType >(movingImage, referenceImage, 40, 1024);
 
-    // setup the displacement field
-    using VectorPixelType = itk::Vector< float, TImageType::ImageDimension >;
-    using DisplacementFieldType = itk::Image< VectorPixelType, TImageType::ImageDimension >;
+  // setup the displacement field
+  using VectorPixelType = itk::Vector< float, TImageType::ImageDimension >;
+  using DisplacementFieldType = itk::Image< VectorPixelType, TImageType::ImageDimension >;
 
-    auto multiRes = typename itk::MultiResolutionPDEDeformableRegistration< TImageType, TImageType, DisplacementFieldType >::New();
+  auto multiRes = typename itk::MultiResolutionPDEDeformableRegistration< TImageType, TImageType, DisplacementFieldType >::New();
 
-    // set the registration type
-    switch (regType)
-    {
-    case DiffeomorphicDemons:
-    {
-      auto filter = typename itk::DiffeomorphicDemonsRegistrationFilter< TImageType, TImageType, DisplacementFieldType >::New();
-      filter->SetStandardDeviations(1.0);
-      multiRes->SetRegistrationFilter(filter);
-      break;
-    }
-    case SymmetricForcesDemons:
-    {
-      auto filter = typename itk::SymmetricForcesDemonsRegistrationFilter< TImageType, TImageType, DisplacementFieldType >::New();
-      filter->SetStandardDeviations(1.0);
-      multiRes->SetRegistrationFilter(filter);
-      break;
-    }
-    case FastSymmetricForcesDemons:
-    {
-      auto filter = typename itk::FastSymmetricForcesDemonsRegistrationFilter< TImageType, TImageType, DisplacementFieldType >::New();
-      filter->SetStandardDeviations(1.0);
-      multiRes->SetRegistrationFilter(filter);
-      break;
-    }
-    default: // does Demons
-    {
-      auto filter = typename itk::DemonsRegistrationFilter< TImageType, TImageType, DisplacementFieldType >::New();
-      filter->SetStandardDeviations(1.0);
-      multiRes->SetRegistrationFilter(filter);
-      break;
-    }
-    }
+  // set the registration type
+  switch (regType)
+  {
+  case DiffeomorphicDemons:
+  {
+  auto filter = typename itk::DiffeomorphicDemonsRegistrationFilter< TImageType, TImageType, DisplacementFieldType >::New();
+  filter->SetStandardDeviations(1.0);
+  multiRes->SetRegistrationFilter(filter);
+  break;
+  }
+  case SymmetricForcesDemons:
+  {
+  auto filter = typename itk::SymmetricForcesDemonsRegistrationFilter< TImageType, TImageType, DisplacementFieldType >::New();
+  filter->SetStandardDeviations(1.0);
+  multiRes->SetRegistrationFilter(filter);
+  break;
+  }
+  case FastSymmetricForcesDemons:
+  {
+  auto filter = typename itk::FastSymmetricForcesDemonsRegistrationFilter< TImageType, TImageType, DisplacementFieldType >::New();
+  filter->SetStandardDeviations(1.0);
+  multiRes->SetRegistrationFilter(filter);
+  break;
+  }
+  default: // does Demons
+  {
+  auto filter = typename itk::DemonsRegistrationFilter< TImageType, TImageType, DisplacementFieldType >::New();
+  filter->SetStandardDeviations(1.0);
+  multiRes->SetRegistrationFilter(filter);
+  break;
+  }
+  }
 
-    // set the different parameters of the multi resolution registration
-    multiRes->SetNumberOfLevels(multiResLevels);
-    multiRes->SetFixedImage(referenceImage);
-    multiRes->SetMovingImage(movingImage_histoMatched);
+  // set the different parameters of the multi resolution registration
+  multiRes->SetNumberOfLevels(multiResLevels);
+  multiRes->SetFixedImage(referenceImage);
+  multiRes->SetMovingImage(movingImage_histoMatched);
 
-    // set up the iterations
-    std::vector< unsigned int > iterations_vector;
-    for (size_t i = iterationStart; i <= iterationEnd; i += iterationStep)
-    {
-      iterations_vector.push_back(i);
-    }
-    unsigned int *iterations_array = &iterations_vector[0];
-    multiRes->SetNumberOfIterations(iterations_array);
+  // set up the iterations
+  std::vector< unsigned int > iterations_vector;
+  for (size_t i = iterationStart; i <= iterationEnd; i += iterationStep)
+  {
+  iterations_vector.push_back(i);
+  }
+  unsigned int *iterations_array = &iterations_vector[0];
+  multiRes->SetNumberOfIterations(iterations_array);
 
-    // start the regisration
-    try
-    {
-      multiRes->Update();
-    }
-    catch (itk::ExceptionObject & excp)
-    {
-      std::cerr << excp << std::endl;
-      return referenceImage;
-    }
+  // start the regisration
+  try
+  {
+  multiRes->Update();
+  }
+  catch (itk::ExceptionObject & excp)
+  {
+  std::cerr << excp << std::endl;
+  return referenceImage;
+  }
 
-    // warp the moving image
-    auto warper = typename itk::WarpImageFilter< TImageType, TImageType, DisplacementFieldType >::New();
-    warper->SetInput(movingImage);
-    warper->SetOutputSpacing(referenceImage->GetSpacing());
-    warper->SetOutputOrigin(referenceImage->GetOrigin());
-    warper->SetOutputDirection(referenceImage->GetDirection());
-    warper->SetDisplacementField(multiRes->GetOutput());
+  // warp the moving image
+  auto warper = typename itk::WarpImageFilter< TImageType, TImageType, DisplacementFieldType >::New();
+  warper->SetInput(movingImage);
+  warper->SetOutputSpacing(referenceImage->GetSpacing());
+  warper->SetOutputOrigin(referenceImage->GetOrigin());
+  warper->SetOutputDirection(referenceImage->GetDirection());
+  warper->SetDisplacementField(multiRes->GetOutput());
 
-    // set up the interpolator type
-    switch (interpolatorType)
-    {
-    case NearestNeighbor:
-    {
-      auto interpolator = typename itk::NearestNeighborInterpolateImageFunction< TImageType, double >::New();
-      warper->SetInterpolator(interpolator);
-      break;
-    }
-    case BSpline:
-    {
-      auto interpolator = typename itk::BSplineInterpolateImageFunction< TImageType, double >::New();
-      warper->SetInterpolator(interpolator);
-      break;
-    }
-    default: // linear by default
-    {
-      auto interpolator = typename itk::LinearInterpolateImageFunction< TImageType, double >::New();
-      warper->SetInterpolator(interpolator);
-      break;
-    }
-    }
+  // set up the interpolator type
+  switch (interpolatorType)
+  {
+  case NearestNeighbor:
+  {
+  auto interpolator = typename itk::NearestNeighborInterpolateImageFunction< TImageType, double >::New();
+  warper->SetInterpolator(interpolator);
+  break;
+  }
+  case BSpline:
+  {
+  auto interpolator = typename itk::BSplineInterpolateImageFunction< TImageType, double >::New();
+  warper->SetInterpolator(interpolator);
+  break;
+  }
+  default: // linear by default
+  {
+  auto interpolator = typename itk::LinearInterpolateImageFunction< TImageType, double >::New();
+  warper->SetInterpolator(interpolator);
+  break;
+  }
+  }
 
-    // perform the warping
-    try
-    {
-      warper->Update();
-    }
-    catch (itk::ExceptionObject & excp)
-    {
-      std::cerr << excp << std::endl;
-      return referenceImage;
-    }
+  // perform the warping
+  try
+  {
+  warper->Update();
+  }
+  catch (itk::ExceptionObject & excp)
+  {
+  std::cerr << excp << std::endl;
+  return referenceImage;
+  }
 
-    return warper->GetOutput();
+  return warper->GetOutput();
   }*/
 
   /**
@@ -459,7 +507,7 @@ namespace cbica
   std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const typename TImageType::Pointer inputImage)
   {
     using namespace itk::SpatialOrientation;
-    auto orientFilter =  itk::OrientImageFilter< TImageType, TImageType >::New();
+    auto orientFilter = itk::OrientImageFilter< TImageType, TImageType >::New();
     orientFilter->SetInput(inputImage);
     orientFilter->SetDesiredCoordinateOrientation(ITK_COORDINATE_ORIENTATION_RAI);
     orientFilter->Update();
@@ -713,53 +761,53 @@ namespace cbica
     return std::make_pair(returnString, orientFilter->GetOutput());
   }
 
-  /**
-  \brief Get skull stripped image
+  ///**
+  //\brief Get skull stripped image
 
-  Templated over InputImageType, AtlasImageType and AtlasLabelType
+  //Templated over InputImageType, AtlasImageType and AtlasLabelType
 
-  \param inputImage The input image on which to run the skull stripping
-  \param atlasImage The atlas image
-  \param atlasLabelImage The atlas label
-  */
-  template< class TImageType = ImageTypeFloat3D, class TAtlasImageType = TImageType, class TAtlasLabelType = TImageType >
-  typename TImageType::Pointer GetSkullStrippedImage(const typename TImageType::Pointer inputImage,
-    const typename TAtlasImageType::Pointer atlasImage, const typename TAtlasLabelType::Pointer atlasLabelImage)
-  {
-    // skull stripping initialization
-    auto skullStripper = itk::StripTsImageFilter< TImageType, TAtlasImageType, TAtlasLabelType>::New();
-    skullStripper->SetInput(inputImage);
-    skullStripper->SetAtlasImage(atlasImage);
-    skullStripper->SetAtlasBrainMask(atlasLabelImage);
+  //\param inputImage The input image on which to run the skull stripping
+  //\param atlasImage The atlas image
+  //\param atlasLabelImage The atlas label
+  //*/
+  //template< class TImageType = ImageTypeFloat3D, class TAtlasImageType = TImageType, class TAtlasLabelType = TImageType >
+  //typename TImageType::Pointer GetSkullStrippedImage(const typename TImageType::Pointer inputImage,
+  //  const typename TAtlasImageType::Pointer atlasImage, const typename TAtlasLabelType::Pointer atlasLabelImage)
+  //{
+  //  // skull stripping initialization
+  //  auto skullStripper = itk::StripTsImageFilter< TImageType, TAtlasImageType, TAtlasLabelType>::New();
+  //  skullStripper->SetInput(inputImage);
+  //  skullStripper->SetAtlasImage(atlasImage);
+  //  skullStripper->SetAtlasBrainMask(atlasLabelImage);
 
-    // actually do the skull stripping
-    try
-    {
-      skullStripper->Update();
-    }
-    catch (itk::ExceptionObject &exception)
-    {
-      std::cerr << "Exception caught: " << exception << "\n";
-      return inputImage;
-    }
+  //  // actually do the skull stripping
+  //  try
+  //  {
+  //    skullStripper->Update();
+  //  }
+  //  catch (itk::ExceptionObject &exception)
+  //  {
+  //    std::cerr << "Exception caught: " << exception << "\n";
+  //    return inputImage;
+  //  }
 
-    // apply the generated mask
-    auto masker = itk::MaskImageFilter< TImageType, TAtlasLabelType, TImageType >::New();
-    masker->SetInput(inputImage);
-    masker->SetMaskImage(skullStripper->GetOutput());
+  //  // apply the generated mask
+  //  auto masker = itk::MaskImageFilter< TImageType, TAtlasLabelType, TImageType >::New();
+  //  masker->SetInput(inputImage);
+  //  masker->SetMaskImage(skullStripper->GetOutput());
 
-    try
-    {
-      masker->Update();
-    }
-    catch (itk::ExceptionObject &exception)
-    {
-      std::cerr << "Exception caught: " << exception << "\n";
-      return inputImage;
-    }
+  //  try
+  //  {
+  //    masker->Update();
+  //  }
+  //  catch (itk::ExceptionObject &exception)
+  //  {
+  //    std::cerr << "Exception caught: " << exception << "\n";
+  //    return inputImage;
+  //  }
 
-    return masker->GetOutput();
-  }
+  //  return masker->GetOutput();
+  //}
 
   /**
   \brief Get the distance between 2 indeces of an itk::Image
@@ -802,7 +850,7 @@ namespace cbica
   \return The maximum distance and the corrensponding index
   */
   template< class TImageType = ImageTypeFloat3D >
-  std::pair< float, typename TImageType::IndexType > GetMaxDistanceInLabelMap(const typename TImageType::Pointer inputLabelMap, 
+  std::pair< float, typename TImageType::IndexType > GetMaxDistanceInLabelMap(const typename TImageType::Pointer inputLabelMap,
     const typename TImageType::IndexType indexForComputation,
     bool realCoordinateInput = false, bool realCoordinateOutput = false)
   {
@@ -816,7 +864,7 @@ namespace cbica
       }
     }
     // setup the connected component segmentation
-    auto connectedComponentFilter =  itk::ConnectedThresholdImageFilter< TImageType, TImageType >::New();
+    auto connectedComponentFilter = itk::ConnectedThresholdImageFilter< TImageType, TImageType >::New();
     connectedComponentFilter->SetInput(inputLabelMap);
     connectedComponentFilter->SetSeed(indexToUse);
     connectedComponentFilter->SetReplaceValue(1);
@@ -838,7 +886,7 @@ namespace cbica
       {
         auto currentIndex = iterator.GetIndex();
         float currentDist = 0.0;// TBD  gcc is unable to deduce sutable type. Please fix this -> GetDistanceBetweenIndeces(currentIndex, indexToUse);
-	      currentDist = GetDistanceBetweenIndeces<TImageType>(currentIndex, indexToUse);
+        currentDist = GetDistanceBetweenIndeces<TImageType>(currentIndex, indexToUse);
 
         if (currentDist > maxDist)
         {
@@ -861,62 +909,24 @@ namespace cbica
   }
 
   /**
-  \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+  \brief Create an empty (optionally pass a value) ITK image based on an input image with same properties
 
-  See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
-
-  \param dicomFile This can be any of the files in the DICOM folder
-  \param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
-  \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
+  \param inputImage The image to base the output on
+  \param value The value to populate the new image with; defaults to '0'
   */
-  inline std::string GetDICOMTagValue(const std::string &dicomFile, const unsigned short dicomKey_group, const unsigned short dicomKey_element)
+  template< class TImageType = ImageTypeFloat3D >
+  typename TImageType::Pointer CreateImage(const typename TImageType::Pointer inputImage, const typename TImageType::PixelType value = 0)
   {
-    OFString tagValue = "";
-    DcmFileFormat fileformat;
-    OFCondition status = fileformat.loadFile(dicomFile.c_str());
-    if (status.good())
-    {
-      if (!fileformat.getDataset()->findAndGetOFString(DcmTagKey(dicomKey_group, dicomKey_element), tagValue).good())
-      {
-        std::cerr << "Error reading DICOM key '" << std::to_string(dicomKey_group) << "," << std::to_string(dicomKey_element) << "'\n";
-      }
-    }
-    else
-    {
-      std::cerr << "Error reading DICOM file '" << dicomFile << "'\n";
-    }
-
-    return tagValue.c_str();
-  }
-
-  /**
-  \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
-
-  See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
-
-  \param dicomFile This can be any of the files in the DICOM folder
-  \param dicomKey Needs to be in format '0x0010|0x0020' for 'group|element' as unsigned short (no parentheses)
-  */
-  inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::vector< unsigned short > &dicomKey)
-  {
-    return GetDICOMTagValue(dicomFile, dicomKey[0], dicomKey[1]);
-  }
-
-  /**
-  \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
-
-  See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
-
-  \param dicomFile This can be any of the files in the DICOM folder
-  \param dicomKey Needs to be in format '0x0010|0x0020' for 'group|element' as unsigned short (no parentheses)
-  */
-  inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey)
-  {
-    auto tags = cbica::stringSplit(dicomKey, "|");
-
-    return GetDICOMTagValue(dicomFile, 
-      static_cast<unsigned short>(std::stoul(tags[0].c_str(), nullptr, 16)), static_cast<unsigned short>(std::stoul(tags[1].c_str(), nullptr, 16))
-      );
+    typename TImageType::Pointer new_image = TImageType::New();
+    new_image->SetLargestPossibleRegion(inputImage->GetLargestPossibleRegion());
+    new_image->SetRequestedRegion(inputImage->GetRequestedRegion());
+    new_image->SetBufferedRegion(inputImage->GetBufferedRegion());
+    new_image->SetDirection(inputImage->GetDirection());
+    new_image->SetOrigin(inputImage->GetOrigin());
+    new_image->SetSpacing(inputImage->GetSpacing());
+    new_image->Allocate();
+    new_image->FillBuffer(value);
+    return new_image;
   }
 
   /**
@@ -928,149 +938,70 @@ namespace cbica
   \param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
   \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
   */
-  inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey_group, const std::string &dicomKey_element)
-  {
-    return GetDICOMTagValue(dicomFile,
-      static_cast<unsigned short>(std::atoi(dicomKey_group.c_str())), static_cast<unsigned short>(std::atoi(dicomKey_element.c_str()))
-      );
-  }
-
-  /**
-  \brief This function applies the N3 Bias correction and returns the output
-  
-  Reference: http://www.insight-journal.org/browse/publication/640
-
-  \param inputImage The input image
-  \param maskImage The mask image; defaults to nullptr
-  \param numBins The number of bins for Otsu threshold which is used if Mask is null; defaults to 200
-  \param shrinkFactor The amount of shrink to apply to the image; defaults to 1
-  \param iterations Number of iterations to run for the bias correction
-  \param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
-  */
-  //template< class TImageType = ImageTypeFloat3D >
-  //using TImageType = ImageTypeFloat3D;
-  //using TMaskImageType = ImageTypeFloat3D;
-  //TImageType::Pointer itkN3MRIBiasFieldCorrectionImageFilterTest(TImageType::Pointer inputImage, TMaskImageType::Pointer maskImage = nullptr,
-  //  unsigned int numBins = 200, unsigned int shrinkFactor = 1, unsigned int iterations = 5)
+  //inline std::string GetDICOMTagValue(const std::string &dicomFile, const unsigned short dicomKey_group, const unsigned short dicomKey_element)
   //{
-  //  typedef float RealType;
-  //  
-  //  auto shrinker = itk::ShrinkImageFilter<TImageType, TImageType>::New();
-  //  shrinker->SetInput(inputImage);
-  //  shrinker->SetShrinkFactors(shrinkFactor);
-
-  //  if (maskImage == nullptr)
+  //  OFString tagValue = "";
+  //  DcmFileFormat fileformat;
+  //  OFCondition status = fileformat.loadFile(dicomFile.c_str());
+  //  if (status.good())
   //  {
-  //    auto otsu = itk::OtsuThresholdImageFilter< TImageType, TMaskImageType >::New();
-  //    otsu->SetInput(inputImage);
-  //    otsu->SetNumberOfHistogramBins(200);
-  //    otsu->SetInsideValue(0);
-  //    otsu->SetOutsideValue(1);
-  //    otsu->Update();
-
-  //    maskImage = otsu->GetOutput();
+  //    if (!fileformat.getDataset()->findAndGetOFString(DcmTagKey(dicomKey_group, dicomKey_element), tagValue).good())
+  //    {
+  //      std::cerr << "Error reading DICOM key '" << std::to_string(dicomKey_group) << "," << std::to_string(dicomKey_element) << "'\n";
+  //    }
+  //  }
+  //  else
+  //  {
+  //    std::cerr << "Error reading DICOM file '" << dicomFile << "'\n";
   //  }
 
-  //  auto maskshrinker = itk::ShrinkImageFilter< TMaskImageType, TMaskImageType>::New();
-  //  maskshrinker->SetInput(maskImage);
-  //  maskshrinker->SetShrinkFactors(shrinkFactor);
-
-  //  shrinker->Update();
-  //  maskshrinker->Update();
-  //  
-  //  auto corrector = itk::N3MRIBiasFieldCorrectionImageFilter< TImageType, TMaskImageType, TImageType >::New();
-  //  corrector->SetInputImage(shrinker->GetOutput());
-  //  corrector->SetMaskImage(maskshrinker->GetOutput());
-  //  
-
-  //  if (argc > 6)
-  //  {
-  //    correcter->SetMaximumNumberOfIterations(atoi(argv[6]));
-  //  }
-  //  if (argc > 7)
-  //  {
-  //    correcter->SetNumberOfFittingLevels(atoi(argv[7]));
-  //  }
-
-
-  //  typedef CommandIterationUpdate<CorrecterType> CommandType;
-  //  typename CommandType::Pointer observer = CommandType::New();
-  //  correcter->AddObserver(itk::IterationEvent(), observer);
-
-  //  try
-  //  {
-  //    correcter->Update();
-  //  }
-  //  catch (...)
-  //  {
-  //    std::cerr << "Exception caught." << std::endl;
-  //    return EXIT_FAILURE;
-  //  }
-
-  //  //  correcter->Print( std::cout, 3 );
-
-  //  /**
-  //  * Reconstruct the bias field at full image resolution.  Divide
-  //  * the original input image by the bias field to get the final
-  //  * corrected image.
-  //  */
-  //  typedef itk::BSplineControlPointImageFilter<typename
-  //    CorrecterType::BiasFieldControlPointLatticeType, typename
-  //    CorrecterType::ScalarImageType> BSplinerType;
-  //  typename BSplinerType::Pointer bspliner = BSplinerType::New();
-  //  bspliner->SetInput(correcter->GetLogBiasFieldControlPointLattice());
-  //  bspliner->SetSplineOrder(correcter->GetSplineOrder());
-  //  bspliner->SetSize(
-  //    reader->GetOutput()->GetLargestPossibleRegion().GetSize());
-  //  bspliner->SetOrigin(reader->GetOutput()->GetOrigin());
-  //  bspliner->SetDirection(reader->GetOutput()->GetDirection());
-  //  bspliner->SetSpacing(reader->GetOutput()->GetSpacing());
-  //  bspliner->Update();
-
-  //  typename ImageType::Pointer logField = ImageType::New();
-  //  logField->SetOrigin(bspliner->GetOutput()->GetOrigin());
-  //  logField->SetSpacing(bspliner->GetOutput()->GetSpacing());
-  //  logField->SetRegions(
-  //    bspliner->GetOutput()->GetLargestPossibleRegion().GetSize());
-  //  logField->SetDirection(bspliner->GetOutput()->GetDirection());
-  //  logField->Allocate();
-
-  //  itk::ImageRegionIterator<typename CorrecterType::ScalarImageType> ItB(
-  //    bspliner->GetOutput(),
-  //    bspliner->GetOutput()->GetLargestPossibleRegion());
-  //  itk::ImageRegionIterator<ImageType> ItF(logField,
-  //    logField->GetLargestPossibleRegion());
-  //  for (ItB.GoToBegin(), ItF.GoToBegin(); !ItB.IsAtEnd(); ++ItB, ++ItF)
-  //  {
-  //    ItF.Set(ItB.Get()[0]);
-  //  }
-
-  //  typedef itk::ExpImageFilter<ImageType, ImageType> ExpFilterType;
-  //  typename ExpFilterType::Pointer expFilter = ExpFilterType::New();
-  //  expFilter->SetInput(logField);
-  //  expFilter->Update();
-
-  //  typedef itk::DivideImageFilter<ImageType, ImageType, ImageType> DividerType;
-  //  typename DividerType::Pointer divider = DividerType::New();
-  //  divider->SetInput1(reader->GetOutput());
-  //  divider->SetInput2(expFilter->GetOutput());
-  //  divider->Update();
-
-  //  typedef itk::ImageFileWriter<ImageType> WriterType;
-  //  typename WriterType::Pointer writer = WriterType::New();
-  //  writer->SetFileName(argv[3]);
-  //  writer->SetInput(divider->GetOutput());
-  //  writer->Update();
-
-  //  if (argc > 8)
-  //  {
-  //    typedef itk::ImageFileWriter<ImageType> WriterType;
-  //    typename WriterType::Pointer writer = WriterType::New();
-  //    writer->SetFileName(argv[8]);
-  //    writer->SetInput(expFilter->GetOutput());
-  //    writer->Update();
-  //  }
-
-  //  return EXIT_SUCCESS;
+  //  return tagValue.c_str();
   //}
+
+  ///**
+  //\brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  //See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
+
+  //\param dicomFile This can be any of the files in the DICOM folder
+  //\param dicomKey Needs to be in format '0x0010|0x0020' for 'group|element' as unsigned short (no parentheses)
+  //*/
+  //inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::vector< unsigned short > &dicomKey)
+  //{
+  //  return GetDICOMTagValue(dicomFile, dicomKey[0], dicomKey[1]);
+  //}
+
+  ///**
+  //\brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  //See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
+
+  //\param dicomFile This can be any of the files in the DICOM folder
+  //\param dicomKey Needs to be in format '0x0010|0x0020' for 'group|element' as unsigned short (no parentheses)
+  //*/
+  //inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey)
+  //{
+  //  auto tags = cbica::stringSplit(dicomKey, "|");
+
+  //  return GetDICOMTagValue(dicomFile, 
+  //    static_cast<unsigned short>(std::stoul(tags[0].c_str(), nullptr, 16)), static_cast<unsigned short>(std::stoul(tags[1].c_str(), nullptr, 16))
+  //    );
+  //}
+
+  ///**
+  //\brief This function gets the value of the DICOM tag from the key provided for the DICOM file
+
+  //See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
+
+  //\param dicomFile This can be any of the files in the DICOM folder
+  //\param dicomKey_group Needs to be in format '0x0010' for 'group' as unsigned short (no parentheses)
+  //\param dicomKey_element Needs to be in format '0x0020' for 'element' as unsigned short (no parentheses)
+  //*/
+  //inline std::string GetDICOMTagValue(const std::string &dicomFile, const std::string &dicomKey_group, const std::string &dicomKey_element)
+  //{
+  //  return GetDICOMTagValue(dicomFile,
+  //    static_cast<unsigned short>(std::atoi(dicomKey_group.c_str())), static_cast<unsigned short>(std::atoi(dicomKey_element.c_str()))
+  //    );
+  //}
+
 }
