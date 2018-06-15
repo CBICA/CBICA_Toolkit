@@ -112,7 +112,7 @@ namespace cbica
 
   \param inputVector Vector in a cv::Mat structure
   */
-  cv::Mat ZScores(const cv::Mat &inputMat);
+  //cv::Mat ZScores(const cv::Mat &inputMat);
 
   /**
   \brief Save input matrix as a csv

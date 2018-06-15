@@ -57,10 +57,10 @@ namespace cbica
     return ROC_Values(inputData.col(0), inputData.col(1));
   }
 
-  cv::Mat Z_Scores(const cv::Mat &inputMat)
-  {
-    return cbica::ZScores(inputMat);
-  }
+  //cv::Mat Z_Scores(const cv::Mat &inputMat)
+  //{
+  //  return cbica::ZScores(inputMat);
+  //}
 
   void SaveAsCSV(const cv::Mat &inputMat, const std::string &filename)
   {
