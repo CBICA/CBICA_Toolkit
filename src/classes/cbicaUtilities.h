@@ -8,7 +8,7 @@ This needs c++11 flag enabled in gcc < 5.
 http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
+Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 
 */
