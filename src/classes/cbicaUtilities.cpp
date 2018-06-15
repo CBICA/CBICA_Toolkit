@@ -148,7 +148,14 @@ namespace cbica
     homeEnv = "HOME";
 #endif    
 
-    tempCheck = cbica::getEnvironmentVariableValue(homeEnv) + "/" + cbica::getExecutableName() + "/tmp_" + getCurrentProcessID();
+    auto exeTempDir = cbica::getEnvironmentVariableValue(homeEnv) + "/." + cbica::getExecutableName());
+    if (!directoryExists(exeTempDir)
+    {
+      createDir(exeTempDir);
+      auto temp = cbica::stringSplit(cbica::getCurrentLocalTime(), ":");
+    }
+
+    tempCheck = exeTempDir + "/tmp_" + getCurrentProcessID();
 
     if (cbica::directoryExists(tempCheck))
     {
@@ -1920,7 +1927,7 @@ namespace cbica
   {
 #ifndef WIN32 // this function is not needed for Windows systems
     auto tempDir = createTmpDir();
-    std::cout << "tempDir created, waiting.\n";
+    std::cout << "tempDir created at '" << tempDir << "', waiting.\n";
     std::cin.ignore();
     auto tempFile = tempDir + "tempFile.txt";
 
