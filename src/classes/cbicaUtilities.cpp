@@ -659,7 +659,7 @@ namespace cbica
         path[0] = '\0';
       }
     }
-    return_string = std::string(path);
+    return_string = getFilenameBase(std::string(path));
     path[0] = '\0';
 #endif
 
