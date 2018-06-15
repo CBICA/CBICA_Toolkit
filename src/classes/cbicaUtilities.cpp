@@ -1920,6 +1920,8 @@ namespace cbica
   {
 #ifndef WIN32 // this function is not needed for Windows systems
     auto tempDir = createTmpDir();
+    std::cout << "tempDir created, waiting.\n";
+    std::cin.ignore();
     auto tempFile = tempDir + "tempFile.txt";
 
     std::ifstream in(inputFile.c_str());
@@ -1933,6 +1935,7 @@ namespace cbica
     std::ostreambuf_iterator<char> output(out);
 
     std::remove_copy(input, end, output, '\r');
+    out.close();
 
     std::remove(inputFile.c_str());
     cbica::copyFile(tempFile, inputFile);
