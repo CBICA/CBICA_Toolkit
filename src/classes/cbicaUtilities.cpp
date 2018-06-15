@@ -656,11 +656,11 @@ namespace cbica
       if (readlink("/proc/self/exe", path, PATH_MAX) == -1) 
       {
         free(path);
-        path = nullptr;
+        path = NULL;
       }
     }
     return_string = std::string(path);
-    path = nullptr;
+    path = NULL;
 #endif
 
     return return_string;
