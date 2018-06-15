@@ -1938,8 +1938,6 @@ namespace cbica
   {
 #ifndef WIN32 // this function is not needed for Windows systems
     auto tempDir = createTmpDir();
-    std::cout << "tempDir created at '" << tempDir << "', waiting.\n";
-    std::cin.ignore();
     auto tempFile = tempDir + "tempFile.txt";
 
     std::ifstream in(inputFile.c_str());
