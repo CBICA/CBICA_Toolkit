@@ -650,6 +650,14 @@ namespace cbica
 #else
     return_string = getEnvironmentVariableValue("_");
     return_string = cbica::replaceString(return_string, "./", "");
+    char *path = malloc(PATH_MAX);
+    if (path != NULL) {
+      if (readlink("/proc/self/exe", path, PATH_MAX) == -1) {
+        free(path);
+        path = NULL;
+      }
+    }
+    return_string = std::string(path);
 #endif
 
     return return_string;
