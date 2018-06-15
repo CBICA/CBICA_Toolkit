@@ -149,7 +149,7 @@ namespace cbica
 #endif    
 
     auto exeTempDir = cbica::getEnvironmentVariableValue(homeEnv) + "/." + cbica::getExecutableName();
-    if (!directoryExists(exeTempDir)
+    if (!directoryExists(exeTempDir))
     {
       createDir(exeTempDir);
       auto temp = cbica::stringSplit(cbica::getCurrentLocalTime(), ":");
