@@ -53,6 +53,7 @@ static const char  cSeparator = '/';
 #include <string>
 #include <omp.h>
 #include <filesystem>
+#include <thread>
 
 #include "cbicaUtilities.h"
 
@@ -1910,6 +1911,35 @@ namespace cbica
   char* constCharToChar(const char *input)
   {
     return cbica::constCharToChar(std::string(input));
+  }
+
+  void dos2unix(const std::string inputFile)
+  {
+#ifndef WIN32 // this function is not needed for Windows systems
+    auto tempDir = createTmpDir();
+    auto tempFile = tempDir + "tempFile.txt";
+
+    std::ifstream in(inputFile.c_str());
+    if (!in.is_open())
+    {
+      std::cerr << "Error: could not open '" << inputFile << "'\n";
+      return;
+    }
+    std::ofstream out(tempFile.c_str());
+    std::istreambuf_iterator<char> input(in), end;
+    std::ostreambuf_iterator<char> output(out);
+
+    std::remove_copy(input, end, output, '\r');
+
+    std::remove(inputFile.c_str());
+    cbica::copyFile(tempFile, inputFile);
+
+    if (removeDirectoryRecursively(tempDir) != 0)
+    {
+      std::cerr << "There was an issue deleting the tempDir '" << tempDir << "'\n";
+    }
+#endif
+    return;
   }
 
   //! Cross platform Sleep

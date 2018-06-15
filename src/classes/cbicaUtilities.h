@@ -767,6 +767,13 @@ namespace cbica
   Defaults to "std::rand() % 1000 + 1"
   */
   void sleep(size_t ms = std::rand() % 1000 + 1);
+
+  /**
+  \brief Ensuring files written using Windows don't mess stuff up
+
+  Base implementation from https://www.digitalpeer.com/blog/simple-text-processing-with-cpp-dos2unix-example
+  */
+  void dos2unix(const std::string inputFile);
   //==================================== Template stuff ==================================//
 
   /**
