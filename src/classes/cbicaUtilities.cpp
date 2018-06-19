@@ -148,7 +148,7 @@ namespace cbica
     homeEnv = "HOME";
 #endif    
 
-    auto exeTempDir = cbica::getEnvironmentVariableValue(homeEnv) + "/." + cbica::getExecutableName();
+    auto exeTempDir = cbica::getEnvironmentVariableValue(homeEnv) + "/.cbicaTemp/"/* + cbica::getExecutableName()*/;
     if (!directoryExists(exeTempDir))
     {
       createDir(exeTempDir);
@@ -653,9 +653,9 @@ namespace cbica
     char path[PATH_MAX];
     if (path != NULL) 
     {
-      if (readlink("/proc/self/exe", path, PATH_MAX) == -1) 
+      if (::readlink("/proc/self/exe", path, PATH_MAX) == -1) 
       {
-        free(path);
+        //free(path);
         path[0] = '\0';
       }
     }
