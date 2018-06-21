@@ -774,6 +774,7 @@ namespace cbica
   Base implementation from https://www.digitalpeer.com/blog/simple-text-processing-with-cpp-dos2unix-example
   */
   void dos2unix(const std::string inputFile);
+
   //==================================== Template stuff ==================================//
 
   /**
@@ -890,6 +891,19 @@ namespace cbica
   bool compareLesser(const A x, const B y, Others const ... args)
   {
     return (x < y) && compareLesser(y, args...);
+  }
+
+  /**
+  \brief Convert to string with precision
+
+  Useful when std::to_string truncates doubles
+  */
+  template< typename TDataType = double >
+  std::string to_string_precision(const TDataType a_value, const int n = 10)
+  {
+    std::ostringstream out;
+    out << std::setprecision(n) << a_value;
+    return out.str();
   }
 
 #endif
