@@ -415,12 +415,47 @@ namespace cbica
     */
     void exampleUsage(const std::string &usageOfExe);
 
+	/*
+	\brief Writes out a CWL specification file from cmd parser
+
+	This should be invoked everytime the cmd parser is called for an application.
+
+	\param dirName Full directory path to where the CWL spec will be produced
+	\workflowName For more advanced CWL workflows
+	
+	*/
 	void writeCWLFile(const std::string & dirName, const std::string &workflowName);
 
+	/*
+	\brief Gets the command line string with all the parameters from input yml file
+
+	This needs a input yml file to parse parameter values to CWL specs
+
+	\param dirName Full directory path to the input yml file
+	
+	*/
 	std::string GetCommandFromCWL(const std::string & dirName);
 
+	/*
+	\brief Reads a CWL spec file and creates a the command line tool for the application
+
+	This reads a CWL file and populates the cmd parser
+
+	\param path_to_config_file Path to the CWL spec file
+	
+	\param getDescription This is a flag incase we want to run the CWL spec file with default values
+	
+	*/
 	void readCWLFile(const std::string & path_to_config_file, bool getDescription);
 
+	/**
+	\brief Get the laconic value from verbose
+
+	Searches using the verbose value.
+
+	\param execParamToCheck The verbose variant of the parameter
+	
+	*/
 	std::string getLaconic(const std::string &execParamToCheck);
     /**
     \brief Get the value of the parameter
