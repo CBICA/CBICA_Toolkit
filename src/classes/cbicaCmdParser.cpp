@@ -1220,7 +1220,11 @@ namespace cbica
 		  std::string value = it->second.as<std::string>();
 
 		  std::string laconic = getLaconic(key);
-
+		  if (laconic == "")
+		  {
+			  std::cerr << "No matching parameter found for '" << key << "'.\n";
+			  exit(EXIT_FAILURE);
+		  }
 		  cmd += " -" + laconic + " " + value;
 	  }
 
@@ -1329,6 +1333,75 @@ namespace cbica
 	  std::ofstream fout("d:\\Hellow.cwl");
 	  fout << config;	  
 }
+
+  YAML::Node CmdParser::createNode(const std::string & nodeString, YAML::Node rootNode)
+  {
+	  if (!rootNode)
+	  {
+		  std::cerr << "Root node is empty\n";
+		  exit(EXIT_FAILURE);
+	  }
+
+	  YAML::Node node = rootNode[nodeString];
+	  
+	  return node;
+  }
+
+  void CmdParser::deleteNode(const std::string & nodeString, YAML::Node parent)
+  {
+	  if (!parent)
+	  {
+		  std::cerr << "Root node is empty\n";
+		  exit(EXIT_FAILURE);
+	  }
+
+	  parent[nodeString].remove;
+	  return;
+  }
+
+  YAML::Node CmdParser::addInputs(const std::string & param, YAML::Node rootNode)
+  {
+	  if (!rootNode)
+	  {
+		  std::cerr << "Root node is empty\n";
+		  exit(EXIT_FAILURE);
+	  }
+
+	  rootNode["inputs"][param];
+	  return rootNode;
+  }
+
+  YAML::Node CmdParser::addOutputs(const std::string & param, YAML::Node rootNode)
+  {
+	  if (!rootNode)
+	  {
+		  std::cerr << "Root node is empty\n";
+		  exit(EXIT_FAILURE);
+	  }
+
+	  rootNode["outputs"][param];
+	  return rootNode;
+  }
+
+  std::string CmdParser::checkDefault(const std::string & param, YAML::Node input)
+  {	  
+	  std::string defaultValue = "";
+	  if (input[param]["default"]) {
+		  defaultValue = (input[param]["default"]).as<std::string>();;		  
+	  }
+	  return defaultValue;		  
+  }
+
+  void CmdParser::cwlrunner(const std::string & cwl_spec_path, const std::string & cwl_input_path, bool getDefaultFlag)
+  {
+	  std::string cmd = "cwl-runner ";
+	  if ( !getDefaultFlag) {
+		  cmd += cwl_spec_path + " " + cwl_input_path;
+	  }
+	  cmd += cwl_spec_path;
+	  system(cmd.c_str());
+	  //ShellExecute(0, "open", "cmd.exe", cmd.c_str(), 0, SW_HIDE);;
+  }
 
   std::string CmdParser::getLaconic(const std::string & execParamToCheck)
   {	  

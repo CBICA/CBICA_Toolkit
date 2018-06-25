@@ -448,6 +448,78 @@ namespace cbica
 	*/
 	void readCWLFile(const std::string & path_to_config_file, bool getDescription);
 
+	/*
+	\brief Creates a YAML node for the given root node.
+
+	This creates a new node
+
+	\param nodeString Name of the node
+
+	\param rootNode Parent node of the new node to be created
+
+	*/
+	YAML::Node createNode(const std::string & nodeString, YAML::Node rootNode);
+
+	/*
+	\brief Deletes a YAML node inside the root node.
+
+	This creates a new node
+
+	\param nodeString Name of the node
+
+	\param parent Parent node of the new node to be created
+
+	*/
+	void deleteNode(const std::string & nodeString, YAML::Node parent);
+
+	/*
+	\brief Adds an input parameter inside input node.
+
+	This creates a new input parameter
+
+	\param param Name of the parameter to be added
+
+	\param rootNode Root Node of the CWL spec file
+
+	*/
+	YAML::Node addInputs(const std::string & param, YAML::Node rootNode);
+
+	/*
+	\brief Adds an output field.
+
+	This creates a new output field
+
+	\param param Name of the parameter to be added
+
+	\param rootNode Root Node of the CWL spec file
+
+	*/
+	YAML::Node addOutputs(const std::string & param, YAML::Node rootNode);
+
+	/*
+	\brief Checks if default value is specified for a parameter.
+
+	This returns the default value of parameter if exists
+
+	\param param Name of the parameter to be checked
+
+	\param input INPUT node of CWL spec
+
+	*/
+	std::string checkDefault(const std::string & param, YAML::Node input);
+
+	/*
+	Invokes cwl-runner tool from the command line tool with given command
+
+	This invokes the cwl runner according to the flag for default values
+
+	\param cwl_spec_path Path to the CWL spec file
+	\param cwl_input_path Path to the input yml file. Empty string if doesn't exist
+	\param getDefaultFlag execute default or not default boolean
+
+	*/
+	void cwlrunner(const std::string & cwl_spec_path, const std::string & cwl_input_path, bool getDefaultFlag);
+	
 	/**
 	\brief Get the laconic value from verbose
 
