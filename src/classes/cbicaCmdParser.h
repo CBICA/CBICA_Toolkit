@@ -415,6 +415,13 @@ namespace cbica
     */
     void exampleUsage(const std::string &usageOfExe);
 
+	void writeCWLFile(const std::string & dirName, const std::string &workflowName);
+
+	std::string GetCommandFromCWL(const std::string & dirName);
+
+	void readCWLFile(const std::string & path_to_config_file, bool getDescription);
+
+	std::string getLaconic(const std::string &execParamToCheck);
     /**
     \brief Get the value of the parameter
 
