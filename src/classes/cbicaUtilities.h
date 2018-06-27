@@ -29,6 +29,8 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <memory.h>
 #include <map>
 #include <random>
+#include <iomanip>
+#include <limits>
 
 #if _WIN32
 #include <process.h>
@@ -838,7 +840,7 @@ namespace cbica
     return return_vector;
   }
 
-#if (_MSC_VER >= 1800) || __GXX_EXPERIMENTAL_CXX0X__ || (__GNUC__ > 4)
+#if (_MSC_VER >= 1800) || (__cplusplus >= 201103L)
   /**
   \brief Base for compareEqual(...)
   */
