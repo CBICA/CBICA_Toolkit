@@ -28,9 +28,9 @@ IF( WIN32 )
 	#INCLUDE_DIRECTORIES( ${WinHeaders} )
 ENDIF( WIN32 )
 
-# INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp )
+#INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/ )
  
-FILE( GLOB YAML_Sources "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/*.*" )
+FILE( GLOB sources "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/*.*" )
 
 # select all headers. it is manual addition for the explicit reason of view-ability (can be made automatic in a future build)
 SET( CBICA_Headers
@@ -55,8 +55,7 @@ SET( BASIC_CLASS_LIBRARY ${CBICA_LIB_NAME} CACHE STRING "Basic classes library" 
 ADD_LIBRARY( ${CBICA_LIB_NAME}
   ${ExtraSources}
   ${CBICA_Headers}
-  ${CBICA_Sources}
-  ${YAML_Sources}
+  ${CBICA_Sources}  
 )
 
 SET_PROPERTY( GLOBAL PROPERTY USE_FOLDERS ON)
