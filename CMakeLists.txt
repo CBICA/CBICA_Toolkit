@@ -31,6 +31,33 @@ SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
 # Find all *.h and *.cpp files in a folder -> useful when the application is purely command line based
 SET( SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/src )
 SET( BASIC_CLASS_DIRECTORY ${SOURCE_DIRECTORY}/classes )
+SET( THIRDPARTY_LIB_PATH ${SOURCE_DIRECTORY}/thirdparty )
+
+# macro to find all sub-directories 
+MACRO(SUBDIRLIST result curdir)
+  FILE(GLOB children 
+    RELATIVE ${curdir} ${curdir}/* 
+    PATTERN "svn" EXCLUDE
+  )
+  SET(dirlist "")
+  FOREACH(child ${children})
+    IF(IS_DIRECTORY ${curdir}/${child})
+      LIST(APPEND dirlist ${child})
+    ENDIF()
+  ENDFOREACH()
+  SET(${result} ${dirlist})
+ENDMACRO()
+
+# find and include all third party libraries
+SUBDIRLIST(SUBDIRECTORIES ${THIRDPARTY_LIB_PATH})
+
+FOREACH(thirdParty_include ${SUBDIRECTORIES})
+  INCLUDE_DIRECTORIES( ${THIRDPARTY_LIB_PATH}/${thirdParty_include} )
+  #SUBDIRLIST(SUBDIRECTORIES_INT ${THIRDPARTY_LIB_PATH})
+  #FOREACH(thirdParty_int_include ${THIRDPARTY_LIB_PATH}/${thirdParty_include})
+  #  INCLUDE_DIRECTORIES( ${THIRDPARTY_LIB_PATH}/${thirdParty_include}/${thirdParty_int_include} )
+  #ENDFOREACH()
+ENDFOREACH()
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
