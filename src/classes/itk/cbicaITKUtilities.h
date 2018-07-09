@@ -925,10 +925,10 @@ namespace cbica
   \param inputImage
   */
   template< typename TImageType = ImageTypeFloat3D >
-  itk::Vector< float, typename TImageType::ImageDimension > GetDistances(const typename TImageType::Pointer inputImage)
+  itk::Vector< float, TImageType::ImageDimension > GetDistances(const typename TImageType::Pointer inputImage)
   {
-    itk::Vector< float, typename TImageType::ImageDimension > distances;
-    itk::Point< float, typename TImageType::ImageDimension > start_worldCoordinates, end_worldCoordinates;
+    itk::Vector< float, TImageType::ImageDimension > distances;
+    itk::Point< float, TImageType::ImageDimension > start_worldCoordinates, end_worldCoordinates;
     itk::ImageRegionConstIterator< TImageType > iterator(inputImage, inputImage->GetBufferedRegion());
 
     iterator.GoToBegin();
