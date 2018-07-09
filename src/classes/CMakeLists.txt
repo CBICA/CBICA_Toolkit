@@ -30,7 +30,7 @@ ENDIF( WIN32 )
 
 #INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/ )
  
-FILE( GLOB sources "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/*.*" )
+FILE(GLOB sources "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/*.*")
 
 # select all headers. it is manual addition for the explicit reason of view-ability (can be made automatic in a future build)
 SET( CBICA_Headers
