@@ -43,20 +43,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 //#include "itkStripTsImageFilter.h"
 #include "itkMaskImageFilter.h"
 
-// DCMTK headers 
-//#include "dcmtk/config/osconfig.h"   
-//#include "dcmtk/ofstd/ofstream.h"
-//#include "dcmtk/dcmdata/dctk.h"
-//#include "dcmtk/dcmdata/cmdlnarg.h"
-//#include "dcmtk/ofstd/ofconapp.h"
-//#include "dcmtk/ofstd/ofstd.h"
-//#include "dcmtk/dcmdata/dcuid.h"     
-//#include "dcmtk/dcmdata/dcistrmz.h"  
-//#include "dcmtk/ofstd/ofstdinc.h"
-
-
 #include "cbicaUtilities.h"
-#include "itkN3MRIBiasFieldCorrectionImageFilter.h"
+#include "cbicaITKImageInfo.h"
 
 #include "gdcmMD5.h"
 
@@ -341,8 +329,8 @@ namespace cbica
     auto imageSize1 = imageInfo1.GetImageSize();
     auto imageSize2 = imageInfo2.GetImageSize();
 
-    auto imageSpacing1 = imageInfo1.GetImageSpacing();
-    auto imageSpacing2 = imageInfo2.GetImageSpacing();
+    auto imageSpacing1 = imageInfo1.GetImageSpacings();
+    auto imageSpacing2 = imageInfo2.GetImageSpacings();
 
     auto imageOrigin1 = imageInfo1.GetImageOrigins();
     auto imageOrigin2 = imageInfo2.GetImageOrigins();
@@ -365,6 +353,8 @@ namespace cbica
         return false;
       }
     }
+
+    return true;
   }
 
   /**
@@ -927,6 +917,34 @@ namespace cbica
     new_image->Allocate();
     new_image->FillBuffer(value);
     return new_image;
+  }
+
+  /**
+  \brief Get distances in world coordinates across axes for an image
+
+  \param inputImage
+  */
+  template< typename TImageType = ImageTypeFloat3D >
+  itk::Vector< float, typename TImageType::ImageDimension > GetDistances(const typename TImageType::Pointer inputImage)
+  {
+    itk::Vector< float, typename TImageType::ImageDimension > distances;
+    itk::Point< float, typename TImageType::ImageDimension > start_worldCoordinates, end_worldCoordinates;
+    itk::ImageRegionConstIterator< TImageType > iterator(inputImage, inputImage->GetBufferedRegion());
+
+    iterator.GoToBegin();
+    auto start_image = iterator.GetIndex();
+    iterator.GoToEnd();
+    auto end_image = iterator.GetIndex();
+
+    inputImage->TransformIndexToPhysicalPoint(start_image, start_worldCoordinates);
+    inputImage->TransformIndexToPhysicalPoint(end_image, end_worldCoordinates);
+
+    for (size_t i = 0; i < TImageType::ImageDimension; i++)
+    {
+      distances[i] = end_worldCoordinates[i] - start_worldCoordinates[i]; // real world image span along each axis
+    }
+
+    return distances;
   }
 
   /**
