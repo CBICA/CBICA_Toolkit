@@ -13,8 +13,6 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #if (_WIN32)
 #define NOMINMAX
 #include <direct.h>
-#include <json.hpp>
-#include <yaml-cpp\yaml.h>
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
@@ -53,6 +51,8 @@ static const char  cSeparator = '/';
 #include <algorithm>
 #include <string>
 #include "cbicaCmdParser.h"
+#include "../thirdparty/yaml-cpp/yaml.h"
+
 
 #ifndef PROJECT_VERSION
 #define PROJECT_VERSION "0.0.1"
@@ -1121,6 +1121,7 @@ namespace cbica
 
 	  config["cwlVersion"] = "v1.0";
 	  config["class"] = "CommandLineTool";
+	  config["version"] = m_version;
 	  config["baseCommand"] = m_exeName;
 
 	  YAML::Node inputs = config["inputs"];
@@ -1191,27 +1192,42 @@ namespace cbica
 	  return;
 	  }
 
-  std::string CmdParser::GetCommandFromCWL(const std::string & dirName)
+  std::string CmdParser::GetCommandFromCWL(const std::string &inpDir, const std::string & cwlDir)
   {
 	  if (!checkMaxLen)
 	  {
 		  getMaxLength();
 	  }
 
-	  std::string dirName_wrap;
-	  if (!cbica::directoryExists(dirName) || (dirName.empty()))
+	  std::string inpDirName_warp, cwlDirName_warp;
+	  
+	  
+	  if (!cbica::directoryExists(inpDir) || (inpDir.empty()))
 	  {
-		  dirName_wrap = cbica::makeTempDir();
+		  inpDirName_warp = cbica::makeTempDir();
 	  }
-	  dirName_wrap = cbica::stringReplace(dirName, "\\", "/");
-	  if (dirName_wrap.substr(dirName_wrap.length() - 1) != "/")
+	  inpDirName_warp = cbica::stringReplace(inpDir, "\\", "/");
+	  if (inpDirName_warp.substr(inpDirName_warp.length() - 1) != "/")
 	  {
-		  dirName_wrap += "/";
+		  inpDirName_warp += "/";
 	  }
 
-	  std::string inpFileName = dirName_wrap + m_exeName + ".yml";
+	  //cwl dir
+	  if (!cbica::directoryExists(cwlDir) || (cwlDir.empty()))
+	  {
+		  cwlDirName_warp = cbica::makeTempDir();
+	  }
+	  cwlDirName_warp = cbica::stringReplace(cwlDir, "\\", "/");
+	  if (cwlDirName_warp.substr(cwlDirName_warp.length() - 1) != "/")
+	  {
+		  cwlDirName_warp += "/";
+	  }
+
+	  std::string inpFileName = inpDirName_warp + m_exeName + ".yml";
+	  std::string cwlFileName = cwlDirName_warp + m_exeName + ".cwl";
 
 	  YAML::Node input = YAML::LoadFile(inpFileName);
+	  YAML::Node config = YAML::LoadFile(cwlFileName);
 
 	  std::string cmd = m_exeName;
 
@@ -1225,13 +1241,22 @@ namespace cbica
 			  std::cerr << "No matching parameter found for '" << key << "'.\n";
 			  exit(EXIT_FAILURE);
 		  }
+
+		  if (!input[key]) {
+			  if (config["inputs"][key]["default"]) {
+				  value = config["inputs"][key]["default"].as<std::string>();
+			  }
+			  else {
+				  std::cerr << "There is no value specified for parameter'" << key << "'Default is also not specified.\n";
+				  exit(EXIT_FAILURE);
+			  }
+		  }
 		  cmd += " -" + laconic + " " + value;
 	  }
-
+	  
+	  logCWL(inpFileName, cwlFileName);
 	  return cmd;
-
   }
-
 
   void CmdParser::readCWLFile(const std::string &path_to_CWL_File, bool getDescription)
   {	  
@@ -1334,8 +1359,9 @@ namespace cbica
 	  fout << config;	  
 }
 
-  YAML::Node CmdParser::createNode(const std::string & nodeString, YAML::Node rootNode)
+  void CmdParser::createNode(const std::string & nodeString)
   {
+	  YAML::Node rootNode;
 	  if (!rootNode)
 	  {
 		  std::cerr << "Root node is empty\n";
@@ -1344,23 +1370,25 @@ namespace cbica
 
 	  YAML::Node node = rootNode[nodeString];
 	  
-	  return node;
+	  return;
   }
 
-  void CmdParser::deleteNode(const std::string & nodeString, YAML::Node parent)
+  void CmdParser::deleteNode(const std::string & nodeString)
   {
+	  YAML::Node parent;
 	  if (!parent)
 	  {
 		  std::cerr << "Root node is empty\n";
 		  exit(EXIT_FAILURE);
 	  }
 
-	  parent[nodeString].remove;
+	  //parent[nodeString].remove;
 	  return;
   }
 
-  YAML::Node CmdParser::addInputs(const std::string & param, YAML::Node rootNode)
+  void CmdParser::addInputs(const std::string & param)
   {
+	  YAML::Node rootNode;
 	  if (!rootNode)
 	  {
 		  std::cerr << "Root node is empty\n";
@@ -1368,11 +1396,12 @@ namespace cbica
 	  }
 
 	  rootNode["inputs"][param];
-	  return rootNode;
+	  return;
   }
 
-  YAML::Node CmdParser::addOutputs(const std::string & param, YAML::Node rootNode)
+  void CmdParser::addOutputs(const std::string & param)
   {
+	  YAML::Node rootNode;
 	  if (!rootNode)
 	  {
 		  std::cerr << "Root node is empty\n";
@@ -1380,11 +1409,12 @@ namespace cbica
 	  }
 
 	  rootNode["outputs"][param];
-	  return rootNode;
+	  return;
   }
 
-  std::string CmdParser::checkDefault(const std::string & param, YAML::Node input)
-  {	  
+  std::string CmdParser::checkDefault(const std::string & param)
+  {
+	  YAML::Node input;
 	  std::string defaultValue = "";
 	  if (input[param]["default"]) {
 		  defaultValue = (input[param]["default"]).as<std::string>();;		  
@@ -1438,6 +1468,60 @@ namespace cbica
 		  i++;
 	  }
 	  return "";	  
+  }
+
+  void CmdParser::logCWL(const std::string &inpFileName, const std::string &cwlFileName) {
+
+	  //create a timecode specific folder
+	  // current date/time based on current system
+	  time_t now = time(0);
+
+	  struct tm timeinfo;
+	  localtime_s(&timeinfo, &now);
+
+	  // print various components of tm structure.
+	  std::cout << "Year: " << 1900 + timeinfo.tm_year << std::endl;
+	  int Y = 1900 + timeinfo.tm_year;
+	  std::cout << "Month: " << 1 + timeinfo.tm_mon << std::endl;
+	  int M = 1 + timeinfo.tm_mon;
+	  std::cout << "Day: " << timeinfo.tm_mday << std::endl;
+	  int D = timeinfo.tm_mday;
+	  std::cout << "Time: " << 1 + timeinfo.tm_hour << ":";
+	  int H = timeinfo.tm_hour;
+	  std::cout << 1 + timeinfo.tm_min << ":";
+	  int Mi = timeinfo.tm_min;
+	  std::cout << 1 + timeinfo.tm_sec << std::endl;
+	  int S = 1 + timeinfo.tm_sec;
+
+	  std::string timestampStr;
+	  std::stringstream convD, convM, convY, convH, convMi, convS;
+	  convD << D;
+	  convM << M;
+	  convY << Y;
+	  convH << H;
+	  convMi << Mi;
+	  convS << S;
+	  std::cout << "Timestamp:" << std::endl;
+	  timestampStr = convD.str() + '.' + convM.str() + '.' + convY.str() + '-' + convH.str() + ':' + convMi.str() + ':' + convS.str();
+	  std::cout << timestampStr << std::endl;
+
+	  namespace fs = std::experimental::filesystem;
+	  fs::path inpSourceFile = inpFileName;
+	  fs::path cwlSourceFile = cwlFileName;
+	  fs::path targetParent = "m_exeName/" + timestampStr;
+	  auto target1 = targetParent / inpSourceFile.filename(); // sourceFile.filename() returns "sourceFile.ext".
+	  auto target2 = targetParent / cwlSourceFile.filename();
+	  try // If you want to avoid exception handling, then use the error code overload of the following functions.
+	  {
+		  fs::create_directories(targetParent); // Recursively create target directory if not existing.
+		  fs::copy_file(inpSourceFile, target1, fs::copy_options::overwrite_existing);
+		  fs::create_directories(targetParent); // Recursively create target directory if not existing.
+		  fs::copy_file(cwlSourceFile, target2, fs::copy_options::overwrite_existing);
+	  }
+	  catch (std::exception& e) // Not using fs::filesystem_error since std::bad_alloc can throw too.  
+	  {
+		  std::cout << e.what();
+	  }
   }
 
 

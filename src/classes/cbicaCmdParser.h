@@ -388,7 +388,9 @@ namespace cbica
     */
     int getDataTypeAsEnumCode(const std::string &execParamToCheck);
 
-    /**
+	void writeJSONFile(const std::string & dirName);
+
+	/**
     \brief Write the configuration file for the executable for use in the common GUI framework
 
     The generated config file is always named 'EXE_NAME.txt'.
@@ -434,7 +436,7 @@ namespace cbica
 	\param dirName Full directory path to the input yml file
 	
 	*/
-	std::string GetCommandFromCWL(const std::string & dirName);
+	std::string GetCommandFromCWL(const std::string &inpDir, const std::string & cwlDir);
 
 	/*
 	\brief Reads a CWL spec file and creates a the command line tool for the application
@@ -458,7 +460,7 @@ namespace cbica
 	\param rootNode Parent node of the new node to be created
 
 	*/
-	YAML::Node createNode(const std::string & nodeString, YAML::Node rootNode);
+	void createNode(const std::string & nodeString);
 
 	/*
 	\brief Deletes a YAML node inside the root node.
@@ -470,7 +472,7 @@ namespace cbica
 	\param parent Parent node of the new node to be created
 
 	*/
-	void deleteNode(const std::string & nodeString, YAML::Node parent);
+	void deleteNode(const std::string & nodeString);
 
 	/*
 	\brief Adds an input parameter inside input node.
@@ -482,7 +484,7 @@ namespace cbica
 	\param rootNode Root Node of the CWL spec file
 
 	*/
-	YAML::Node addInputs(const std::string & param, YAML::Node rootNode);
+	void addInputs(const std::string & param);
 
 	/*
 	\brief Adds an output field.
@@ -494,7 +496,7 @@ namespace cbica
 	\param rootNode Root Node of the CWL spec file
 
 	*/
-	YAML::Node addOutputs(const std::string & param, YAML::Node rootNode);
+	void addOutputs(const std::string & param);
 
 	/*
 	\brief Checks if default value is specified for a parameter.
@@ -506,7 +508,7 @@ namespace cbica
 	\param input INPUT node of CWL spec
 
 	*/
-	std::string checkDefault(const std::string & param, YAML::Node input);
+	std::string checkDefault(const std::string & param);
 
 	/*
 	Invokes cwl-runner tool from the command line tool with given command
@@ -529,6 +531,8 @@ namespace cbica
 	
 	*/
 	std::string getLaconic(const std::string &execParamToCheck);
+
+	void logCWL(const std::string &inpFileName, const std::string &cwlFileName);
     /**
     \brief Get the value of the parameter
 
