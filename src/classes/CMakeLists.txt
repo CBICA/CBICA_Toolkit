@@ -30,7 +30,7 @@ ENDIF( WIN32 )
 
 #INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/ )
  
-FILE(GLOB sources "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/*.*")
+FILE(GLOB YAMLCPP_Headers "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/*.*")
 
 # select all headers. it is manual addition for the explicit reason of view-ability (can be made automatic in a future build)
 SET( CBICA_Headers
@@ -48,6 +48,7 @@ SET( CBICA_Sources
 )
 
 SET( CBICA_Headers  ${CBICA_Headers} CACHE STRING "Basic headers" FORCE )
+SET( YAMLCPP_Headers ${YAMLCPP_Headers} CACHE STRING "YAML-CPP headers" FORCE )
 SET( CBICA_Sources  ${CBICA_Sources} CACHE STRING "Basic sources" FORCE )
 SET( BASIC_CLASS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Basic classes directory" FORCE )
 SET( BASIC_CLASS_LIBRARY ${CBICA_LIB_NAME} CACHE STRING "Basic classes library" FORCE )
@@ -55,9 +56,9 @@ SET( BASIC_CLASS_LIBRARY ${CBICA_LIB_NAME} CACHE STRING "Basic classes library" 
 ADD_LIBRARY( ${CBICA_LIB_NAME}
   ${ExtraSources}
   ${CBICA_Headers}
-  ${CBICA_Sources}  
+  ${CBICA_Sources}
+  ${YAMLCPP_Headers}
 )
-
 
 SET_PROPERTY( GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -69,6 +70,7 @@ SET(CMAKE_DEBUG_POSTFIX "d")
 # keep source files structured as folders for clarity
 SOURCE_GROUP( Basic_Headers FILES ${CBICA_Headers})
 SOURCE_GROUP( Basic_Sources FILES ${CBICA_Sources})
+SOURCE_GROUP( YAMLCPP_Headers FILES ${YAMLCPP_Headers})
 
 # install the library
 INSTALL(
