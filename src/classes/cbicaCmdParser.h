@@ -388,9 +388,9 @@ namespace cbica
     */
     int getDataTypeAsEnumCode(const std::string &execParamToCheck);
 
-	void writeJSONFile(const std::string & dirName);
+	  void writeJSONFile(const std::string & dirName);
 
-	/**
+	  /**
     \brief Write the configuration file for the executable for use in the common GUI framework
 
     The generated config file is always named 'EXE_NAME.txt'.
@@ -417,122 +417,122 @@ namespace cbica
     */
     void exampleUsage(const std::string &usageOfExe);
 
-	/*
-	\brief Writes out a CWL specification file from cmd parser
+	  /*
+	  \brief Writes out a CWL specification file from cmd parser
 
-	This should be invoked everytime the cmd parser is called for an application.
+	  This should be invoked everytime the cmd parser is called for an application.
 
-	\param dirName Full directory path to where the CWL spec will be produced
-	\workflowName For more advanced CWL workflows
+	  \param dirName Full directory path to where the CWL spec will be produced
+	  \workflowName For more advanced CWL workflows
 	
-	*/
-	void writeCWLFile(const std::string & dirName, const std::string &workflowName);
+	  */
+	  void writeCWLFile(const std::string & dirName, const std::string &workflowName);
 
-	/*
-	\brief Gets the command line string with all the parameters from input yml file
+	  /*
+	  \brief Gets the command line string with all the parameters from input yml file
 
-	This needs a input yml file to parse parameter values to CWL specs
+	  This needs a input yml file to parse parameter values to CWL specs
 
-	\param dirName Full directory path to the input yml file
+	  \param dirName Full directory path to the input yml file
 	
-	*/
-	std::string GetCommandFromCWL(const std::string &inpDir, const std::string & cwlDir);
+	  */
+	  std::string GetCommandFromCWL(const std::string &inpDir, const std::string & cwlDir);
 
-	/*
-	\brief Reads a CWL spec file and creates a the command line tool for the application
+	  /*
+	  \brief Reads a CWL spec file and creates a the command line tool for the application
 
-	This reads a CWL file and populates the cmd parser
+	  This reads a CWL file and populates the cmd parser
 
-	\param path_to_config_file Path to the CWL spec file
+	  \param path_to_config_file Path to the CWL spec file
 	
-	\param getDescription This is a flag incase we want to run the CWL spec file with default values
+	  \param getDescription This is a flag incase we want to run the CWL spec file with default values
 	
-	*/
-	void readCWLFile(const std::string & path_to_config_file, bool getDescription);
+	  */
+	  void readCWLFile(const std::string & path_to_config_file, bool getDescription);
 
-	/*
-	\brief Creates a YAML node for the given root node.
+	  /*
+	  \brief Creates a YAML node for the given root node.
 
-	This creates a new node
+	  This creates a new node
 
-	\param nodeString Name of the node
+	  \param nodeString Name of the node
 
-	\param rootNode Parent node of the new node to be created
+	  \param rootNode Parent node of the new node to be created
 
-	*/
-	void createNode(const std::string & nodeString);
+	  */
+	  void createNode(const std::string & nodeString);
 
-	/*
-	\brief Deletes a YAML node inside the root node.
+	  /*
+	  \brief Deletes a YAML node inside the root node.
 
-	This creates a new node
+	  This creates a new node
 
-	\param nodeString Name of the node
+	  \param nodeString Name of the node
 
-	\param parent Parent node of the new node to be created
+	  \param parent Parent node of the new node to be created
 
-	*/
-	void deleteNode(const std::string & nodeString);
+	  */
+	  void deleteNode(const std::string & nodeString);
 
-	/*
-	\brief Adds an input parameter inside input node.
+	  /*
+	  \brief Adds an input parameter inside input node.
 
-	This creates a new input parameter
+	  This creates a new input parameter
 
-	\param param Name of the parameter to be added
+	  \param param Name of the parameter to be added
 
-	\param rootNode Root Node of the CWL spec file
+	  \param rootNode Root Node of the CWL spec file
 
-	*/
-	void addInputs(const std::string & param);
+	  */
+	  void addInputs(const std::string & param);
 
-	/*
-	\brief Adds an output field.
+	  /*
+	  \brief Adds an output field.
 
-	This creates a new output field
+	  This creates a new output field
 
-	\param param Name of the parameter to be added
+	  \param param Name of the parameter to be added
 
-	\param rootNode Root Node of the CWL spec file
+	  \param rootNode Root Node of the CWL spec file
 
-	*/
-	void addOutputs(const std::string & param);
+	  */
+	  void addOutputs(const std::string & param);
 
-	/*
-	\brief Checks if default value is specified for a parameter.
+	  /*
+	  \brief Checks if default value is specified for a parameter.
 
-	This returns the default value of parameter if exists
+	  This returns the default value of parameter if exists
 
-	\param param Name of the parameter to be checked
+	  \param param Name of the parameter to be checked
 
-	\param input INPUT node of CWL spec
+	  \param input INPUT node of CWL spec
 
-	*/
-	std::string checkDefault(const std::string & param);
+	  */
+	  std::string checkDefault(const std::string & param);
 
-	/*
-	Invokes cwl-runner tool from the command line tool with given command
+	  /*
+	  Invokes cwl-runner tool from the command line tool with given command
 
-	This invokes the cwl runner according to the flag for default values
+	  This invokes the cwl runner according to the flag for default values
 
-	\param cwl_spec_path Path to the CWL spec file
-	\param cwl_input_path Path to the input yml file. Empty string if doesn't exist
-	\param getDefaultFlag execute default or not default boolean
+	  \param cwl_spec_path Path to the CWL spec file
+	  \param cwl_input_path Path to the input yml file. Empty string if doesn't exist
+	  \param getDefaultFlag execute default or not default boolean
 
-	*/
-	void cwlrunner(const std::string & cwl_spec_path, const std::string & cwl_input_path, bool getDefaultFlag);
+	  */
+	  void cwlrunner(const std::string & cwl_spec_path, const std::string & cwl_input_path, bool getDefaultFlag);
 	
-	/**
-	\brief Get the laconic value from verbose
+	  /**
+	  \brief Get the laconic value from verbose
 
-	Searches using the verbose value.
+	  Searches using the verbose value.
 
-	\param execParamToCheck The verbose variant of the parameter
+	  \param execParamToCheck The verbose variant of the parameter
 	
-	*/
-	std::string getLaconic(const std::string &execParamToCheck);
+	  */
+	  std::string getLaconic(const std::string &execParamToCheck);
 
-	void logCWL(const std::string &inpFileName, const std::string &cwlFileName);
+	  void logCWL(const std::string &inpFileName, const std::string &cwlFileName);
     /**
     \brief Get the value of the parameter
 
