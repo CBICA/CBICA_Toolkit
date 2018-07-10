@@ -49,6 +49,7 @@ MACRO(SUBDIRLIST result curdir)
   SET(${result} ${dirlist})
 ENDMACRO()
 
+### third party libary processing
 # find and include all third party libraries
 SUBDIRLIST(SUBDIRECTORIES ${THIRDPARTY_LIB_PATH})
 
@@ -62,6 +63,13 @@ FOREACH(thirdParty_include ${SUBDIRECTORIES})
   #  INCLUDE_DIRECTORIES( ${THIRDPARTY_LIB_PATH}/${thirdParty_include}/${thirdParty_int_include} )
   #ENDFOREACH()
 ENDFOREACH()
+
+# for YAML-CPP
+FILE(GLOB_RECURSE YAMLCPP_Headers "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/yaml-cpp/*.h")
+FILE(GLOB_RECURSE YAMLCPP_Sources "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/src/*.cpp")
+SET( YAMLCPP_Headers ${YAMLCPP_Headers} CACHE STRING "YAML-CPP headers" FORCE )
+SET( YAMLCPP_Sources ${YAMLCPP_Sources} CACHE STRING "YAML-CPP sources" FORCE )
+### third party libary processing
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
