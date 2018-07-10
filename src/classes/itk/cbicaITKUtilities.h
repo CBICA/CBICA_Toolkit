@@ -948,6 +948,50 @@ namespace cbica
   }
 
   /**
+  \brief Resize an input image by a factor (expressed as a percentage)
+
+  This filter uses the example https://itk.org/Wiki/ITK/Examples/ImageProcessing/ResampleImageFilter as a base while processing time-stamped images as well
+  \param inputImage The input image to process
+  \param resizeFactor The resize factor; can be greater than 100 (which causes an expanded image to be written) but can never be less than zero
+  \return The resized image
+  */
+  template< class TImageType = ImageTypeFloat3D >
+  typename TImageType::Pointer ResizeImage(const typename TImageType::Pointer inputImage, const size_t resizeFactor)
+  {
+    const float factor = static_cast<float>(resizeFactor) / 100;
+    auto outputSize = inputImage->GetLargestPossibleRegion().GetSize();
+    auto outputSpacing = inputImage->GetSpacing();
+    if (TImageType::ImageDimension != 4)
+    {
+      for (size_t i = 0; i < TImageType::ImageDimension; i++)
+      {
+        outputSize[i] = outputSize[i] * factor;
+        outputSpacing[i] = outputSpacing[i] / factor;
+      }
+    }
+    else // preserve all time points of a time series image
+    {
+      for (size_t i = 0; i < 3; i++)
+      {
+        outputSize[i] = outputSize[i] * factor;
+        outputSpacing[i] = outputSpacing[i] / factor;
+      }
+    }
+
+    auto resampler = typename itk::ResampleImageFilter<TImageType, TImageType>::New();
+    resampler->SetInput(inputImage);
+    resampler->SetSize(outputSize);
+    resampler->SetOutputSpacing(outputSpacing);
+    resampler->SetOutputOrigin(inputImage->GetOrigin());
+    resampler->SetOutputDirection(inputImage->GetDirection());
+    resampler->SetOutputStartIndex(inputImage->GetLargestPossibleRegion().GetIndex());
+    resampler->SetTransform(typename itk::IdentityTransform<double, TImageType::ImageDimension>::New());
+    resampler->UpdateLargestPossibleRegion();
+
+    return resampler->GetOutput();
+  }
+
+  /**
   \brief This function gets the value of the DICOM tag from the key provided for the DICOM file
 
   See ${DCMTK_source}/dcmdata/include/dcmtk/dcmdata/dcdeftag.h for a list all supported tags
