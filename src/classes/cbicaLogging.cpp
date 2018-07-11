@@ -26,7 +26,7 @@ namespace cbica
     }
     else
     {
-      writing_function(";" + FreeText_input, log_file, exe_name, user_name);
+      writing_function("" + FreeText_input, log_file, exe_name, user_name);
     }
     log_file.close();
   }
@@ -90,7 +90,7 @@ namespace cbica
   {
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
-    writing_function(";" + FreeText_input, log_file, exe_name, user_name, true);
+    writing_function("" + FreeText_input, log_file, exe_name, user_name, true);
     log_file.close();
   }
 
@@ -104,7 +104,7 @@ namespace cbica
     }
     else
     {
-      writing_function(";" + FreeText_input, log_file, exe_name, user_name);
+      writing_function("" + FreeText_input, log_file, exe_name, user_name);
     }
     log_file.close();
   }
@@ -114,7 +114,7 @@ namespace cbica
 	{
     if (!consoleLogging)
     {
-      if (file_name_with_path_wrap .empty())
+      if (file_name_with_path_wrap == "")
       {
         file_name_with_path_wrap = cbica::createTmpDir() + "temp.log";
         std::cout << "Blank file name provided. A new file has been created with path: "
@@ -131,11 +131,11 @@ namespace cbica
       }
     }
 
-    if (exe_name_wrap .empty())
+    if (exe_name_wrap == "")
     {
       exe_name_wrap = cbica::getExecutableName();
     }
-    if (user_name_wrap .empty())
+    if (user_name_wrap == "")
     {
       user_name_wrap = cbica::getUserName();
     }
@@ -148,33 +148,11 @@ namespace cbica
     std::string timeExeUser;
     if (GMTLogging)
     {
-      if (!m_multiUserLog)
-      {
-        timeExeUser = cbica::getCurrentGMT() + ";";
-      }
-      else
-      {
-        timeExeUser = cbica::getCurrentGMTDateAndTime() + ";";
-      }
+      timeExeUser = cbica::getCurrentGMTDateAndTime() + ";" + exe_name_wrap + ";" + user_name_wrap + ";";
     }
     else
     {
-      if (!m_multiUserLog)
-      {
-        timeExeUser = cbica::getCurrentLocalTime() + ";";
-      }
-      else
-      {
-        timeExeUser = cbica::getCurrentLocalDateAndTime() + ";";
-      }
-    }
-    if (!m_multiUserLog)
-    {
-      timeExeUser += user_name_wrap + ";";
-    }
-    else
-    {
-      timeExeUser += exe_name_wrap + ";" + user_name_wrap + ";";
+      timeExeUser = cbica::getCurrentLocalDateAndTime() + ";" + exe_name_wrap + ";" + user_name_wrap + ";";
     }
 
     if (consoleLogging)
