@@ -930,7 +930,6 @@ namespace cbica
     itk::Vector< float, TImageType::ImageDimension > distances;
     itk::Point< float, TImageType::ImageDimension > start_worldCoordinates, end_worldCoordinates;
 
-    iterator.GoToBegin();
     typename TImageType::IndexType start_image, end_image;
 
     auto size = inputImage->GetBufferedRegion().GetSize();
