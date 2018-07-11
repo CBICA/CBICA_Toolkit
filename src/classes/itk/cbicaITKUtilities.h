@@ -929,12 +929,17 @@ namespace cbica
   {
     itk::Vector< float, TImageType::ImageDimension > distances;
     itk::Point< float, TImageType::ImageDimension > start_worldCoordinates, end_worldCoordinates;
-    itk::ImageRegionConstIterator< TImageType > iterator(inputImage, inputImage->GetBufferedRegion());
 
     iterator.GoToBegin();
-    auto start_image = iterator.GetIndex();
-    iterator.GoToEnd();
-    auto end_image = iterator.GetIndex();
+    typename TImageType::IndexType start_image, end_image;
+
+    auto size = inputImage->GetBufferedRegion().GetSize();
+
+    for (size_t i = 0; i < TImageType::ImageDimension; i++)
+    {
+      start_image[i] = 0;
+      end_image[i] = size[i] - 1;
+    }
 
     inputImage->TransformIndexToPhysicalPoint(start_image, start_worldCoordinates);
     inputImage->TransformIndexToPhysicalPoint(end_image, end_worldCoordinates);
