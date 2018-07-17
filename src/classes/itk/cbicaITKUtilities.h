@@ -22,12 +22,17 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #endif
 
 #include "itkImage.h"
+#include "itkImageRegionConstIterator.h"
+#include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkImageRegionIterator.h"
+
 #include "itkHistogramMatchingImageFilter.h"
 #include "itkAdaptiveHistogramEqualizationImageFilter.h"
 
 #include "itkConnectedThresholdImageFilter.h"
 #include "itkOrientImageFilter.h"
+#include "itkResampleImageFilter.h"
+#include "itkIdentityTransform.h"
 
 #include "itkMultiResolutionPDEDeformableRegistration.h"
 #include "itkDemonsRegistrationFilter.h"
@@ -982,17 +987,47 @@ namespace cbica
       }
     }
 
-    auto resampler = typename itk::ResampleImageFilter<TImageType, TImageType>::New();
+    auto resampler = itk::ResampleImageFilter< TImageType, TImageType >::New();
     resampler->SetInput(inputImage);
     resampler->SetSize(outputSize);
     resampler->SetOutputSpacing(outputSpacing);
     resampler->SetOutputOrigin(inputImage->GetOrigin());
     resampler->SetOutputDirection(inputImage->GetDirection());
     resampler->SetOutputStartIndex(inputImage->GetLargestPossibleRegion().GetIndex());
-    resampler->SetTransform(typename itk::IdentityTransform<double, TImageType::ImageDimension>::New());
+    resampler->SetTransform(itk::IdentityTransform< double, TImageType::ImageDimension >::New());
     resampler->UpdateLargestPossibleRegion();
 
     return resampler->GetOutput();
+  }
+
+  /**
+  \brief Get the unique values in an image
+
+  \param inputImage The input image
+  \param sortResult Whether the output should be sorted in ascending order or not, defaults to true
+  */
+  template< class TImageType = ImageTypeFloat3D >
+  std::vector< typename TImageType::PixelType > GetUniqueValuesInImage(typename TImageType::Pointer inputImage, bool sortResult = true)
+  {
+    itk::ImageRegionConstIterator< TImageType > iterator(inputImage, inputImage->GetBufferedRegion());
+
+    std::vector< typename TImageType::PixelType > uniqueValues;
+
+    for (iterator.GoToBegin(); !iterator.IsAtEnd(); ++iterator)
+    {
+      auto currentValue = iterator.Get();
+      if (std::find(uniqueValues.begin(), uniqueValues.end(), currentValue) == uniqueValues.end())
+      {
+        uniqueValues.push_back(currentValue);
+      }
+    }
+
+    if (sortResult)
+    {
+      std::sort(uniqueValues.begin(), uniqueValues.end(), std::less< typename TImageType::PixelType >());
+    }
+
+    return uniqueValues;
   }
 
   /**
