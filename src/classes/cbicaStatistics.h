@@ -43,6 +43,18 @@ namespace cbica
     {
       m_input.clear(); // not really needed 
     }
+    
+    //! Does exactly what it says
+    double GetMaximum()
+    {
+      return m_max;
+    }
+
+    //! Does exactly what it says
+    double GetMinimum()
+    {
+      return m_min;
+    }
 
     //! Does exactly what it says
     double GetSum()
@@ -67,7 +79,7 @@ namespace cbica
     {
       if (!stdDev_calculated)
       {
-        m_stdDev = static_cast<double>(m_variance);
+        m_stdDev = std::sqrt(static_cast<double>(m_variance));
         stdDev_calculated = true;
       }
       return m_stdDev;
@@ -129,7 +141,7 @@ namespace cbica
     std::vector< TDataType > m_input;
 
     //! actual outputs
-    double m_sum = 0.0, m_mean = 0.0, m_variance = 0.0, m_stdDev = 0.0, m_kurtosis = 0.0, m_skewness = 0.0;
+    double m_sum = 0.0, m_mean = 0.0, m_variance = 0.0, m_stdDev = 0.0, m_kurtosis = 0.0, m_skewness = 0.0, m_max = 0.0, m_min = 0.0;
 
     std::vector< double > m_zscores;
 
@@ -140,8 +152,15 @@ namespace cbica
     void InitializeClass(std::vector< TDataType >& inputArray)
     {
       m_input = inputArray;
+      stdDev_calculated = false;
+      kurtosis_calculated = false;
+      skewness_calculated = false;
+      zscores_calculated = false;
       m_sum = std::accumulate(m_input.begin(), m_input.end(), 0.0);
       m_mean = m_sum / m_input.size();
+      auto result = std::minmax_element(m_input.begin(), m_input.end());
+      m_min = *result.first;
+      m_max = *result.second;
       for (const TDataType& element : m_input)
       {
         m_variance += std::pow(static_cast<double>(element - m_mean), 2);
