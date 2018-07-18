@@ -57,6 +57,7 @@ static const char  cSeparator = '/';
 #include <thread>
 
 #include "cbicaUtilities.h"
+#include "yaml-cpp/yaml.h"
 
 namespace cbica
 {
@@ -504,6 +505,31 @@ namespace cbica
     std::tr2::sys::path folderPath(inputFile);
     return file_size(filePath);
     */
+  }
+
+  bool IsCompatible(const std::string inputVersionFile)
+  {
+    auto config = YAML::LoadFile(inputVersionFile);
+
+    auto currentCollectionVersion = std::stoi(cbica::replaceString(config["Version"].as< std::string >().c_str(), ".", "").c_str());
+    auto minimumVersion = std::stoi(cbica::replaceString(config["Minimum"].as< std::string >().c_str(), ".", "").c_str());
+    auto maximumVersion = std::stoi(cbica::replaceString(config["Maximum"].as< std::string >().c_str(), ".", "").c_str());
+    auto currentPackageVersion = std::stoi(cbica::replaceString(std::string(PROJECT_VERSION), ".", "").c_str());
+
+    if (currentPackageVersion == currentCollectionVersion)
+    {
+      return true;
+    }
+    if (currentPackageVersion < minimumVersion)
+    {
+      return false;
+    }
+    if (currentPackageVersion > maximumVersion)
+    {
+      return false;
+    }
+
+    return true;
   }
 
   size_t getFolderSize(const std::string &rootFolder)

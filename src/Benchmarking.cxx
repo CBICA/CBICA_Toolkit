@@ -19,7 +19,7 @@
 
 int main(int argc, char** argv)
 {
-  cbica::dos2unix(argv[1]);
+  cbica::IsCompatible(argv[1]);
   cbica::CmdParser parser(argc, argv);
   parser.addRequiredParameter("d", "dataDir", cbica::Parameter::DIRECTORY, "none", "Parent directory where all data is present");
   parser.addRequiredParameter("i", "inputPatterns", cbica::Parameter::STRING, "comma separated entries", "String pattern(s) for the input files");
