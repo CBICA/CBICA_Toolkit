@@ -98,6 +98,11 @@ namespace cbica
   { 
     // assumes file exists because constructor writes the file once
     log_file.open(file_name_with_path.c_str(), std::ios_base::app);
+    while (!log_file.is_open())
+    {
+      cbica::sleep(100);
+      log_file.open(file_name_with_path.c_str(), std::ios_base::app);
+    }
     if (FreeText_input.empty())
     {
       writing_function("", log_file, exe_name, user_name);
