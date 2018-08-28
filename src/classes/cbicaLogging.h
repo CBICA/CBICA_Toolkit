@@ -20,10 +20,6 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 
 #include "cbicaUtilities.h"
 
-/*
-\namespace cbica
-\brief Namespace for differentiating functions written for internal use
-*/
 namespace cbica
 {
   /**
@@ -107,17 +103,6 @@ namespace cbica
     <4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text>
     */
     void EnableTextLogging(const std::string &newLogFile);
-    
-    /**
-    \brief This is useful in scenarios where the application has been installed in a multi-user machine.
-
-    This also disables writing of the date in the log since the assumption is that on a single user machine, the filename should be in the following format: 
-    ${userHomeDir}/.${appName}/${currentDate} (see CaPTk logging as example). This also disables the writing of the executable name.
-    */
-    void EnableMultiUserLogging()
-    {
-      m_multiUserLog = true;
-    }
 
     /**
     \brief Switches from text to console file logging
@@ -134,6 +119,14 @@ namespace cbica
     \brief This enables logging the date and time in GMT rather than in local (which is the default behavior)
     */
     void EnableGMTLogging();
+
+    /**
+    \brief Only keeps timestamp and removes everything else; enabled by default
+    */
+    void SetLaconicLogging(bool flag) 
+    {
+      m_laconicLogging = flag;
+    };
 
     /**
     \brief Get the file name with full path where log has happened
@@ -185,7 +178,7 @@ namespace cbica
     bool consoleLogging;
     //! Flag to denote logging in GMT
     bool GMTLogging;
-    //! This writes out user and exe name(s) to the log
-    bool m_multiUserLog = false;
+    //! Flag to disable writing of username and exename
+    bool m_laconicLogging = true;
 	};
 }
