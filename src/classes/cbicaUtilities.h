@@ -383,6 +383,25 @@ namespace cbica
   size_t getDirectorySize(const std::string &rootFolder);
 
   /**
+  \brief Get size of total physical memory (in bytes) in machine
+  */
+  size_t getTotalMemory();
+
+  /**
+  \brief Get size of physical memory being used (in bytes) in machine
+
+  Ref: https://stackoverflow.com/a/64166
+  */
+  size_t getCurrentlyUsedMemory();
+
+  /**
+  \brief Get size of physical memory being used (in bytes) in machine by the current process
+
+  Ref: https://stackoverflow.com/a/64166
+  */
+  size_t getCurrentlyUsedMemoryByCurrentProcess();
+
+  /**
   \brief Gets the extension of the supplied file name using splitFileName()
 
   Prefer to use "/" as file path delimiter.
