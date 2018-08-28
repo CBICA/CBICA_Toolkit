@@ -53,7 +53,6 @@ static const char  cSeparator = '/';
 #include "cbicaCmdParser.h"
 #include "yaml-cpp/yaml.h"
 
-
 #ifndef PROJECT_VERSION
 #define PROJECT_VERSION "0.0.1"
 #endif
@@ -517,7 +516,6 @@ namespace cbica
     const std::string &description_line4,
     const std::string &description_line5)
   {
-    //std::cout << laconic << verbose << verbose << dataRange << description_line1 << std::endl;
     if ((laconic == "u") || (laconic == "h") || (laconic == "v"))
     {
       return;
@@ -558,8 +556,6 @@ namespace cbica
     {
       spaces_verb_line2.append(" ");
     }
-
-
     for (size_t i = 0; i < inputParameters.size(); i++)
     {
       std::string spaces_lac, spaces_verb;
@@ -569,11 +565,10 @@ namespace cbica
         spaces_lac.append(" ");
       }
 
-      /*for (size_t n = 0; n < m_maxLength - inputParameters[i].verbose.length() - spaces_lac.length() - 3; n++)
+      for (size_t n = 0; n < m_maxLength - inputParameters[i].length - spaces_lac.length() - 3; n++)
       {
-
-      spaces_verb.append(" ");
-      }*/
+        spaces_verb.append(" ");
+      }
 
       std::cout << "[" << spaces_lac << "-" << inputParameters[i].laconic << ", --" <<
         inputParameters[i].verbose << spaces_verb << "]  " <<
@@ -616,7 +611,6 @@ namespace cbica
       << "\n\n" << "Usage:\n\n";
 
     std::cout << "Required parameters:\n\n";
-
     writeParameters(m_requiredParameters, false);
     std::cout << "Optional parameters:\n\n";
     writeParameters(m_optionalParameters, false);
@@ -1006,7 +1000,7 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     int position;
-    if (compareParameter(execParamToCheck, position))
+    if (compareParameter(execParamToCheck, position) && (position < (m_argc - 1)))
     {
       parameterValue = std::atoi(m_argv[position + 1].c_str()); // return value is an integer
       return;
@@ -1027,7 +1021,7 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     int position;
-    if (compareParameter(execParamToCheck, position))
+    if (compareParameter(execParamToCheck, position) && (position < (m_argc - 1)))
     {
       parameterValue = std::atoi(m_argv[position + 1].c_str()); // return value is an integer
       return;
@@ -1048,7 +1042,7 @@ namespace cbica
       exit(EXIT_FAILURE);
     }
     int position;
-    if (compareParameter(execParamToCheck, position))
+    if (compareParameter(execParamToCheck, position) && (position < (m_argc - 1)))
     {
       parameterValue = static_cast<float>(std::atof(m_argv[position + 1].c_str())); // return value is a float
       return;
@@ -1075,7 +1069,7 @@ namespace cbica
       }
     }
     int position;
-    if (compareParameter(execParamToCheck, position))
+    if (compareParameter(execParamToCheck, position) && (position < (m_argc - 1)))
     {
       parameterValue = m_argv[position + 1]; // return value is a string
       return;
@@ -1545,8 +1539,6 @@ namespace cbica
     }
 
     std::string fileName = dirName_wrap + m_exeName + ".txt";
-
-
 
     //#if (_WIN32)
     //    if (_access(fileName.c_str(), 6) == -1)
