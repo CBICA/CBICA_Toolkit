@@ -168,6 +168,109 @@ namespace cbica
       return m_skewness;
     }
 
+    //! Gets the element at the Nth percentile (always defined between 1-99)
+    TDataType GetNthPercentileElement(size_t n)
+    {
+      if (n < 1) // contingen
+      {
+        std::cerr << "Cannot calculate percentile less than 1. Giving Minimum, instead.\n";
+        return GetMinimum();
+      }
+      auto nth = m_input_Sorted.begin() + (n * m_input_Sorted.size()) / 100;
+      std::nth_element(m_input_Sorted.begin(), nth, m_input_Sorted.end());
+      return *nth;
+    }
+
+    //! Get the Range
+    TDateType GetRange()
+    {
+      return (m_max - m_min);
+    }
+
+    //! Get the InterQuartile Range
+    TDataType GetInterQuartileRange()
+    {
+      return (GetNthPercentileElement(75) - GetNthPercentileElement(25));
+    }
+
+    //! Get the Studentized Range
+    double GetStudentizedRange()
+    {
+      return (static_cast<double>(m_max - m_min) / m_variance);
+    }
+
+    //! Get the Mean Absolute Deviation
+    double GetMeanAbsoluteDeviation()
+    {
+      double mad = 0;
+      for (size_t i = 0; i < m_input.size(); i++)
+      {
+        mad += (m_input[i] - m_mean);
+      }
+      return (mad / static_cast<double>(m_input.size()));
+    }
+
+    //! Get the Robust Mean Absolute Deviation
+    double GetRobustMeanAbsoluteDeviation(size_t lowerQuantile, size_t upperQuantile)
+    {
+      std::vector< TDataType > truncatedVector;
+      for (size_t i = 0; i < m_input_sorted.size(); i++)
+      {
+        if ((m_input_sorted[i] >= lowerQuantile) && (m_input_sorted[i] <= upperQuantile))
+        {
+          truncatedVector.push_back(m_input_sorted[i]);
+        }
+      }
+
+      truncated_sum = std::accumulate(truncatedVector.begin(), truncatedVector.end(), 0.0);
+      truncated_mean = truncated_sum / truncatedVector.size();
+
+      double rmad = 0;
+      for (size_t i = 0; i < truncatedVector.size(); i++)
+      {
+        rmad += (truncatedVector[i] - truncated_mean);
+      }
+      return (rmad / static_cast<double>(truncatedVector.size()));
+    }
+
+    //! Get Median Absolute Deviation 
+    double GetMedianAbsoluteDeviation()
+    {
+      double mad = 0;
+      for (size_t i = 0; i < m_input.size(); i++)
+      {
+        mad += (m_input[i] - GetMedian());
+      }
+      return (mad / static_cast<double>(m_input.size()));
+    }
+
+    //! Get Coefficient of Variation 
+    double GetCoefficientOfVariation()
+    {
+      return (m_stdDev / m_mean);
+    }
+
+    //! Get Quartile Coefficient Of Dispersion 
+    double GetQuartileCoefficientOfDispersion()
+    {
+      auto seventyFifth = GetNthPercentileElement(75);
+      auto twentyFifth = GetNthPercentileElement(25);
+
+      return (static_cast<double>(seventyFifth - twentyFifth) / static_cast<double>(seventyFifth + twentyFifth));
+    }
+
+    //! Get the Energy 
+    double GetEnergy()
+    {
+      return m_energy;
+    }
+
+    //! Get the Root Mean Square (also called Quadratic Mean) 
+    double GetRootMeanSquare()
+    {
+      return (std::sqrt(m_energy / m_input.size());
+    }
+
     //! Does exactly what it says
     std::vector< double > GetZScores()
     {
@@ -189,7 +292,7 @@ namespace cbica
     std::vector< TDataType > m_input_Sorted;
 
     //! actual outputs
-    double m_sum = 0.0, m_mean = 0.0, m_variance = 0.0, m_stdDev = 0.0, m_kurtosis = 0.0, m_skewness = 0.0, m_max = 0.0, m_min = 0.0;
+    double m_sum = 0.0, m_mean = 0.0, m_variance = 0.0, m_stdDev = 0.0, m_kurtosis = 0.0, m_skewness = 0.0, m_max = 0.0, m_min = 0.0, m_energy = 0.0;
 
     TDataType m_mode, m_median;
 
@@ -220,6 +323,7 @@ namespace cbica
       for (const TDataType& element : m_input)
       {
         m_variance += std::pow(static_cast<double>(element - m_mean), 2);
+        m_energy += std::pow(element, 2);
       }
 
       m_variance = m_variance / (m_input.size() - 1);
