@@ -43,7 +43,7 @@ namespace cbica
     {
       m_input.clear(); // not really needed 
     }
-    
+
     //! Does exactly what it says
     double GetMaximum()
     {
@@ -182,7 +182,7 @@ namespace cbica
     }
 
     //! Get the Range
-    TDateType GetRange()
+    TDataType GetRange()
     {
       return (m_max - m_min);
     }
@@ -268,7 +268,7 @@ namespace cbica
     //! Get the Root Mean Square (also called Quadratic Mean) 
     double GetRootMeanSquare()
     {
-      return (std::sqrt(m_energy / m_input.size());
+      return (std::sqrt(m_energy / m_input.size()));
     }
 
     //! Does exactly what it says
@@ -299,7 +299,7 @@ namespace cbica
     std::vector< double > m_zscores;
 
     //! flags to check if something has been calculated or not
-    bool stdDev_calculated = false, kurtosis_calculated = false, skewness_calculated = false, zscores_calculated = false, 
+    bool stdDev_calculated = false, kurtosis_calculated = false, skewness_calculated = false, zscores_calculated = false,
       mode_calculated = false, median_calculated = false;
 
     //! This function gets called every time the input is set, for obvious reasons
@@ -313,7 +313,7 @@ namespace cbica
       kurtosis_calculated = false;
       skewness_calculated = false;
       zscores_calculated = false;
-      mode_calculated = false; 
+      mode_calculated = false;
       median_calculated = false;
       m_sum = std::accumulate(m_input.begin(), m_input.end(), 0.0);
       m_mean = m_sum / m_input.size();
