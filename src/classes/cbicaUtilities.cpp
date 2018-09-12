@@ -20,7 +20,6 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <lmcons.h>
 #include <Shlobj.h>
 #include <filesystem>
-#include <psapi.h>
 #define GetCurrentDir _getcwd
 bool WindowsDetected = true;
 static const char  cSeparator = '\\';
@@ -35,20 +34,13 @@ static const char  cSeparator = '\\';
 #include <sys/types.h>
 #include <errno.h>
 #include <ftw.h>
+#if (__APPLE__)
+  #include <mach-o/dyld.h>
+#endif
 #define GetCurrentDir getcwd
 bool WindowsDetected = false;
 static const char  cSeparator = '/';
 //  static const char* cSeparators = "/";
-#endif
-
-#if defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/sysinfo.h>
-#endif
-#if defined(BSD)
-#include <sys/sysctl.h>
 #endif
 
 #include <fstream>
@@ -158,7 +150,7 @@ namespace cbica
     homeEnv = "USERPROFILE";
 #else
     homeEnv = "HOME";
-#endif    
+#endif
 
     auto exeTempDir = cbica::getEnvironmentVariableValue(homeEnv) + "/.cbicaTemp/"/* + cbica::getExecutableName()*/;
     if (!directoryExists(exeTempDir))
@@ -267,7 +259,7 @@ namespace cbica
     HANDLE hFile;                     // Handle to directory
     std::string strFilePath;          // Filepath
     std::string strPattern;           // Pattern
-    WIN32_FIND_DATA FileInformation;  // File information    
+    WIN32_FIND_DATA FileInformation;  // File information
 
     strPattern = dirname + "/*.*";
     hFile = ::FindFirstFile(strPattern.c_str(), &FileInformation);
@@ -329,7 +321,7 @@ namespace cbica
     }
 
     return 0;
-#else   
+#else
     std::string passString = "rm -rf " + dirname;
     if (std::system(passString.c_str()) != 0)
       std::cerr << "Error during delete.\n";
@@ -380,7 +372,7 @@ namespace cbica
         source_tmp.append("/");
       }
 
-      // check for all files inside 
+      // check for all files inside
       source_tmp.append("*");
 
       hFind = FindFirstFile(source_tmp.c_str(), &FindFileData);
@@ -684,13 +676,23 @@ namespace cbica
     splitFileName(filename, path, return_string, ext);
     filename[0] = '\0';
     //_splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
+#elif __APPLE__
+    char path[PATH_MAX];
+    uint32_t size = PATH_MAX - 1;
+    if (path != NULL)
+    {
+      if (_NSGetExecutablePath(path, &size) == 0)
+      {
+        return_string = getFilenameBase(std::string(path));
+      }
+    }
 #else
     return_string = getEnvironmentVariableValue("_");
     return_string = cbica::replaceString(return_string, "./", "");
     char path[PATH_MAX];
-    if (path != NULL) 
+    if (path != NULL)
     {
-      if (::readlink("/proc/self/exe", path, PATH_MAX) == -1) 
+      if (::readlink("/proc/self/exe", path, PATH_MAX) == -1)
       {
         //free(path);
         path[0] = '\0';
@@ -717,12 +719,22 @@ namespace cbica
     char path[FILENAME_MAX];
     GetModuleFileNameA(NULL, path, FILENAME_MAX);
     //_splitpath_s(filename, NULL, NULL, NULL, NULL, filename, NULL, NULL, NULL);
+#elif __APPLE__
+    char path[PATH_MAX];
+    uint32_t size = PATH_MAX - 1;
+    if (path != NULL)
+    {
+      if (_NSGetExecutablePath(path, &size) != 0)
+      {
+        std::cerr << "[getFullPath()] Error during getting full path..";
+      }
+    }
 #else
     //! Initialize pointers to file and user names
     char path[PATH_MAX];
     if (::readlink("/proc/self/exe", path, sizeof(path) - 1) == -1)
       //path = dirname(path);
-      std::cerr << "Error during getting full path..\n";
+      std::cerr << "[getFullPath()] Error during getting full path..";
 #endif
 
     std::string return_string = std::string(path);
@@ -758,7 +770,7 @@ namespace cbica
     homeProfile = "USERPROFILE";
 #else
     homeProfile = "HOME";
-#endif    
+#endif
 
     return cbica::getEnvironmentVariableValue(homeProfile);
   }
@@ -1296,7 +1308,7 @@ namespace cbica
   {
     std::ifstream inFile(csvFileName.c_str());
 
-    // new lines will be skipped     
+    // new lines will be skipped
     inFile.unsetf(std::ios_base::skipws);
 
     // count the "\n"s with an algorithm specialized for counting
@@ -1329,7 +1341,7 @@ namespace cbica
 
     //std::string dirName_Wrap = dirName;
 
-    // store number of rows in the file - this is used to make the program parallelize-able 
+    // store number of rows in the file - this is used to make the program parallelize-able
     const size_t numberOfRows = numberOfRowsInFile(csvFileName);
 
     // initialize return dictionary
@@ -1394,7 +1406,7 @@ namespace cbica
 
 #ifdef _OPENMP
     // organize the data
-    int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine  
+    int threads = omp_get_max_threads(); // obtain maximum number of threads available on machine
     // if the total number of rows in CSV file are less than the available number of threads on machine (happens for testing),
     // use only the number of rows where meaningful data is present - this avoids extra thread overhead
     threads > static_cast<int>(numberOfRows) ? threads = static_cast<int>(numberOfRows - 1) : threads = threads;
@@ -1623,13 +1635,13 @@ namespace cbica
   //  if (enum_separator == 10) // to get description
   //  {
   //    returnString = inputString.substr(count + 1); // get all characters after the separator was detected
-  //  }    
+  //  }
   //  else // for everything other than description
   //  {
   //    char testChar = inputString[count], separatorChar = *cbica::constCharToChar(getSeparator(enum_separator));
   //    size_t position, // position to start getting the substring
   //      separatorChecker = 2; // the configuration file needs the difference between two types of strings to be a single space (apart from the separator string)
-  //    if (testChar == separatorChar)  
+  //    if (testChar == separatorChar)
   //    {
   //      count++;
   //      position = count;
@@ -1649,7 +1661,7 @@ namespace cbica
   //        count++;
   //        testChar = inputString[count];
   //      }
-  //      
+  //
   //      returnString = inputString.substr(position, count - position);
   //    }
   //    else // a small check as a contingency plan
@@ -2096,7 +2108,12 @@ namespace cbica
 #if WIN32
     Sleep(static_cast<unsigned int>(ms));
 #else
-    __time_t temp = static_cast<__time_t>(ms);
+    #if __APPLE__
+      time_t temp = static_cast<time_t>(ms);
+    #else
+      __time_t temp = static_cast<__time_t>(ms);
+    #endif
+
     struct timespec ts = { temp / 1000, (temp % 1000) * 1000 * 1000 };
     nanosleep(&ts, NULL);
 #endif
