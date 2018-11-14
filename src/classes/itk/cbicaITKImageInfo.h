@@ -8,8 +8,8 @@ Extracts basic information from any image (like dimensions, spacing, pixel type,
 http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 #pragma once

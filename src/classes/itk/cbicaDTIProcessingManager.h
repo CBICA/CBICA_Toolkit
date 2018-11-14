@@ -6,8 +6,8 @@
 http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 
@@ -51,7 +51,7 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 
 #include "itkNrrdImageIO.h"
 
-#include "CAPTk.h"
+//#include "CAPTk.h"
 
 const int Dimensions = 3;
 typedef short PixelValueType;
@@ -61,6 +61,7 @@ typedef itk::GDCMImageIO ImageIOType;
 typedef itk::GDCMSeriesFileNames InputNamesGeneratorType;
 typedef itk::MetaDataDictionary DictionaryType;
 typedef itk::VectorImage<PixelValueType, Dimensions> VectorImageType;
+using ImageTypeScalar3D = itk::Image< float, 3 >;
 
 // relevant GE private tags
 const gdcm::DictEntry GEDictBValue("0x0043", "0x1039", gdcm::VR::IS, gdcm::VM::VM1, "B Value of diffusion weighting");
@@ -99,9 +100,9 @@ namespace cbica
     int GetNumberOfVolumes(VolumeType::Pointer rawVol, int nVolume, int nSliceInVolume);
 
     template < typename TInputPixelType, typename TMaskPixelType, typename TOutputTensorCompType>
-    std::vector<ImageTypeFloat3D::Pointer> dtiRecon(VectorImageType::Pointer inputImage, std::string maskFile, int verbose, int inputIsVectorImage, std::vector< vnl_vector_fixed<double, 3> > diffuionVector, double bValue);
+    std::vector<ImageTypeScalar3D::Pointer> dtiRecon(VectorImageType::Pointer inputImage, std::string maskFile, int verbose, int inputIsVectorImage, std::vector< vnl_vector_fixed<double, 3> > diffuionVector, double bValue);
 
-    std::vector<ImageTypeFloat3D::Pointer> ConvertDWIToScalars(std::string inputDirName, std::string maskFileName);
+    std::vector<ImageTypeScalar3D::Pointer> ConvertDWIToScalars(std::string inputDirName, std::string maskFileName);
 
 
   };
@@ -125,7 +126,7 @@ namespace cbica
   //--------------------------------------------------------------
   //----------------------------------------------------------
   template < typename TInputPixelType, typename TMaskPixelType, typename TOutputTensorCompType>
-  std::vector<itk::Image<float, Dimensions>::Pointer> DTIProcessingManager::dtiRecon(VectorImageType::Pointer inputImage, std::string maskFile, int verbose, int inputIsVectorImage, std::vector< vnl_vector_fixed<double, 3> > DiffusionVectorWrite, double bValue)
+  std::vector<itk::Image<ImageTypeScalar3D::PixelType, Dimensions>::Pointer> DTIProcessingManager::dtiRecon(VectorImageType::Pointer inputImage, std::string maskFile, int verbose, int inputIsVectorImage, std::vector< vnl_vector_fixed<double, 3> > DiffusionVectorWrite, double bValue)
   {
     //bool readb0 = false;
     //double b0 = 0;

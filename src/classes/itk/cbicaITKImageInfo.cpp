@@ -6,8 +6,8 @@
 http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 #include "cbicaITKImageInfo.h"
@@ -18,8 +18,8 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 namespace cbica
 {
   // ============================================================================ //
-  
-  ImageInfo::ImageInfo( const std::string &fName )
+
+  ImageInfo::ImageInfo(const std::string &fName)
   {
     auto fName_norm = cbica::normPath(fName);
     auto fName_ext = cbica::getFilenameExtension(fName);
@@ -27,7 +27,7 @@ namespace cbica
     if (cbica::isFile(fName) && (fName_ext != ".dcm"))
     {
       m_fileName = fName_norm;
-     
+
       m_itkImageIOBase = itk::ImageIOFactory::CreateImageIO(m_fileName.c_str(), itk::ImageIOFactory::ReadMode);
 
       // exception handling in case of NULL pointer initialization
@@ -68,7 +68,7 @@ namespace cbica
       return;
     }
   }
-  
+
   ImageInfo::~ImageInfo()
   {
 
@@ -83,7 +83,7 @@ namespace cbica
   {
     return m_size;
   }
-  
+
   std::vector<double> ImageInfo::GetImageSpacings()
   {
     return m_spacings;
@@ -98,20 +98,20 @@ namespace cbica
   {
     return m_IOComponentType_asString;
   }
-  
+
   itk::ImageIOBase::IOComponentType ImageInfo::GetComponentType()
   {
     return m_IOComponentType;
   }
-  
+
   std::string ImageInfo::GetPixelTypeAsString()
   {
     return m_pixelType_asString;
   }
-  
+
   itk::ImageIOBase::IOPixelType ImageInfo::GetPixelType()
   {
     return m_pixelType;
   }
-  
+
 }

@@ -6,12 +6,14 @@
 http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 
 #include "cbicaDTIProcessingManager.h"
+
+
 
 namespace cbica
 {
@@ -22,10 +24,10 @@ namespace cbica
   DTIProcessingManager::~DTIProcessingManager()
   {
   }
-  std::vector<ImageTypeFloat3D::Pointer> DTIProcessingManager::ConvertDWIToScalars(std::string inputDirName, std::string maskFileName)
+  std::vector<ImageTypeScalar3D::Pointer> DTIProcessingManager::ConvertDWIToScalars(std::string inputDirName, std::string maskFileName)
   {
     std::vector< std::string > allFilesInDirectory = cbica::filesInDirectory(inputDirName);
-    std::vector<ImageTypeFloat3D::Pointer> vectorOfDTIs;
+    std::vector<ImageTypeScalar3D::Pointer> vectorOfDTIs;
 
     //for (size_t i = 0; i < allFilesInDirectory.size(); i++)
     //{
@@ -640,7 +642,7 @@ namespace cbica
 
 
     outputImage->SetMetaDataDictionary(outputImageMetaDictionary);
-    
+
     try
     {
       itk::ImageIOBase::IOPixelType       maskPixelType;
