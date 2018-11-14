@@ -9,7 +9,7 @@ http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 #pragma once
@@ -381,25 +381,6 @@ namespace cbica
   \param rootFolder The input folder
   */
   size_t getDirectorySize(const std::string &rootFolder);
-
-  /**
-  \brief Get size of total physical memory (in bytes) in machine
-  */
-  size_t getTotalMemory();
-
-  /**
-  \brief Get size of physical memory being used (in bytes) in machine
-
-  Ref: https://stackoverflow.com/a/64166
-  */
-  size_t getCurrentlyUsedMemory();
-
-  /**
-  \brief Get size of physical memory being used (in bytes) in machine by the current process
-
-  Ref: https://stackoverflow.com/a/64166
-  */
-  size_t getCurrentlyUsedMemoryByCurrentProcess();
 
   /**
   \brief Gets the extension of the supplied file name using splitFileName()

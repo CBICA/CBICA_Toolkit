@@ -9,7 +9,7 @@ http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 #if (_WIN32)
@@ -20,6 +20,7 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <lmcons.h>
 #include <Shlobj.h>
 #include <filesystem>
+#include <psapi.h>
 #define GetCurrentDir _getcwd
 bool WindowsDetected = true;
 static const char  cSeparator = '\\';
@@ -36,6 +37,13 @@ static const char  cSeparator = '\\';
 #include <ftw.h>
 #if (__APPLE__)
   #include <mach-o/dyld.h>
+  #include <sys/sysctl.h>
+  #include <mach/vm_statistics.h>
+  #include <mach/mach_types.h>
+  #include <mach/mach_init.h>
+  #include <mach/mach_host.h>
+#else
+  #include <sys/sysinfo.h>
 #endif
 #define GetCurrentDir getcwd
 bool WindowsDetected = false;
@@ -84,7 +92,7 @@ namespace cbica
     {
       dName_Wrap.erase(dName_Wrap.end() - 1);
     }
-
+    
     if (stat(dName_Wrap.c_str(), &info) != 0)
       return false;
     else if (info.st_mode & S_IFDIR)  // S_ISDIR() doesn't exist on windows
@@ -250,7 +258,7 @@ namespace cbica
   {
     if (!directoryExists(dirname))
     {
-      std::cerr << "Supplied directory name wasn't found.\n";
+      std::cerr << "Supplied directory name wasn't found: " << dirname << std::endl;
       exit(EXIT_FAILURE);
     }
 #if defined(_WIN32)
@@ -616,7 +624,7 @@ namespace cbica
     {
       if (!fileExists(filename))
       {
-        std::cerr << "Supplied file name '" << filename << "' wasn't found.\n";
+        std::cerr << "[getFilenameBase()] Supplied file name'" << filename << "'wasn't found.\n";
         exit(EXIT_FAILURE);
       }
     }
@@ -632,7 +640,7 @@ namespace cbica
     {
       if (!fileExists(filename))
       {
-        std::cerr << "Supplied file name '" << filename << "' wasn't found.\n";
+        std::cerr << "[getFilenameExtension()] Supplied file name'" << filename << "'wasn't found.\n";
         exit(EXIT_FAILURE);
       }
     }
@@ -654,7 +662,7 @@ namespace cbica
       {
         if (!fileExists(filename))
         {
-          std::cerr << "Supplied file name '" << filename << "' wasn't found.\n";
+          std::cerr << "[getFilenamePath()] Supplied file name'" << filename << "'wasn't found.\n";
           exit(EXIT_FAILURE);
         }
       }
@@ -692,13 +700,16 @@ namespace cbica
     char path[PATH_MAX];
     if (path != NULL)
     {
-      if (::readlink("/proc/self/exe", path, PATH_MAX) == -1)
+      auto ret = ::readlink("/proc/self/exe", path, sizeof(path)-1);
+      if (ret == -1)
       {
         //free(path);
         path[0] = '\0';
       }
+      path[ret] = 0;
     }
-    return_string = getFilenameBase(std::string(path));
+    auto temp = std::string(path);
+    return_string = getFilenameBase(temp);
     path[0] = '\0';
 #endif
 
@@ -1179,7 +1190,7 @@ namespace cbica
   {
     if (!cbica::directoryExists(dirName))
     {
-      std::cerr << "Supplied directory name wasn't found.\n";
+      std::cerr << "Supplied directory name wasn't found: " << dirName << std::endl;
       exit(EXIT_FAILURE);
     }
     std::vector< std::string > allFiles;
@@ -1211,8 +1222,6 @@ namespace cbica
         } while (::FindNextFile(hFind, &fd));
         ::FindClose(hFind);
       }
-      return allFiles;
-
     }
 #else
     {
@@ -1226,26 +1235,32 @@ namespace cbica
 
       while ((dirp = readdir(dp)) != NULL)
       {
-        if (returnFullPath)
+        auto returnBase = std::string(dirp->d_name);
+        if((returnBase.compare(".") != 0) && (returnBase.compare("..") != 0) && (returnBase.compare("~") != 0))
         {
-          allFiles.push_back(dirName_wrap + std::string(dirp->d_name));
-        }
-        else
-        {
-          allFiles.push_back(std::string(dirp->d_name));
+          if (returnFullPath)
+          {
+            allFiles.push_back(dirName_wrap + std::string(dirp->d_name));
+          }
+          else
+          {
+            allFiles.push_back(std::string(dirp->d_name));
+          }
         }
       }
       closedir(dp);
-      return allFiles;
     }
 #endif
+
+  std::sort(allFiles.begin(), allFiles.end());
+  return allFiles;
   }
 
   std::vector<std::string> subdirectoriesInDirectory(const std::string &dirName, bool recursiveSearch)
   {
     if (!cbica::directoryExists(dirName))
     {
-      std::cerr << "Supplied directory name wasn't found.\n";
+      std::cerr << "Supplied directory name wasn't found: " << dirName << std::endl;
       exit(EXIT_FAILURE);
     }
     std::vector< std::string > allDirectories;
@@ -2031,14 +2046,26 @@ namespace cbica
     GlobalMemoryStatusEx(&status);
     return (size_t)status.ullTotalPhys;
 
-#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
-    struct sysinfo memInfo;
+#elif (defined(__APPLE__) && defined(__MACH__))
+    	/* UNIX variants. ------------------------------------------- */
+      /* Prefer sysctl() over sysconf() except sysctl() HW_REALMEM and HW_PHYSMEM */
 
-    sysinfo(&memInfo);
-    return memInfo.totalram * memInfo.mem_unit;
-#else
-    return 0L;			/* Unknown OS. */
-#endif
+    #if defined(CTL_HW) && (defined(HW_MEMSIZE) || defined(HW_PHYSMEM64))
+      int mib[2];
+      mib[0] = CTL_HW;
+      #if defined(HW_MEMSIZE)
+        mib[1] = HW_MEMSIZE;            /* OSX. --------------------- */
+      #elif defined(HW_PHYSMEM64)
+        mib[1] = HW_PHYSMEM64;          /* NetBSD, OpenBSD. --------- */
+      #endif
+        int64_t size = 0;               /* 64-bit */
+        size_t len = sizeof( size );
+        if ( sysctl( mib, 2, &size, &len, NULL, 0 ) == 0 )
+          return (size_t)size;
+        return 0L;			/* Failed? */
+    
+    #endif
+  #endif
   }
 
   size_t getCurrentlyUsedMemory()
@@ -2050,12 +2077,24 @@ namespace cbica
     GlobalMemoryStatusEx(&memInfo);
     return memInfo.ullTotalPhys - memInfo.ullAvailPageFile;
 
-#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
+#elif (defined(__APPLE__) && defined(__MACH__))
+    vm_size_t page_size;
+    mach_port_t mach_port;
+    mach_msg_type_number_t count;
+    vm_statistics64_data_t vm_stats;
 
-    struct sysinfo memInfo;
-
-    sysinfo(&memInfo);
-    return memInfo.mem_unit * (memInfo.totalram - memInfo.freeram);
+    mach_port = mach_host_self();
+    count = sizeof(vm_stats) / sizeof(natural_t);
+    if (KERN_SUCCESS == host_page_size(mach_port, &page_size) &&
+        KERN_SUCCESS == host_statistics64(mach_port, HOST_VM_INFO,
+                                        (host_info64_t)&vm_stats, &count))
+    {
+        long long used_memory = ((int64_t)vm_stats.active_count +
+                                 (int64_t)vm_stats.inactive_count +
+                                 (int64_t)vm_stats.wire_count) *  (int64_t)page_size;
+        
+        return (size_t)used_memory;
+    }
 
 #else
     return 0;
@@ -2069,7 +2108,7 @@ namespace cbica
     GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
     return pmc.WorkingSetSize;
 
-#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
+#elif (defined(__APPLE__) && defined(__MACH__))
     
     FILE* file = fopen("/proc/self/status", "r");
     int result = -1;

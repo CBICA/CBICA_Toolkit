@@ -7,7 +7,7 @@ http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 #pragma once
@@ -20,6 +20,10 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 
 #include "cbicaUtilities.h"
 
+/*
+\namespace cbica
+\brief Namespace for differentiating functions written for internal use
+*/
 namespace cbica
 {
   /**
@@ -103,6 +107,17 @@ namespace cbica
     <4 digit year>:<2 digit month>:<2 digit date>,<2 digit 24 hour>:<2 digit minute>:<2 digit second>;<free text>
     */
     void EnableTextLogging(const std::string &newLogFile);
+    
+    /**
+    \brief This is useful in scenarios where the application has been installed in a multi-user machine.
+
+    This also disables writing of the date in the log since the assumption is that on a single user machine, the filename should be in the following format: 
+    ${userHomeDir}/.${appName}/${currentDate} (see CaPTk logging as example). This also disables the writing of the executable name.
+    */
+    void EnableMultiUserLogging()
+    {
+      m_multiUserLog = true;
+    }
 
     /**
     \brief Switches from text to console file logging
@@ -178,7 +193,9 @@ namespace cbica
     bool consoleLogging;
     //! Flag to denote logging in GMT
     bool GMTLogging;
+    //! This writes out user and exe name(s) to the log
+    bool m_multiUserLog = false;
     //! Flag to disable writing of username and exename
-    bool m_laconicLogging = true;
+    bool m_laconicLogging = false;
 	};
 }

@@ -207,28 +207,30 @@ namespace cbica
       {
         mad += (m_input[i] - m_mean);
       }
-      return (mad / static_cast<double>(m_input.size()));
+      return (mad / m_inputSize_double);
     }
 
     //! Get the Robust Mean Absolute Deviation
     double GetRobustMeanAbsoluteDeviation(size_t lowerQuantile, size_t upperQuantile)
     {
       std::vector< TDataType > truncatedVector;
-      for (size_t i = 0; i < m_input_sorted.size(); i++)
+      auto lower = GetNthPercentileElement(lowerQuantile);
+      auto upper = GetNthPercentileElement(upperQuantile);
+      for (size_t i = 0; i < m_input_Sorted.size(); i++)
       {
-        if ((m_input_sorted[i] >= lowerQuantile) && (m_input_sorted[i] <= upperQuantile))
+        if ((m_input_Sorted[i] >= lower) && (m_input_Sorted[i] <= upper))
         {
-          truncatedVector.push_back(m_input_sorted[i]);
+          truncatedVector.push_back(m_input_Sorted[i]);
         }
       }
 
-      truncated_sum = std::accumulate(truncatedVector.begin(), truncatedVector.end(), 0.0);
-      truncated_mean = truncated_sum / truncatedVector.size();
+      double truncated_sum = std::accumulate(truncatedVector.begin(), truncatedVector.end(), 0.0);
+      double truncated_mean = truncated_sum / static_cast<double>(truncatedVector.size());
 
       double rmad = 0;
       for (size_t i = 0; i < truncatedVector.size(); i++)
       {
-        rmad += (truncatedVector[i] - truncated_mean);
+        rmad += std::abs(truncatedVector[i] - truncated_mean);
       }
       return (rmad / static_cast<double>(truncatedVector.size()));
     }
@@ -241,12 +243,16 @@ namespace cbica
       {
         mad += (m_input[i] - GetMedian());
       }
-      return (mad / static_cast<double>(m_input.size()));
+      return (mad / m_inputSize_double);
     }
 
     //! Get Coefficient of Variation 
     double GetCoefficientOfVariation()
     {
+      if (!stdDev_calculated)
+      {
+        CalculateSTD();
+      }
       return (m_stdDev / m_mean);
     }
 
@@ -268,7 +274,7 @@ namespace cbica
     //! Get the Root Mean Square (also called Quadratic Mean) 
     double GetRootMeanSquare()
     {
-      return (std::sqrt(m_energy / m_input.size()));
+      return (std::sqrt(m_energy / m_inputSize_double));
     }
 
     //! Does exactly what it says
@@ -276,6 +282,10 @@ namespace cbica
     {
       if (!zscores_calculated)
       {
+        if (!stdDev_calculated)
+        {
+          CalculateSTD();
+        }
         m_zscores.clear();
         for (const TDataType& element : m_input)
         {
@@ -292,7 +302,8 @@ namespace cbica
     std::vector< TDataType > m_input_Sorted;
 
     //! actual outputs
-    double m_sum = 0.0, m_mean = 0.0, m_variance = 0.0, m_stdDev = 0.0, m_kurtosis = 0.0, m_skewness = 0.0, m_max = 0.0, m_min = 0.0, m_energy = 0.0;
+    double m_inputSize_double = 0, m_sum = 0.0, m_mean = 0.0, m_variance = 0.0, m_stdDev = 0.0, m_kurtosis = 0.0, m_skewness = 0.0, 
+      m_max = 0.0, m_min = 0.0, m_energy = 0.0;
 
     TDataType m_mode, m_median;
 
@@ -308,6 +319,7 @@ namespace cbica
       m_input = inputArray;
       m_input_Sorted = inputArray;
       std::sort(m_input_Sorted.begin(), m_input_Sorted.end());
+      m_inputSize_double = static_cast<double>(m_input.size());
 
       stdDev_calculated = false;
       kurtosis_calculated = false;
@@ -316,7 +328,7 @@ namespace cbica
       mode_calculated = false;
       median_calculated = false;
       m_sum = std::accumulate(m_input.begin(), m_input.end(), 0.0);
-      m_mean = m_sum / m_input.size();
+      m_mean = m_sum / m_inputSize_double;
       auto result = std::minmax_element(m_input.begin(), m_input.end());
       m_min = *result.first;
       m_max = *result.second;
@@ -326,18 +338,22 @@ namespace cbica
         m_energy += std::pow(element, 2);
       }
 
-      m_variance = m_variance / (m_input.size() - 1);
+      m_variance = m_variance / (m_inputSize_double - 1);
     }
 
     //! Helper function for calculating kurtosis and skewness
     double weirdStatistics(size_t power)
     {
+      if (!stdDev_calculated)
+      {
+        CalculateSTD();
+      }
       double returnStat = 0.0;
       for (size_t x = 0; x < m_input.size(); x++)
       {
         returnStat += std::pow(((m_input[x] - m_mean) / m_stdDev), power);
       }
-      return (returnStat / m_input.size());
+      return (returnStat / m_inputSize_double);
     }
 
     //! Single place to calculate STD Dev to reduce number of moving parts
@@ -345,7 +361,7 @@ namespace cbica
     {
       if (!stdDev_calculated)
       {
-        m_stdDev = std::sqrt(static_cast<double>(m_variance));
+        m_stdDev = std::sqrt(m_variance);
         stdDev_calculated = true;
       }
     }
