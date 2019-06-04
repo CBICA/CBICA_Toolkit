@@ -6,8 +6,8 @@
 http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
-Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
+Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
+See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 #pragma once
@@ -18,6 +18,16 @@ See COPYING file or http://www.med.upenn.edu/sbia/software/license.html
 #include <iterator>
 #include <algorithm>
 #include <vector>
+#include <map>
+
+#if defined(__GNUC__) || defined(__clang__)
+#define DEPRECATED __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#define DEPRECATED __declspec(deprecated)
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define DEPRECATED
+#endif
 
 enum Separator
 {
@@ -202,12 +212,14 @@ namespace cbica
   cbica::CmdParser parser = cbica::CmdParser(argc, argv); // OR,
   //cbica::CmdParser parser = cbica::CmdParser(argc, argv, "exe_name"); // if a different exe_name is desired
 
-  /// The parameters "u", "usage", "h", "help", "v" and "version" are automatically added ///
+  /// The parameters "u"/"usage", "h"/"help" and "v"/"version" are automatically added ///
 
   // add parameters to the variable
   parser.addOptionalParameter("m","marvel", cbica::Parameter::INTEGER, "1 to 10", "I like The Avengers");
   parser.addOptionalParameter("d", "dc", cbica::Parameter::FLOAT, "1.00 to 10.00", "I prefer the Justice League");
   parser.addRequiredParameter("p", "people", cbica::Parameter::STRING, "max length = 1024", "People are always required");
+
+  // note that there should be no spaces for either of the parameter types; they will be removed.
 
   /// checks for required parameters are done internally.
 
@@ -253,6 +265,11 @@ namespace cbica
     \brief Set a custom executable name
     */
     void setExeName(const std::string exeName){ m_exeName = exeName; };
+
+    /**
+    \get the executable name
+    */
+    std::string getExeName() { return m_exeName; };
 
     /**
     \brief Adding parameters: defaults to optional parameters
@@ -335,7 +352,7 @@ namespace cbica
     \param position Position of parameter in argv else -1
     \return True if parameter found else False
     */
-    bool compareParameter(const std::string &execParamToCheck, int &position);
+    bool compareParameter(const std::string &execParamToCheck, int &position, bool automaticEcho = true);
 
     /**
     \brief Check parameters WITHOUT hyphens
@@ -345,7 +362,7 @@ namespace cbica
     \param execParamToCheck Which parameter to check
     \return True if parameter found else False
     */
-    bool compareParameter(const std::string &execParamToCheck);
+    bool compareParameter(const std::string &execParamToCheck, bool automaticEcho = true);
 
     /**
     \brief Check if supplied parameter is present in the argument list
@@ -355,7 +372,7 @@ namespace cbica
     \param execParamToCheck Which parameter to check
     \return True if parameter found else False
     */
-    bool isPresent(const std::string &execParamToCheck);
+    bool isPresent(const std::string &execParamToCheck, bool automaticEcho = true);
 
     /**
     \brief Get the description analogous with the parameter
@@ -388,9 +405,12 @@ namespace cbica
     */
     int getDataTypeAsEnumCode(const std::string &execParamToCheck);
 
-	  void writeJSONFile(const std::string & dirName);
+    /**
+    \brief Write the parser configuration as a JSON file
+    */
+    //void writeJSONFile(const std::string & dirName);
 
-	  /**
+    /**
     \brief Write the configuration file for the executable for use in the common GUI framework
 
     The generated config file is always named 'EXE_NAME.txt'.
@@ -415,18 +435,34 @@ namespace cbica
 
     \param usageOfExe A string which would correspond to the command line usage AFTER the executable has been called
     */
-    void exampleUsage(const std::string &usageOfExe);
+    DEPRECATED void exampleUsage(const std::string &usageOfExe);
 
-	  /*
+    /**
+    \brief Gives a brief example of how to use the executable
+
+    This should not contain any references to the executable name (it is automatically picked up).
+    It should start directly with the parameters to be put in.
+
+    \param commandExcludingExeName A string which would correspond to the command line usage AFTER the executable has been called
+    \param descriptionOfCommand A string which would correspond to what the command is expected to do
+    */
+    void addExampleUsage(const std::string &commandExcludingExeName, const std::string &descriptionOfCommand);
+
+    /**
+    \brief Adds descrition for the application for which the class is being initialized
+    */
+    void addApplicationDescription(const std::string &description);
+
+	  /**
 	  \brief Writes out a CWL specification file from cmd parser
 
 	  This should be invoked everytime the cmd parser is called for an application.
 
 	  \param dirName Full directory path to where the CWL spec will be produced
-	  \workflowName For more advanced CWL workflows
-	
+	  \param workflowName For more advanced CWL workflows
+    \param overwriteFile If the current file should be overwritten or not
 	  */
-	  void writeCWLFile(const std::string & dirName, const std::string &workflowName);
+	  void writeCWLFile(const std::string & dirName, bool overwriteFile);
 
 	  /*
 	  \brief Gets the command line string with all the parameters from input yml file
@@ -532,7 +568,6 @@ namespace cbica
 	  */
 	  std::string getLaconic(const std::string &execParamToCheck);
 
-	  void logCWL(const std::string &inpFileName, const std::string &cwlFileName);
     /**
     \brief Get the value of the parameter
 
@@ -588,14 +623,19 @@ namespace cbica
     {
       argc1ignore = true;
     }
-
+    
   private:
+
     //! Executable name
     std::string m_exeName;
+    //! Executable path
+    std::string m_exePath;
     //! Version
     std::string m_version;
     //! Example of how to use the executable in question
     std::string m_exampleOfUsage;
+    //! Description of the application - intended to give a short overview of what the user should expect
+    std::string m_description;
     //! CMD variable, used to ensure that 'const' based variables are taken into consideration
     int m_argc;
     //! CMD variable, used to ensure that 'const' based variables are taken into consideration
@@ -620,6 +660,12 @@ namespace cbica
     inline void verbose_check(std::string &input_string);
     //! Internal function to write vector of parameters
     inline void writeParameters(const std::vector< Parameter > &inputParameters, bool verbose);
+    //! Logs the CWL that is passed through cwl-runner
+    void logCWL(const std::string &inpFileName, const std::string &cwlFileName);
+
+    //! application usage examples and their respective descriptions
+    std::vector< std::pair< std::string, std::string > > m_exampleUsageAndDescription;
+
 
     size_t m_maxLaconicLength, //! maximum length of laconic parameters
       m_minVerboseLength,

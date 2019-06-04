@@ -136,14 +136,6 @@ namespace cbica
     void EnableGMTLogging();
 
     /**
-    \brief Only keeps timestamp and removes everything else; enabled by default
-    */
-    void SetLaconicLogging(bool flag) 
-    {
-      m_laconicLogging = flag;
-    };
-
-    /**
     \brief Get the file name with full path where log has happened
 
     \return file_name_with_path 
@@ -195,7 +187,5 @@ namespace cbica
     bool GMTLogging;
     //! This writes out user and exe name(s) to the log
     bool m_multiUserLog = false;
-    //! Flag to disable writing of username and exename
-    bool m_laconicLogging = false;
 	};
 }
