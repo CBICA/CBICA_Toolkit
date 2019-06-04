@@ -41,13 +41,14 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "cbicaUtilities.h"
 #include "cbicaITKImageInfo.h"
 #include "cbicaITKUtilities.h"
+#include "DicomIOManager.h"
 
 using ImageTypeFloat3D = itk::Image< float, 3 >;
 using TImageType = ImageTypeFloat3D;
 using MaskType = itk::Image<unsigned int, 3>;
 
 namespace cbica
-{
+{ 
   /**
   \brief Get the itk::ImageFileReader from input file name. This is useful for scenarios where reader meta information is needed for later writing step(s).
 
@@ -245,71 +246,71 @@ namespace cbica
   //  //return cbica::GetUniqueElements< std::string >(UIDs);
   //}
 
-  ///**
-  //\brief Get the Dicom image reader (not the image, the READER). This is useful for scenarios where reader meta information is needed for later writing step(s).
+  /**
+  \brief Get the Dicom image reader (not the image, the READER). This is useful for scenarios where reader meta information is needed for later writing step(s).
 
-  //Usage:
-  //\verbatim
-  //typedef itk::Image< float, 3 > ExpectedImageType;
-  //std::string inputDirName = parser.getParameterValue("inputDirName");
-  //auto inputImageReader = GetDicomImageReader< ExpectedImageType >(inputDirName); // reads *all* DICOM images
-  //auto inputImage = inputImageReader->GetOutput();
-  //DoAwesomeStuffWithImage( inputImage );
-  //\endverbatim
+  Usage:
+  \verbatim
+  typedef itk::Image< float, 3 > ExpectedImageType;
+  std::string inputDirName = parser.getParameterValue("inputDirName");
+  auto inputImageReader = GetDicomImageReader< ExpectedImageType >(inputDirName); // reads *all* DICOM images
+  auto inputImage = inputImageReader->GetOutput();
+  DoAwesomeStuffWithImage( inputImage );
+  \endverbatim
 
-  //\param dirName This is the directory name of the DICOM image which needs to be loaded - if this is an image, the underlying path of the image is considered
-  //*/
-  //template <class TImageType = ImageTypeFloat3D >
-  //typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName)
-  //{
-  //  std::string dirName_wrap = cbica::normPath(dirName);
-  //  if (!cbica::isDir(dirName_wrap))
-  //  {
-  //    dirName_wrap = cbica::getFilenamePath(dirName);
-  //  }
-  //  if (dirName_wrap[dirName_wrap.length() - 1] == '/')
-  //    dirName_wrap.pop_back(); // this is done to ensure the last "/" isn't taken into account for file name generation
+  \param dirName This is the directory name of the DICOM image which needs to be loaded - if this is an image, the underlying path of the image is considered
+  */
+  template <class TImageType = ImageTypeFloat3D >
+  typename itk::ImageSeriesReader< TImageType >::Pointer GetDicomImageReader(const std::string &dirName)
+  {
+    std::string dirName_wrap = cbica::normPath(dirName);
+    if (!cbica::isDir(dirName_wrap))
+    {
+      dirName_wrap = cbica::getFilenamePath(dirName);
+    }
+    if (dirName_wrap[dirName_wrap.length() - 1] == '/')
+      dirName_wrap.pop_back(); // this is done to ensure the last "/" isn't taken into account for file name generation
 
-  //  //// check read access
-  //  //if (((_access(dirName_wrap.c_str(), 4)) == -1) || ((_access(dirName_wrap.c_str(), 6)) == -1))
-  //  //{
-  //  //  ShowErrorMessage("You don't have read access in selected location. Please check.");
-  //  //  exit(EXIT_FAILURE);
-  //  //}
+    //// check read access
+    //if (((_access(dirName_wrap.c_str(), 4)) == -1) || ((_access(dirName_wrap.c_str(), 6)) == -1))
+    //{
+    //  ShowErrorMessage("You don't have read access in selected location. Please check.");
+    //  exit(EXIT_FAILURE);
+    //}
 
-  //  auto dicomIO = itk::DCMTKImageIO::New();
-  //  auto inputNames = itk::DCMTKSeriesFileNames::New();
-  //  inputNames->SetInputDirectory(dirName_wrap);
-  //  inputNames->SetLoadPrivateTags(true);
-  //  auto UIDs = inputNames->GetSeriesUIDs();
+    auto dicomIO = itk::GDCMImageIO::New();
+    auto inputNames = itk::GDCMSeriesFileNames::New();
+    inputNames->SetInputDirectory(dirName_wrap);
+    inputNames->SetLoadPrivateTags(true);
+    auto UIDs = inputNames->GetSeriesUIDs();
 
-  //  auto UIDs_unique = cbica::GetUniqueElements(UIDs);
+    auto UIDs_unique = cbica::GetUniqueElements(UIDs);
 
-  //  if (UIDs_unique.size() > 1)
-  //  {
-  //    std::cout << "Multiple DICOM series detected.\n";
-  //  }
+    if (UIDs_unique.size() > 1)
+    {
+      std::cout << "Multiple DICOM series detected.\n";
+    }
 
-  //  inputNames->SetInputDirectory(dirName_wrap);
-  //  //inputNames->SetLoadPrivateTags(true);
+    inputNames->SetInputDirectory(dirName_wrap);
+    //inputNames->SetLoadPrivateTags(true);
 
-  //  auto filenames = inputNames->GetInputFileNames();
+    auto filenames = inputNames->GetInputFileNames();
 
-  //  auto seriesReader = /*typename*/ itk::ImageSeriesReader< TImageType >::New();
-  //  seriesReader->SetImageIO(dicomIO);
-  //  seriesReader->SetFileNames(filenames);
+    auto seriesReader = /*typename*/ itk::ImageSeriesReader< TImageType >::New();
+    seriesReader->SetImageIO(dicomIO);
+    seriesReader->SetFileNames(filenames);
 
-  //  try
-  //  {
-  //    seriesReader->Update();
-  //  }
-  //  catch (itk::ExceptionObject & err)
-  //  {
-  //    std::cerr << "Error while loading DICOM images: " << err.what() << "\n";
-  //  }
+    try
+    {
+      seriesReader->Update();
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      std::cerr << "Error while loading DICOM images: " << err.what() << "\n";
+    }
 
-  //  return seriesReader;
-  //}
+    return seriesReader;
+  }
 
   /**
   \brief Get the itk::Image from input dir name
@@ -660,16 +661,22 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii,.dcm", const std::string &delimitor = ",")
   {
-    std::string extension = cbica::getFilenameExtension(fName);
-    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-    //if ((cbica::isDir(fName) || (extension == ".dcm") || (extension == ".dicom")) && (TImageType::ImageDimension > 2))
-    //{
-    //  return GetDicomImage< TImageType >(fName);
-    //}
-    //else
-    //{
-    return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
-    //   }
+    if (cbica::IsDicom(fName))
+    {
+      DicomIOManager< TImageType > dcmSeriesReader;
+      dcmSeriesReader.SetDirectoryPath(fName);
+      bool loadstatus = dcmSeriesReader.LoadDicom();
+      if (!loadstatus)
+      {
+        //QMessageBox::critical(this, "Dicom Loading", "Dicom Load Failed");
+        return nullptr;
+      }
+      return dcmSeriesReader.GetITKImage();
+    }
+    else
+    {
+      return GetImageReader< TImageType >(fName, supportedExtensions, delimitor)->GetOutput();
+    }
   }
 
   /**
