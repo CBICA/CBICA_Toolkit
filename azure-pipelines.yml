@@ -1,0 +1,168 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+
+resources:
+  containers:
+  - container: ubuntu1404
+    image: mardy/qt:trusty-qt512
+    
+jobs:
+- job: 'WindowsBuild'
+  displayName: "End-to-end Windows build & testing"
+  timeoutInMinutes: 0
+  cancelTimeoutInMinutes: 300
+
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  steps:
+  
+    - script: |
+        choco install doxygen.install
+      displayName: 'Install dependencies'
+  
+    - script: |
+        mkdir bin
+        cd bin
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+        cmake -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_INSTALL_PREFIX="./install" ..
+        setx PATH "%PATH%;$(Build.SourcesDirectory)/bin/qt/5.12.1/bin"
+        cmake --build . --target ALL_BUILD --config Release
+      displayName: 'Configure and compile Superbuild'
+    
+    - script: |
+        cd bin
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+        cmake -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_INSTALL_PREFIX="./install" -DCAPTK_DISABLE_CWL=ON ..
+        setx PATH "%PATH%;$(Build.SourcesDirectory)/bin/qt/5.12.1/bin"
+        cmake --build . --target ALL_BUILD --config Release
+      displayName: 'Configure and compile CBICA_Toolkit'
+      
+    - script: |
+        cd bin
+        cmake --build . --target RUN_TESTS --config Release
+      displayName: 'Running Tests'
+      
+- job: 'XenialBuild'
+  displayName: "End-to-end Linux (Xenial) build"
+  timeoutInMinutes: 0
+  cancelTimeoutInMinutes: 300
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+    # Dependency manager
+    - bash: |
+        sudo apt-get update && sudo apt-get install -qq gcc g++ make libgl-dev cmake python3-pip python-numpy dos2unix libxkbcommon-x11-0 doxygen
+      displayName: 'Install dependencies from Aptitude'
+
+    # Create build dir
+    - bash: |
+        mkdir -p bin
+      displayName: 'Create build directory'
+
+    # Configure and build superbuild
+    - bash: |
+        cd bin
+        cmake -DCMAKE_INSTALL_PREFIX="./install/appdir/usr" -DQT_DOWNLOAD_FORCE=ON ..
+        make -j2
+      displayName: 'Configure and compile Superbuild'
+
+    # Configure and build CaPTk
+    - bash: |
+        cd bin
+        cmake -DCMAKE_INSTALL_PREFIX="./install/appdir/usr" -DQT_DOWNLOAD_FORCE=ON ..
+        make -j2
+        #make install/strip
+      displayName: 'Configure and compile CBICA_Toolkit'
+
+    # Check qt
+    - bash: |
+        cd bin
+        make test
+      displayName: 'Running Tests'
+      
+- job: 'MacOSBuild'
+  displayName: "End-to-end MacOS build & testing"
+  timeoutInMinutes: 0
+  cancelTimeoutInMinutes: 300
+
+  pool:
+    vmImage: 'MacOS-10.13'
+
+  steps:
+    - bash: |
+        brew install caskroom/cask/mactex make doxygen llvm
+      displayName: 'Brew dependencies'
+    
+    - bash: |
+        export CC=""
+        export CXX=""
+        export LDFLAGS=""
+        export CPPFLAGS=""
+
+        # git lfs install && git lfs fetch --all
+
+        export CMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE
+        export CMAKE_PREFIX_PATH="/Library/TeX/texbin"
+      displayName: 'Export variables'
+
+    - bash: |
+        mkdir bin
+      displayName: 'Create build directory'
+    
+    - bash: |
+        cd bin
+
+        cmake ../ -DCMAKE_INSTALL_PREFIX="./install"
+        cmake ../ -DCMAKE_INSTALL_PREFIX="./install"
+
+        make -j2
+      displayName: 'Configure and compile Superbuild'
+
+    - bash: |
+        cd bin
+
+        rm CMakeCache.txt
+
+        export CC=/usr/local/opt/llvm/bin/clang
+        export CXX=/usr/local/opt/llvm/bin/clang++
+        export LDFLAGS="-L/usr/local/opt/llvm/lib"
+        export CPPFLAGS="-L/usr/local/opt/llvm/include"
+
+        cmake ../
+        cmake ../
+
+        make -j 2
+      displayName: 'Export variables for llvm then Configure and compile CBICA_Toolkit'
+    
+    - bash: |
+        cd bin
+
+        rm CMakeCache.txt
+        rm -rf CaPTk*.app
+
+        export CC=/usr/local/opt/llvm/bin/clang
+        export CXX=/usr/local/opt/llvm/bin/clang++
+        export LDFLAGS="-L/usr/local/opt/llvm/lib"
+        export CPPFLAGS="-L/usr/local/opt/llvm/include"
+
+        cmake ../
+        cmake ../
+
+        make -j 2
+        make -j 2
+      displayName: 'Ensure documentations are picked up properly'
+    
+    
+    - bash: |
+        cd bin 
+        
+        make test
+
+      displayName: 'Running Tests'
+    
