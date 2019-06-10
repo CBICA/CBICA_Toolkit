@@ -25,11 +25,7 @@ SET(PROJECT_CONTACT "software@cbica.upenn.edu")
 CMAKE_POLICY(SET CMP0048 NEW) # only with CMake 3
 CMAKE_POLICY(SET CMP0025 NEW) # only with CMake 3
 
-FIND_PACKAGE( ITK )
-IF( ITK_FOUND )
-  INCLUDE( ${ITK_USE_FILE} )
-ENDIF()
-
+# Try to find OpenCV; if not found, perform superbuild
 FIND_PACKAGE( OpenCV )
 IF( OpenCV_FOUND )
 
@@ -38,6 +34,20 @@ IF( OpenCV_FOUND )
       ${OpenCV_INCLUDE_DIRS} 
     )
     
+ELSE()
+  IF( NOT EXISTS ${PROJECT_BINARY_DIR}/OpenCV-build/OpenCVConfig.cmake )
+    INCLUDE( ${PROJECT_BINARY_DIR}/cmake_modules/External-OpenCV.cmake )
+  ENDIF()
+ENDIF()
+
+# Try to find ITK; if not found, perform superbuild
+FIND_PACKAGE( ITK )
+IF( ITK_FOUND )
+  INCLUDE( ${ITK_USE_FILE} )
+ELSE()
+  IF( NOT EXISTS ${PROJECT_BINARY_DIR}/ITK-build/ITKConfig.cmake )
+    INCLUDE( ${PROJECT_BINARY_DIR}/cmake_modules/External-ITK.cmake )
+  ENDIF()
 ENDIF()
 
 SET(CMAKE_CXX_STANDARD 11 CACHE STRING "C++ standard to be used" )
