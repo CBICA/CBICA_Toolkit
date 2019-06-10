@@ -1,6 +1,6 @@
 ## PARENT CONFIGURATION FILE
 
-CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
+CMAKE_MINIMUM_REQUIRED( VERSION 3.7 )
 
 SET( 
   PROJECT_NAME CBICATk # change this for branches, etc.
@@ -163,7 +163,13 @@ ENDMACRO()
 SUBDIRLIST(SUBDIRECTORIES ${THIRDPARTY_LIB_PATH})
 
 FOREACH(thirdParty_include ${SUBDIRECTORIES})
-  INCLUDE_DIRECTORIES( ${THIRDPARTY_LIB_PATH}/${thirdParty_include} )
+
+  ADD_SUBDIRECTORY( ${THIRDPARTY_LIB_PATH}/${thirdParty_include} )
+  SET( CACHED_INCLUDE_DIRS
+      ${CACHED_INCLUDE_DIRS}
+      ${THIRDPARTY_LIB_PATH}/${thirdParty_include}
+    )
+    
   IF( EXISTS "${THIRDPARTY_LIB_PATH}/${thirdParty_include}/include" )
     INCLUDE_DIRECTORIES( ${THIRDPARTY_LIB_PATH}/${thirdParty_include}/include )
   ENDIF()
@@ -171,13 +177,9 @@ FOREACH(thirdParty_include ${SUBDIRECTORIES})
   #FOREACH(thirdParty_int_include ${THIRDPARTY_LIB_PATH}/${thirdParty_include})
   #  INCLUDE_DIRECTORIES( ${THIRDPARTY_LIB_PATH}/${thirdParty_include}/${thirdParty_int_include} )
   #ENDFOREACH()
+  
 ENDFOREACH()
 
-# for YAML-CPP
-FILE(GLOB_RECURSE YAMLCPP_Headers "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/include/yaml-cpp/*.h")
-FILE(GLOB_RECURSE YAMLCPP_Sources "${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp/src/*.cpp")
-SET( YAMLCPP_Headers ${YAMLCPP_Headers} CACHE STRING "YAML-CPP headers" FORCE )
-SET( YAMLCPP_Sources ${YAMLCPP_Sources} CACHE STRING "YAML-CPP sources" FORCE )
 ### third party libary processing
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -224,22 +226,6 @@ IF( BUILD_CBICA_OPENCV_CLASSES )
   INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
   
 ENDIF( BUILD_CBICA_OPENCV_CLASSES ) 
-
-# add c++11 flag if it is GCC v<5
-IF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  IF(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
-    INCLUDE( CheckCXXCompilerFlag )
-    CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-    IF( COMPILER_SUPPORTS_CXX11 )
-    	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    elseif(COMPILER_SUPPORTS_CXX0X )
-    	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-    else()
-    	MESSAGE(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-    endif()
-  ENDIF()
-ENDIF() 
 
 ADD_SUBDIRECTORY( ${BASIC_CLASS_DIRECTORY} )
 

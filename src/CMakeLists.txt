@@ -8,19 +8,19 @@ INCLUDE_DIRECTORIES(
 )
 
 # Done for temporary testing
-FILE( GLOB MainSources
-  "${BASIC_CLASS_DIRECTORY}/*.h"
-  "${BASIC_CLASS_DIRECTORY}/*.cpp"
-)
-
-ADD_EXECUTABLE( 
-  Benchmarking 
-  ${CBICA_Headers}
-  ${CBICA_Sources}
-  Benchmarking.cxx 
-)
-
-TARGET_LINK_LIBRARIES( Benchmarking ${BASIC_CLASS_LIBRARY} )
+#FILE( GLOB MainSources
+#  "${BASIC_CLASS_DIRECTORY}/*.h"
+#  "${BASIC_CLASS_DIRECTORY}/*.cpp"
+#)
+#
+#ADD_EXECUTABLE( 
+#  Benchmarking 
+#  ${CBICA_Headers}
+#  ${CBICA_Sources}
+#  Benchmarking.cxx 
+#)
+#
+#TARGET_LINK_LIBRARIES( Benchmarking ${BASIC_CLASS_LIBRARY} )
 
 IF(UNIX)
 	#INCLUDE( CheckCXXCompilerFlag )

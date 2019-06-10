@@ -15,12 +15,12 @@ SET( ExtraSources )
 SET( CBICA_LIB_NAME CBICA_Basic )
 ADD_DEFINITIONS( -DCBICA_LIB_NAME="${CBICA_LIB_NAME}" )
 
-INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
-
 # add current directory to list of cached include directories
 SET( CACHED_INCLUDE_DIRS
   ${CACHED_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR} )
+
+INCLUDE_DIRECTORIES( ${CACHED_INCLUDE_DIRS} )
 
 # If Windows is detected, add getopt for command line parsing
 IF( WIN32 )
@@ -55,13 +55,13 @@ ADD_LIBRARY( ${CBICA_LIB_NAME}
   ${ExtraSources}
   ${CBICA_Headers}
   ${CBICA_Sources}
-  ${YAMLCPP_Headers}
-  ${YAMLCPP_Sources}
 )
 
 SET_PROPERTY( GLOBAL PROPERTY USE_FOLDERS ON)
 
 SET_TARGET_PROPERTIES( ${CBICA_LIB_NAME} PROPERTIES FOLDER "CBICA_Toolkit")
+
+TARGET_LINK_LIBRARIES( ${CBICA_LIB_NAME} YAMLCPP )
 
 SET(CMAKE_DEBUG_POSTFIX "d")
 # OR set_target_properties(mylib PROPERTIES DEBUG_POSTFIX "d")
