@@ -17,9 +17,10 @@ ADD_DEFINITIONS( -DCBICA_LIB_NAME="${CBICA_LIB_NAME}" )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
 
-FIND_PACKAGE(OpenMP REQUIRED)
-SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
+# add current directory to list of cached include directories
+SET( CACHED_INCLUDE_DIRS
+  ${CACHED_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR} )
 
 # If Windows is detected, add getopt for command line parsing
 IF( WIN32 )
