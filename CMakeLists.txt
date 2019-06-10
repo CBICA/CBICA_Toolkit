@@ -36,7 +36,7 @@ IF( OpenCV_FOUND )
     
 ELSE()
   IF( NOT EXISTS ${PROJECT_BINARY_DIR}/OpenCV-build/OpenCVConfig.cmake )
-    INCLUDE( ${PROJECT_BINARY_DIR}/cmake_modules/External-OpenCV.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-OpenCV.cmake )
   ENDIF()
 ENDIF()
 
@@ -46,7 +46,7 @@ IF( ITK_FOUND )
   INCLUDE( ${ITK_USE_FILE} )
 ELSE()
   IF( NOT EXISTS ${PROJECT_BINARY_DIR}/ITK-build/ITKConfig.cmake )
-    INCLUDE( ${PROJECT_BINARY_DIR}/cmake_modules/External-ITK.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-ITK.cmake )
   ENDIF()
 ENDIF()
 
