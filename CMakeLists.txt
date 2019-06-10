@@ -25,6 +25,8 @@ SET(PROJECT_CONTACT "software@cbica.upenn.edu")
 CMAKE_POLICY(SET CMP0048 NEW) # only with CMake 3
 CMAKE_POLICY(SET CMP0025 NEW) # only with CMake 3
 
+INCLUDE( ExternalProject )
+
 # Try to find OpenCV; if not found, perform superbuild
 FIND_PACKAGE( OpenCV )
 IF( OpenCV_FOUND )
