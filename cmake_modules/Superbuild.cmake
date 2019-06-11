@@ -26,24 +26,36 @@ ENDIF()
 
 SET( NewCore_DEPENDENCIES )
 
-# Automatic VTK build and link
-OPTION( USE_VTK "Build VTK v5.10.1" OFF )
-IF( ${USE_VTK} )
-	FIND_PACKAGE( VTK REQUIRED )
-	IF( NOT VTK_DIR )
-		MESSAGE( STATUS "VTK not found on system. Building from source..." )
-		INCLUDE( ${CMAKE_CURRENT_SOURCE_DIR}/cmake/External-VTK.cmake )
-	ENDIF(  )
-	SET( NewCore_DEPENDENCIES ${NewCore_DEPENDENCIES} VTK )
+
+IF(MSVC)
+  SET( CMAKE_CONFIGURATION_TYPES "Debug;Release")
+ELSEIF(UNIX)
+  SET( CMAKE_CONFIGURATION_TYPES "Release")
 ENDIF()
 
-# Automatic ITK build and link
-OPTION( USE_ITK "Use ITK v4.4.2" ON )
-IF( ${USE_ITK} )
-	FIND_PACKAGE( ITK REQUIRED )
-	IF( NOT ITK_DIR )
-		MESSAGE( STATUS "ITK not found on system. Building from source..." )
-		INCLUDE( ${CMAKE_CURRENT_SOURCE_DIR}/cmake/External-ITK.cmake )
-	ENDIF( )
-	SET( NewCore_DEPENDENCIES ${NewCore_DEPENDENCIES} ITK )
-ENDIF( )
+INCLUDE( ExternalProject )
+
+# check build path lenght for windows and give a warning if greater than 15
+IF( WIN32 )
+  STRING( LENGTH ${PROJECT_BINARY_DIR} BUILD_PATH_LENGTH )
+  IF( ${BUILD_PATH_LENGTH} GREATER 15 )
+    MESSAGE( WARNING "WARNING: The Superbuild path is greater than 15; it is HIGHLY recommended to make this shorter so that ITK library linkage will succeed" )
+  ENDIF()
+ENDIF()
+
+## Compute -G arg for configuring external projects with the same CMake generator:
+#IF(CMAKE_EXTRA_GENERATOR)
+#	SET(gen "${CMAKE_EXTRA_GENERATOR} - ${CMAKE_GENERATOR}")
+#ELSE()
+#	SET(gen "${CMAKE_GENERATOR}" )
+#ENDIF()
+
+#INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-DCMTK.cmake )
+
+# INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-Qt.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-VTK.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-Eigen.cmake )
+#INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-OpenCV_Contrib.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-OpenCV.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-ITK.cmake )
+
