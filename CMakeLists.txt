@@ -25,33 +25,6 @@ SET(PROJECT_CONTACT "software@cbica.upenn.edu")
 CMAKE_POLICY(SET CMP0048 NEW) # only with CMake 3
 CMAKE_POLICY(SET CMP0025 NEW) # only with CMake 3
 
-INCLUDE( ExternalProject )
-
-# Try to find OpenCV; if not found, perform superbuild
-FIND_PACKAGE( OpenCV )
-IF( OpenCV_FOUND )
-
-  SET( CACHED_INCLUDE_DIRS
-      ${CACHED_INCLUDE_DIRS}
-      ${OpenCV_INCLUDE_DIRS} 
-    )
-    
-ELSE()
-  IF( NOT EXISTS ${PROJECT_BINARY_DIR}/OpenCV-build/OpenCVConfig.cmake )
-    INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-OpenCV.cmake )
-  ENDIF()
-ENDIF()
-
-# Try to find ITK; if not found, perform superbuild
-FIND_PACKAGE( ITK )
-IF( ITK_FOUND )
-  INCLUDE( ${ITK_USE_FILE} )
-ELSE()
-  IF( NOT EXISTS ${PROJECT_BINARY_DIR}/ITK-build/ITKConfig.cmake )
-    INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-ITK.cmake )
-  ENDIF()
-ENDIF()
-
 SET(CMAKE_CXX_STANDARD 11 CACHE STRING "C++ standard to be used" )
 SET(CMAKE_CXX_STANDARD_REQUIRED YES) 
 SET_PROPERTY( GLOBAL PROPERTY USE_FOLDERS ON )
@@ -119,6 +92,7 @@ IF(APPLE)
 
  ENDIF()
 
+# ensure OpenMP flag is enabled throughout the project 
 FIND_PACKAGE(OpenMP REQUIRED)
 SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
@@ -134,11 +108,50 @@ if(APPLE)
   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-dev -Wno-narrowing -Wall" )
 endif()
 
-# ensure OpenMP flag is enabled throughout the project 
-FIND_PACKAGE(OpenMP REQUIRED)
+INCLUDE( ExternalProject )
 
-SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
+## Do you want to build the ITK classes as well?
+SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.10.0+)?" )
+IF( BUILD_CBICA_ITK_CLASSES )
+  ADD_DEFINITIONS( -DBUILD_CBICA_ITK_CLASSES=1 )
+  
+  # Try to find ITK; if not found, perform superbuild
+  FIND_PACKAGE( ITK )
+  IF( ITK_FOUND )
+    INCLUDE( ${ITK_USE_FILE} )
+  ELSE()
+    IF( NOT EXISTS ${PROJECT_BINARY_DIR}/ITK-build/ITKConfig.cmake )
+      INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-ITK.cmake )
+    ENDIF()
+  ENDIF()
+
+ELSE()
+  ADD_DEFINITIONS( -DBUILD_CBICA_ITK_CLASSES=0 )
+ENDIF()
+
+## Do you want to build the OpenCV classes as well?
+SET( BUILD_CBICA_OPENCV_CLASSES ON CACHE BOOL "Do you want to build the CBICA OpenCV classes (needs OpenCV 3.0+)?" )
+IF( BUILD_CBICA_OPENCV_CLASSES )
+  ADD_DEFINITIONS( -BUILD_CBICA_OPENCV_CLASSES=1 )
+  
+  # Try to find OpenCV; if not found, perform superbuild
+  FIND_PACKAGE( OpenCV )
+  IF( OpenCV_FOUND )
+
+    SET( CACHED_INCLUDE_DIRS
+        ${CACHED_INCLUDE_DIRS}
+        ${OpenCV_INCLUDE_DIRS} 
+      )
+      
+  ELSE()
+    IF( NOT EXISTS ${PROJECT_BINARY_DIR}/OpenCV-build/OpenCVConfig.cmake )
+      INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-OpenCV.cmake )
+    ENDIF()
+  ENDIF()
+
+ELSE()
+  ADD_DEFINITIONS( -BUILD_CBICA_OPENCV_CLASSES=0 )
+ENDIF()
 
 # Find all *.h and *.cpp files in a folder -> useful when the application is purely command line based
 SET( SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/src )
@@ -187,14 +200,6 @@ ENDFOREACH()
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
-## Do you want to build the ITK classes as well?
-SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.10.0+)?" )
-IF( BUILD_CBICA_ITK_CLASSES )
-  ADD_DEFINITIONS( -DBUILD_CBICA_ITK_CLASSES=1 )
-ELSE()
-  ADD_DEFINITIONS( -DBUILD_CBICA_ITK_CLASSES=0 )
-ENDIF()
-
 IF( BUILD_CBICA_ITK_CLASSES )
 
 	#ADD_DEFINITIONS( -DBUILD_CBICA_ITK=1 )	
@@ -214,14 +219,6 @@ IF( BUILD_CBICA_ITK_CLASSES )
 
 ENDIF( BUILD_CBICA_ITK_CLASSES ) 
 
-## Do you want to build the OpenCV classes as well?
-SET( BUILD_CBICA_OPENCV_CLASSES ON CACHE BOOL "Do you want to build the CBICA OpenCV classes (needs OpenCV 3.0+)?" )
-IF( BUILD_CBICA_OPENCV_CLASSES )
-  ADD_DEFINITIONS( -BUILD_CBICA_OPENCV_CLASSES=1 )
-ELSE()
-  ADD_DEFINITIONS( -BUILD_CBICA_OPENCV_CLASSES=0 )
-ENDIF()
-
 IF( BUILD_CBICA_OPENCV_CLASSES )
 
 	#ADD_DEFINITIONS( -DBUILD_CBICA_ITK=1 )	
@@ -233,10 +230,6 @@ ENDIF( BUILD_CBICA_OPENCV_CLASSES )
 ADD_SUBDIRECTORY( ${BASIC_CLASS_DIRECTORY} )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIRECTORY} )
-
-FIND_PACKAGE(OpenMP REQUIRED)
-SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
 
 # Done for temporary testing
 FILE( GLOB 
@@ -282,7 +275,7 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${BASIC_CLASS_DIRECTORY}
 	${SOURCE_DIRECTORY}
-    ${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp	
+  ${PROJECT_SOURCE_DIR}/src/thirdparty/yaml-cpp	
 	#${Boost_INCLUDE_DIRS}
 )
 
