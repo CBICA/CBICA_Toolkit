@@ -206,67 +206,9 @@ int main(int argc, char** argv)
     auto stringToCheck_wrap = cbica::normPath(stringToCheck);
     auto stringToCheck_wrap_dir = cbica::getFilenamePath(stringToCheck_wrap);
 
-    //auto dir_uids = cbica::GetDICOMSeriesInDir(stringToCheck_wrap_dir);
+    auto inputImage = cbica::ReadImage<itk::Image<float, 3>>(stringToCheck_wrap_dir);
 
-    auto seriesReader = itk::ImageSeriesReader< itk::Image< float, 3 > >::New();
-    auto dicomIO = itk::DCMTKImageIO::New();
-    auto inputNames = itk::DCMTKSeriesFileNames::New();
-    //inputNames->SetLoadPrivateTags(true);
-    //// doesn't work: 0020|0011, 0020|000E, 
-    ////inputNames->AddSeriesRestriction("0020|0011"); // check with both '0020|0011-Series number' and '0020|000E-Series UID'
-    ////inputNames->AddSeriesRestriction("0020|000E"); // check with both '0020|0011-Series number' and '0020|000E-Series UID'
-    //inputNames->AddSeriesRestriction(restriction); // check with both '0020|0011-Series number' and '0020|000E-Series UID'
-    //inputNames->SetUseSeriesDetails(true);
-    //inputNames->SetDirectory(stringToCheck_wrap_dir);
-    //auto test = inputNames->GetInputFileNames();
-
-    // works: 0008|103E, 0020|0011, 0020|000E
-    // not works: 
-    auto inputNames_2 = itk::GDCMSeriesFileNames::New();
-    inputNames_2->SetLoadPrivateTags(true);
-    //inputNames_2->AddSeriesRestriction("0020|0011"); // check with both '0020|0011-Series number' and '0020|000E-Series UID'
-    //inputNames_2->AddSeriesRestriction("0020|000E"); // check with both '0020|0011-Series number' and '0020|000E-Series UID'
-    //inputNames_2->AddSeriesRestriction("0020|000E"); // check with both '0020|0011-Series number' and '0020|000E-Series UID'
-    inputNames_2->SetUseSeriesDetails(true);
-    inputNames_2->SetInputDirectory(stringToCheck_wrap_dir);
-    auto filesToRead = inputNames_2->GetInputFileNames();
-
-    auto uniqueUIDsAndFiles = cbica::GetDICOMSeriesAndFilesInDir(stringToCheck_wrap_dir);
-
-    seriesReader->SetFileNames(filesToRead);
-    seriesReader->SetImageIO(dicomIO);
-    seriesReader->Update();
-
-    auto image = seriesReader->GetOutput();
-
-    bool singleFile = false;
-
-    if (cbica::isFile(stringToCheck_wrap))
-    {
-      auto stringToCheck_wrap_dir = cbica::getFilenamePath(stringToCheck_wrap);
-
-      singleFile = true;
-      using ImageType = itk::Image< float, 2 >;
-      auto image = cbica::ReadImage< ImageType >(stringToCheck_wrap);
-
-      auto spacing = image->GetSpacing();
-
-      int blah = 1;
-    }
-    else
-    {
-      std::cout << "Multi-file DICOM detected.\n";
-      using ImageType = itk::Image< float, 3 >;
-
-      auto imageInfo = cbica::ImageInfo(stringToCheck_wrap);
-
-      auto image = cbica::ReadDicomImage< ImageType >(stringToCheck_wrap);
-
-      auto spacing = image->GetSpacing();
-
-
-      int blah = 1;
-    }
+    // check properties for inputImage here
   }
 
   return EXIT_SUCCESS;
