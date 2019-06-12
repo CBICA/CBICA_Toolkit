@@ -290,10 +290,11 @@ namespace cbica
       _mkdir(dir_name.c_str());
     return true;
 #else
-    DIR *pDir;
-    pDir = opendir(dir_name.c_str()); // check if directory exists or not
-    if (pDir == NULL)
-      mkdir(dir_name.c_str(), 0777);
+    std::string command = "mkdir " + dir_name;
+    if (std::system(command.c_str()) != 0)
+    {
+      return false;
+    }
     return true;
 #endif
     return false;
