@@ -68,14 +68,14 @@ jobs:
     # Configure and build superbuild
     - bash: |
         cd bin
-        cmake -DCMAKE_INSTALL_PREFIX="./install/appdir/usr" -DQT_DOWNLOAD_FORCE=ON ..
+        cmake ..
         make -j2
       displayName: 'Configure and compile Superbuild'
 
     # Configure and build CaPTk
     - bash: |
         cd bin
-        cmake -DCMAKE_INSTALL_PREFIX="./install/appdir/usr" -DQT_DOWNLOAD_FORCE=ON ..
+        cmake ..
         make -j2
         #make install/strip
       displayName: 'Configure and compile CBICA_Toolkit'
@@ -144,7 +144,6 @@ jobs:
         cd bin
 
         rm CMakeCache.txt
-        rm -rf CaPTk*.app
 
         export CC=/usr/local/opt/llvm/bin/clang
         export CXX=/usr/local/opt/llvm/bin/clang++
