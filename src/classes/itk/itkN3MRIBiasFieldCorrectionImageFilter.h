@@ -89,7 +89,7 @@ namespace itk {
   * Class definition for N3MRIBiasFieldCorrectionImageFilter
   */
   template< typename TInputImage, typename TMaskImage = Image<unsigned char,
-    ::itk::GetImageDimension<TInputImage>::ImageDimension>, typename TOutputImage = TInputImage>
+    TInputImage::ImageDimension>, typename TOutputImage = TInputImage>
   class N3MRIBiasFieldCorrectionImageFilter :
     public ImageToImageFilter<TInputImage, TOutputImage>
   {
