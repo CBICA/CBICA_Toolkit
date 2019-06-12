@@ -297,7 +297,7 @@ namespace cbica
     }
 
     // initialize the comparator
-    auto diff = typename itk::Testing::ComparisonImageFilter< TImageType, TImageType >::New();
+    auto diff = itk::Testing::ComparisonImageFilter< TImageType, TImageType >::New();
     diff->SetValidInput(referenceImage);
     diff->SetTestInput(checkImage);
     diff->SetDifferenceThreshold(differenceThreshold);
