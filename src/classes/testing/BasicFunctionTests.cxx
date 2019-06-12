@@ -432,7 +432,7 @@ int main(int argc, char** argv)
 
   if (parser.compareParameter("subDir", tempPostion))
   {
-    std::string return_dir = cbica::createTmpDir();
+    std::string return_dir = cbica::normPath(cbica::createTmpDir());
 
     if (!cbica::isDir(return_dir))
     {
