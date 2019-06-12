@@ -409,20 +409,22 @@ namespace cbica
 
   bool deleteDir(const std::string &path)
   {
-    //if (removeDirectoryRecursively(path, true) != 0)
-    //  return false;
-    //return true;
-    //return removeDirectoryRecursively(path);
-#if defined(_WIN32)
-    if (_rmdir(path.c_str()) == -1)
+    if (removeDirectoryRecursively(path, true) != 0)
       return false;
-#else
-    std::string passString = "rmdir " + path;
-    if (system(passString.c_str()) != 0)
-      return false;
-    #endif
-
     return true;
+    //return removeDirectoryRecursively(path);
+    // c++17
+    // std::filesystem::path::remove_all(path);
+//#if defined(_WIN32)
+//    if (_rmdir(path.c_str()) == -1)
+//      return false;
+//#else
+//    std::string passString = "rmdir " + path;
+//    if (system(passString.c_str()) != 0)
+//      return false;
+//    #endif
+//
+//    return true;
   }
 
   bool copyDir(const std::string &inputFolder, const std::string &destination, bool recursion)
