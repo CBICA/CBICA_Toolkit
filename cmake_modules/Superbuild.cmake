@@ -30,8 +30,8 @@ ENDIF()
 
 #INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-DCMTK.cmake )
 
-INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-Qt.cmake )
-INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-VTK.cmake )
+I#NCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-Qt.cmake )
+#INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-VTK.cmake )
 INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-Eigen.cmake )
 #INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-OpenCV_Contrib.cmake )
 INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/External-OpenCV.cmake )
