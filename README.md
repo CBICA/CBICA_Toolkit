@@ -36,11 +36,11 @@ Changes to dependencies should be discussed in the group so that any downstream 
 # for projects within CaPTk/src/applications
 ADD_SUBDIRECTORY( ${PROJECT_SOURCE_DIR}/../../cbica_toolkit ) 
 
-# for projects that add CaPTk as a sub-module
-ADD_SUBDIRECTORY( ${CaPTk_base_sources}/src/cbica_toolkit ) 
+# for projects that add CBICA_Toolkit as a sub-module
+ADD_SUBDIRECTORY( ${MAIN_PROJECT_SOURCE_DIR}/src/CBICA_Toolkit ) 
 
 INCLUDE_DIRECTORIES( ${CACHED_INCLUDE_DIRS} )
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} CaPTk_CBICATK )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} CBICA_Basic CBICA_)
 ```
 
 ### Source code:
