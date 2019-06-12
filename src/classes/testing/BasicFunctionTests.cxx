@@ -32,7 +32,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html.
 #include "cbicaLogging.h"
 #include "cbicaCmdParser.h"
 
-int main(int argc, const char** argv)
+int main(int argc, char** argv)
 {
   cbica::CmdParser parser(argc, argv);
   parser.addOptionalParameter("b1", "buffer", cbica::Parameter::NONE, "", "Buffer Test");
@@ -58,24 +58,6 @@ int main(int argc, const char** argv)
   parser.addOptionalParameter("z", "zscore", cbica::Parameter::NONE, "", "ZScore test");
 
   int tempPostion;
-  if (parser.isPresent("u"))
-  {
-    parser.echoUsage();
-    return EXIT_SUCCESS;
-  }
-
-  if (parser.isPresent("h"))
-  {
-    parser.echoHelp();
-    return EXIT_SUCCESS;
-  }
-
-  if (parser.isPresent("v"))
-  {
-    parser.echoVersion();
-    return EXIT_SUCCESS;
-  }
-
   if (parser.compareParameter("buffer", tempPostion))
   {
     char buff[100];
