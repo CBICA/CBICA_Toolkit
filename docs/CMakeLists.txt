@@ -17,15 +17,19 @@ configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
 file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR}) 
 
 # Only regenerate Doxygen when the Doxyfile or public headers change
-add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
-		DEPENDS ${CBICA_TOOLKIT_PUBLIC_HEADERS}
-        	COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
-		MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
-        	COMMENT "Generating docs"
-		VERBATIM)
-
+add_custom_command(
+  OUTPUT ${DOXYGEN_INDEX_FILE}
+  DEPENDS ${CBICA_TOOLKIT_PUBLIC_HEADERS}
+  COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
+  MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
+  COMMENT "Generating docs"
+  VERBATIM
+)
+  
 # Nice named target so we can run the job easily
 add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
+
+SET_TARGET_PROPERTIES( Doxygen PROPERTIES FOLDER "Documentation")
 
 set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
 set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
@@ -35,7 +39,8 @@ set(SPHINX_INDEX_FILE ${SPHINX_BUILD}/index.html)
 #  - Doxygen has rerun 
 #  - Our doc files have been updated
 #  - The Sphinx config has been updated
-add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
+add_custom_command(
+  OUTPUT ${SPHINX_INDEX_FILE}
 	COMMAND 
 		${SPHINX_EXECUTABLE} -b html
 		# Tell Breathe where to find the Doxygen output
@@ -51,6 +56,8 @@ add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
 
 # Nice named target so we can run the job easily
 add_custom_target(Sphinx ALL DEPENDS ${SPHINX_INDEX_FILE})
+
+SET_TARGET_PROPERTIES( Sphinx PROPERTIES FOLDER "Documentation")
 
 include(GNUInstallDirs)
 install(DIRECTORY ${SPHINX_BUILD}
