@@ -23,10 +23,10 @@ jobs:
     - script: |
         choco install doxygen.install
       displayName: 'Install dependencies'
-      
+
     - script: python -m pip install sphinx
     displayName: 'Installing Sphinx'
-  
+
     - script: |
         mkdir bin
         cd bin
@@ -65,7 +65,7 @@ jobs:
 
     - script: python -m pip install sphinx
     displayName: 'Installing Sphinx'
-  
+
     # Create build dir
     - bash: |
         mkdir -p bin
@@ -104,10 +104,10 @@ jobs:
     - bash: |
         brew install caskroom/cask/mactex make doxygen llvm
       displayName: 'Brew dependencies'
-    
+
     - script: python -m pip install sphinx
     displayName: 'Installing Sphinx'
-  
+
     - bash: |
         export CC=""
         export CXX=""
