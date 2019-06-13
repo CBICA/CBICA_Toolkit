@@ -14,6 +14,3 @@ Welcome to CBICA_Toolkit's documentation!
 
 Docs
 ====
-
-.. doxygenstruct:: cat
-   :members:
