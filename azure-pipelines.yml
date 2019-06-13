@@ -23,6 +23,9 @@ jobs:
     - script: |
         choco install doxygen.install
       displayName: 'Install dependencies'
+      
+    - script: python -m pip install sphinx
+    displayName: 'Installing Sphinx'
   
     - script: |
         mkdir bin
@@ -60,6 +63,9 @@ jobs:
         sudo apt-get update && sudo apt-get install -qq gcc g++ make libgl-dev cmake python3-pip python-numpy dos2unix libxkbcommon-x11-0 doxygen
       displayName: 'Install dependencies from Aptitude'
 
+    - script: python -m pip install sphinx
+    displayName: 'Installing Sphinx'
+  
     # Create build dir
     - bash: |
         mkdir -p bin
@@ -99,6 +105,9 @@ jobs:
         brew install caskroom/cask/mactex make doxygen llvm
       displayName: 'Brew dependencies'
     
+    - script: python -m pip install sphinx
+    displayName: 'Installing Sphinx'
+  
     - bash: |
         export CC=""
         export CXX=""
