@@ -25,7 +25,7 @@ jobs:
       displayName: 'Install dependencies'
 
     - script: |
-        python -m pip install sphinx
+        python -m pip install sphinx breathe
       displayName: 'Installing Sphinx'
 
     - script: |
@@ -65,7 +65,7 @@ jobs:
       displayName: 'Install dependencies from Aptitude'
 
     - script: |
-        python -m pip install sphinx
+        python -m pip install sphinx breathe
       displayName: 'Installing Sphinx'
 
     # Create build dir
@@ -108,7 +108,7 @@ jobs:
       displayName: 'Brew dependencies'
 
     - script: |
-        python -m pip install sphinx
+        python -m pip install sphinx breathe
       displayName: 'Installing Sphinx'
 
     - bash: |
