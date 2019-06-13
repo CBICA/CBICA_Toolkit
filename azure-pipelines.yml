@@ -21,7 +21,7 @@ jobs:
   steps:
   
     - script: |
-        choco install doxygen.install
+        choco install doxygen.install miktex
       displayName: 'Install dependencies'
 
     - script: |
@@ -61,7 +61,7 @@ jobs:
   steps:
     # Dependency manager
     - bash: |
-        sudo apt-get update && sudo apt-get install -qq gcc g++ make libgl-dev cmake python3-pip python-numpy dos2unix libxkbcommon-x11-0 doxygen
+        sudo apt-get update && sudo apt-get install -qq gcc g++ make libgl-dev cmake python3-pip python-numpy dos2unix libxkbcommon-x11-0 doxygen texlive-full
       displayName: 'Install dependencies from Aptitude'
 
     - script: |
@@ -104,7 +104,7 @@ jobs:
 
   steps:
     - bash: |
-        brew install caskroom/cask/mactex make doxygen llvm
+        brew install caskroom/cask/mactex make doxygen llvm basictex
       displayName: 'Brew dependencies'
 
     - script: |
