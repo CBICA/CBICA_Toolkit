@@ -25,8 +25,8 @@ jobs:
       displayName: 'Install dependencies'
 
     - script: |
-        python -m pip install sphinx breathe
-      displayName: 'Installing Sphinx'
+        python -m pip install sphinx breathe sphinx_rtd_theme
+      displayName: 'Installing Sphinx and related stuff'
 
     - script: |
         mkdir bin
@@ -65,8 +65,8 @@ jobs:
       displayName: 'Install dependencies from Aptitude'
 
     - script: |
-        python -m pip install sphinx breathe
-      displayName: 'Installing Sphinx'
+        python -m pip install sphinx breathe sphinx_rtd_theme
+      displayName: 'Installing Sphinx and related stuff'
 
     # Create build dir
     - bash: |
@@ -108,8 +108,8 @@ jobs:
       displayName: 'Brew dependencies'
 
     - script: |
-        python -m pip install sphinx breathe
-      displayName: 'Installing Sphinx'
+        python -m pip install sphinx breathe sphinx_rtd_theme
+      displayName: 'Installing Sphinx and related stuff'
 
     - bash: |
         export CC=""
