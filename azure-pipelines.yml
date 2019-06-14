@@ -104,7 +104,7 @@ jobs:
 
   steps:
     - bash: |
-        brew install caskroom/cask/mactex make doxygen llvm mactex
+        brew install caskroom/cask/mactex make doxygen llvm
       displayName: 'Brew dependencies'
 
     #- script: |
