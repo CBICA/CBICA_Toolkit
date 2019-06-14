@@ -17,7 +17,7 @@ specified in SBIA internal Wiki (http://sbia-wiki.uphs.upenn.edu/wiki/index.php/
 
 ---
 
-# 1. Installation
+#  Installation
 
 ## Requirements
 
@@ -30,23 +30,19 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 ---
 
-# 2. Available Functions and Classes
+# Available Functions and Classes
 
-## Full Function List
+1. [Full Functions List](functions_func.html)
 
-https://cbica.github.io/CBICA_Toolkit/functions_func.html
+2. [Full Class List](annotated.html)
 
-## Full Class List
-
-https://cbica.github.io/CBICA_Toolkit/annotated.html
-
-## 2.1 Basic Functions
+## Basic Functions
 
 This list is maintained at the <b>Functions</b> section of <a href="cbicaUtilities_8h.html">cbicaUtilities.h</a> file. 
 
-## 2.2 Basic Classes
+## Basic Classes
 
-### 2.2.1 Logging
+### Logging
 
 A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file. For full documentation, see the cbica::Logging.
 
@@ -74,7 +70,7 @@ Generated log is in the format: <br>
 	</tr>
 </table>
 
-### 2.2.2 CmdParser
+### CmdParser
 
 Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file. It picks up exe name using getExecutableName() but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file). For full documentation, see the cbica::CmdParser.
   
@@ -123,9 +119,9 @@ Universal command line parser. Add parameters, descriptions and call on them fro
 	</tr>
 </table>
 
-## 2.3 ITK Classes
+## ITK Classes
 
-### 2.3.1 ImageInfo
+### ImageInfo
 
 Obtains the data regarding spacing and dimensions of specified image in <code>itk::ImageIOBase</code>; look in class documentation for details.
 
@@ -146,15 +142,15 @@ Obtains the data regarding spacing and dimensions of specified image in <code>it
 	</tr>
 </table>
 
-### 2.3.2 CommonHolder
+### CommonHolder
 
 Common interface class for all algorithmic classes.
 
-### 2.3.3 ComputeAverageMap
+### ComputeAverageMap
 
 Computes the average of a series of images and writes the output. Set input files as a vector of strings and the output directory in the constructor itself.
 
-### 2.3.4 ComputeDtiScalars
+### ComputeDtiScalars
 
 Computes and saves the specified scalar image for an image. Input image and output (director/file) are specified in the constructor.
 
@@ -200,15 +196,15 @@ Computes and saves the specified scalar image for an image. Input image and outp
 	</tr>
 </table>
 
-### 2.3.5 ComputeVarianceMap
+### ComputeVarianceMap
 
 Computes the variance and saves the output for a single image (can be changed easily by modifying the class to be more in line with ComputeAverageMap).
 
-### 2.3.6 DtiRecon
+### DtiRecon
 
 Reconstruction of DTI image
 
-### 2.3.7 ITKUtilities
+### ITKUtilities
 
 Functions to make handling of images easier. This list is maintained at <a href="cbicaITKUtilities_8h.html">cbicaITKUtilities.h</a>.
 
@@ -230,26 +226,26 @@ TO DO:
 
 [Request a new function via eLog.]
 
-## 2.4 Benchmarking Executable
+## Benchmarking Executable
 
 This is a shell executable that is used for benchmarking different algorithms and applications. This provides a ready-to-use way for comparing different algorithm outputs with the one that needs to be tested for multiple inputs. See <code>src/Benchmarking.cxx</code> for details.
 
-## 2.5 TO DO
+## TO DO
 
 Request a new function by emailing dev@cbica.upenn.edu
 
 
 ---
 
-# 3 Developer Information
+# Developer Information
 
-The CBICATk has a certain code guideline. For details, please see the <a href="ForDevelopers.html">For Developers Page</a>
+The CBICATk has a certain code guideline. For details, please see the [For Developers](ForDevelopers.html)
 
 ---
 
-# 4 Licensing information
+# Licensing information
 
-See the <a href="http://www.cbica.upenn.edu/sbia/software/license.html">SBIA License</a>  or "licences/COPYING" file.
+See the [CBICA License](http://www.cbica.upenn.edu/sbia/software/license.html)  or "LICENSE" file.
 
 The CBICATk code incorporates 3rd party libraries and toolkits, potentially including but not limited to:
 

@@ -108,7 +108,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 </ul>
 <p>[Request a new function via eLog.]</p>
 <hr/>
-<h1>1. Installation</h1>
+<h1>Installation</h1>
 <h2>Requirements</h2>
 <ul>
 <li>CMake (for project configuration)</li>
@@ -118,15 +118,15 @@ $(document).ready(function(){initNavTree('index.html','');});
 </ul>
 <p>See the <a href="Installation.html">Installation Page</a> for details.</p>
 <hr/>
-<h1>2. Available Functions and Classes</h1>
-<h2>Full Function List</h2>
-<p><a href="https://cbica.github.io/CBICA_Toolkit/functions_func.html">https://cbica.github.io/CBICA_Toolkit/functions_func.html</a></p>
-<h2>Full Class List</h2>
-<p><a href="https://cbica.github.io/CBICA_Toolkit/annotated.html">https://cbica.github.io/CBICA_Toolkit/annotated.html</a></p>
-<h2>2.1 Basic Functions</h2>
+<h1>Available Functions and Classes</h1>
+<ol type="1">
+<li><a href="functions_func.html">Full Functions List</a></li>
+<li><a href="annotated.html">Full Class List</a></li>
+</ol>
+<h2>Basic Functions</h2>
 <p>This list is maintained at the <b>Functions</b> section of <a href="cbicaUtilities_8h.html">cbicaUtilities.h</a> file.</p>
-<h2>2.2 Basic Classes</h2>
-<h3>2.2.1 Logging</h3>
+<h2>Basic Classes</h2>
+<h3>Logging</h3>
 <p>A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file. For full documentation, see the <a class="el" href="classcbica_1_1Logging.html" title="The logging class.">cbica::Logging</a>.</p>
 <p>Generated log is in the format: <br />
  <code>&lt;4 digit year&gt;:&lt;2 digit month&gt;:&lt;2 digit date&gt;,&lt;2 digit 24 hour&gt;:&lt;2 digit minute&gt;:&lt;2 digit second&gt;;&lt;exe name&gt;=""&gt;;&lt;user name&gt;=""&gt;</code></p>
@@ -141,7 +141,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <tr>
 <td><b>UseNewFile</b> </td><td>Change Logging file after initializing class  </td></tr>
 </table>
-<h3>2.2.2 CmdParser</h3>
+<h3>CmdParser</h3>
 <p>Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file. It picks up exe name using <a class="el" href="cbicaUtilities_8h.html#a67ac78ff248156c52d45559ee76c283b" title="Get the name of the Executable which is calling the function.">getExecutableName()</a> but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file). For full documentation, see the <a class="el" href="classcbica_1_1CmdParser.html" title="Simple command line parsing.">cbica::CmdParser</a>.</p>
 <h4>Available functions:</h4>
 <table border="0">
@@ -166,8 +166,8 @@ $(document).ready(function(){initNavTree('index.html','');});
 <tr>
 <td><b>echoHelp</b> </td><td>Based on the parameters added, it automatically constructs an <code>echoHelp()</code> console output which includes contact information and copyright details. This is supposed to be more verbose than <code>echoUsage()</code>  </td></tr>
 </table>
-<h2>2.3 ITK Classes</h2>
-<h3>2.3.1 ImageInfo</h3>
+<h2>ITK Classes</h2>
+<h3>ImageInfo</h3>
 <p>Obtains the data regarding spacing and dimensions of specified image in <code>itk::ImageIOBase</code>; look in class documentation for details.</p>
 <h4>Available functions:</h4>
 <table border="0">
@@ -178,11 +178,11 @@ $(document).ready(function(){initNavTree('index.html','');});
 <tr>
 <td><b>getImageSpacings</b> </td><td>Get the spacings  </td></tr>
 </table>
-<h3>2.3.2 CommonHolder</h3>
+<h3>CommonHolder</h3>
 <p>Common interface class for all algorithmic classes.</p>
-<h3>2.3.3 ComputeAverageMap</h3>
+<h3>ComputeAverageMap</h3>
 <p>Computes the average of a series of images and writes the output. Set input files as a vector of strings and the output directory in the constructor itself.</p>
-<h3>2.3.4 ComputeDtiScalars</h3>
+<h3>ComputeDtiScalars</h3>
 <p>Computes and saves the specified scalar image for an image. Input image and output (director/file) are specified in the constructor.</p>
 <h4>Available Options:</h4>
 <table border="0">
@@ -205,11 +205,11 @@ $(document).ready(function(){initNavTree('index.html','');});
 <tr>
 <td><b>ALL</b> </td><td>All of the above (default)  </td></tr>
 </table>
-<h3>2.3.5 ComputeVarianceMap</h3>
+<h3>ComputeVarianceMap</h3>
 <p>Computes the variance and saves the output for a single image (can be changed easily by modifying the class to be more in line with ComputeAverageMap).</p>
-<h3>2.3.6 DtiRecon</h3>
+<h3>DtiRecon</h3>
 <p>Reconstruction of DTI image</p>
-<h3>2.3.7 ITKUtilities</h3>
+<h3>ITKUtilities</h3>
 <p>Functions to make handling of images easier. This list is maintained at <a href="cbicaITKUtilities_8h.html">cbicaITKUtilities.h</a>.</p>
 <table border="0">
 <tr>
@@ -222,16 +222,16 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li>dti Stuff</li>
 </ul>
 <p>[Request a new function via eLog.]</p>
-<h2>2.4 Benchmarking Executable</h2>
+<h2>Benchmarking Executable</h2>
 <p>This is a shell executable that is used for benchmarking different algorithms and applications. This provides a ready-to-use way for comparing different algorithm outputs with the one that needs to be tested for multiple inputs. See <code>src/Benchmarking.cxx</code> for details.</p>
-<h2>2.5 TO DO</h2>
+<h2>TO DO</h2>
 <p>Request a new function by emailing <a href="#" onclick="location.href='mai'+'lto:'+'dev'+'@c'+'bic'+'a.'+'upe'+'nn'+'.ed'+'u'; return false;">dev@c<span style="display: none;">.nosp@m.</span>bica<span style="display: none;">.nosp@m.</span>.upen<span style="display: none;">.nosp@m.</span>n.ed<span style="display: none;">.nosp@m.</span>u</a></p>
 <hr/>
-<h1>3 Developer Information</h1>
-<p>The CBICATk has a certain code guideline. For details, please see the <a href="ForDevelopers.html">For Developers Page</a></p>
+<h1>Developer Information</h1>
+<p>The CBICATk has a certain code guideline. For details, please see the <a href="ForDevelopers.html">For Developers</a></p>
 <hr/>
-<h1>4 Licensing information</h1>
-<p>See the <a href="http://www.cbica.upenn.edu/sbia/software/license.html">SBIA License</a> or "licences/COPYING" file.</p>
+<h1>Licensing information</h1>
+<p>See the <a href="http://www.cbica.upenn.edu/sbia/software/license.html">CBICA License</a> or "LICENSE" file.</p>
 <p>The CBICATk code incorporates 3rd party libraries and toolkits, potentially including but not limited to:</p>
 <ul>
 <li>ITK</li>
