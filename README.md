@@ -34,6 +34,8 @@ https://cbica.github.io/CBICA_Toolkit/
 
 ## Usage 
 
+Add this repo as a **git submodule** (see [this](https://git-scm.com/book/en/v2/Git-Tools-Submodules) page for details on how to do this).
+
 ### Root CMakeLists File:
 
 ```cmake
