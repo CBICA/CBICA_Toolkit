@@ -24,9 +24,9 @@ jobs:
         choco install doxygen.install miktex
       displayName: 'Install dependencies'
 
-    - script: |
-        python -m pip install sphinx breathe sphinx_rtd_theme
-      displayName: 'Installing Sphinx and related stuff'
+    #- script: |
+    #    python -m pip install sphinx breathe sphinx_rtd_theme
+    #  displayName: 'Installing Sphinx and related stuff'
 
     - script: |
         mkdir bin
@@ -64,9 +64,9 @@ jobs:
         sudo apt-get update && sudo apt-get install -qq gcc g++ make libgl-dev cmake python3-pip python-numpy dos2unix libxkbcommon-x11-0 doxygen texlive-full
       displayName: 'Install dependencies from Aptitude'
 
-    - script: |
-        python -m pip install sphinx breathe sphinx_rtd_theme
-      displayName: 'Installing Sphinx and related stuff'
+    #- script: |
+    #    python -m pip install sphinx breathe sphinx_rtd_theme
+    #  displayName: 'Installing Sphinx and related stuff'
 
     # Create build dir
     - bash: |
@@ -107,9 +107,9 @@ jobs:
         brew install caskroom/cask/mactex make doxygen llvm mactex
       displayName: 'Brew dependencies'
 
-    - script: |
-        python -m pip install sphinx breathe sphinx_rtd_theme
-      displayName: 'Installing Sphinx and related stuff'
+    #- script: |
+    #    python -m pip install sphinx breathe sphinx_rtd_theme
+    #  displayName: 'Installing Sphinx and related stuff'
 
     - bash: |
         export CC=""
