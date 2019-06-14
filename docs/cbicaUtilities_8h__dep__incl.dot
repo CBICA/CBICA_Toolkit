@@ -1,0 +1,29 @@
+digraph "src/classes/cbicaUtilities.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node18 [label="src/classes/cbicaUtilities.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Some basic utility functions."];
+  Node18 -> Node19 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node19 [label="src/classes/cbicaLogging.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaLogging_8h.html",tooltip="Declaration of the Logging class."];
+  Node19 -> Node20 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node20 [label="src/classes/itk/cbicaITKDti\lRecon.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKDtiRecon_8h.html",tooltip="Declaration of DtiRecon."];
+  Node18 -> Node21 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node21 [label="src/classes/itk/cbicaDTIProcessing\lManager.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaDTIProcessingManager_8h.html",tooltip="File that holds the DTIProcessingManager class."];
+  Node18 -> Node22 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node22 [label="src/classes/itk/cbicaITKCommon\lHolder.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKCommonHolder_8h.html",tooltip="Declaration of the CommonHolder class."];
+  Node22 -> Node23 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node23 [label="src/classes/itk/cbicaITKCompute\lAverageMap.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKComputeAverageMap_8h.html",tooltip="Declaration of the ComputeAverageMap class."];
+  Node22 -> Node24 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node24 [label="src/classes/itk/cbicaITKCompute\lDtiScalars.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKComputeDtiScalars_8h.html",tooltip="Declaration of the ComputeDtiScalars class."];
+  Node22 -> Node25 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node25 [label="src/classes/itk/cbicaITKCompute\lVarianceMap.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKComputeVarianceMap_8h.html",tooltip="Declaration of the ComputeVarianceMap class."];
+  Node22 -> Node20 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node18 -> Node26 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node26 [label="src/classes/itk/cbicaITKSafe\lImageIO.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKSafeImageIO_8h.html",tooltip="Defines safe input and output of itk::Images."];
+  Node18 -> Node27 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node27 [label="src/classes/itk/cbicaITKUtilities.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKUtilities_8h.html",tooltip="Some basic utility functions."];
+  Node27 -> Node26 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node18 -> Node28 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node28 [label="src/classes/opencv\l/cbicaOPENCVUtilities.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaOPENCVUtilities_8h.html",tooltip="Some basic utility functions."];
+}

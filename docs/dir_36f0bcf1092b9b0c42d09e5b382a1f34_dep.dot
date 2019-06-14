@@ -1,0 +1,9 @@
+digraph "src/classes/opencv" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_018e9aafb459e6e1a4953404cb0c0b1d {
+    graph [ bgcolor="#ddddee", pencolor="black", label="classes" fontname="Helvetica", fontsize="10", URL="dir_018e9aafb459e6e1a4953404cb0c0b1d.html"]
+  dir_36f0bcf1092b9b0c42d09e5b382a1f34 [shape=box, label="opencv", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_36f0bcf1092b9b0c42d09e5b382a1f34.html"];
+  }
+}

@@ -1,0 +1,12 @@
+digraph "src/classes/itk/cbicaITKImageInfo.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node7 [label="src/classes/itk/cbicaITKImage\lInfo.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Declaration of the ImageInfo class."];
+  Node7 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="src/classes/itk/cbicaITKSafe\lImageIO.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKSafeImageIO_8h.html",tooltip="Defines safe input and output of itk::Images."];
+  Node7 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="src/classes/itk/cbicaITKUtilities.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKUtilities_8h.html",tooltip="Some basic utility functions."];
+  Node9 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

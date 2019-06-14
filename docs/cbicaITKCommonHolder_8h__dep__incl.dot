@@ -1,0 +1,15 @@
+digraph "src/classes/itk/cbicaITKCommonHolder.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node26 [label="src/classes/itk/cbicaITKCommon\lHolder.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Declaration of the CommonHolder class."];
+  Node26 -> Node27 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node27 [label="src/classes/itk/cbicaITKCompute\lAverageMap.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKComputeAverageMap_8h.html",tooltip="Declaration of the ComputeAverageMap class."];
+  Node26 -> Node28 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node28 [label="src/classes/itk/cbicaITKCompute\lDtiScalars.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKComputeDtiScalars_8h.html",tooltip="Declaration of the ComputeDtiScalars class."];
+  Node26 -> Node29 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node29 [label="src/classes/itk/cbicaITKCompute\lVarianceMap.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKComputeVarianceMap_8h.html",tooltip="Declaration of the ComputeVarianceMap class."];
+  Node26 -> Node30 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node30 [label="src/classes/itk/cbicaITKDti\lRecon.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKDtiRecon_8h.html",tooltip="Declaration of DtiRecon."];
+}

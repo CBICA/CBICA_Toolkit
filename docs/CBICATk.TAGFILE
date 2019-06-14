@@ -1,0 +1,2557 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<tagfile>
+  <compound kind="file">
+    <name>cbicaCmdParser.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/</path>
+    <filename>cbicaCmdParser_8h</filename>
+    <class kind="class">cbica::CmdParser</class>
+    <class kind="struct">cbica::Parameter</class>
+    <member kind="function">
+      <type>std::string</type>
+      <name>stringReplace</name>
+      <anchorfile>cbicaCmdParser_8h.html</anchorfile>
+      <anchor>a26f18bbc316c89cfdc6482529a5e3414</anchor>
+      <arglist>(const std::string &amp;entireString, const std::string &amp;toReplace, const std::string &amp;replaceWith)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>cbicaLogging.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/</path>
+    <filename>cbicaLogging_8h</filename>
+    <includes id="cbicaUtilities_8h" name="cbicaUtilities.h" local="yes" imported="no">cbicaUtilities.h</includes>
+    <class kind="class">cbica::Logging</class>
+  </compound>
+  <compound kind="file">
+    <name>cbicaUtilities.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/</path>
+    <filename>cbicaUtilities_8h</filename>
+    <class kind="struct">CSVDict</class>
+    <class kind="struct">FileNameParts</class>
+    <member kind="function">
+      <type>std::map&lt; std::string, size_t &gt;</type>
+      <name>ConfusionMatrix</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a178b30ab3b43eb530cc08403fc0c3386</anchor>
+      <arglist>(const std::vector&lt; float &gt; &amp;inputRealLabels, const std::vector&lt; float &gt; &amp;inputPredictedLabels)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>constCharToChar</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a7d3aa918dce7b74ce8c42c584973b2e0</anchor>
+      <arglist>(const std::string &amp;input)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>constCharToChar</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a85e87f6631d624afd7339124d3747c96</anchor>
+      <arglist>(const char *input)</arglist>
+    </member>
+    <member kind="function">
+      <type>TConvertType</type>
+      <name>convertCharacter</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a459375796f10325a1b1227b9ffa5d3e5</anchor>
+      <arglist>(const std::string &amp;input_string)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; TConvertType &gt;</type>
+      <name>convertString</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a62ad5522bc60303399af97f616cd2f31</anchor>
+      <arglist>(const std::string &amp;input_string)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>copyDir</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a1608a186a3e6e39f5bf732152dea7804</anchor>
+      <arglist>(const std::string &amp;inputFolder, const std::string &amp;destination, bool recursion=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>copyDirectory</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>af68b03ed7394a4af20b2842baab147d7</anchor>
+      <arglist>(const std::string &amp;inputFolder, const std::string &amp;destination, bool recursion=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>copyFile</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a3db099dfd8daa263ba68f991c9bdfba0</anchor>
+      <arglist>(const std::string &amp;inputFile, const std::string &amp;destination)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>copyFolder</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ae9e591d5eaed417b8cc3bf6a460e3478</anchor>
+      <arglist>(const std::string &amp;inputFolder, const std::string &amp;destination, bool recursion=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>createDir</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ad3702ffc541cf4ef569fc8e0b095661a</anchor>
+      <arglist>(const std::string &amp;dir_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>createDirectory</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>adbedf310d5184ec6c8fed984b95e120d</anchor>
+      <arglist>(const std::string &amp;dir_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>createFolder</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a70c8376ceeaa185a09bcab6e1f5d61c3</anchor>
+      <arglist>(const std::string &amp;dir_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>createTemporaryDirectory</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a140a1384cbf52aed93c95e4003b3f1f9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>createTmpDir</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a7ff15f593edc14beb9fd785065e7a9c9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>deleteDir</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>afa9516adf90bc11b4d5ae11a9cb8f002</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>deleteEnvironmentVariable</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>af36d3a242b51fd647928be6dd9792e1c</anchor>
+      <arglist>(const std::string &amp;variable_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>directoryExists</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a9009a3b51e9c52971bde4b7ce5b04b4e</anchor>
+      <arglist>(const std::string &amp;dName)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>dos2unix</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a391641a36866300183a270b6467852d8</anchor>
+      <arglist>(const std::string inputFile)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>exists</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a91be7ec688b318f5bbf19162ea44bdb2</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>fileExists</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>af5bdad7ff8bd7dcd0f9e97c628334b19</anchor>
+      <arglist>(const std::string &amp;fName)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; std::string &gt;</type>
+      <name>filesInDirectory</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a1e7a61aac97c0306015a5b9aac0b4a18</anchor>
+      <arglist>(const std::string &amp;dirName, bool returnFullPath=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::pair&lt; bool, int &gt;</type>
+      <name>findInVector</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ad15a4aeb132661fe01af1875252ec9bc</anchor>
+      <arglist>(std::vector&lt; TContainerType &gt; &amp;vector_to_search_in, TContainerType element_to_search_for)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCurrentGMT</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>add2b4ddec9adae16f67c9d4daab4209f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCurrentGMTDate</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a22da0141fbf53b55cec752ca516ff192</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCurrentGMTDateAndTime</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a3156b9d3b0c70722673a17cbc89bfa43</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCurrentLocalDate</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a0f48546c469f9c9385966b060912458f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCurrentLocalDateAndTime</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a9a07c1c8b32ae8686399105654301a04</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCurrentLocalTime</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>aca9c3d1491b32315e1d3da657115910c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCurrentProcessID</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>abcff5fe9ece2d65e15d6e51b0a052dff</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCurrentYear</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a3bcaebc60de00bb26163447d1faf5bb6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getCWD</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a464a7934ed5307d3bf4c96cbac49c20c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>size_t</type>
+      <name>getDirectorySize</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a7f91f51cc149fa6eaa52466ac783ee67</anchor>
+      <arglist>(const std::string &amp;rootFolder)</arglist>
+    </member>
+    <member kind="function">
+      <type>size_t</type>
+      <name>getDirSize</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a1ffbab9d2c022705761d968382be7b69</anchor>
+      <arglist>(const std::string &amp;rootFolder)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getEnvironmentVariableValue</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a09633b84aef240a41506a3fead0250d2</anchor>
+      <arglist>(const std::string &amp;environmentVariable)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getExecutableName</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a67ac78ff248156c52d45559ee76c283b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getExecutablePath</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ad90a86c8c5a4b880cdeb6d2559792f6b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getFilenameBase</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>af0e76d3402f8a4aef69cf473c7b7e379</anchor>
+      <arglist>(const std::string &amp;filename, bool checkFile=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getFilenameExtension</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>abea2e8e479b112e77c1147046d234fab</anchor>
+      <arglist>(const std::string &amp;filename, bool checkFile=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getFilenamePath</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a2965469288f16a741c44a1c446a77496</anchor>
+      <arglist>(const std::string &amp;filename, bool checkFile=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>size_t</type>
+      <name>getFileSize</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>acc298cf8c0408a0581c84fd75f721430</anchor>
+      <arglist>(const std::string &amp;inputFile)</arglist>
+    </member>
+    <member kind="function">
+      <type>size_t</type>
+      <name>getFolderSize</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>afb269cb16727ee1ea0745caadd7e6697</anchor>
+      <arglist>(const std::string &amp;rootFolder)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getFullPath</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a6a1c8288bee3244f79c4c6d5f3edc000</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; TDataType &gt;</type>
+      <name>GetUniqueElements</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a847c6ce3900878cfc968320f7cdd4436</anchor>
+      <arglist>(const std::vector&lt; TDataType &gt; &amp;inputVector)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getUserHomeDirectory</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>afb9b2b4528944283a093599e5d88b16c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getUserName</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a9673aac38b5ca90eb77158e06419de56</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>isDir</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a6948858ce58913e520b9d4f6788a5c5a</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>isFile</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ab4da6006c8cf0745a47f81047d236321</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>isLink</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ae77b66f30852cc1340efb04e68ce13a8</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>isSymbolicLink</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ae8d6994fad075937a942ff0525b6c0da</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>makeDir</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>abc78047e99219bd7e7b5d5b563d58a05</anchor>
+      <arglist>(const std::string &amp;dir_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>makeDirectory</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>aa9c9e74780d4940db0b6b67a10638a61</anchor>
+      <arglist>(const std::string &amp;dir_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>makeFolder</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a482c2a3a44543136a9412ef295bfa0c4</anchor>
+      <arglist>(const std::string &amp;dir_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>makeSymbolicLink</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ad77481751fe4addee63201f823567265</anchor>
+      <arglist>(const std::string &amp;input_fileName, const std::string &amp;ouput_fileName)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>makeTempDir</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a3411357e87aee67977236adc18ae252e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>makeTemporaryDirectory</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a61fe8f68afa697923c7453495d6f7b31</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>normalizePath</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a3b83e6c8f60e5fc23aed894531d54f70</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>normPath</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a840ab338ee3f0b872d5dadeaff162f5e</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>size_t</type>
+      <name>numberOfColsInFile</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a8aeabbcc5bc94cee5df898fde17b7e80</anchor>
+      <arglist>(const std::string &amp;csvFileName, const std::string &amp;delim=&quot;,&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>size_t</type>
+      <name>numberOfRowsInFile</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a1a3582f6c133fc91ab56405ca09eaa1e</anchor>
+      <arglist>(const std::string &amp;csvFileName, const std::string &amp;delim=&quot;\n&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; CSVDict &gt;</type>
+      <name>parseCSVFile</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a152d52346fbd0d7871b2692c56cb523a</anchor>
+      <arglist>(const std::string &amp;csvFileName, const std::string &amp;inputColumns, const std::string &amp;inputLabels, bool checkFile=true, bool pathsRelativeToCSV=false, const std::string &amp;rowsDelimiter=&quot;\n&quot;, const std::string &amp;colsDelimiter=&quot;,&quot;, const std::string &amp;optionsDelimiter=&quot;,&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; TDataType &gt;</type>
+      <name>randn</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>aa6f3a715ff488a9052681f6b86fae622</anchor>
+      <arglist>(const TDataType start, const TDataType end, size_t sizeOfReturn=1)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; TDataType &gt;</type>
+      <name>randn</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a53131b4675c8b975b87d57203de40291</anchor>
+      <arglist>(size_t sizeOfReturn=1)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; std::vector&lt; TDataType &gt; &gt;</type>
+      <name>readCSVDataFile</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a0b60d296ebe87e6b84369bfbbb6ae9cb</anchor>
+      <arglist>(const std::string &amp;csvFileName, bool columnMajor=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; std::vector&lt; std::string &gt; &gt;</type>
+      <name>readCSVDataFile</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>ab390dde8f39257d05af206a9a3e74285</anchor>
+      <arglist>(const std::string &amp;csvFileName)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>realPath</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a0a4238721aa556e3fe363d1962add9c1</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>relativePath</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a4959e91aee6e819755123ea81bf695ab</anchor>
+      <arglist>(const std::string &amp;path, const std::string &amp;base)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>relPath</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a7d05484e5a2ef65507abb99c1d1d9f53</anchor>
+      <arglist>(const std::string &amp;path, const std::string &amp;base)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>removeDir</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>aa66d6550690adaaaae25fa439f46acbf</anchor>
+      <arglist>(const std::string &amp;path)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>removeDirectoryRecursively</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a6cf134c03d3a7fcdd864d872a1a0fc73</anchor>
+      <arglist>(const std::string &amp;dirname, bool bDeleteSubdirectories)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>replaceString</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a316bbd5c5043e5ef06c024818ad47860</anchor>
+      <arglist>(const std::string &amp;entireString, const std::string &amp;toReplace, const std::string &amp;replaceWith)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::map&lt; std::string, float &gt;</type>
+      <name>ROC_Values</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a24e282b2e23d60dfb83c15e4457a7898</anchor>
+      <arglist>(const std::vector&lt; float &gt; &amp;inputRealLabels, const std::vector&lt; float &gt; &amp;inputPredictedLabels)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>setEnvironmentVariable</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a6cd313a50377d18f64e01f1e67533f65</anchor>
+      <arglist>(const std::string &amp;variable_name, const std::string &amp;variable_value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>sleep</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a3fdb5a54e91bb557d7f37176e6c6b274</anchor>
+      <arglist>(size_t ms=std::rand() % 1000+1)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>splitFileName</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a6c55b8aaa86505a324aec93a59e688d4</anchor>
+      <arglist>(const std::string &amp;dataFile, std::string &amp;path, std::string &amp;baseName, std::string &amp;extension)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; std::string &gt;</type>
+      <name>stringSplit</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a7ba8dbf01bfaca16a037934b4210ba8b</anchor>
+      <arglist>(const std::string &amp;str, const std::string &amp;delim)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; std::string &gt;</type>
+      <name>subdirectoriesInDirectory</name>
+      <anchorfile>cbicaUtilities_8h.html</anchorfile>
+      <anchor>a69c4574e8b2bfd4b240e470047ecbed0</anchor>
+      <arglist>(const std::string &amp;dirName, bool recursiveSearch=false, bool returnFullPath=false)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>cbicaDTIProcessingManager.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaDTIProcessingManager_8h</filename>
+    <includes id="itkDiffusionTensor3DReconstructionImageFilter_8h" name="itkDiffusionTensor3DReconstructionImageFilter.h" local="yes" imported="no">itkDiffusionTensor3DReconstructionImageFilter.h</includes>
+    <includes id="cbicaUtilities_8h" name="cbicaUtilities.h" local="yes" imported="no">cbicaUtilities.h</includes>
+    <class kind="class">cbica::DTIProcessingManager</class>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKCommonHolder.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKCommonHolder_8h</filename>
+    <includes id="cbicaUtilities_8h" name="cbicaUtilities.h" local="yes" imported="no">cbicaUtilities.h</includes>
+    <class kind="class">cbica::CommonHolder</class>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKComputeAverageMap.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKComputeAverageMap_8h</filename>
+    <includes id="cbicaITKCommonHolder_8h" name="cbicaITKCommonHolder.h" local="yes" imported="no">cbicaITKCommonHolder.h</includes>
+    <includes id="itkDTILogEuclideanCalculator_8h" name="itkDTILogEuclideanCalculator.h" local="yes" imported="no">itkDTILogEuclideanCalculator.h</includes>
+    <includes id="itkNaryMeanImageFilter_8h" name="itkNaryMeanImageFilter.h" local="yes" imported="no">itkNaryMeanImageFilter.h</includes>
+    <includes id="itkNaryMeanDiffusionTensorImageFilter_8h" name="itkNaryMeanDiffusionTensorImageFilter.h" local="yes" imported="no">itkNaryMeanDiffusionTensorImageFilter.h</includes>
+    <class kind="class">cbica::ComputeAverageMap</class>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKComputeDtiScalars.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKComputeDtiScalars_8h</filename>
+    <includes id="cbicaITKCommonHolder_8h" name="cbicaITKCommonHolder.h" local="yes" imported="no">cbicaITKCommonHolder.h</includes>
+    <class kind="class">cbica::ComputeDtiScalars</class>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKComputeVarianceMap.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKComputeVarianceMap_8h</filename>
+    <includes id="itkNaryVarianceImageFilter_8h" name="itkNaryVarianceImageFilter.h" local="yes" imported="no">itkNaryVarianceImageFilter.h</includes>
+    <includes id="cbicaITKCommonHolder_8h" name="cbicaITKCommonHolder.h" local="yes" imported="no">cbicaITKCommonHolder.h</includes>
+    <class kind="class">cbica::ComputeVarianceMap</class>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKDtiRecon.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKDtiRecon_8h</filename>
+    <includes id="itkDiffusionTensor3DReconstructionImageFilter_8h" name="itkDiffusionTensor3DReconstructionImageFilter.h" local="yes" imported="no">itkDiffusionTensor3DReconstructionImageFilter.h</includes>
+    <includes id="cbicaITKCommonHolder_8h" name="cbicaITKCommonHolder.h" local="yes" imported="no">cbicaITKCommonHolder.h</includes>
+    <includes id="cbicaLogging_8h" name="cbicaLogging.h" local="yes" imported="no">cbicaLogging.h</includes>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKImageInfo.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKImageInfo_8h</filename>
+    <class kind="class">cbica::ImageInfo</class>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKOpenCVUtilities.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKOpenCVUtilities_8h</filename>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>Add</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>af01bee447ca9216e83a879792ab52f62</anchor>
+      <arglist>(const cv::InputArray &amp;input1, const cv::InputArray &amp;input2)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>Invert</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>aeb1eec20720b32432e08a52fe259c4a7</anchor>
+      <arglist>(const cv::InputArray &amp;input)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; TDataType &gt;</type>
+      <name>L2normalize</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>af635591596e10091a12454a82bddef90</anchor>
+      <arglist>(const std::vector&lt; TDataType &gt; &amp;inputVector)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>Multiply</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>ae6dd46a6411d8b14cae22d71e4c087de</anchor>
+      <arglist>(const cv::Mat &amp;input1, const cv::Mat &amp;input2)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>Multiply</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>a955201b5a973cfb50eb2b6ab389f8112</anchor>
+      <arglist>(const cv::Mat &amp;input1, const double input2)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>Subtract</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>a10c7f00c691af9eb5fadcd1645c038fb</anchor>
+      <arglist>(const cv::InputArray &amp;input1, const cv::InputArray &amp;input2)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>Transpose</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>a13db08963698f8c917ce149fcac7a54b</anchor>
+      <arglist>(const cv::InputArray &amp;input)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>VectorizeImages</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>a2034ad3a7292467fd55d15d70cf2f5e3</anchor>
+      <arglist>(const std::vector&lt; std::vector&lt; typename TImageType::Pointer &gt; &gt; inputSubjectsAndImages, const std::vector&lt; typename TImageType::Pointer &gt; maskImages, const bool columnMajor, const bool appendInputImagesFromSubjects, const bool maskDefinedPerSubject)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>VectorizeImages</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>adde362c4cfbc141f27cb040a4751f786</anchor>
+      <arglist>(const std::vector&lt; std::vector&lt; typename TImageType::Pointer &gt; &gt; inputSubjectsAndImages, const std::vector&lt; std::vector&lt; typename TImageType::IndexType &gt; &gt; maskIndeces, const bool appendInputImagesFromSubjects=false, const bool columnMajor=false, const bool maskDefinedPerSubject=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>VectorizeImages</name>
+      <anchorfile>cbicaITKOpenCVUtilities_8h.html</anchorfile>
+      <anchor>affb08bfd6d7e8bd598aa8ba93a35dc32</anchor>
+      <arglist>(const std::vector&lt; std::vector&lt; typename TImageType::Pointer &gt; &gt; inputSubjectsAndImages, const bool columnMajor=false, const bool appendInputImagesFromSubjects=false)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKSafeImageIO.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKSafeImageIO_8h</filename>
+    <includes id="cbicaUtilities_8h" name="cbicaUtilities.h" local="yes" imported="no">cbicaUtilities.h</includes>
+    <includes id="cbicaITKImageInfo_8h" name="cbicaITKImageInfo.h" local="yes" imported="no">cbicaITKImageInfo.h</includes>
+    <includes id="cbicaITKUtilities_8h" name="cbicaITKUtilities.h" local="yes" imported="no">cbicaITKUtilities.h</includes>
+    <member kind="function">
+      <type>itk::ImageSeriesReader&lt; TImageType &gt;::Pointer</type>
+      <name>GetDicomImageReader</name>
+      <anchorfile>cbicaITKSafeImageIO_8h.html</anchorfile>
+      <anchor>ac9820bca85c6367f46c2f0e3afb4d124</anchor>
+      <arglist>(const std::string &amp;dirName)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>GetImage</name>
+      <anchorfile>cbicaITKSafeImageIO_8h.html</anchorfile>
+      <anchor>a6bd4d449a2c824e23877ebd27d8af1aa</anchor>
+      <arglist>(const std::string &amp;fName, const std::string &amp;supportedExtensions=&quot;.nii.gz,.nii&quot;, const std::string &amp;delimitor=&quot;,&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>itk::ImageFileReader&lt; TImageType &gt;::Pointer</type>
+      <name>GetImageReader</name>
+      <anchorfile>cbicaITKSafeImageIO_8h.html</anchorfile>
+      <anchor>a878e627cf280ecb71354209688d5ef33</anchor>
+      <arglist>(const std::string &amp;fName, const std::string &amp;supportedExtensions=&quot;.nii.gz,.nii,.dcm&quot;, const std::string &amp;delimitor=&quot;,&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>GetImageWithOrientFix</name>
+      <anchorfile>cbicaITKSafeImageIO_8h.html</anchorfile>
+      <anchor>ae761f77193fd872e5f76d98d6ce41a97</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>ReadImage</name>
+      <anchorfile>cbicaITKSafeImageIO_8h.html</anchorfile>
+      <anchor>a74994d2792a233ac91abd555ca49d439</anchor>
+      <arglist>(const std::string &amp;fName, const std::string &amp;supportedExtensions=&quot;.nii.gz,.nii,.dcm&quot;, const std::string &amp;delimitor=&quot;,&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>ReadImageWithOrientFix</name>
+      <anchorfile>cbicaITKSafeImageIO_8h.html</anchorfile>
+      <anchor>a3b680be37fb04b91ccb3cf353b61736e</anchor>
+      <arglist>(const std::string &amp;fName, const std::string &amp;supportedExtensions=&quot;.nii.gz,.nii&quot;, const std::string &amp;delimitor=&quot;,&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>WriteDicomImage</name>
+      <anchorfile>cbicaITKSafeImageIO_8h.html</anchorfile>
+      <anchor>ab0125ea1c3b35e8ca3eb5a4b6215ce88</anchor>
+      <arglist>(const typename itk::ImageSeriesReader&lt; ComputedImageType &gt;::Pointer inputImageReader, const typename ComputedImageType::Pointer imageToWrite, const std::string &amp;dirName)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>WriteImage</name>
+      <anchorfile>cbicaITKSafeImageIO_8h.html</anchorfile>
+      <anchor>a79ac5cd52b13fd046224ac9dbca6df53</anchor>
+      <arglist>(typename ComputedImageType::Pointer imageToWrite, const std::string &amp;fileName)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>cbicaITKUtilities.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>cbicaITKUtilities_8h</filename>
+    <includes id="cbicaUtilities_8h" name="cbicaUtilities.h" local="yes" imported="no">cbicaUtilities.h</includes>
+    <includes id="cbicaITKImageInfo_8h" name="cbicaITKImageInfo.h" local="yes" imported="no">cbicaITKImageInfo.h</includes>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>ChangeImageValues</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a433d5dfb8d6db8626c2c9b013e3285cf</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const std::string &amp;oldValues, const std::string &amp;newValues)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>CreateImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a77bf8064cfc39afd2153d3a74578f835</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const typename TImageType::PixelType value=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; std::vector&lt; typename TImageType::IndexType &gt; &gt;</type>
+      <name>CreateMaskIndeces</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>ac2e0b8df9dd3a384c32bfcf8c7b8e1e0</anchor>
+      <arglist>(const std::vector&lt; std::vector&lt; typename TImageType::Pointer &gt; &gt; &amp;inputModalitiesAndImages)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; typename TImageType::PixelType &gt;</type>
+      <name>ExtractPixelValuesFromIndeces</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>ad66f2eafe59f2b8a1a3b2a51762c683c</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const std::vector&lt; typename TImageType::IndexType &gt; &amp;indeces)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>GetAdaptiveHistogramEqualizedImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>aa8ef3c9d72d668e8702a5b16ac38a248</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const typename TImageType::Pointer referenceImage, const float alpha=0.3, const float beta=0.3, const float radius=1, const int numberOfHistogramLevels=100)</arglist>
+    </member>
+    <member kind="function">
+      <type>float</type>
+      <name>GetDistanceBetweenIndeces</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a5ad193121c57ddc70c1f7ba4db0369d8</anchor>
+      <arglist>(const typename TImageType::IndexType point1, const typename TImageType::IndexType point2)</arglist>
+    </member>
+    <member kind="function">
+      <type>float</type>
+      <name>GetDistanceBetweenIndeces</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a2545a9a7f19ea54dceb8f22393936a9e</anchor>
+      <arglist>(const float *point1, const float *point2)</arglist>
+    </member>
+    <member kind="function">
+      <type>itk::Vector&lt; float, TImageType::ImageDimension &gt;</type>
+      <name>GetDistances</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a286050b5fb3a7145241657cea139cef6</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>GetHistogramMatchedImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a0fe070325d8fcbdb98fa713a862ccf49</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const typename TImageType::Pointer referenceImage, const int numberOfMatchPoints=40, const int numberOfHistogramLevels=100)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::pair&lt; std::string, typename TImageType::Pointer &gt;</type>
+      <name>GetImageOrientation</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>aacfbf6be40c955d72fabe9c0d3c68bc4</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; typename TImageType::IndexType &gt;</type>
+      <name>GetIndexFromNonZeroPixels</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a061089d858cf770ddef3f5dcf1bd7ea6</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const std::string valuesToExclude=&quot;0&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::pair&lt; float, typename TImageType::IndexType &gt;</type>
+      <name>GetMaxDistanceInLabelMap</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a828290fcf27608a9db35a30230cba5f2</anchor>
+      <arglist>(const typename TImageType::Pointer inputLabelMap, const typename TImageType::IndexType indexForComputation, bool realCoordinateInput=false, bool realCoordinateOutput=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; typename TImageType::IndexType &gt;</type>
+      <name>GetNonZeroIndeces</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>aa35111f5f35d6e800c4c1e449bafdc04</anchor>
+      <arglist>(typename TImageType::Pointer inputImage)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; typename TImageType::PixelType &gt;</type>
+      <name>GetPixelValuesFromIndeces</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a010e2c3b4a57c45148d7d7257a2568c5</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const std::vector&lt; typename TImageType::IndexType &gt; &amp;indeces)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>GetResultOfImageComparasion</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a4eeab11448f9908ae3e4db755653598e</anchor>
+      <arglist>(const typename TImageType::Pointer referenceImage, const typename TImageType::Pointer checkImage, const typename TImageType::PixelType differenceThreshold=0, const unsigned int toleranceRadius=0, const unsigned long long numberOfPixelsTolerance=10, const typename TImageType::PixelType averageIntensityDifference=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>GetSkullStrippedImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>ae713be38e043499cf8de451208c6ddaf</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const typename TAtlasImageType::Pointer atlasImage, const typename TAtlasLabelType::Pointer atlasLabelImage)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; typename TImageType::PixelType &gt;</type>
+      <name>GetUniqueValuesInImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>add17aa719120e5ae6567f8c708ad885f</anchor>
+      <arglist>(typename TImageType::Pointer inputImage, bool sortResult=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>ImageSanityCheck</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>ac90a5cb49dfc21b1c09d30f96e9d553a</anchor>
+      <arglist>(const typename TImageType::Pointer image1, const typename TImageType::Pointer image2)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>ImageSanityCheck</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a15f4b20a998b4ea060f0637a1fc9c9a3</anchor>
+      <arglist>(const std::string &amp;image1, const std::string &amp;image2)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>ResampleImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>af034a479900dd2683551bfece22584ce</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const itk::Vector&lt; double, TImageType::ImageDimension &gt; &amp;outputSpacing, const std::string interpolator=&quot;Linear&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>ResampleImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>a44a2abfff11ebf30495c0091d94684d1</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const typename TImageType::SpacingType outputSpacing, typename TImageType::SizeType outputSize, const std::string interpolator=&quot;Linear&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>ResampleImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>aaa40763ba1537b75ac36ea0bb23c5255</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const float outputSpacing=1.0, const std::string interpolator=&quot;Linear&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>TImageType::Pointer</type>
+      <name>ResizeImage</name>
+      <anchorfile>cbicaITKUtilities_8h.html</anchorfile>
+      <anchor>af24edfad35f536a689516a7e24e04f2d</anchor>
+      <arglist>(const typename TImageType::Pointer inputImage, const size_t resizeFactor, const std::string &amp;interpolator=&quot;Linear&quot;)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>itkDiffusionTensor3DReconstructionImageFilter.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>itkDiffusionTensor3DReconstructionImageFilter_8h</filename>
+    <class kind="class">itk::DiffusionTensor3DReconstructionImageFilter</class>
+  </compound>
+  <compound kind="file">
+    <name>itkDTILogEuclideanCalculator.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>itkDTILogEuclideanCalculator_8h</filename>
+    <class kind="class">itk::DTILogEuclideanCalculator</class>
+  </compound>
+  <compound kind="file">
+    <name>itkNaryMeanDiffusionTensorImageFilter.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>itkNaryMeanDiffusionTensorImageFilter_8h</filename>
+    <includes id="itkDTILogEuclideanCalculator_8h" name="itkDTILogEuclideanCalculator.h" local="yes" imported="no">itkDTILogEuclideanCalculator.h</includes>
+    <class kind="class">itk::Functor::DiffusionTensorMean</class>
+    <class kind="class">itk::NaryMeanDiffusionTensorImageFilter</class>
+  </compound>
+  <compound kind="file">
+    <name>itkNaryMeanImageFilter.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>itkNaryMeanImageFilter_8h</filename>
+    <class kind="class">itk::Functor::Mean</class>
+    <class kind="class">itk::NaryMeanImageFilter</class>
+  </compound>
+  <compound kind="file">
+    <name>itkNaryVarianceImageFilter.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/itk/</path>
+    <filename>itkNaryVarianceImageFilter_8h</filename>
+    <class kind="class">itk::NaryVarianceImageFilter</class>
+    <class kind="class">itk::Functor::Variance</class>
+  </compound>
+  <compound kind="file">
+    <name>cbicaOPENCVUtilities.h</name>
+    <path>C:/Projects/CBICA_Toolkit/src/classes/opencv/</path>
+    <filename>cbicaOPENCVUtilities_8h</filename>
+    <includes id="cbicaUtilities_8h" name="cbicaUtilities.h" local="yes" imported="no">cbicaUtilities.h</includes>
+    <member kind="function">
+      <type>std::map&lt; std::string, size_t &gt;</type>
+      <name>ConfusionMatrix</name>
+      <anchorfile>cbicaOPENCVUtilities_8h.html</anchorfile>
+      <anchor>ac1f15db749765af00a33f64be89363f5</anchor>
+      <arglist>(const cv::Mat &amp;inputRealAndPredictedLabels)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>GetMatFromVector</name>
+      <anchorfile>cbicaOPENCVUtilities_8h.html</anchorfile>
+      <anchor>ac59cf67cb95b9d73d2f010050162d49a</anchor>
+      <arglist>(const std::vector&lt; TPixelType &gt; &amp;inputVector, const cv::Size &amp;outputSize)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; TPixelType &gt;</type>
+      <name>GetVectorFromMat</name>
+      <anchorfile>cbicaOPENCVUtilities_8h.html</anchorfile>
+      <anchor>a6e3aaf3b878532051082799c96b2ecd8</anchor>
+      <arglist>(const cv::Mat &amp;inputMat)</arglist>
+    </member>
+    <member kind="function">
+      <type>cv::Mat</type>
+      <name>ReadFromCSV</name>
+      <anchorfile>cbicaOPENCVUtilities_8h.html</anchorfile>
+      <anchor>ac9da8dab8d8840cb65a29d2cada969a4</anchor>
+      <arglist>(const std::string &amp;filename)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::map&lt; std::string, float &gt;</type>
+      <name>ROC_Values</name>
+      <anchorfile>cbicaOPENCVUtilities_8h.html</anchorfile>
+      <anchor>a43a9a26399febc914cd551a2cae98355</anchor>
+      <arglist>(const cv::Mat &amp;inputRealAndPredictedLabels)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::map&lt; std::string, float &gt;</type>
+      <name>ROC_Values</name>
+      <anchorfile>cbicaOPENCVUtilities_8h.html</anchorfile>
+      <anchor>a6e1528d6b417461f55372514bf0996ef</anchor>
+      <arglist>(const cv::Mat &amp;inputRealValues, const cv::Mat &amp;inputPredictedValues)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SaveAsCSV</name>
+      <anchorfile>cbicaOPENCVUtilities_8h.html</anchorfile>
+      <anchor>a7bea6ba40a0f43760c7ecf580c4c99c1</anchor>
+      <arglist>(const cv::Mat &amp;inputMat, const std::string &amp;filename)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>cbica::CmdParser</name>
+    <filename>classcbica_1_1CmdParser.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>addApplicationDescription</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>acafcdf6d2311bd1cd14f612ad2373807</anchor>
+      <arglist>(const std::string &amp;description)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>addExampleUsage</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a8d7aa8ba43a81b600b95df931cf93e96</anchor>
+      <arglist>(const std::string &amp;commandExcludingExeName, const std::string &amp;descriptionOfCommand)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>addOptionalParameter</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a34b3a7739ea2b35072712e4cbc91f18f</anchor>
+      <arglist>(const std::string &amp;laconic, const std::string &amp;verbose, const int &amp;expectedDataType, const std::string &amp;dataRange, const std::string &amp;description_line1, const std::string &amp;description_line2=&quot;&quot;, const std::string &amp;description_line3=&quot;&quot;, const std::string &amp;description_line4=&quot;&quot;, const std::string &amp;description_line5=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>addParameter</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a97e7166e2f601ce219e1e9adea4c3b89</anchor>
+      <arglist>(const std::string &amp;laconic, const std::string &amp;verbose, const int &amp;expectedDataType, const std::string &amp;dataRange, const std::string &amp;description_line1, const std::string &amp;description_line2=&quot;&quot;, const std::string &amp;description_line3=&quot;&quot;, const std::string &amp;description_line4=&quot;&quot;, const std::string &amp;description_line5=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>addRequiredParameter</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a4cd5b5ec0cf396b921d098330520da5e</anchor>
+      <arglist>(const std::string &amp;laconic, const std::string &amp;verbose, const int &amp;expectedDataType, const std::string &amp;dataRange, const std::string &amp;description_line1, const std::string &amp;description_line2=&quot;&quot;, const std::string &amp;description_line3=&quot;&quot;, const std::string &amp;description_line4=&quot;&quot;, const std::string &amp;description_line5=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CmdParser</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>ae0850007d109872517b1e0105b397b10</anchor>
+      <arglist>(const int argc, char **argv, const std::string &amp;exe_name=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CmdParser</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>ae6485ce604f8595a3133e3f25d4a3a8f</anchor>
+      <arglist>(const int argc, const char **argv, const std::string &amp;exe_name=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>compareParameter</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>ab064ea9c4afb896b11208f6706643fa3</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, int &amp;position, bool automaticEcho=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>compareParameter</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a2d074c279349886848802b586e1c52e6</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, bool automaticEcho=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>echoHelp</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>aae1e19ca96266cb4584f4db7bbff762d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>echoUsage</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>ab7160b3cce17b197c1cf66af1d30cab9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>echoVersion</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a4fe62a08c5b835ff803bfbdc8d8f7275</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>DEPRECATED void</type>
+      <name>exampleUsage</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a2aaf65df690869234fd97e86a0046a8d</anchor>
+      <arglist>(const std::string &amp;usageOfExe)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>getDataTypeAsEnumCode</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a4a4cbd774a3295b6836539f9b933df51</anchor>
+      <arglist>(const std::string &amp;execParamToCheck)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getDataTypeAsString</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>ac6532c00e13a8483d5791ddf89fe877e</anchor>
+      <arglist>(const std::string &amp;execParamToCheck)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getDescription</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a6f04496765c8c2051844ff11eba0c0cc</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, bool NewLine)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getExeName</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>aebaea1284c116675620b39656a4ec296</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getLaconic</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a21bbb96ed07af498214eb88312afd011</anchor>
+      <arglist>(const std::string &amp;execParamToCheck)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getParameterValue</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a2aa6d2bfa043c1d0533007257acc32d2</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, bool &amp;parameterValue)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getParameterValue</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a13b77e9c98731f03bf11406b8364581a</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, int &amp;parameterValue)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getParameterValue</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>aa70a660590616a5c6a5b9f6501b85b0b</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, size_t &amp;parameterValue)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getParameterValue</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a8592db2e3c386fbde8b0b324c4deb64d</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, float &amp;parameterValue)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getParameterValue</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a8c24d08fa5c6607a50de16f42c694b5f</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, std::string &amp;parameterValue)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>ignoreArgc1</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a1d0176a0cc72ca1b1b6e15fa2fbc0e5d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>isPresent</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a3fc2b60dba1cb4c99d3336af745a4470</anchor>
+      <arglist>(const std::string &amp;execParamToCheck, bool automaticEcho=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setExeName</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a7889534005f89c3a4433c788bd2a6a27</anchor>
+      <arglist>(const std::string exeName)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>writeConfigFile</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>ab3b55aadce53cc9f8147e93ce4b9ea4b</anchor>
+      <arglist>(const std::string &amp;dirName=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>writeCWLFile</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a14be3d471e63f51e16a60ac6f70ea2b3</anchor>
+      <arglist>(const std::string &amp;dirName, bool overwriteFile)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~CmdParser</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>ac7bf58e309434ae32b5a7c4997769f25</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static std::vector&lt; Parameter &gt;</type>
+      <name>readConfigFile</name>
+      <anchorfile>classcbica_1_1CmdParser.html</anchorfile>
+      <anchor>a5c4cefcd22f0ad42a8be207efd4091fc</anchor>
+      <arglist>(const std::string &amp;inputConfigFile, bool getDescription=true)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>cbica::CommonHolder</name>
+    <filename>classcbica_1_1CommonHolder.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>CommonHolder</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a6573e04789e974bcb968c173a3810f63</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CommonHolder</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>ad9db22f69e2c3e9fe34d3457e2a52722</anchor>
+      <arglist>(const std::string &amp;inputFileName)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CommonHolder</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>aab33c7e481cd2fa274446e932a969658</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CommonHolder</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a528e746689d502e2a8b8b62bdfd5067b</anchor>
+      <arglist>(const std::string &amp;inputFileName, const std::string &amp;output)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CommonHolder</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a9622d990206730c6045b796b72fa6add</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CommonHolder</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>ae5d170965e0756f85ea8ec601df8caf0</anchor>
+      <arglist>(const std::string &amp;inputFileName, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CommonHolder</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a09b6d98b0c1706360fb56a7848bb742c</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~CommonHolder</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>aa7a0acaa5340cc49c2ed258837d175c1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected" virtualness="virtual">
+      <type>virtual void</type>
+      <name>checkInputs</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a445c93c34088aa12fc96b9b7f778ce3c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>initializeClass</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a58f2731a9ddcb1d637a7983f37f4238f</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function" protection="protected" virtualness="virtual">
+      <type>virtual void</type>
+      <name>runAlgorithm</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a78cc82f700a9c3fc12c96add5fcf480b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected" virtualness="virtual">
+      <type>virtual void</type>
+      <name>SetParameters</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>af80fa001dca52fac93e9db89a9f2cbd5</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>cbica::ComputeAverageMap</name>
+    <filename>classcbica_1_1ComputeAverageMap.html</filename>
+    <base>cbica::CommonHolder</base>
+    <member kind="function">
+      <type></type>
+      <name>ComputeAverageMap</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>a0f96eff1b8a57c993d9106c3a7f1d3ff</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeAverageMap</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>a0a113ab0d1efb9fa96ecc4c78ea37372</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFiles, const std::string &amp;output)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeAverageMap</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>aad8c1ceb92b09c5752935b25555b8e68</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFiles, const std::string &amp;output, const bool verbose)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeAverageMap</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>aba851dc47a594cd9a8d438a2828c94ea</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFiles, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeAverageMap</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>a5004ab4529661343e205b28338a2ed18</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFiles, const std::string &amp;output, const bool verbose, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetParameters</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>a40dd22590cc627bdafc78f6e779fe219</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~ComputeAverageMap</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>a0ade5cbcc1d6c4f0f989c6cd05b29e18</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>computeMeanDTIRunner</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>a2eed6718062fbf7023cd1123690ccd4d</anchor>
+      <arglist>(std::vector&lt; std::string &gt; &amp;inpFiles, std::string &amp;outputBase)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>computeMeanRunner</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>afb92eddbf81a9914c9ac269edf6ebb3f</anchor>
+      <arglist>(std::vector&lt; std::string &gt; &amp;inpFiles, std::string &amp;outputBase)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>initializeClass</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a58f2731a9ddcb1d637a7983f37f4238f</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>runAlgorithm</name>
+      <anchorfile>classcbica_1_1ComputeAverageMap.html</anchorfile>
+      <anchor>a4eeffb00894c2f78f4d04624d1c8e84d</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>cbica::ComputeDtiScalars</name>
+    <filename>classcbica_1_1ComputeDtiScalars.html</filename>
+    <base>cbica::CommonHolder</base>
+    <member kind="function">
+      <type></type>
+      <name>ComputeDtiScalars</name>
+      <anchorfile>classcbica_1_1ComputeDtiScalars.html</anchorfile>
+      <anchor>af6a771423755fd5987e79f89cf4dee1b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeDtiScalars</name>
+      <anchorfile>classcbica_1_1ComputeDtiScalars.html</anchorfile>
+      <anchor>a31ce7c238c98a456bce6263c2240b67e</anchor>
+      <arglist>(const std::string &amp;inputFileName, const std::string &amp;output)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeDtiScalars</name>
+      <anchorfile>classcbica_1_1ComputeDtiScalars.html</anchorfile>
+      <anchor>ae5400c3ee35b5a6e9a477b29c2c36a9e</anchor>
+      <arglist>(const std::string &amp;inputFileName, const std::string &amp;output, const std::string &amp;parameters)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeDtiScalars</name>
+      <anchorfile>classcbica_1_1ComputeDtiScalars.html</anchorfile>
+      <anchor>ae1eba892c068d3a593fffb0ecc069307</anchor>
+      <arglist>(const std::string &amp;inputFileName, const std::string &amp;output, const std::string &amp;parameters, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetParameters</name>
+      <anchorfile>classcbica_1_1ComputeDtiScalars.html</anchorfile>
+      <anchor>a9002a39c27136137951cce953005617b</anchor>
+      <arglist>(const std::string &amp;inputFileName, const std::string &amp;output, const std::string &amp;parameters, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetParameters</name>
+      <anchorfile>classcbica_1_1ComputeDtiScalars.html</anchorfile>
+      <anchor>a40dd22590cc627bdafc78f6e779fe219</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~ComputeDtiScalars</name>
+      <anchorfile>classcbica_1_1ComputeDtiScalars.html</anchorfile>
+      <anchor>ad00b12c9e8f8657fc26e12ecaf28a48d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>initializeClass</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a58f2731a9ddcb1d637a7983f37f4238f</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>cbica::ComputeVarianceMap</name>
+    <filename>classcbica_1_1ComputeVarianceMap.html</filename>
+    <base>cbica::CommonHolder</base>
+    <member kind="function">
+      <type></type>
+      <name>ComputeVarianceMap</name>
+      <anchorfile>classcbica_1_1ComputeVarianceMap.html</anchorfile>
+      <anchor>acda3f0fada901b9235bae9e0abc9b448</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeVarianceMap</name>
+      <anchorfile>classcbica_1_1ComputeVarianceMap.html</anchorfile>
+      <anchor>a1d96407c08be573e496a48ede21c1621</anchor>
+      <arglist>(const std::string &amp;inputFileName, const std::string &amp;output)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeVarianceMap</name>
+      <anchorfile>classcbica_1_1ComputeVarianceMap.html</anchorfile>
+      <anchor>a386c2abbd8aacec250df5ebf0ae02430</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeVarianceMap</name>
+      <anchorfile>classcbica_1_1ComputeVarianceMap.html</anchorfile>
+      <anchor>ad625658f8f956831c3703d117e99e07c</anchor>
+      <arglist>(const std::string &amp;inputFileName, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ComputeVarianceMap</name>
+      <anchorfile>classcbica_1_1ComputeVarianceMap.html</anchorfile>
+      <anchor>af806bd3fbf4e680bea52cce763537f9e</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetParameters</name>
+      <anchorfile>classcbica_1_1ComputeVarianceMap.html</anchorfile>
+      <anchor>a40dd22590cc627bdafc78f6e779fe219</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~ComputeVarianceMap</name>
+      <anchorfile>classcbica_1_1ComputeVarianceMap.html</anchorfile>
+      <anchor>addd93156cf09deffa60032d2e5600d51</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>initializeClass</name>
+      <anchorfile>classcbica_1_1CommonHolder.html</anchorfile>
+      <anchor>a58f2731a9ddcb1d637a7983f37f4238f</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputFileNames, const std::string &amp;output, const std::string &amp;prefix)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>CSVDict</name>
+    <filename>structCSVDict.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>CSVDict</name>
+      <anchorfile>structCSVDict.html</anchorfile>
+      <anchor>a4751268dc6f020d43faf4ba530fef527</anchor>
+      <arglist>(const CSVDict &amp;origin)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CSVDict</name>
+      <anchorfile>structCSVDict.html</anchorfile>
+      <anchor>a68e84cffd5282a7d6689ea4352707ea2</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CSVDict</name>
+      <anchorfile>structCSVDict.html</anchorfile>
+      <anchor>aa7c3989a8d3047a4c83d23841b6564eb</anchor>
+      <arglist>(const std::vector&lt; std::string &gt; &amp;inputImagesVector, const std::vector&lt; double &gt; &amp;inputLabelVector)</arglist>
+    </member>
+    <member kind="variable">
+      <type>std::vector&lt; std::string &gt;</type>
+      <name>inputImages</name>
+      <anchorfile>structCSVDict.html</anchorfile>
+      <anchor>a9516cb9cb1d7d621314a2f54dfecb95f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::vector&lt; double &gt;</type>
+      <name>inputLabels</name>
+      <anchorfile>structCSVDict.html</anchorfile>
+      <anchor>aa60ccd5bb29dff9bdda8de525f274b6a</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>DicomImageReader</name>
+    <filename>classDicomImageReader.html</filename>
+    <member kind="function">
+      <type>TInputImage::Pointer</type>
+      <name>ReadDicomImage</name>
+      <anchorfile>classDicomImageReader.html</anchorfile>
+      <anchor>a82a1d648bd5692b573f8ded16e0000fd</anchor>
+      <arglist>(bool &amp;readStatus)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>DicomIOManager</name>
+    <filename>classDicomIOManager.html</filename>
+    <templarg>T</templarg>
+    <member kind="function">
+      <type>T::Pointer</type>
+      <name>ConvertImage3DToFloatImage3D</name>
+      <anchorfile>classDicomIOManager.html</anchorfile>
+      <anchor>a8bd536ee8f8a60d8f46ea7211ddc61f3</anchor>
+      <arglist>(typename TInputImage::Pointer image)</arglist>
+    </member>
+    <member kind="function">
+      <type>T::Pointer</type>
+      <name>GetITKImage</name>
+      <anchorfile>classDicomIOManager.html</anchorfile>
+      <anchor>ad13a7be1a3b14aa0ef16f0d1e438d390</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>LoadDicom</name>
+      <anchorfile>classDicomIOManager.html</anchorfile>
+      <anchor>ab70e8a07615513d6d785e32c3f15aca1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetDirectoryPath</name>
+      <anchorfile>classDicomIOManager.html</anchorfile>
+      <anchor>ae56e904ec15457b5962f133f5c6bd5c2</anchor>
+      <arglist>(std::string path)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static bool</type>
+      <name>CanReadFile</name>
+      <anchorfile>classDicomIOManager.html</anchorfile>
+      <anchor>a2460fd9a12bd2c631c6bb31eab277601</anchor>
+      <arglist>(std::string path, itk::ImageIOBase::Pointer &amp;imageIO)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static bool</type>
+      <name>IsDicom</name>
+      <anchorfile>classDicomIOManager.html</anchorfile>
+      <anchor>afdd1e8fd831c8aa50af450be4fc3771f</anchor>
+      <arglist>(std::string path)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>DicomMetadataReader</name>
+    <filename>classDicomMetadataReader.html</filename>
+    <member kind="typedef">
+      <type>signed short</type>
+      <name>PixelType</name>
+      <anchorfile>classDicomMetadataReader.html</anchorfile>
+      <anchor>aa5d98a2782c9bc7affc502526caa2d06</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>DicomMetadataReader</name>
+      <anchorfile>classDicomMetadataReader.html</anchorfile>
+      <anchor>acc0604f05c16a6c3564948f47126628e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::map&lt; std::string, std::pair&lt; std::string, std::string &gt; &gt;</type>
+      <name>GetMetaDataMap</name>
+      <anchorfile>classDicomMetadataReader.html</anchorfile>
+      <anchor>ace65e0152f1aa265ce67e39bd7efa5b9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>GetTagValue</name>
+      <anchorfile>classDicomMetadataReader.html</anchorfile>
+      <anchor>add5b1493ae2ada188b8fc0d2d70b9633</anchor>
+      <arglist>(std::string tag, std::string &amp;label, std::string &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>ReadMetaData</name>
+      <anchorfile>classDicomMetadataReader.html</anchorfile>
+      <anchor>ae9a0478173e4c370a4c39c99a82e8074</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetFilePath</name>
+      <anchorfile>classDicomMetadataReader.html</anchorfile>
+      <anchor>a2812497081404e75792a44024e89171d</anchor>
+      <arglist>(std::string path)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>DicomSeriesReader</name>
+    <filename>classDicomSeriesReader.html</filename>
+    <member kind="function">
+      <type>DicomSeriesReader::ImageType3DFloat::Pointer</type>
+      <name>GetITKImage</name>
+      <anchorfile>classDicomSeriesReader.html</anchorfile>
+      <anchor>a94d45544835580cc7d48222b71b917c1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>LoadDicom</name>
+      <anchorfile>classDicomSeriesReader.html</anchorfile>
+      <anchor>ab70e8a07615513d6d785e32c3f15aca1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TInputImage::Pointer</type>
+      <name>ReadDicomSeries</name>
+      <anchorfile>classDicomSeriesReader.html</anchorfile>
+      <anchor>a29306657fe0ebc6656f03857b0bf084e</anchor>
+      <arglist>(bool &amp;readStatus)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetDirectoryPath</name>
+      <anchorfile>classDicomSeriesReader.html</anchorfile>
+      <anchor>ae56e904ec15457b5962f133f5c6bd5c2</anchor>
+      <arglist>(std::string path)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>itk::DiffusionTensor3DReconstructionImageFilter</name>
+    <filename>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <member kind="typedef">
+      <type>VectorContainer&lt; unsigned int, GradientDirectionType &gt;</type>
+      <name>GradientDirectionContainerType</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>aef5e7e0da2e47fadd2ffa17e10bbbfd5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>vnl_vector_fixed&lt; double, 3 &gt;</type>
+      <name>GradientDirectionType</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a4c62e1dc00e1131c9002b37715902876</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>VectorImage&lt; GradientPixelType, 3 &gt;</type>
+      <name>GradientImagesType</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>aa38094ff9d28a5bee35764e1a8d8f961</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>Image&lt; GradientPixelType, 3 &gt;</type>
+      <name>GradientImageType</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>af4210d336d92f400671324dbe921c10a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>SpatialObject&lt; 3 &gt;</type>
+      <name>ImageMaskType</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a33a374d32619475f225ffd6e64b8ba1e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>Superclass::InputImageType</type>
+      <name>ReferenceImageType</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a660c0dc4c3e5835ddcc33fec5ce268fd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>VectorImage&lt; GradientPixelType, 3 &gt;</type>
+      <name>ResidualImageType</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a2fbe4db1b178f7a65e1a3f7e1ebb9a68</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>vnl_matrix_fixed&lt; double, 6, 6 &gt;</type>
+      <name>TensorBasisMatrixType</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>aab0baa5c889c8e822103e2abc5365310</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>AddGradientImage</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a41598ac87fd6044fb9ccf95c93f504e7</anchor>
+      <arglist>(const GradientDirectionType &amp;, const GradientImageType *image)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual GradientDirectionType</type>
+      <name>GetGradientDirection</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>ab9e0222fadb7a005cafaf9f795749649</anchor>
+      <arglist>(unsigned int idx) const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual ReferenceImageType *</type>
+      <name>GetReferenceImage</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a7b38c2ce589ea93bd96d018d413699c7</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkGetConstObjectMacro</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a063fdbab599509bb4c1f1cca9a0d24ed</anchor>
+      <arglist>(ResidualImage, ResidualImageType)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkNewMacro</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>ad4e4015e12452db22c1a3795eaf2aea3</anchor>
+      <arglist>(Self)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkSetMacro</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a10cc22b6c697476145b91f8bfb009026</anchor>
+      <arglist>(Threshold, ReferencePixelType)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkSetMacro</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a1268c4dc02e3e1134014cadda3c27e4a</anchor>
+      <arglist>(CalculateResidualImage, bool)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkSetMacro</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a143e6c313aa6c1b8dd9910b2c42ab963</anchor>
+      <arglist>(BValue, TTensorPixelType)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkSetObjectMacro</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a4ed523a2a30c16d9352d466a11ec693e</anchor>
+      <arglist>(ImageMask, ImageMaskType)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkTypeMacro</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>ad3579f7a11e4cc4eba2234ba22d97085</anchor>
+      <arglist>(DiffusionTensor3DReconstructionImageFilter, ImageToImageFilter)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetGradientImage</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>a836be4d73cd13ac97a95919b01e94f2f</anchor>
+      <arglist>(GradientDirectionContainerType *, const GradientImagesType *image)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetReferenceImage</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>ad02bb6b3d89d30da760f758283a61579</anchor>
+      <arglist>(ReferenceImageType *referenceImage)</arglist>
+    </member>
+    <member kind="enumeration" protection="protected">
+      <type></type>
+      <name>GradientImageTypeEnumeration</name>
+      <anchorfile>classitk_1_1DiffusionTensor3DReconstructionImageFilter.html</anchorfile>
+      <anchor>ab1970d4caa1206c864d8d0d5c0e5ecf9</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>itk::Functor::DiffusionTensorMean</name>
+    <filename>classitk_1_1Functor_1_1DiffusionTensorMean.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>itk::DTILogEuclideanCalculator</name>
+    <filename>classitk_1_1DTILogEuclideanCalculator.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <member kind="typedef">
+      <type>DiffusionTensor3D&lt; TDtiCompType &gt;</type>
+      <name>DTType</name>
+      <anchorfile>classitk_1_1DTILogEuclideanCalculator.html</anchorfile>
+      <anchor>af4845273af7b0ab5307d8a116bc14266</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>DTILogEuclideanCalculator</type>
+      <name>Self</name>
+      <anchorfile>classitk_1_1DTILogEuclideanCalculator.html</anchorfile>
+      <anchor>a50d5a2949e0d9ccac1f49125531b4485</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>DTType</type>
+      <name>CalculateMatrixExp</name>
+      <anchorfile>classitk_1_1DTILogEuclideanCalculator.html</anchorfile>
+      <anchor>af8736d07ba281fc1dceabf8c9c7a65f0</anchor>
+      <arglist>(SymMatType) const</arglist>
+    </member>
+    <member kind="function">
+      <type>SymMatType</type>
+      <name>CalculateMatrixLog</name>
+      <anchorfile>classitk_1_1DTILogEuclideanCalculator.html</anchorfile>
+      <anchor>a70ee324e8649f951caed747d0d09c5db</anchor>
+      <arglist>(DTType) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>IsPositiveDefinite</name>
+      <anchorfile>classitk_1_1DTILogEuclideanCalculator.html</anchorfile>
+      <anchor>acee1571830e3f58bc1ba23890364ce67</anchor>
+      <arglist>(SymMatType) const</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkNewMacro</name>
+      <anchorfile>classitk_1_1DTILogEuclideanCalculator.html</anchorfile>
+      <anchor>ad4e4015e12452db22c1a3795eaf2aea3</anchor>
+      <arglist>(Self)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkTypeMacro</name>
+      <anchorfile>classitk_1_1DTILogEuclideanCalculator.html</anchorfile>
+      <anchor>aefcca6a3b99b7acd0db0fa7e9fdcdc5b</anchor>
+      <arglist>(DTILogEuclideanCalculator, Object)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>cbica::DTIProcessingManager</name>
+    <filename>classcbica_1_1DTIProcessingManager.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>FileNameParts</name>
+    <filename>structFileNameParts.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>FileNameParts</name>
+      <anchorfile>structFileNameParts.html</anchorfile>
+      <anchor>ad806b26f9dd96628163e1795dd9ef5c3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>FileNameParts</name>
+      <anchorfile>structFileNameParts.html</anchorfile>
+      <anchor>afe35f90ad6727a143d540e6a8f29d901</anchor>
+      <arglist>(const std::string &amp;inputFileName)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetFileName</name>
+      <anchorfile>structFileNameParts.html</anchorfile>
+      <anchor>ad773afe19bf48911b7d11057acabed74</anchor>
+      <arglist>(const std::string &amp;inputFileName)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>N3MRIBiasFieldCorrectionImageFilter::h</name>
+    <filename>classN3MRIBiasFieldCorrectionImageFilter_1_1h.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>cbica::ImageInfo</name>
+    <filename>classcbica_1_1ImageInfo.html</filename>
+    <member kind="function">
+      <type>itk::ImageIOBase::IOComponentType</type>
+      <name>GetComponentType</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>a2466e758f7e105127404528cad940cfb</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>GetComponentTypeAsString</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>a6b3dee8dad434e8650c1d75b7d9dccc3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const unsigned int</type>
+      <name>GetImageDimensions</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>aef660b9fb22bb49a588049a7256028fe</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>itk::SmartPointer&lt; itk::ImageIOBase &gt;</type>
+      <name>GetImageIOBase</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>a00b15e3a10acda5b08ab7061e1dba2e2</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; double &gt;</type>
+      <name>GetImageOrigins</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>aa1ebf7b645ca969f7dd114ffa74bdedf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; itk::SizeValueType &gt;</type>
+      <name>GetImageSize</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>a4750349805bdb9bfd075d726938a294b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; itk::SizeValueType &gt;</type>
+      <name>GetImageSpacing</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>aef2e8ba8cd2ea7885d543af1bd6becb6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; double &gt;</type>
+      <name>GetImageSpacings</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>ab5b3494b3506bc4408dccb71072242f8</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>itk::ImageIOBase::IOPixelType</type>
+      <name>GetPixelType</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>a2b6781361bbe59cb3ad3d6de333a078c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>GetPixelTypeAsString</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>ad364426dd13aefc4a8631c7993db9726</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ImageInfo</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>a9ad47bed3a847ebf9c66b74ae009ca1d</anchor>
+      <arglist>(const std::string &amp;fName)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>IsDicom</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>a5d5ac40f951b58c4c8de717e74ebc7a9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~ImageInfo</name>
+      <anchorfile>classcbica_1_1ImageInfo.html</anchorfile>
+      <anchor>a1a4bc89ab5faf7a6be6849226a3ce433</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>cbica::Logging</name>
+    <filename>classcbica_1_1Logging.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>EnableConsoleLogging</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>a8dd2bea4dadac01bc131befbb70e7fbe</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>EnableGMTLogging</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>a08c649e70fc591ae73cced879fb3acc9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>EnableMultiUserLogging</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>a97b663f5d09a18d84565e105fe2f6d75</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>EnableTextLogging</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>a33170ddb1cac78812e7fc6923ed8e2dd</anchor>
+      <arglist>(const std::string &amp;newLogFile)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>getLoggingFileName</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>ad61ed9327c84612e666647e0adc1a775</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Logging</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>ae88cac468d49ec553cc088b9690d4ffd</anchor>
+      <arglist>(const std::string file_name, const std::string FreeText_input)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Logging</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>a4a984c553eb26a896d7653a35dc7786e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Logging</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>a66c7c136523e3f38d5a2169efb12c7d7</anchor>
+      <arglist>(const Logging &amp;origin)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>UseNewFile</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>ab680422fbdb8aebbdf6a3ef089210a05</anchor>
+      <arglist>(const std::string &amp;newLogFile)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>Write</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>a1264eba29a26ec84ef7ca1813c368ae0</anchor>
+      <arglist>(const std::string FreeText_input)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>WriteError</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>a10219d20c6e66389908a98e56d46a987</anchor>
+      <arglist>(const std::string FreeText_input)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~Logging</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>ae0e547b877a86e056229ea6eab6c90e0</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>initialize_class</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>ae4338d23c22377bfb97c0d1d676fa823</anchor>
+      <arglist>(std::string &amp;file_name_with_path_wrap, std::ofstream &amp;log_file_wrap, std::string &amp;exe_name_wrap, std::string &amp;user_name_wrap)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type>void</type>
+      <name>writing_function</name>
+      <anchorfile>classcbica_1_1Logging.html</anchorfile>
+      <anchor>ae766c9aadece1be0070f6f1213b4ccd7</anchor>
+      <arglist>(const std::string &amp;FreeText_wrap, std::ofstream &amp;log_file_wrap, const std::string &amp;exe_name_wrap, const std::string &amp;user_name_wrap, bool isError=false)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>itk::Functor::Mean</name>
+    <filename>classitk_1_1Functor_1_1Mean.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>itk::N3BiasFieldScaleCostFunction</name>
+    <filename>classitk_1_1N3BiasFieldScaleCostFunction.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <member kind="function">
+      <type></type>
+      <name>itkNewMacro</name>
+      <anchorfile>classitk_1_1N3BiasFieldScaleCostFunction.html</anchorfile>
+      <anchor>ad4e4015e12452db22c1a3795eaf2aea3</anchor>
+      <arglist>(Self)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkTypeMacro</name>
+      <anchorfile>classitk_1_1N3BiasFieldScaleCostFunction.html</anchorfile>
+      <anchor>a7665ba4c083f14bb728de5017bd1ee0c</anchor>
+      <arglist>(N3BiasFieldScaleCostFunction, SingleValuedCostFunction)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>itk::N3MRIBiasFieldCorrectionImageFilter</name>
+    <filename>classitk_1_1N3MRIBiasFieldCorrectionImageFilter.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <member kind="typedef">
+      <type>TInputImage</type>
+      <name>InputImageType</name>
+      <anchorfile>classitk_1_1N3MRIBiasFieldCorrectionImageFilter.html</anchorfile>
+      <anchor>acf27820688d469779b3091caf782c174</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>Vector&lt; RealType, 1 &gt;</type>
+      <name>ScalarType</name>
+      <anchorfile>classitk_1_1N3MRIBiasFieldCorrectionImageFilter.html</anchorfile>
+      <anchor>af9305a421f91bed8dd080e3cf0db22a5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>N3MRIBiasFieldCorrectionImageFilter</type>
+      <name>Self</name>
+      <anchorfile>classitk_1_1N3MRIBiasFieldCorrectionImageFilter.html</anchorfile>
+      <anchor>a3e03388e8bdfd96dedbc3e3bf8a2994a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkNewMacro</name>
+      <anchorfile>classitk_1_1N3MRIBiasFieldCorrectionImageFilter.html</anchorfile>
+      <anchor>ad4e4015e12452db22c1a3795eaf2aea3</anchor>
+      <arglist>(Self)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkStaticConstMacro</name>
+      <anchorfile>classitk_1_1N3MRIBiasFieldCorrectionImageFilter.html</anchorfile>
+      <anchor>aa1cf84623c28d09e6cd757de21752ee7</anchor>
+      <arglist>(ImageDimension, unsigned int, TInputImage::ImageDimension)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkTypeMacro</name>
+      <anchorfile>classitk_1_1N3MRIBiasFieldCorrectionImageFilter.html</anchorfile>
+      <anchor>a75f0f9411526ac756aac4c372f87ae4d</anchor>
+      <arglist>(N3MRIBiasFieldCorrectionImageFilter, ImageToImageFilter)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>itk::NaryMeanDiffusionTensorImageFilter</name>
+    <filename>classitk_1_1NaryMeanDiffusionTensorImageFilter.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <member kind="typedef">
+      <type>NaryMeanDiffusionTensorImageFilter</type>
+      <name>Self</name>
+      <anchorfile>classitk_1_1NaryMeanDiffusionTensorImageFilter.html</anchorfile>
+      <anchor>ac28c15d5cd6537e04b2c856efb7273a4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkNewMacro</name>
+      <anchorfile>classitk_1_1NaryMeanDiffusionTensorImageFilter.html</anchorfile>
+      <anchor>ad4e4015e12452db22c1a3795eaf2aea3</anchor>
+      <arglist>(Self)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkTypeMacro</name>
+      <anchorfile>classitk_1_1NaryMeanDiffusionTensorImageFilter.html</anchorfile>
+      <anchor>ae66dd9d3726095304aa9c76d297ed82a</anchor>
+      <arglist>(NaryMeanDiffusionTensorImageFilter, NaryFunctorImageFilter)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>itk::NaryMeanImageFilter</name>
+    <filename>classitk_1_1NaryMeanImageFilter.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <member kind="typedef">
+      <type>NaryMeanImageFilter</type>
+      <name>Self</name>
+      <anchorfile>classitk_1_1NaryMeanImageFilter.html</anchorfile>
+      <anchor>ad004a0da2143bfc459242cd4ab74bf6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkNewMacro</name>
+      <anchorfile>classitk_1_1NaryMeanImageFilter.html</anchorfile>
+      <anchor>ad4e4015e12452db22c1a3795eaf2aea3</anchor>
+      <arglist>(Self)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkTypeMacro</name>
+      <anchorfile>classitk_1_1NaryMeanImageFilter.html</anchorfile>
+      <anchor>ad728c2bda857f7c730c7da6e2e3a8a6d</anchor>
+      <arglist>(NaryMeanImageFilter, NaryFunctorImageFilter)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>itk::NaryVarianceImageFilter</name>
+    <filename>classitk_1_1NaryVarianceImageFilter.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <member kind="typedef">
+      <type>NaryVarianceImageFilter</type>
+      <name>Self</name>
+      <anchorfile>classitk_1_1NaryVarianceImageFilter.html</anchorfile>
+      <anchor>ac18b4ed84c032957aeb3fcc1083f26c1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkNewMacro</name>
+      <anchorfile>classitk_1_1NaryVarianceImageFilter.html</anchorfile>
+      <anchor>ad4e4015e12452db22c1a3795eaf2aea3</anchor>
+      <arglist>(Self)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>itkTypeMacro</name>
+      <anchorfile>classitk_1_1NaryVarianceImageFilter.html</anchorfile>
+      <anchor>ac95867cd1a2bab501ff316d8fbafbfb7</anchor>
+      <arglist>(NaryVarianceImageFilter, NaryFunctorImageFilter)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>cbica::Parameter</name>
+    <filename>structcbica_1_1Parameter.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>Parameter</name>
+      <anchorfile>structcbica_1_1Parameter.html</anchorfile>
+      <anchor>a8cb8799cfa349191ad8b3b3adf791156</anchor>
+      <arglist>(const std::string &amp;in_laconic, const std::string &amp;in_verbose, const int &amp;in_dataType, const std::string &amp;in_dataRange, const std::string &amp;in_descriptionLine1, const std::string &amp;in_descriptionLine2=&quot;&quot;, const std::string &amp;in_descriptionLine3=&quot;&quot;, const std::string &amp;in_descriptionLine4=&quot;&quot;, const std::string &amp;in_descriptionLine5=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Parameter</name>
+      <anchorfile>structcbica_1_1Parameter.html</anchorfile>
+      <anchor>a533f5e2bc351ade4f851661427e53513</anchor>
+      <arglist>(const std::string &amp;in_laconic, const std::string &amp;in_verbose, const std::string &amp;in_dataType, const std::string &amp;in_dataRange, const std::string &amp;in_descriptionLine1, const std::string &amp;in_descriptionLine2=&quot;&quot;, const std::string &amp;in_descriptionLine3=&quot;&quot;, const std::string &amp;in_descriptionLine4=&quot;&quot;, const std::string &amp;in_descriptionLine5=&quot;&quot;)</arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>descriptionLine3</name>
+      <anchorfile>structcbica_1_1Parameter.html</anchorfile>
+      <anchor>a449cdd52403fdce5340929874ff6e880</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>descriptionLine4</name>
+      <anchorfile>structcbica_1_1Parameter.html</anchorfile>
+      <anchor>a386f7eb27fe99ff462e819fdfcbca26c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>descriptionLine5</name>
+      <anchorfile>structcbica_1_1Parameter.html</anchorfile>
+      <anchor>af5840f2b084e3f7dce31f5974a6341e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>size_t</type>
+      <name>length</name>
+      <anchorfile>structcbica_1_1Parameter.html</anchorfile>
+      <anchor>ae809d5359ac030c60a30a8f0b2294b82</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>cbica::Statistics</name>
+    <filename>classcbica_1_1Statistics.html</filename>
+    <templarg></templarg>
+    <member kind="function">
+      <type>double</type>
+      <name>GetCoefficientOfVariation</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a975569c8968f993aa1ce4d7a51024414</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetEnergy</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a652692ac22ee983a311be42d0826c514</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TDataType</type>
+      <name>GetInterQuartileRange</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a04d8fb94bb4d7454d80d395daff1de7c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetKurtosis</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a1775298329078a609e917cc2b9060271</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetMaximum</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a397e02969d2492c7557e7762db95c0e7</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetMean</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>ade3b203df098d08b18fd2353b6cb543a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetMeanAbsoluteDeviation</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>acc7c3106dd1735025a1acf7c53123106</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetMedianAbsoluteDeviation</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>aa9f6bc100eaf766ec9b4a85bb61c4bae</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetMinimum</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a7f6ed935c6ee8ca375fb088603482821</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TDataType</type>
+      <name>GetNthPercentileElement</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>ac353077b65f86149d8a23494192c2ff1</anchor>
+      <arglist>(size_t n)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetQuartileCoefficientOfDispersion</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a7ff51de155883739f6d5a65b3f0e1bdc</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TDataType</type>
+      <name>GetRange</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>ab3d75687db3d5ce25a38d00356c3e0a4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetRobustMeanAbsoluteDeviation</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>aa18630d7f26e06eb97a18d11735e0eda</anchor>
+      <arglist>(size_t lowerQuantile, size_t upperQuantile)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetRootMeanSquare</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a5b3c194af9be4289f65be11b3af1610a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetSkewness</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>af4799efce98c58b4c48c7eed9cfccc84</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetStandardDeviation</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a7be7715a63a552251ae12ad4febd633e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetStudentizedRange</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a86ee4948cc862f70bcc9db31df5fcc0d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetSum</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a432a18efa008bcc5d3473f6f2781b783</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>GetVariance</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>ad5ae11d0f449c03ab8d2fae33743434c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; double &gt;</type>
+      <name>GetZScores</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a7659775d16458588d93edfec1dc16b71</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>SetInput</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a29da96a368472051ed8f36715e4e3494</anchor>
+      <arglist>(std::vector&lt; TDataType &gt; &amp;inputArray)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Statistics</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>abbb2d8b17aeeb5883b910fab07762a14</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>Statistics</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>a51c5c2a7c1ebad41abae23394b838306</anchor>
+      <arglist>(std::vector&lt; TDataType &gt; &amp;inputArray)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>~Statistics</name>
+      <anchorfile>classcbica_1_1Statistics.html</anchorfile>
+      <anchor>af3a1ff40010203f1d3a9b32c4d560640</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>itk::Functor::Variance</name>
+    <filename>classitk_1_1Functor_1_1Variance.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="page">
+    <name>Download</name>
+    <title>Download Instructions</title>
+    <filename>Download</filename>
+  </compound>
+  <compound kind="page">
+    <name>Installation</name>
+    <title>Installation Guidelines</title>
+    <filename>Installation</filename>
+  </compound>
+  <compound kind="page">
+    <name>Usage</name>
+    <title>Interaction Details</title>
+    <filename>Usage</filename>
+  </compound>
+  <compound kind="page">
+    <name>ForDevelopers</name>
+    <title>For Developers</title>
+    <filename>ForDevelopers</filename>
+  </compound>
+  <compound kind="page">
+    <name>People</name>
+    <title>People Involved</title>
+    <filename>People</filename>
+  </compound>
+  <compound kind="page">
+    <name>License</name>
+    <title>License</title>
+    <filename>License</filename>
+  </compound>
+  <compound kind="page">
+    <name>index</name>
+    <title>Overview</title>
+    <filename>index</filename>
+  </compound>
+</tagfile>

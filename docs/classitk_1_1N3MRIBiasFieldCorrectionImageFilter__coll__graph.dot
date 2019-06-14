@@ -1,0 +1,9 @@
+digraph "N3MRIBiasFieldCorrectionImageFilter&lt; TInputImage, TMaskImage, TOutputImage &gt;"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node2 [label="N3MRIBiasFieldCorrection\lImageFilter\< TInputImage,\l TMaskImage, TOutputImage \>",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Class definition for N3MRIBiasFieldCorrectionImageFilter."];
+  Node3 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="ImageToImageFilter\l\< TInputImage, TOutputImage \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+}

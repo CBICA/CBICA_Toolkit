@@ -1,0 +1,12 @@
+digraph "src/classes/itk/itkDTILogEuclideanCalculator.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node6 [label="src/classes/itk/itkDTILog\lEuclideanCalculator.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Declaration of the DTILogEuclideanCalculator class."];
+  Node6 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="src/classes/itk/cbicaITKCompute\lAverageMap.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKComputeAverageMap_8h.html",tooltip="Declaration of the ComputeAverageMap class."];
+  Node6 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="src/classes/itk/itkNaryMean\lDiffusionTensorImageFilter.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$itkNaryMeanDiffusionTensorImageFilter_8h.html",tooltip="Declaration & Implementation of the NaryMeanDiffusionTensorImageFilter class."];
+  Node8 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

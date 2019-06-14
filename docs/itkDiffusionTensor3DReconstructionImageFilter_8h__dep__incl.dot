@@ -1,0 +1,11 @@
+digraph "src/classes/itk/itkDiffusionTensor3DReconstructionImageFilter.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node12 [label="src/classes/itk/itkDiffusion\lTensor3DReconstructionImageFilter.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Declaration of DiffusionTensor3DReconstructionImageFilter."];
+  Node12 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="src/classes/itk/cbicaDTIProcessing\lManager.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaDTIProcessingManager_8h.html",tooltip="File that holds the DTIProcessingManager class."];
+  Node12 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="src/classes/itk/cbicaITKDti\lRecon.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$cbicaITKDtiRecon_8h.html",tooltip="Declaration of DtiRecon."];
+}

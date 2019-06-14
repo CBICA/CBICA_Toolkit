@@ -1,0 +1,13 @@
+digraph "CommonHolder"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node0 [label="CommonHolder",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Common data container for all statistical computations of images."];
+  Node0 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 [label="ComputeAverageMap",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcbica_1_1ComputeAverageMap.html",tooltip="Computes the average of a series of images and writes the output."];
+  Node0 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="ComputeDtiScalars",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcbica_1_1ComputeDtiScalars.html",tooltip="Computes the scalars of a single DTI image and writes the output."];
+  Node0 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="ComputeVarianceMap",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classcbica_1_1ComputeVarianceMap.html",tooltip="Computes the variance map for a single image."];
+}
