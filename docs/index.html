@@ -123,105 +123,18 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li><a href="functions_func.html">Full Functions List</a></li>
 <li><a href="annotated.html">Full Class List</a></li>
 </ol>
-<h2>Basic Functions</h2>
-<p>This list is maintained at the <b>Functions</b> section of <a href="cbicaUtilities_8h.html">cbicaUtilities.h</a> file.</p>
-<h2>Basic Classes</h2>
-<h3>Logging</h3>
-<p>A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file. For full documentation, see the <a class="el" href="classcbica_1_1Logging.html" title="The logging class.">cbica::Logging</a>.</p>
-<p>Generated log is in the format: <br />
- <code>&lt;4 digit year&gt;:&lt;2 digit month&gt;:&lt;2 digit date&gt;,&lt;2 digit 24 hour&gt;:&lt;2 digit minute&gt;:&lt;2 digit second&gt;;&lt;exe name&gt;=""&gt;;&lt;user name&gt;=""&gt;</code></p>
-<h4>Available functions:</h4>
-<table border="0">
-<tr>
-<td width="200px"><b>EnableTextLogging</b> </td><td>Switches from console to specific text file  </td></tr>
-<tr>
-<td><b>Write</b> </td><td>Writes free text to console/file as std::cout  </td></tr>
-<tr>
-<td><b>WriteError</b> </td><td>Writes free text to console/file as std::cerr - used for error reporting  </td></tr>
-<tr>
-<td><b>UseNewFile</b> </td><td>Change Logging file after initializing class  </td></tr>
-</table>
-<h3>CmdParser</h3>
-<p>Universal command line parser. Add parameters, descriptions and call on them from the command line. Details in header file. It picks up exe name using <a class="el" href="cbicaUtilities_8h.html#a67ac78ff248156c52d45559ee76c283b" title="Get the name of the Executable which is calling the function.">getExecutableName()</a> but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file). For full documentation, see the <a class="el" href="classcbica_1_1CmdParser.html" title="Simple command line parsing.">cbica::CmdParser</a>.</p>
-<h4>Available functions:</h4>
-<table border="0">
-<tr>
-<td width="200px"><b>addRequiredParameter</b> </td><td>Add required parameter (no '-' is necessary) - exception is thrown if a required parameter is missing  </td></tr>
-<tr>
-<td><b>addOptionalParameter</b> </td><td>Add optional parameter (no '-' is necessary)  </td></tr>
-<tr>
-<td><b>addParameter</b> </td><td>Defaults to <code>addOptionalParameter()</code>  </td></tr>
-<tr>
-<td><b>compareParameter</b> </td><td>Check if specific parameter is present in the argv  </td></tr>
-<tr>
-<td><b>getDescription</b> </td><td>Get description of the specific parameter  </td></tr>
-<tr>
-<td><b>exampleUsage</b> </td><td>Add an example usage which comes up in <code>echoHelp()</code>  </td></tr>
-<tr>
-<td><b>setExeName</b> </td><td>Set a custom executable name  </td></tr>
-<tr>
-<td><b>writeConfigFile</b> </td><td>Writes a machine readable configuration file for the executable  </td></tr>
-<tr>
-<td><b>echoUsage</b> </td><td>Based on the parameters added, it automatically constructs an <code>echoUsage()</code> console output which includes contact information and copyright details  </td></tr>
-<tr>
-<td><b>echoHelp</b> </td><td>Based on the parameters added, it automatically constructs an <code>echoHelp()</code> console output which includes contact information and copyright details. This is supposed to be more verbose than <code>echoUsage()</code>  </td></tr>
-</table>
-<h2>ITK Classes</h2>
-<h3>ImageInfo</h3>
-<p>Obtains the data regarding spacing and dimensions of specified image in <code>itk::ImageIOBase</code>; look in class documentation for details.</p>
-<h4>Available functions:</h4>
-<table border="0">
-<tr>
-<td width="200px"><b>getImageIOBase</b> </td><td>Get the ImageIOBase class wrapped around a smart pointer  </td></tr>
-<tr>
-<td><b>getImageDimensions</b> </td><td>Get the dimensions  </td></tr>
-<tr>
-<td><b>getImageSpacings</b> </td><td>Get the spacings  </td></tr>
-</table>
-<h3>CommonHolder</h3>
-<p>Common interface class for all algorithmic classes.</p>
-<h3>ComputeAverageMap</h3>
-<p>Computes the average of a series of images and writes the output. Set input files as a vector of strings and the output directory in the constructor itself.</p>
-<h3>ComputeDtiScalars</h3>
-<p>Computes and saves the specified scalar image for an image. Input image and output (director/file) are specified in the constructor.</p>
-<h4>Available Options:</h4>
-<table border="0">
-<tr>
-<td width="200px"><b>FA</b> </td><td>FA images  </td></tr>
-<tr>
-<td><b>EIG</b> </td><td>Eigensystem images  </td></tr>
-<tr>
-<td><b>GEO</b> </td><td>Geoemtric features  </td></tr>
-<tr>
-<td><b>SKEW</b> </td><td>Tensor Skewness  </td></tr>
-<tr>
-<td><b>KURT</b> </td><td>Tensor kurtosis  </td></tr>
-<tr>
-<td><b>RADAX</b> </td><td>Radial and Axial diffusivity  </td></tr>
-<tr>
-<td><b>GORDR</b> </td><td>Gordon's R measures  </td></tr>
-<tr>
-<td><b>GORDK</b> </td><td>Gordon's K measures  </td></tr>
-<tr>
-<td><b>ALL</b> </td><td>All of the above (default)  </td></tr>
-</table>
-<h3>ComputeVarianceMap</h3>
-<p>Computes the variance and saves the output for a single image (can be changed easily by modifying the class to be more in line with ComputeAverageMap).</p>
-<h3>DtiRecon</h3>
-<p>Reconstruction of DTI image</p>
-<h3>ITKUtilities</h3>
-<p>Functions to make handling of images easier. This list is maintained at <a href="cbicaITKUtilities_8h.html">cbicaITKUtilities.h</a>.</p>
-<table border="0">
-<tr>
-<td width="200px"><b>VectorizeImages</b> </td><td>Vectorize a set of images in either column or row major format  </td></tr>
-<tr>
-<td><b>CreateMaskIndeces</b> </td><td>Eigensystem images  </td></tr>
-</table>
-<p>NOTE: There are a lot of back-end classes which have been implemented for compatibility between itk versions. These are not meant to be for standalone usage.</p>
-<p>TO DO:</p><ul>
-<li>dti Stuff</li>
-</ul>
-<p>[Request a new function via eLog.]</p>
+<h2>Overview</h2>
+<ol type="1">
+<li>Basic Utilities (no third party library dependency): These are in the <b>Functions</b> section of the <a href="cbicaUtilities_8h.html">cbicaUtilities.h</a> file.</li>
+<li>Basic Classes: These make a C++ developer's life easier; no third party dependency.<ol type="a">
+<li><a href="cbicaCmdParser_8h.html">CmdParser</a>: This is a universal command line parser. Add parameters, descriptions and call on them from the command line. Details in the header file. It picks up exe name using <a class="el" href="cbicaUtilities_8h.html#a67ac78ff248156c52d45559ee76c283b" title="Get the name of the Executable which is calling the function.">getExecutableName()</a> but it can be set in the class. The parameters "u/usage", "v/version" and "h/help" are automatically set. 'usage' is basic usage details, 'help' is verbose help and 'version' is version details (picked up automatically from parent CMake file). For full documentation, see the <a href="cbicaCmdParser_8h.html">cbica::CmdParser</a> documentation.</li>
+<li><a href="cbicaLogging_8h.html">Logging</a>: A logging class which generates machine-parseable logs. This can output to both console (default behavior) and a file. For full documentation, see the <a href="cbicaLogging_8h.html">cbica::Logging</a> documentation. Generated log is in the following format: <div class="fragment"><div class="line">&lt;4 digit year&gt;:&lt;2 digit month&gt;:&lt;2 digit date&gt;,&lt;2 digit 24 hour&gt;:&lt;2 digit minute&gt;:&lt;2 digit second&gt;;&lt;exe name&gt;;&lt;user name&gt;</div></div><!-- fragment --></li>
+</ol>
+</li>
+<li>ITK Utilities (dependency on ITK): These are in the <b>Functions</b> section of the <a href="cbicaITKUtilities_8h.html">cbicaITKUtilities.h</a> file.</li>
+<li>ITK-based Safe I/O Functions: These functions are used for safe I/O operations for various medical images. Details are in the <a href="cbicaITKSafeImageIO_8h.html">cbicaITKUtilities.h</a> file.</li>
+<li>Host of other specialized functions from the <code>src/classes/itk</code> folder.</li>
+</ol>
 <h2>Benchmarking Executable</h2>
 <p>This is a shell executable that is used for benchmarking different algorithms and applications. This provides a ready-to-use way for comparing different algorithm outputs with the one that needs to be tested for multiple inputs. See <code>src/Benchmarking.cxx</code> for details.</p>
 <h2>TO DO</h2>
