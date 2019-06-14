@@ -32,6 +32,14 @@ https://cbica.github.io/CBICA_Toolkit/
 - Generic functionalities: file/directory check, sym-link creation, sub-directories, filename splitting, create/delete/copy directory, file/folder size, normalize path, get current working and/or executable directory, get/set environment variables, CSV parsing, confusion matrix, ROC, randn, 
 - First order statistics using a standard vector
 
+### Full Function List
+
+https://cbica.github.io/CBICA_Toolkit/functions_func.html
+
+### Full Class List
+
+https://cbica.github.io/CBICA_Toolkit/annotated.html
+
 ## Usage 
 
 Add this repo as a **git submodule** (see [this](https://git-scm.com/book/en/v2/Git-Tools-Submodules) page for details on how to do this).

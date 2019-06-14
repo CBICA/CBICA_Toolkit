@@ -32,6 +32,14 @@ See the <a href="Installation.html">Installation Page</a> for details.
 
 # 2. Available Functions and Classes
 
+## Full Function List
+
+https://cbica.github.io/CBICA_Toolkit/functions_func.html
+
+## Full Class List
+
+https://cbica.github.io/CBICA_Toolkit/annotated.html
+
 ## 2.1 Basic Functions
 
 This list is maintained at the <b>Functions</b> section of <a href="cbicaUtilities_8h.html">cbicaUtilities.h</a> file. 
