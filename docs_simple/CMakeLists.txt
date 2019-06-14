@@ -70,7 +70,12 @@ IF   (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in")
 	ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doxy.config")
 ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in")
 
-ADD_CUSTOM_TARGET(doc ${DOXYGEN_EXECUTABLE} ${DOXY_CONFIG})
+# copy files if CAPTK_PACKAGE_PROJECT is enabled - exactly 
+IF( ${CBICA_UPDATE_DOCS})
+  ADD_CUSTOM_TARGET(Documentation ALL ${DOXYGEN_EXECUTABLE} ${DOXY_CONFIG} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/html ${PROJECT_SOURCE_DIR}/docs)
+ELSE()
+  ADD_CUSTOM_TARGET(Documentation ALL ${DOXYGEN_EXECUTABLE} ${DOXY_CONFIG} )
+ENDIF()
 
 # create a windows help .chm file using hhc.exe
 # HTMLHelp DLL must be in path!

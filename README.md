@@ -14,7 +14,11 @@ This project houses the common classes and functions that are used throughout Ca
 
 Changes to dependencies should be discussed in the group so that any downstream effects can be rectified.
 
-## Functionality
+## Documentation
+
+https://cbica.github.io/CBICA_Toolkit/
+
+## Functionality Overview
 
 - Command line parsing
 - Safe Image I/O (NIfTI, DICOM)
