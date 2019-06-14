@@ -464,13 +464,16 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/doxy.log
 
 FILE_PATTERNS          = *.dox \
                          *.txt \
-                         *.h
+                         *.h \
+                         *.hxx
 
 INPUT                  =  	@PROJECT_SOURCE_DIR@ \
                             @PROJECT_BINARY_DIR@ \
                             @PROJECT_SOURCE_DIR@/licences/
                             @PROJECT_SOURCE_DIR@/src/classes/
                             @PROJECT_SOURCE_DIR@/src/classes/itk/
+                            @PROJECT_SOURCE_DIR@/src/classes/opencv/
+                            @PROJECT_SOURCE_DIR@/src/classes/torch/
 									
 
 LAYOUT_FILE = @PROJECT_SOURCE_DIR@/docs/DoxygenLayout.xml
@@ -508,6 +511,7 @@ EXCLUDE_SYMLINKS       = NO
 
 EXCLUDE_PATTERNS       = */.svn/* \
                           */Testing/* \
+                          */thirdparty/* \
                           CMake*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or 
@@ -751,7 +755,7 @@ TREEVIEW_WIDTH         = 250
 # If the GENERATE_LATEX tag is set to YES (the default) Doxygen will 
 # generate Latex output.
 
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. 
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
