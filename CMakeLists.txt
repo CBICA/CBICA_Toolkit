@@ -276,7 +276,8 @@ SET( LIBRARY_CONFIG "\"${LIBRARY_CONFIG}\"" )
 # Building the documentation
 SET( BUILD_DOCUMENTATION ON CACHE BOOL "Do you want to build Documentation (needs Doxygen)?" )
 IF( BUILD_DOCUMENTATION )
-  ADD_SUBDIRECTORY( docs )
+  ADD_SUBDIRECTORY( docs_simple ) # this is plain doxygen
+  #ADD_SUBDIRECTORY( docs ) # this is the one that uses Sphinx
   #ADD_SUBDIRECTORY( docs_internal ) # only used for internal documentation 
 ENDIF ()
 

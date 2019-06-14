@@ -16,6 +16,10 @@
     <td>Primary developer, integration of everything</td>
   </tr>
   <tr text-align="top">
+    <td width="10%">Ashish Singh</a></td>
+    <td>Utilities and IO</td>		
+  </tr>
+  <tr text-align="top">
     <td width="10%"><a href="https://www.cbica.upenn.edu/sbia/Saima.Rathore/">Saima Rathore</a></td>
     <td>Some ITK algorithms</td>		
   </tr>
