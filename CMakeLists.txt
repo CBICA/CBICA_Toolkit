@@ -112,6 +112,15 @@ endif()
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake_modules/)
 
+# update submodule
+IF( NOT EXISTS "${PROJECT_SOURCE_DIR}/CmdParser/CMakeLists.txt" )
+  EXECUTE_PROCESS(COMMAND git submodule update --init --recursive ${PROJECT_SOURCE_DIR}/CmdParser
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  RESULT_VARIABLE git_result
+  OUTPUT_VARIABLE git_ver)
+ENDIF()
+ADD_SUBDIRECTORY( CmdParser )
+
 ## Do you want to build the ITK classes as well?
 SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.10.0+)?" )
 IF( BUILD_CBICA_ITK_CLASSES )
