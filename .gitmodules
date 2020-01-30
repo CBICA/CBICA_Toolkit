@@ -1,0 +1,3 @@
+[submodule "CmdParser"]
+	path = CmdParser
+	url = https://github.com/CBICA/CmdParser.git
