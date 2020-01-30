@@ -5,7 +5,7 @@
 
 This needs c++11 flag enabled in gcc < 5.
 
-http://www.med.upenn.edu/sbia/software/ <br>
+https://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
@@ -185,8 +185,6 @@ namespace cbica
   \return True if path is valid and false for broken symbolic links
   */
   bool exists(const std::string &path);
-
-  std::vector<std::string> getCWLFilesInApplicationDir();
 
   /**
   \brief Create a temporary directory
@@ -731,6 +729,11 @@ namespace cbica
   std::vector< std::vector< std::string > > readCSVDataFile(const std::string &csvFileName);
 
   /**
+  \brief Get current timestamp to appent to a filename to prevent overwriting as YYYMMDDHHmmSS_hex
+  */
+  std::string getCurrentLocalTimestamp();
+
+  /**
   \brief Get current local time as string delineated as YYYY:MM:DD
   */
   std::string getCurrentLocalDate();
@@ -783,8 +786,22 @@ namespace cbica
   \brief Ensuring files written using Windows don't mess stuff up
 
   Base implementation from https://www.digitalpeer.com/blog/simple-text-processing-with-cpp-dos2unix-example
+
+  \param inputFile The Input file that needs to be fixed
+  \param outputDir The location to put the output file
+  \return The full path the new file
   */
-  void dos2unix(const std::string inputFile);
+  std::string dos2unix(const std::string &inputFile, const std::string outputDir);
+
+  /**
+  \brief Ensuring files written using Windows don't mess stuff up
+
+  Base implementation from https://www.digitalpeer.com/blog/simple-text-processing-with-cpp-dos2unix-example
+
+  \param inputFile The Input file that needs to be fixed
+  \param outputFile The absolute path of output file
+  */
+  void dos2unixFile(const std::string &inputFile, const std::string outputFile);
 
   //==================================== Template stuff ==================================//
 

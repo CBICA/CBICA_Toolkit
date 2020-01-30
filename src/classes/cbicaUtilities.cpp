@@ -5,7 +5,7 @@
 
 Dependecies: OpenMP
 
-http://www.med.upenn.edu/sbia/software/ <br>
+https://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
@@ -51,6 +51,7 @@ static const char  cSeparator = '/';
 //  static const char* cSeparators = "/";
 #endif
 
+#include <chrono>
 #include <fstream>
 #include <stdlib.h>
 #include <stdio.h>
@@ -121,71 +122,6 @@ namespace cbica
       return true;
     else
       return true;
-  }
-
-  std::vector<std::string> getCWLFilesInApplicationDir() 
-  {
-    auto appDir = getExecutablePath();
-
-#ifdef __APPLE__
-    appDir += "../Resources/bin";
-#endif
-
-    auto filesInDir = filesInDirectory(appDir);
-    auto cwlFiles = filesInDir;
-    cwlFiles.clear();
-    for (size_t i = 0; i < filesInDir.size(); i++)
-    {
-      if (getFilenameExtension(filesInDir[i], false).find(".cwl") != std::string::npos)
-      {
-        cwlFiles.push_back(filesInDir[i]);
-      }
-    }
-    //std::vector<std::string> files;
-
-    //#ifdef _WIN32
-    //  WIN32_FIND_DATA data;
-    //  HANDLE hFind = FindFirstFile("\\*", &data);
-
-    //  if ( hFind != INVALID_HANDLE_VALUE ) {
-    //    do {
-    //      files.push_back(data.cFileName);
-    //    } while (FindNextFile(hFind, &data));
-    //    FindClose(hFind);
-    //  }
-    //#else
-    //  DIR *dir;
-    //  struct dirent *ent;
-    //  if ((dir = opendir(".")) != NULL) {
-    //    /* print all the files and directories within directory */
-    //    while ((ent = readdir (dir)) != NULL) {
-    //      if (ent->d_type == DT_REG) {  
-    //        files.push_back(ent->d_name);
-    //      }
-    //    }
-    //    closedir (dir);
-    //  } else {
-    //    /* could not open directory */
-    //    perror ("");
-    //    return files;
-    //  }
-    //#endif
-
-    //// Prune non cwl files
-    //std::vector<std::string> cwlfiles;
-    //for(auto const& value: files) {
-
-    //  if (value.substr(value.size() - 4) == ".cwl") {
-    //    cwlfiles.push_back(value);
-    //  }
-
-    //}
-
-    //// Sort cwl files
-    //std::sort(cwlfiles.begin(), cwlfiles.end());
-
-    return cwlFiles;
-
   }
 
   std::string getEnvironmentVariableValue(const std::string &environmentVariable)
@@ -290,11 +226,10 @@ namespace cbica
       _mkdir(dir_name.c_str());
     return true;
 #else
-    std::string command = "mkdir " + dir_name;
-    if (std::system(command.c_str()) != 0)
-    {
-      return false;
-    }
+    DIR *pDir;
+    pDir = opendir(dir_name.c_str()); // check if directory exists or not
+    if (pDir == NULL)
+      mkdir(dir_name.c_str(), 0777);
     return true;
 #endif
     return false;
@@ -410,22 +345,20 @@ namespace cbica
 
   bool deleteDir(const std::string &path)
   {
-    if (removeDirectoryRecursively(path, true) != 0)
-      return false;
-    return true;
+    //if (removeDirectoryRecursively(path, true) != 0)
+    //  return false;
+    //return true;
     //return removeDirectoryRecursively(path);
-    // c++17
-    // std::filesystem::path::remove_all(path);
-//#if defined(_WIN32)
-//    if (_rmdir(path.c_str()) == -1)
-//      return false;
-//#else
-//    std::string passString = "rmdir " + path;
-//    if (system(passString.c_str()) != 0)
-//      return false;
-//    #endif
-//
-//    return true;
+#if defined(_WIN32)
+    if (_rmdir(path.c_str()) == -1)
+      return false;
+#else
+    std::string passString = "rmdir " + path;
+    if (system(passString.c_str()) != 0)
+      return false;
+    #endif
+
+    return true;
   }
 
   bool copyDir(const std::string &inputFolder, const std::string &destination, bool recursion)
@@ -1389,6 +1322,7 @@ namespace cbica
 
       if (dirp->d_type == DT_DIR)
       {
+        allDirectories.push_back(dirName + "/" + dirp->d_name);
         if (returnFullPath)
         {
           allDirectories.push_back(dirName + "/" + dirp->d_name);
@@ -1800,6 +1734,42 @@ namespace cbica
     return buffer;
   }
 
+  std::string getCurrentLocalTimestamp()
+  {
+    auto localTimeStamp = getCurrentLocalDateAndTime();
+
+    localTimeStamp = cbica::replaceString(localTimeStamp, ":", "");
+    localTimeStamp = cbica::replaceString(localTimeStamp, ",", "");
+
+    std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+
+    using Days = std::chrono::duration<int, std::ratio_multiply<std::chrono::hours::period, std::ratio<8>>::type> ; /* UTC: +8:00 */
+
+    Days days = std::chrono::duration_cast<Days>(duration);
+    duration -= days;
+    auto hours = std::chrono::duration_cast<std::chrono::hours>(duration);
+    duration -= hours;
+    auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration);
+    duration -= minutes;
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
+    duration -= seconds;
+    auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+    duration -= milliseconds;
+    auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration);
+    duration -= microseconds;
+    auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(duration);
+
+    long long integerWithHighResClockInfo = milliseconds.count() * 1000000 + microseconds.count() * 1000 + nanoseconds.count();
+    std::stringstream stream;
+    stream << std::hex << integerWithHighResClockInfo;
+    std::string result(stream.str());
+
+    localTimeStamp += "_" + stream.str();
+
+    return localTimeStamp;
+  }
+
   std::string getCurrentLocalTime()
   {
     time_t timer;
@@ -1982,6 +1952,7 @@ namespace cbica
       if (idx != std::string::npos)
       {
         extension = "." + dataFile_wrap.substr(idx + 1);
+
         if (extension.find("/") != std::string::npos)
           extension = "";
         else {
@@ -1991,7 +1962,6 @@ namespace cbica
         }
       }
       // else // there is no extension for file
-
       path_name = dirname(cbica::constCharToChar(dataFile_wrap.c_str()));
       basename_var = basename(cbica::constCharToChar(dataFile_wrap.c_str()));
 #endif
@@ -2021,6 +1991,20 @@ namespace cbica
       {
         baseName = std::string(basename_var);
       }
+
+#ifdef __APPLE__
+      idx = baseName.rfind('.');
+      
+      if (idx != std::string::npos)
+      {
+        extension = "." + baseName.substr(idx + 1);
+        if (extension.find("/") != std::string::npos)
+          extension = "";
+        else {
+          baseName = replaceString(baseName, extension, "");
+        }
+      }
+#endif
 
 #if (_MSC_VER >= 1700)
       path_name[0] = NULL;
@@ -2065,7 +2049,7 @@ namespace cbica
     for (size_t pos = 0;; pos += replaceWith.length())
     {
       pos = return_string.find(toReplace, pos);
-      // std::cout << "pos: " << pos << std::endl;
+
       if (pos == std::string::npos)
         break;
 
@@ -2097,11 +2081,12 @@ namespace cbica
     return cbica::constCharToChar(std::string(input));
   }
 
-  void dos2unix(const std::string inputFile)
+  void dos2unixFile(const std::string &inputFile, const std::string outputFile)
   {
 #ifndef WIN32 // this function is not needed for Windows systems
-    auto tempDir = createTmpDir();
-    auto tempFile = tempDir + "tempFile.txt";
+    std::string path, base, ext;
+    cbica::splitFileName(inputFile, path, base, ext);
+    cbica::getFilenameBase(inputFile);
 
     std::ifstream in(inputFile.c_str());
     if (!in.is_open())
@@ -2109,22 +2094,37 @@ namespace cbica
       std::cerr << "Error: could not open '" << inputFile << "'\n";
       return;
     }
-    std::ofstream out(tempFile.c_str());
+    if (isFile(outputFile))
+    {
+      std::cerr << "File '" << outputFile << "' already exists, please try another.\n";
+      return;
+    }
+    std::ofstream out(outputFile.c_str());
     std::istreambuf_iterator<char> input(in), end;
     std::ostreambuf_iterator<char> output(out);
 
     std::remove_copy(input, end, output, '\r');
     out.close();
-
-    std::remove(inputFile.c_str());
-    cbica::copyFile(tempFile, inputFile);
-
-    if (removeDirectoryRecursively(tempDir) != 0)
-    {
-      std::cerr << "There was an issue deleting the tempDir '" << tempDir << "'\n";
-    }
 #endif
     return;
+  }
+
+  std::string dos2unix(const std::string &inputFile, const std::string outputDir)
+  {
+#ifndef WIN32 // this function is not needed for Windows systems
+    std::string path, base, ext;
+    cbica::splitFileName(inputFile, path, base, ext);
+    cbica::getFilenameBase(inputFile);
+
+    // generate a unique filename
+    auto tempFile = outputDir + "/" + cbica::getFilenameBase(inputFile) + "_" +
+      getCurrentProcessID() + "-" + getCurrentLocalTimestamp() + "_dos2unix" + ext;
+
+    dos2unixFile(inputFile, tempFile);
+
+    return tempFile;
+#endif
+    return inputFile;
   }
 
   size_t getTotalMemory()
