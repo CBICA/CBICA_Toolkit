@@ -294,6 +294,8 @@ IF( BUILD_DOCUMENTATION )
   #ADD_SUBDIRECTORY( docs_internal ) # only used for internal documentation 
 ENDIF ()
 
+OPTION( SKIP_INSTALL "Whether to perform the installation for the config files or not: not needed if getting built as submodule" OFF )
+
 ### Python wrapping
 SET( BUILD_PYTHON_WRAP OFF CACHE BOOL "Do you want to wrap classes (needs SWIG 3.0.4)? Ensure build option matches Python lib build." )
 IF( BUILD_PYTHON_WRAP )
@@ -337,19 +339,22 @@ CONFIGURE_FILE( "config/Config.cmake.in" "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}I
 CONFIGURE_FILE( "config/Use.cmake.in" "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}Use.cmake" @ONLY )
 CONFIGURE_FILE( "config/ConfigVersion.cmake.in" "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}ConfigVersion.cmake" @ONLY )
 
-INSTALL(
-  FILES       ${PROJECT_BINARY_DIR}/${PACKAGE_NAME}InstallConfig.cmake 
-  DESTINATION ${INSTALL_DIR_CONFIG}
-  RENAME      ${PACKAGE_NAME}Config.cmake
-)
+IF( NOT SKIP_INSTALL )
 
-INSTALL(
-  FILES       ${PROJECT_BINARY_DIR}/${PACKAGE_NAME}Use.cmake
-  DESTINATION ${INSTALL_DIR_CONFIG}
-)
+  INSTALL(
+    FILES       ${PROJECT_BINARY_DIR}/${PACKAGE_NAME}InstallConfig.cmake 
+    DESTINATION ${INSTALL_DIR_CONFIG}
+    RENAME      ${PACKAGE_NAME}Config.cmake
+  )
 
-INSTALL(
-  FILES       ${PROJECT_BINARY_DIR}/${PACKAGE_NAME}ConfigVersion.cmake
-  DESTINATION ${INSTALL_DIR_CONFIG}
-)
+  INSTALL(
+    FILES       ${PROJECT_BINARY_DIR}/${PACKAGE_NAME}Use.cmake
+    DESTINATION ${INSTALL_DIR_CONFIG}
+  )
 
+  INSTALL(
+    FILES       ${PROJECT_BINARY_DIR}/${PACKAGE_NAME}ConfigVersion.cmake
+    DESTINATION ${INSTALL_DIR_CONFIG}
+  )
+
+ENDIF()

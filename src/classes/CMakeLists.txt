@@ -61,16 +61,20 @@ SOURCE_GROUP( Basic_Sources FILES ${CBICA_Sources})
 SOURCE_GROUP( YAMLCPP_Headers FILES ${YAMLCPP_Headers})
 SOURCE_GROUP( YAMLCPP_Sources FILES ${YAMLCPP_Sources})
 
-# install the library
-INSTALL(
-  FILES ${CBICA_Headers} 
-  DESTINATION include
-)
+IF( NOT SKIP_INSTALL )
 
-INSTALL( 
-	TARGETS ${CBICA_LIB_NAME} 
-	DESTINATION lib 
-)
+  # install the library
+  INSTALL(
+    FILES ${CBICA_Headers} 
+    DESTINATION include
+  )
+
+  INSTALL( 
+    TARGETS ${CBICA_LIB_NAME} 
+    DESTINATION lib 
+  )
+
+ENDIF()
 
 IF( BUILD_TESTING )
 	ENABLE_TESTING()
