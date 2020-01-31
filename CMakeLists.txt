@@ -157,7 +157,7 @@ ELSE()
 ENDIF()
 
 ## Do you want to build the OpenCV classes as well?
-SET( BUILD_CBICA_OPENCV_CLASSES ON CACHE BOOL "Do you want to build the CBICA OpenCV classes (needs OpenCV 3.0+)?" )
+SET( BUILD_CBICA_OPENCV_CLASSES OFF CACHE BOOL "Do you want to build the CBICA OpenCV classes (needs OpenCV 3.0+)?" )
 IF( BUILD_CBICA_OPENCV_CLASSES )
   ADD_DEFINITIONS( -BUILD_CBICA_OPENCV_CLASSES=1 )
   
