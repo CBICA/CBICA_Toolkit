@@ -40,7 +40,7 @@ jobs:
     - script: |
         cd bin
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-        cmake -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_INSTALL_PREFIX="./install" -DCAPTK_DISABLE_CWL=ON ..
+        cmake -DBUILD_TESTING=ON -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_INSTALL_PREFIX="./install" -DCAPTK_DISABLE_CWL=ON ..
         setx PATH "%PATH%;$(Build.SourcesDirectory)/bin/qt/5.12.1/bin"
         cmake --build . --target ALL_BUILD --config Release
       displayName: 'Configure and compile CBICA_Toolkit'
@@ -83,7 +83,7 @@ jobs:
     # Configure and build CaPTk
     - bash: |
         cd bin
-        cmake ..
+        cmake -DBUILD_TESTING=ON ..
         make -j2
         #make install/strip
       displayName: 'Configure and compile CBICA_Toolkit'
@@ -146,8 +146,8 @@ jobs:
         export LDFLAGS="-L/usr/local/opt/llvm/lib"
         export CPPFLAGS="-L/usr/local/opt/llvm/include"
 
-        cmake ../
-        cmake ../
+        cmake -DBUILD_TESTING=ON ../
+        cmake -DBUILD_TESTING=ON ../
 
         make -j 2
       displayName: 'Export variables for llvm then Configure and compile CBICA_Toolkit'
@@ -162,8 +162,8 @@ jobs:
         export LDFLAGS="-L/usr/local/opt/llvm/lib"
         export CPPFLAGS="-L/usr/local/opt/llvm/include"
 
-        cmake ../
-        cmake ../
+        cmake -DBUILD_TESTING=ON ../
+        cmake -DBUILD_TESTING=ON ../
 
         make -j 2
         make -j 2
