@@ -120,6 +120,11 @@ IF( NOT EXISTS "${PROJECT_SOURCE_DIR}/CmdParser/CMakeLists.txt" )
   OUTPUT_VARIABLE git_ver)
 ENDIF()
 ADD_SUBDIRECTORY( CmdParser )
+SET( CACHED_INCLUDE_DIRS
+  ${CACHED_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}/CmdParser/include
+  CACHE STRING "All include directories" FORCE
+)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/CmdParser/include)
 
 ## Do you want to build the ITK classes as well?
