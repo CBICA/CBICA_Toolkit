@@ -36,6 +36,7 @@ SET( CACHED_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${CMAKE_CURRENT_SOURCE_DIR}/src/classes
   ${CMAKE_CURRENT_SOURCE_DIR}/src/classes/itk
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/classes/itk/IO/inc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/classes/opencv
   ${CMAKE_CURRENT_SOURCE_DIR}/src/classes/torch
   CACHE STRING "All include directories"
