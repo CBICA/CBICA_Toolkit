@@ -129,33 +129,34 @@ SET( CACHED_INCLUDE_DIRS
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/CmdParser/include)
 
 ## Do you want to build the ITK classes as well?
-SET( BUILD_CBICA_ITK_CLASSES OFF CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.10.0+)?" )
+SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.10.0+)?" )
 IF( BUILD_CBICA_ITK_CLASSES )
   ADD_DEFINITIONS( -DBUILD_CBICA_ITK_CLASSES=1 )
   
   FIND_PACKAGE(ITK)
   
-  IF( EXISTS ${PROJECT_BINARY_DIR}/ITK-build/ITKConfig.cmake )
-  
-    MESSAGE( STATUS "Found ITK in the build directory; using it" )
-  
-    SET( ITK_DIR "${PROJECT_BINARY_DIR}/ITK-build/" CACHE STRING "ITK_DIR Path for use in other builds" FORCE )
-    SET( ENV{CMAKE_PREFIX_PATH} "${PROJECT_BINARY_DIR}/ITK-build/:${PROJECT_BINARY_DIR}/OpenCV-build/:$ENV{CMAKE_PREFIX_PATH}" CACHE PATH "" FORCE )
-    #MESSAGE( AUTHOR_WARNING "=== [DEBUG] ENV{CMAKE_PREFIX_PATH}=$ENV{CMAKE_PREFIX_PATH}" )
-
-  ENDIF()
-  
   IF(NOT EXISTS ${ITK_USE_FILE})
-  
-    MESSAGE( STATUS "Starting Superbuild" )
-  
-    IF( NOT EXISTS ${PROJECT_BINARY_DIR}/ITK-build/ITKConfig.cmake )
     
-      PROJECT(${PROJECT_NAME}_Depends)
-      INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/Superbuild.cmake )
-      return()
+    IF( EXISTS ${PROJECT_BINARY_DIR}/ITK-build/ITKConfig.cmake )
+    
+      MESSAGE( STATUS "Found ITK in the build directory; using it" )
+    
+      SET( ITK_DIR "${PROJECT_BINARY_DIR}/ITK-build/" CACHE STRING "ITK_DIR Path for use in other builds" FORCE )
+      SET( ENV{CMAKE_PREFIX_PATH} "${PROJECT_BINARY_DIR}/ITK-build/:${PROJECT_BINARY_DIR}/OpenCV-build/:$ENV{CMAKE_PREFIX_PATH}" CACHE PATH "" FORCE )
+      #MESSAGE( AUTHOR_WARNING "=== [DEBUG] ENV{CMAKE_PREFIX_PATH}=$ENV{CMAKE_PREFIX_PATH}" )
 
+    ELSE()
+      MESSAGE( STATUS "Starting Superbuild" )
+    
+      IF( NOT EXISTS ${PROJECT_BINARY_DIR}/ITK-build/ITKConfig.cmake )
+      
+        PROJECT(${PROJECT_NAME}_Depends)
+        INCLUDE( ${PROJECT_SOURCE_DIR}/cmake_modules/Superbuild.cmake )
+        return()
+
+      ENDIF()
     ENDIF()
+    
   ENDIF()
   
 ELSE()
