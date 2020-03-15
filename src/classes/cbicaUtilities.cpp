@@ -1190,6 +1190,13 @@ namespace cbica
     return cbica::setEnvironmentVariable(variable_name, "");
   }
 
+  std::vector< std::string > filesInDirectory(const std::string &dirName, bool recurse = true,
+    std::string filePattern = "all", std::string fileExtension = "all",
+    bool returnFullPath = true
+  {
+
+  }
+
   std::vector< std::string > filesInDirectory(const std::string &dirName, bool returnFullPath)
   {
     if (!cbica::directoryExists(dirName))
