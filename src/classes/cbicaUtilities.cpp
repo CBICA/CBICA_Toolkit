@@ -1224,6 +1224,8 @@ namespace cbica
         } // end file-pattern check
       } // end files-loop
     } // end dirs-loop
+
+    return returnVector;
   }
 
   std::vector< std::string > filesInDirectory(const std::string &dirName, bool returnFullPath)
