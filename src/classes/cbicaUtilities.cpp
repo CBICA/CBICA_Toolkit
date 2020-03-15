@@ -1190,11 +1190,39 @@ namespace cbica
     return cbica::setEnvironmentVariable(variable_name, "");
   }
 
-  std::vector< std::string > filesInDirectory(const std::string &dirName, bool recurse = true,
-    std::string filePattern = "all", std::string fileExtension = "all",
-    bool returnFullPath = true
+  std::vector< std::string > filesInDirectory(const std::string &dirName,
+    std::string filePattern, std::string fileExtension,
+    bool returnFullPath, bool recurse)
   {
+    std::vector< std::string > returnVector;
+    // set up required folders
+    std::vector< std::string > subDirsInInput = { dirName };
+    if (recurse)
+    {
+      auto temp = subdirectoriesInDirectory(dirName, recurse, true);
+      subDirsInInput.insert(subDirsInInput.end(), temp.begin(), temp.end());
+    }
 
+    // loop through all requested directories
+    for (size_t i = 0; i < subDirsInInput.size(); i++)
+    {
+      auto allFilesInCurrentDir = cbica::filesInDirectory(cbica::normPath(subDirsInInput[i]));
+
+      // loop through all files
+      for (size_t j = 0; j < allFilesInCurrentDir.size(); j++)
+      {
+        auto currentExt = cbica::getFilenameExtension(allFilesInCurrentDir[j]);
+        if ((!filePattern.empty() && (allFilesInCurrentDir[j].find(filePattern) != std::string::npos)) ||
+          filePattern.empty())
+        {
+          if (((fileExtension == "noExt") && currentExt.empty()) ||
+            (fileExtension == currentExt))
+          {
+            returnVector.push_back(allFilesInCurrentDir[j]);
+          } // end extension check
+        } // end file-pattern check
+      } // end files-loop
+    } // end dirs-loop
   }
 
   std::vector< std::string > filesInDirectory(const std::string &dirName, bool returnFullPath)
