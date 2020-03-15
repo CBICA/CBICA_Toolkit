@@ -598,7 +598,7 @@ namespace cbica
 
   \param dirName The directory to do the search in
   \param filePattern String pattern to look for in file
-  \param fileExtension String pattern to look for in file extension
+  \param fileExtension String pattern to look for in file extension; for files with no extension, pass ""
   \param recurse Do a recursive search or not
   \param returnFullPath Return full path or not
   */

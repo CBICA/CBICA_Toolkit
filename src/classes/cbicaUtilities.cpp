@@ -1212,11 +1212,12 @@ namespace cbica
       for (size_t j = 0; j < allFilesInCurrentDir.size(); j++)
       {
         auto currentExt = cbica::getFilenameExtension(allFilesInCurrentDir[j]);
-        if ((!filePattern.empty() && (allFilesInCurrentDir[j].find(filePattern) != std::string::npos)) ||
-          filePattern.empty())
+        if ( // if file patter is not empty, search for it in the filename
+          (!filePattern.empty() && (allFilesInCurrentDir[j].find(filePattern) != std::string::npos)) ||
+          filePattern.empty() // otherwise, pass it as-is
+          )
         {
-          if (((fileExtension == "noExt") && currentExt.empty()) ||
-            (fileExtension == currentExt))
+          if (fileExtension == currentExt)
           {
             returnVector.push_back(allFilesInCurrentDir[j]);
           } // end extension check
