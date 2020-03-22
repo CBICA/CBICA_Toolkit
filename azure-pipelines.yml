@@ -100,7 +100,7 @@ jobs:
   cancelTimeoutInMinutes: 300
 
   pool:
-    vmImage: 'MacOS-10.13'
+    vmImage: 'MacOS-10.14'
 
   steps:
     - bash: |
