@@ -21,7 +21,7 @@ jobs:
   steps:
   
     - script: |
-        choco install doxygen.install miktex
+        choco install doxygen.install cmake git
       displayName: 'Install dependencies'
 
     #- script: |
@@ -32,7 +32,7 @@ jobs:
         mkdir bin
         cd bin
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-        cmake -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_INSTALL_PREFIX="./install" ..
+        cmake -DBUILD_DOCUMENTATION=OFF -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_INSTALL_PREFIX="./install" ..
         setx PATH "%PATH%;$(Build.SourcesDirectory)/bin/qt/5.12.1/bin"
         cmake --build . --target ALL_BUILD --config Release
       displayName: 'Configure and compile Superbuild'
@@ -40,7 +40,7 @@ jobs:
     - script: |
         cd bin
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-        cmake -DBUILD_TESTING=ON -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_INSTALL_PREFIX="./install" -DCAPTK_DISABLE_CWL=ON ..
+        cmake -DBUILD_DOCUMENTATION=OFF -DBUILD_TESTING=ON -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_INSTALL_PREFIX="./install" -DCAPTK_DISABLE_CWL=ON ..
         setx PATH "%PATH%;$(Build.SourcesDirectory)/bin/qt/5.12.1/bin"
         cmake --build . --target ALL_BUILD --config Release
       displayName: 'Configure and compile CBICA_Toolkit'
@@ -61,7 +61,7 @@ jobs:
   steps:
     # Dependency manager
     - bash: |
-        sudo apt-get update && sudo apt-get install -qq gcc g++ make libgl-dev cmake python3-pip python-numpy dos2unix libxkbcommon-x11-0 doxygen texlive-full
+        sudo apt-get update && sudo apt-get install -qq gcc g++ make libgl-dev cmake python3-pip python-numpy dos2unix libxkbcommon-x11-0 doxygen
       displayName: 'Install dependencies from Aptitude'
 
     #- script: |
@@ -76,14 +76,14 @@ jobs:
     # Configure and build superbuild
     - bash: |
         cd bin
-        cmake ..
+        cmake -DBUILD_DOCUMENTATION=OFF ..
         make -j2
       displayName: 'Configure and compile Superbuild'
 
     # Configure and build CaPTk
     - bash: |
         cd bin
-        cmake -DBUILD_TESTING=ON ..
+        cmake -DBUILD_DOCUMENTATION=OFF -DBUILD_TESTING=ON ..
         make -j2
         #make install/strip
       displayName: 'Configure and compile CBICA_Toolkit'
@@ -100,11 +100,11 @@ jobs:
   cancelTimeoutInMinutes: 300
 
   pool:
-    vmImage: 'MacOS-10.13'
+    vmImage: 'MacOS-10.14'
 
   steps:
     - bash: |
-        brew install caskroom/cask/mactex make doxygen llvm
+        brew install make doxygen llvm
       displayName: 'Brew dependencies'
 
     #- script: |
@@ -130,8 +130,8 @@ jobs:
     - bash: |
         cd bin
 
-        cmake ../ -DCMAKE_INSTALL_PREFIX="./install"
-        cmake ../ -DCMAKE_INSTALL_PREFIX="./install"
+        cmake -DBUILD_DOCUMENTATION=OFF ../ -DCMAKE_INSTALL_PREFIX="./install"
+        cmake -DBUILD_DOCUMENTATION=OFF ../ -DCMAKE_INSTALL_PREFIX="./install"
 
         make -j2
       displayName: 'Configure and compile Superbuild'
@@ -146,8 +146,8 @@ jobs:
         export LDFLAGS="-L/usr/local/opt/llvm/lib"
         export CPPFLAGS="-L/usr/local/opt/llvm/include"
 
-        cmake -DBUILD_TESTING=ON ../
-        cmake -DBUILD_TESTING=ON ../
+        cmake -DBUILD_DOCUMENTATION=OFF -DBUILD_TESTING=ON ../
+        cmake -DBUILD_DOCUMENTATION=OFF -DBUILD_TESTING=ON ../
 
         make -j 2
       displayName: 'Export variables for llvm then Configure and compile CBICA_Toolkit'
@@ -162,8 +162,8 @@ jobs:
         export LDFLAGS="-L/usr/local/opt/llvm/lib"
         export CPPFLAGS="-L/usr/local/opt/llvm/include"
 
-        cmake -DBUILD_TESTING=ON ../
-        cmake -DBUILD_TESTING=ON ../
+        cmake -DBUILD_DOCUMENTATION=OFF -DBUILD_TESTING=ON ../
+        cmake -DBUILD_DOCUMENTATION=OFF -DBUILD_TESTING=ON ../
 
         make -j 2
         make -j 2

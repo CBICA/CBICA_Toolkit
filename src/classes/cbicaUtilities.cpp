@@ -71,6 +71,14 @@ static const char  cSeparator = '/';
 #include "cbicaUtilities.h"
 #include "yaml-cpp/yaml.h"
 
+#if __cplusplus <= 201703L
+#include <experimental/filesystem>
+#define NAMESPACE_FS std::experimental::filesystem
+#else
+#include <filesystem>
+#define NAMESPACE_FS std::filesystem
+#endif
+
 namespace cbica
 {
   //====================================== Folder stuff ====================================//
@@ -1307,72 +1315,93 @@ namespace cbica
     }
     std::vector< std::string > allDirectories;
     std::string dirName_wrap = cbica::normPath(dirName);
-    if (dirName_wrap[dirName_wrap.length() - 1] != '/')
+
+    for (const auto & entry : NAMESPACE_FS::directory_iterator(dirName_wrap))
     {
-      dirName_wrap.append("/");
-    }
-#if defined(_WIN32)
-    dirName_wrap.append("*.*");
-    char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
-    WIN32_FIND_DATA fd;
-    HANDLE hFind = ::FindFirstFile(search_path, &fd);
-    if (hFind != INVALID_HANDLE_VALUE)
-    {
-      do
+      auto currentDir = entry.path().string();
+      if (isDir(currentDir))
       {
-        if ((fd.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && (fd.cFileName[0] != '.'))
+        if (recursiveSearch)
         {
-          if (returnFullPath)
-          {
-            allDirectories.push_back(dirName + "/" + std::string(fd.cFileName));
-          }
-          else
-          {
-            allDirectories.push_back(std::string(fd.cFileName));
-          }
-          if (recursiveSearch)
-          {
-            std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + std::string(fd.cFileName), true, returnFullPath);
-            allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
-          }
+          auto tempVector = subdirectoriesInDirectory(currentDir, recursiveSearch, returnFullPath);
+          allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
         }
-      } while (FindNextFile(hFind, &fd) != 0);
-      ::FindClose(hFind);
-    }
-#else
-    DIR *dp;
-    struct dirent *dirp;
-    if ((dp = opendir(dirName.c_str())) == NULL)
-    {
-      std::cerr << "Error(" << errno << ") occurred while opening directory '" << dirName << "'\n";
-    }
-
-    while ((dirp = readdir(dp)) != NULL)
-    {
-      if (recursiveSearch && (dirp->d_type == DT_DIR) && (dirp->d_name[0] != '.') && (dirp->d_name != std::string(".svn").c_str()))
-      {
-        std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + dirp->d_name, true, returnFullPath);
-        allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
-      }
-
-      if ((strcmp(dirp->d_name, ".") == 0) || (strcmp(dirp->d_name, "..") == 0))
-        continue;
-
-      if (dirp->d_type == DT_DIR)
-      {
-        allDirectories.push_back(dirName + "/" + dirp->d_name);
         if (returnFullPath)
         {
-          allDirectories.push_back(dirName + "/" + dirp->d_name);
+          allDirectories.push_back(currentDir);
         }
         else
         {
-          allDirectories.push_back(dirp->d_name);
+          allDirectories.push_back(getFilenameBase(currentDir));
         }
       }
     }
-    closedir(dp);
-#endif
+//    if (dirName_wrap[dirName_wrap.length() - 1] != '/')
+//    {
+//      dirName_wrap.append("/");
+//    }
+//#if defined(_WIN32)
+//    dirName_wrap.append("*.*");
+//    char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
+//    WIN32_FIND_DATA fd;
+//    HANDLE hFind = ::FindFirstFile(search_path, &fd);
+//    if (hFind != INVALID_HANDLE_VALUE)
+//    {
+//      do
+//      {
+//        if ((fd.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && (fd.cFileName[0] != '.'))
+//        {
+//          if (returnFullPath)
+//          {
+//            allDirectories.push_back(dirName + "/" + std::string(fd.cFileName));
+//          }
+//          else
+//          {
+//            allDirectories.push_back(std::string(fd.cFileName));
+//          }
+//          if (recursiveSearch)
+//          {
+//            std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + std::string(fd.cFileName), true, returnFullPath);
+//            allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
+//          }
+//        }
+//      } while (FindNextFile(hFind, &fd) != 0);
+//      ::FindClose(hFind);
+//    }
+//#else
+//    DIR *dp;
+//    struct dirent *dirp;
+//    if ((dp = opendir(dirName.c_str())) == NULL)
+//    {
+//      std::cerr << "Error(" << errno << ") occurred while opening directory '" << dirName << "'\n";
+//    }
+//
+//    while ((dirp = readdir(dp)) != NULL)
+//    {
+//      if (recursiveSearch && (dirp->d_type == DT_DIR) && (dirp->d_name[0] != '.') && (dirp->d_name != std::string(".svn").c_str()))
+//      {
+//        std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + dirp->d_name, true, returnFullPath);
+//        allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
+//      }
+//
+//      if ((strcmp(dirp->d_name, ".") == 0) || (strcmp(dirp->d_name, "..") == 0))
+//        continue;
+//
+//      if (dirp->d_type == DT_DIR)
+//      {
+//        allDirectories.push_back(dirName + "/" + dirp->d_name);
+//        if (returnFullPath)
+//        {
+//          allDirectories.push_back(dirName + "/" + dirp->d_name);
+//        }
+//        else
+//        {
+//          allDirectories.push_back(dirp->d_name);
+//        }
+//      }
+//    }
+//    closedir(dp);
+//#endif
     return allDirectories;
   }
 
