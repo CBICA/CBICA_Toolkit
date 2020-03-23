@@ -661,7 +661,7 @@ namespace cbica
   template <class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer ReadImage(const std::string &fName, const std::string &supportedExtensions = ".nii.gz,.nii,.dcm", const std::string &delimitor = ",")
   {
-    if (cbica::exists(fName))
+    if (!cbica::exists(fName))
     {
       std::cerr << "The file name '" << fName << "' was't found.\n";
       nullptr;
