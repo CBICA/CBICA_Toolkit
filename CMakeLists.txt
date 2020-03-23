@@ -131,6 +131,8 @@ SET( CACHED_INCLUDE_DIRS
 )
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/CmdParser/include)
 
+SET_TARGET_PROPERTIES( CmdParser PROPERTIES FOLDER "CBICA_Toolkit")
+
 ## Do you want to build the ITK classes as well?
 SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.10.0+)?" )
 IF( BUILD_CBICA_ITK_CLASSES )
