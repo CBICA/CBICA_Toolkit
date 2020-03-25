@@ -7,7 +7,7 @@
 #ifndef _HausdorffDistance_h
 #define _HausdorffDistance_h
 
-#include "AbstractValidationMetric.h"
+//#include "AbstractValidationMetric.h"
 
 #include "itkImageToImageMetric.h"
 
