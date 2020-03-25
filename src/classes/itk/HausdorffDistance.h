@@ -15,7 +15,7 @@
 
 template <class TFixedImage, class TMovingImage>
 class HausdorffDistanceImageToImageMetric :
-  public itk::ImageToImageMetric<TFixedImage, TMovingImage>, public AbstractValidationMetric
+  public itk::ImageToImageMetric<TFixedImage, TMovingImage>/*, public AbstractValidationMetric*/
 {
 
 public:
