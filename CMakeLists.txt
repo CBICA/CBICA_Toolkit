@@ -93,15 +93,15 @@ IF(APPLE)
   INCLUDE_DIRECTORIES("${OPENMP_INCLUDES}")
   LINK_DIRECTORIES("${OPENMP_LIBRARIES}")
 
- ENDIF()
+ELSE()
+  # ensure OpenMP flag is enabled throughout the project 
+  FIND_PACKAGE(OpenMP REQUIRED)
+  SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
+  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
+ENDIF()
 
-# ensure OpenMP flag is enabled throughout the project 
-FIND_PACKAGE(OpenMP REQUIRED)
-SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
-
-SET( CMAKE_CXX_STANDARD 11 )
-SET( CMAKE_CXX_STANDARD_REQUIRED YES )
+SET( CMAKE_CXX_STANDARD 14 )
+SET( CMAKE_CXX_STANDARD_REQUIRED ON )
 
 #MESSAGE(AUTHOR_WARNING "OpenMP is enabled, you may see issues on Azure")
 
@@ -130,6 +130,8 @@ SET( CACHED_INCLUDE_DIRS
   CACHE STRING "All include directories" FORCE
 )
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/CmdParser/include)
+
+SET_TARGET_PROPERTIES( CmdParser PROPERTIES FOLDER "CBICA_Toolkit")
 
 ## Do you want to build the ITK classes as well?
 SET( BUILD_CBICA_ITK_CLASSES ON CACHE BOOL "Do you want to build the CBICA ITK classes (needs ITK 4.10.0+)?" )
