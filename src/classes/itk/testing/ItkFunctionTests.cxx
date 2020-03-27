@@ -21,7 +21,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkImage.h"
 
 #include "classes/cbicaUtilities.h"
-#include "classes/cbicaCmdParser.h"
+#include "cbicaCmdParser.h"
 
 #include "classes/itk/cbicaITKImageInfo.h"
 #include "classes/itk/cbicaITKSafeImageIO.h"
