@@ -1079,7 +1079,9 @@ std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const
   \return The resized image
   */
   template< class TImageType = ImageTypeFloat3D >
-  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage, const itk::Vector< double, TImageType::ImageDimension > outputSpacing, const std::string interpolator = "Linear")
+  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage, 
+    const itk::Vector< double, TImageType::ImageDimension > outputSpacing, 
+    const std::string interpolator = "Linear")
   {
     auto outputSize = inputImage->GetLargestPossibleRegion().GetSize();
     auto inputSpacing = inputImage->GetSpacing();
@@ -1112,7 +1114,8 @@ std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const
   \return The resized image
   */
   template< class TImageType = ImageTypeFloat3D >
-  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage, const float outputSpacing = 1.0, const std::string interpolator = "Linear")
+  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage, 
+    const float outputSpacing = 1.0, const std::string interpolator = "Linear")
   {
     auto outputSize = inputImage->GetLargestPossibleRegion().GetSize();
     auto inputSpacing = inputImage->GetSpacing();
