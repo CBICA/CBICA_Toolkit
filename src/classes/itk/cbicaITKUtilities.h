@@ -43,6 +43,7 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkBSplineInterpolateImageFunction.h"
 #include "itkNearestNeighborInterpolateImageFunction.h"
+#include "itkLabelOverlapMeasuresImageFilter.h"
 //#include "itkWindowedSincInterpolateImageFunction.h"
 
 #include "itkTestingComparisonImageFilter.h"
@@ -1264,8 +1265,10 @@ namespace cbica
   std::map< std::string, double > GetLabelStatistics(const typename TImageType::Pointer inputLabel_1,
     const typename TImageType::Pointer inputLabel_2)
   {
-    auto uniqueLabels = GetUniqueValuesInImage< DefaultImageType >(inputImage);
-    auto uniqueLabelsRef = GetUniqueValuesInImage< DefaultImageType >(referenceImage);
+    std::map< std::string, double > returnMap;
+
+    auto uniqueLabels = GetUniqueValuesInImage< TImageType >(inputLabel_1);
+    auto uniqueLabelsRef = GetUniqueValuesInImage< TImageType >(inputLabel_2);
 
     // sanity check
     if (uniqueLabels.size() != uniqueLabelsRef.size())
@@ -1285,20 +1288,19 @@ namespace cbica
       }
     }
 
-    auto similarityFilter = itk::LabelOverlapMeasuresImageFilter< DefaultImageType >::New();
+    auto similarityFilter = itk::LabelOverlapMeasuresImageFilter< TImageType >::New();
 
-    similarityFilter->SetSourceImage(inputImage);
-    similarityFilter->SetTargetImage(referenceImage);
+    similarityFilter->SetSourceImage(inputLabel_1);
+    similarityFilter->SetTargetImage(inputLabel_2);
     similarityFilter->Update();
 
+    returnMap["TotalOverlap"] = similarityFilter->GetTotalOverlap();
     //std::cout << "=== Entire Masked Area ===\n";
-    std::cout << "Property,Value\n";
-    std::cout << "TotalOverlap," << similarityFilter->GetTotalOverlap() << "\n";
-    std::cout << "Union(Jaccard)_Overall," << similarityFilter->GetUnionOverlap() << "\n";
-    std::cout << "Mean(DICE)_Overall," << similarityFilter->GetMeanOverlap() << "\n";
-    std::cout << "VolumeSimilarity_Overall," << similarityFilter->GetVolumeSimilarity() << "\n";
-    std::cout << "FalseNegativeError_Overall," << similarityFilter->GetFalseNegativeError() << "\n";
-    std::cout << "FalsePositiveError_Overall," << similarityFilter->GetFalsePositiveError() << "\n";
+    returnMap["Union(Jaccard)_Overall"] = similarityFilter->GetUnionOverlap();
+    returnMap["Mean(DICE)_Overall"] = similarityFilter->GetMeanOverlap();
+    returnMap["VolumeSimilarity_Overall"] = similarityFilter->GetVolumeSimilarity();
+    returnMap["FalseNegativeError_Overall"] = similarityFilter->GetFalseNegativeError();
+    returnMap["FalsePositiveError_Overall"] = similarityFilter->GetFalsePositiveError();
 
     if (uniqueLabels.size() > 2) // basically if there is something more than 0 and 1
     {
@@ -1307,15 +1309,16 @@ namespace cbica
       for (size_t i = 0; i < uniqueLabels.size(); i++)
       {
         auto uniqueLabels_string = std::to_string(uniqueLabels[i]);
-        std::cout << "LabelValue," << uniqueLabels_string << "\n";
-        std::cout << "TargetOverlap_Label" + uniqueLabels_string + "," << similarityFilter->GetTargetOverlap(uniqueLabels[i]) << "\n";
-        std::cout << "Union(Jaccard)_Label" + uniqueLabels_string + "," << similarityFilter->GetUnionOverlap(uniqueLabels[i]) << "\n";
-        std::cout << "Mean(DICE)_Label" + uniqueLabels_string + "," << similarityFilter->GetMeanOverlap(uniqueLabels[i]) << "\n";
-        std::cout << "VolumeSimilarity_Label" + uniqueLabels_string + "," << similarityFilter->GetVolumeSimilarity(uniqueLabels[i]) << "\n";
-        std::cout << "FalseNegativeError_Label" + uniqueLabels_string + "," << similarityFilter->GetFalseNegativeError(uniqueLabels[i]) << "\n";
-        std::cout << "FalsePositiveError_Label" + uniqueLabels_string + "," << similarityFilter->GetFalsePositiveError(uniqueLabels[i]) << "\n";
+        returnMap["TargetOverlap_Label" + uniqueLabels_string] = similarityFilter->GetTargetOverlap(uniqueLabels[i]);
+        returnMap["Union(Jaccard)_Label" + uniqueLabels_string] = similarityFilter->GetUnionOverlap(uniqueLabels[i]);
+        returnMap["Mean(DICE)_Label" + uniqueLabels_string] = similarityFilter->GetMeanOverlap(uniqueLabels[i]);
+        returnMap["VolumeSimilarity_Label" + uniqueLabels_string] = similarityFilter->GetVolumeSimilarity(uniqueLabels[i]);
+        returnMap["FalseNegativeError_Label" + uniqueLabels_string] = similarityFilter->GetFalseNegativeError(uniqueLabels[i]);
+        returnMap["FalsePositiveError_Label" + uniqueLabels_string] = similarityFilter->GetFalsePositiveError(uniqueLabels[i]);
       }
     }
+
+    return returnMap;
 
   }
 
