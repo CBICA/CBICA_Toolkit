@@ -763,93 +763,6 @@ namespace cbica
   }
 
   /**
-  \brief Check properties of 2 images to see if they are defined in the same space.
-  */
-  template< typename TImageType >
-  inline bool ImageSanityCheck(const typename TImageType::Pointer image1, const typename TImageType::Pointer image2)
-  {
-    auto size_1 = image1->GetLargestPossibleRegion().GetSize();
-    auto size_2 = image2->GetLargestPossibleRegion().GetSize();
-
-    auto origin_1 = image1->GetOrigin();
-    auto origin_2 = image2->GetOrigin();
-
-    auto spacing_1 = image1->GetSpacing();
-    auto spacing_2 = image2->GetSpacing();
-
-    for (size_t i = 0; i < TImageType::ImageDimension; i++)
-    {
-      if (size_1[i] != size_2[i])
-      {
-        std::cerr << "Size mismatch at dimension '" << i << "'\n";
-        return false;
-      }
-      if (origin_1[i] != origin_2[i])
-      {
-        std::cerr << "Origin mismatch at dimension '" << i << "'\n";
-        return false;
-      }
-      if (spacing_1[i] != spacing_2[i])
-      {
-        std::cerr << "Spacing mismatch at dimension '" << i << "'\n";
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  /**
-  \brief Check properties of 2 images to see if they are defined in the same space.
-
-  Checks are done based on cbica::ImageInfo class
-  */
-  inline bool ImageSanityCheck(const std::string &image1, const std::string &image2)
-  {
-    auto imageInfo1 = cbica::ImageInfo(image1);
-    auto imageInfo2 = cbica::ImageInfo(image2);
-
-    if (imageInfo1.GetImageDimensions() != imageInfo2.GetImageDimensions())
-    {
-      std::cout << "The dimensions of the image_1 (" << image1 << ") and image_2 (" << image2 << ") doesn't match.\n";
-      return false;
-    }
-
-    // check size, spacing and origin information as well
-    auto dims = imageInfo1.GetImageDimensions();
-
-    auto imageSize1 = imageInfo1.GetImageSize();
-    auto imageSize2 = imageInfo2.GetImageSize();
-
-    auto imageSpacing1 = imageInfo1.GetImageSpacings();
-    auto imageSpacing2 = imageInfo2.GetImageSpacings();
-
-    auto imageOrigin1 = imageInfo1.GetImageOrigins();
-    auto imageOrigin2 = imageInfo2.GetImageOrigins();
-
-    for (size_t d = 0; d < dims; d++)
-    {
-      if (imageSize1[d] != imageSize2[d])
-      {
-        std::cout << "The size in dimension[" << d << "] of the image_1 (" << image1 << ") and image_2 (" << image2 << ") doesn't match.\n";
-        return false;
-      }
-      if (imageSpacing1[d] != imageSpacing2[d])
-      {
-        std::cout << "The spacing in dimension[" << d << "] of the image_1 (" << image1 << ") and image_2 (" << image2 << ") doesn't match.\n";
-        return false;
-      }
-      if (imageOrigin1[d] != imageOrigin2[d])
-      {
-        std::cout << "The origin in dimension[" << d << "] of the image_1 (" << image1 << ") and image_2 (" << image2 << ") doesn't match.\n";
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  /**
   \brief Perform the deformable registration
 
   \param movingImage The moving image for registration
@@ -986,97 +899,97 @@ namespace cbica
   \param desiredOrientation The desired orientation to conver the image to
   \return A pair of string (which represents the orientation) and an itk::Image which represents the inputImage in RAI form
   */
-template< class TImageType = ImageTypeFloat3D >
-std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const typename TImageType::Pointer inputImage, const std::string &desiredOrientation = "RAI")
-{
-  if (TImageType::ImageDimension != 3)
+  template< class TImageType = ImageTypeFloat3D >
+  std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const typename TImageType::Pointer inputImage, const std::string &desiredOrientation = "RAI")
   {
-    std::cerr << "This function is only defined for 3D and 4D images.\n";
-    exit(EXIT_FAILURE);
-  }
-  auto orientFilter = itk::OrientImageFilter< TImageType, TImageType >::New();
-  orientFilter->SetInput(inputImage);
-  orientFilter->UseImageDirectionOn();
-  orientFilter->SetDirectionTolerance(0);
-  orientFilter->SetCoordinateTolerance(0);
-
-  auto desiredOrientation_wrap = desiredOrientation;
-  std::transform(desiredOrientation_wrap.begin(), desiredOrientation_wrap.end(), desiredOrientation_wrap.begin(), ::toupper);
-
-  std::map< std::string, itk::SpatialOrientation::ValidCoordinateOrientationFlags > orientationMap;
-  orientationMap["Axial"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI;
-  orientationMap["Coronal"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RSA;
-  orientationMap["Sagittal"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ASL;
-  orientationMap["RIP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RIP;
-  orientationMap["LIP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LIP;
-  orientationMap["RSP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RSP;
-  orientationMap["LSP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LSP;
-  orientationMap["RIA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RIA;
-  orientationMap["LIA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LIA;
-  orientationMap["RSA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RSA;
-  orientationMap["LSA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LSA;
-  orientationMap["IRP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IRP;
-  orientationMap["ILP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ILP;
-  orientationMap["SRP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SRP;
-  orientationMap["SLP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SLP;
-  orientationMap["IRA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IRA;
-  orientationMap["ILA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ILA;
-  orientationMap["SRA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SRA;
-  orientationMap["SLA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SLA;
-  orientationMap["RPI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RPI;
-  orientationMap["LPI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPI;
-  orientationMap["RAI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI;
-  orientationMap["LAI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LAI;
-  orientationMap["RPS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RPS;
-  orientationMap["LPS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPS;
-  orientationMap["RAS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAS;
-  orientationMap["LAS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LAS;
-  orientationMap["PRI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PRI;
-  orientationMap["PLI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PLI;
-  orientationMap["ARI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ARI;
-  orientationMap["ALI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ALI;
-  orientationMap["PRS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PRS;
-  orientationMap["PLS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PLS;
-  orientationMap["ARS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ARS;
-  orientationMap["ALS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ALS;
-  orientationMap["IPR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IPR;
-  orientationMap["SPR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SPR;
-  orientationMap["IAR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IAR;
-  orientationMap["SAR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SAR;
-  orientationMap["IPL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IPL;
-  orientationMap["SPL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SPL;
-  orientationMap["IAL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IAL;
-  orientationMap["SAL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SAL;
-  orientationMap["PIR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PIR;
-  orientationMap["PSR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PSR;
-  orientationMap["AIR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_AIR;
-  orientationMap["ASR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ASR;
-  orientationMap["PIL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PIL;
-  orientationMap["PSL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PSL;
-  orientationMap["AIL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_AIL;
-  orientationMap["ASL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ASL;
-
-  // set the desired orientation and update
-  orientFilter->SetDesiredCoordinateOrientation(orientationMap[desiredOrientation_wrap]);
-  orientFilter->Update();
-  auto outputImage = orientFilter->GetOutput();
-
-  std::string returnString;
-
-  for (auto it = orientationMap.begin(); it != orientationMap.end(); ++it)
-  {
-    if (it->second == orientFilter->GetGivenCoordinateOrientation())
+    if (TImageType::ImageDimension != 3)
     {
-      returnString = it->first;
+      std::cerr << "This function is only defined for 3D and 4D images.\n";
+      exit(EXIT_FAILURE);
     }
-  }
-  if (returnString.empty())
-  {
-    returnString = "Unknown";
-  }
+    auto orientFilter = itk::OrientImageFilter< TImageType, TImageType >::New();
+    orientFilter->SetInput(inputImage);
+    orientFilter->UseImageDirectionOn();
+    orientFilter->SetDirectionTolerance(0);
+    orientFilter->SetCoordinateTolerance(0);
 
-  return std::make_pair(returnString, outputImage);
-}
+    auto desiredOrientation_wrap = desiredOrientation;
+    std::transform(desiredOrientation_wrap.begin(), desiredOrientation_wrap.end(), desiredOrientation_wrap.begin(), ::toupper);
+
+    std::map< std::string, itk::SpatialOrientation::ValidCoordinateOrientationFlags > orientationMap;
+    orientationMap["Axial"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI;
+    orientationMap["Coronal"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RSA;
+    orientationMap["Sagittal"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ASL;
+    orientationMap["RIP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RIP;
+    orientationMap["LIP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LIP;
+    orientationMap["RSP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RSP;
+    orientationMap["LSP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LSP;
+    orientationMap["RIA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RIA;
+    orientationMap["LIA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LIA;
+    orientationMap["RSA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RSA;
+    orientationMap["LSA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LSA;
+    orientationMap["IRP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IRP;
+    orientationMap["ILP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ILP;
+    orientationMap["SRP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SRP;
+    orientationMap["SLP"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SLP;
+    orientationMap["IRA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IRA;
+    orientationMap["ILA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ILA;
+    orientationMap["SRA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SRA;
+    orientationMap["SLA"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SLA;
+    orientationMap["RPI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RPI;
+    orientationMap["LPI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPI;
+    orientationMap["RAI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI;
+    orientationMap["LAI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LAI;
+    orientationMap["RPS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RPS;
+    orientationMap["LPS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LPS;
+    orientationMap["RAS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAS;
+    orientationMap["LAS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_LAS;
+    orientationMap["PRI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PRI;
+    orientationMap["PLI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PLI;
+    orientationMap["ARI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ARI;
+    orientationMap["ALI"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ALI;
+    orientationMap["PRS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PRS;
+    orientationMap["PLS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PLS;
+    orientationMap["ARS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ARS;
+    orientationMap["ALS"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ALS;
+    orientationMap["IPR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IPR;
+    orientationMap["SPR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SPR;
+    orientationMap["IAR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IAR;
+    orientationMap["SAR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SAR;
+    orientationMap["IPL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IPL;
+    orientationMap["SPL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SPL;
+    orientationMap["IAL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_IAL;
+    orientationMap["SAL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_SAL;
+    orientationMap["PIR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PIR;
+    orientationMap["PSR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PSR;
+    orientationMap["AIR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_AIR;
+    orientationMap["ASR"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ASR;
+    orientationMap["PIL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PIL;
+    orientationMap["PSL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_PSL;
+    orientationMap["AIL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_AIL;
+    orientationMap["ASL"] = itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_ASL;
+
+    // set the desired orientation and update
+    orientFilter->SetDesiredCoordinateOrientation(orientationMap[desiredOrientation_wrap]);
+    orientFilter->Update();
+    auto outputImage = orientFilter->GetOutput();
+
+    std::string returnString;
+
+    for (auto it = orientationMap.begin(); it != orientationMap.end(); ++it)
+    {
+      if (it->second == orientFilter->GetGivenCoordinateOrientation())
+      {
+        returnString = it->first;
+      }
+    }
+    if (returnString.empty())
+    {
+      returnString = "Unknown";
+    }
+
+    return std::make_pair(returnString, outputImage);
+  }
 
   /**
   \brief Get skull stripped image
@@ -1521,8 +1434,8 @@ std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const
   \return The resized image
   */
   template< class TImageType = ImageTypeFloat3D >
-  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage, 
-    const itk::Vector< double, TImageType::ImageDimension > outputSpacing, 
+  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage,
+    const itk::Vector< double, TImageType::ImageDimension > outputSpacing,
     const std::string interpolator = "Linear")
   {
     auto outputSize = inputImage->GetLargestPossibleRegion().GetSize();
@@ -1556,7 +1469,7 @@ std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const
   \return The resized image
   */
   template< class TImageType = ImageTypeFloat3D >
-  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage, 
+  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage,
     const float outputSpacing = 1.0, const std::string interpolator = "Linear")
   {
     auto outputSize = inputImage->GetLargestPossibleRegion().GetSize();
