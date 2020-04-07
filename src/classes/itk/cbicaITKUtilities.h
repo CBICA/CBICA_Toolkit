@@ -1070,6 +1070,39 @@ std::pair< std::string, typename TImageType::Pointer > GetImageOrientation(const
   }
 
   /**
+  \brief Resample an image to an isotropic resolution using the specified output spacing vector
+
+  This filter uses the example https://itk.org/Wiki/ITK/Examples/ImageProcessing/ResampleImageFilter as a base while processing time-stamped images as well
+  \param inputImage The input image to process
+  \param outputSpacing The desired output spacing
+  \param interpolator The type of interpolator to use; can be Linear, BSpline or NearestNeighbor
+  \return The resized image
+  */
+  template< class TImageType = ImageTypeFloat3D >
+  typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage, const itk::Vector< double, TImageType::ImageDimension > outputSpacing, const std::string interpolator = "Linear")
+  {
+    auto outputSize = inputImage->GetLargestPossibleRegion().GetSize();
+    auto inputSpacing = inputImage->GetSpacing();
+    if (TImageType::ImageDimension != 4)
+    {
+      for (size_t i = 0; i < TImageType::ImageDimension; i++)
+      {
+        outputSize[i] = std::round(outputSize[i] * inputSpacing[i] / outputSpacing[i]);
+      }
+    }
+    else // preserve all time points of a time series image
+    {
+      for (size_t i = 0; i < 3; i++)
+      {
+        outputSize[i] = std::round(outputSize[i] * inputSpacing[i] / outputSpacing[i]);
+      }
+    }
+
+    return ResampleImage< TImageType >(inputImage, outputSpacing, outputSize, interpolator);
+
+  }
+
+  /**
   \brief Resample an image to an isotropic resolution using the specified output spacing
 
   This filter uses the example https://itk.org/Wiki/ITK/Examples/ImageProcessing/ResampleImageFilter as a base while processing time-stamped images as well
