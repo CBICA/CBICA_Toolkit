@@ -1568,7 +1568,7 @@ namespace cbica
     if (uniqueLabels.size() != uniqueLabelsRef.size())
     {
       std::cerr << "The number of unique labels in input and reference image are not consistent.\n";
-      return EXIT_FAILURE;
+      return returnMap;
     }
     else
     {
@@ -1577,7 +1577,7 @@ namespace cbica
         if (uniqueLabels[i] != uniqueLabelsRef[i])
         {
           std::cerr << "The label values in input and reference image are not consistent.\n";
-          return EXIT_FAILURE;
+          return returnMap;
         }
       }
     }
