@@ -53,6 +53,8 @@ See COPYING file or https://www.cbica.upenn.edu/sbia/software/license.html
 #include "cbicaUtilities.h"
 #include "cbicaITKImageInfo.h"
 
+#include "HausdorffDistance.h"
+
 #include "gdcmMD5.h"
 #include "gdcmReader.h"
 
@@ -247,6 +249,20 @@ namespace cbica
     filter->Update();
 
     return filter->GetOutput();
+  }
+
+  /**
+  \brief Get the statistics between 2 labels
+
+  \param inputLabel_1 The first label file
+  \param inputLabel_2 The second label file
+  \return Map of various statistics and corresponding values
+  */
+  template < typename TImageType = ImageTypeFloat3D >
+  std::map< std::string, double > GetLabelStatistics(const typename TImageType::Pointer inputLabel_1, 
+    const typename TImageType::Pointer inputLabel_2)
+  {
+
   }
 
   /**
