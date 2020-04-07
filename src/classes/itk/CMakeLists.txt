@@ -38,6 +38,7 @@ SET( ITK_Class_Headers
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKSafeImageIO.h
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKUtilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKOpenCVUtilities.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/HausdorffDistance.h
     
   ${CMAKE_CURRENT_SOURCE_DIR}/itkNaryMeanImageFilter.h
   ${CMAKE_CURRENT_SOURCE_DIR}/itkNaryMeanDiffusionTensorImageFilter.h
@@ -59,6 +60,7 @@ SET( ITK_Class_Sources
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKComputeDtiScalars.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKComputeVarianceMap.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/cbicaITKCommonHolder.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/HausdorffDistance.txx
     
   ${CMAKE_CURRENT_SOURCE_DIR}/itkDiffusionTensor3DReconstructionImageFilter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/itkDTILogEuclideanCalculator.cpp
