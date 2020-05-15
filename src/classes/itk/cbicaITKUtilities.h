@@ -374,7 +374,10 @@ namespace cbica
   \brief Check properties of 2 images to see if they are defined in the same space.
   */
   template< typename TImageType >
-  inline bool ImageSanityCheck(const typename TImageType::Pointer image1, const typename TImageType::Pointer image2)
+  inline bool ImageSanityCheck(
+    const typename TImageType::Pointer image1, 
+    const typename TImageType::Pointer image2,
+    const float nifti2dicomTolerance = 0.0)
   {
     auto size_1 = image1->GetLargestPossibleRegion().GetSize();
     auto size_2 = image2->GetLargestPossibleRegion().GetSize();
@@ -405,17 +408,21 @@ namespace cbica
       {
         if (directions_1[i][j] != directions_2[i][j])
         {
-          auto percentageDifference = std::abs(directions_1[i][j] - directions_2[i][j]) * 100 / directions_1[i][j];
-          if (percentageDifference > 0.0001)
+          auto percentageDifference = std::abs(directions_1[i][j] - directions_2[i][j]) * 100 / std::abs(directions_1[i][j]);
+          if (percentageDifference > nifti2dicomTolerance)
           {
-            std::cerr << "Direction mismatch at dimension '[" << i << "," << j << "]'\n";
+            std::cerr << "Direction mismatch > " << nifti2dicomTolerance << 
+              "% at location '[" << i << "," << j << "]' of direction matrix.\n";
+
+            std::cout << "Direction matrix for input 1:\n" << directions_1 << "\n" <<
+              "Direction matrix for input 2:\n" << directions_2 << "\n";
             return false;
           }
           else
           {
             std::cout << "Ignoring direction difference of '" <<
-              percentageDifference << "%' in dimension '[" <<
-              i << "," << j << "]'\n";
+              percentageDifference << "%' in location '[" <<
+              i << "," << j << "]' of direction matrix.\n";
           }
         }
       }
@@ -1534,7 +1541,7 @@ namespace cbica
   \param sortResult Whether the output should be sorted in ascending order or not, defaults to true
   */
   template< class TImageType = ImageTypeFloat3D >
-  std::vector< typename TImageType::PixelType > GetUniqueValuesInImage(typename TImageType::Pointer inputImage,
+  std::vector< typename TImageType::PixelType > GetUniqueValuesInImage(typename TImageType::Pointer inputImage, 
     bool sortResult = true)
   {
     itk::ImageRegionConstIterator< TImageType > iterator(inputImage, inputImage->GetBufferedRegion());
@@ -1745,7 +1752,7 @@ namespace cbica
 
     auto inputLabelsImages_1 = GetUniqueLabelImagessFromImage< TImageType >(inputLabel_1);
     auto inputLabelsImages_2 = GetUniqueLabelImagessFromImage< TImageType >(inputLabel_2);
-
+    
     for (const auto &label : inputLabelsImages_1)
     {
       if (label.first != 0) // we don't care about the background value
@@ -1762,7 +1769,7 @@ namespace cbica
         returnMap["Hausdorff95_" + valueString] = GetHausdorffDistance< TImageType >(label.second, inputLabelsImages_2[label.first], 0.95);
       }
 
-    }
+    }    
 
     return returnMap;
   }
