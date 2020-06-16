@@ -374,7 +374,10 @@ namespace cbica
   \brief Check properties of 2 images to see if they are defined in the same space.
   */
   template< typename TImageType >
-  inline bool ImageSanityCheck(const typename TImageType::Pointer image1, const typename TImageType::Pointer image2)
+  inline bool ImageSanityCheck(
+    const typename TImageType::Pointer image1, 
+    const typename TImageType::Pointer image2,
+    const float nifti2dicomTolerance = 0.0)
   {
     auto size_1 = image1->GetLargestPossibleRegion().GetSize();
     auto size_2 = image2->GetLargestPossibleRegion().GetSize();
@@ -398,38 +401,59 @@ namespace cbica
       std::cerr << "Row dimension mismatch for directions.\n";
       return false;
     }
-    if (directions_1 != directions_2)
+    // check with tolerance
+    for (size_t i = 0; i < directions_1.RowDimensions; i++)
     {
-      std::cerr << "Directions are not the same.\n";
-      return false;
+      for (size_t j = 0; j < directions_1.ColumnDimensions; j++)
+      {
+        if (directions_1[i][j] != directions_2[i][j])
+        {
+          auto percentageDifference = std::abs(directions_1[i][j] - directions_2[i][j]) * 100 / std::abs(directions_1[i][j]);
+          if (percentageDifference > nifti2dicomTolerance)
+          {
+            std::cerr << "Direction mismatch > " << nifti2dicomTolerance << 
+              "% at location '[" << i << "," << j << "]' of direction matrix.\n";
+
+            std::cout << "Direction matrix for input 1:\n" << directions_1 << "\n" <<
+              "Direction matrix for input 2:\n" << directions_2 << "\n";
+            return false;
+          }
+          else
+          {
+            std::cout << "Ignoring direction difference of '" <<
+              percentageDifference << "%' in location '[" <<
+              i << "," << j << "]' of direction matrix.\n";
+          }
+        }
+      }
     }
 
-    for (size_t i = 0; i < TImageType::ImageDimension; i++)
+    for (size_t d = 0; d < TImageType::ImageDimension; d++)
     {
-      if (size_1[i] != size_2[i])
+      if (size_1[d] != size_2[d])
       {
-        std::cerr << "Size mismatch at dimension '" << i << "'\n";
+        std::cerr << "Size mismatch at dimension '" << d << "'\n";
         return false;
       }
-      if (origin_1[i] != origin_2[i])
+      if (origin_1[d] != origin_2[d])
       {
-        std::cerr << "Origin mismatch at dimension '" << i << "'\n";
+        std::cerr << "Origin mismatch at dimension '" << d << "'\n";
         return false;
       }
-      if (spacing_1[i] != spacing_2[i])
+      if (spacing_1[d] != spacing_2[d])
       {
-        auto percentageDifference = std::abs(spacing_1[i] - spacing_2[i]) * 100;
-        percentageDifference /= spacing_1[i];
+        auto percentageDifference = std::abs(spacing_1[d] - spacing_2[d]) * 100;
+        percentageDifference /= spacing_1[d];
         if (percentageDifference > 0.0001)
         {
-          std::cerr << "Spacing mismatch at dimension '" << i << "'\n";
+          std::cerr << "Spacing mismatch at dimension '" << d << "'\n";
           return false;
         }
         else
         {
           std::cout << "Ignoring spacing difference of '" <<
             percentageDifference << "%' in dimension '" <<
-            i << "'\n";
+            d << "'\n";
         }
       }
     }
@@ -516,8 +540,18 @@ namespace cbica
         {
           if (imageDirs1[d][i] != imageDirs2[d][i])
           {
-            std::cout << "The direction in dimension[" << d << "] of the image_1 (" << image1 << ") and image_2 (" << image2 << ") at '" << i << "' doesn't match.\n";
-            return false;
+            auto percentageDifference = std::abs(imageDirs1[d][i] - imageDirs2[d][i]) * 100 / imageDirs1[d][i];
+            if (percentageDifference > 0.0001)
+            {
+              std::cerr << "Direction mismatch at dimension '" << d << "'\n";
+              return false;
+            }
+            else
+            {
+              std::cout << "Ignoring direction difference of '" <<
+                percentageDifference << "%' in dimension '" <<
+                d << "'\n";
+            }
           }
         }
       }
@@ -1507,7 +1541,7 @@ namespace cbica
   \param sortResult Whether the output should be sorted in ascending order or not, defaults to true
   */
   template< class TImageType = ImageTypeFloat3D >
-  std::vector< typename TImageType::PixelType > GetUniqueValuesInImage(typename TImageType::Pointer inputImage,
+  std::vector< typename TImageType::PixelType > GetUniqueValuesInImage(typename TImageType::Pointer inputImage, 
     bool sortResult = true)
   {
     itk::ImageRegionConstIterator< TImageType > iterator(inputImage, inputImage->GetBufferedRegion());
@@ -1718,7 +1752,7 @@ namespace cbica
 
     auto inputLabelsImages_1 = GetUniqueLabelImagessFromImage< TImageType >(inputLabel_1);
     auto inputLabelsImages_2 = GetUniqueLabelImagessFromImage< TImageType >(inputLabel_2);
-
+    
     for (const auto &label : inputLabelsImages_1)
     {
       if (label.first != 0) // we don't care about the background value
@@ -1735,7 +1769,7 @@ namespace cbica
         returnMap["Hausdorff95_" + valueString] = GetHausdorffDistance< TImageType >(label.second, inputLabelsImages_2[label.first], 0.95);
       }
 
-    }
+    }    
 
     return returnMap;
   }
@@ -1750,31 +1784,36 @@ namespace cbica
   \return Map of various statistics and corresponding values
   */
   template < typename TImageType = ImageTypeFloat3D >
-  std::map< std::string, double > GetBraTSLabelStatistics(const typename TImageType::Pointer inputLabel_1,
+  std::map< std::string, std::map< std::string, double > > GetBraTSLabelStatistics(const typename TImageType::Pointer inputLabel_1,
     const typename TImageType::Pointer inputLabel_2)
   {
-    std::map< std::string, double > returnMap;
+    // return variable
+    std::map< std::string, // the label string
+      std::map< std::string, // the metric
+      double > > // the value
+      returnMap;
 
     auto uniqueLabels = GetUniqueValuesInImage< TImageType >(inputLabel_1);
     auto uniqueLabelsRef = GetUniqueValuesInImage< TImageType >(inputLabel_2);
 
-    // sanity check
-    if (uniqueLabels.size() != uniqueLabelsRef.size())
-    {
-      std::cerr << "The number of unique labels in input and reference image are not consistent.\n";
-      return returnMap;
-    }
-    else
-    {
-      for (size_t i = 0; i < uniqueLabels.size(); i++)
-      {
-        if (uniqueLabels[i] != uniqueLabelsRef[i])
-        {
-          std::cerr << "The label values in input and reference image are not consistent.\n";
-          return returnMap;
-        }
-      }
-    }
+    ///// this is not needed as we need to generate stats for all the BraTS values regardless
+    //// sanity check
+    //if (uniqueLabels.size() != uniqueLabelsRef.size())
+    //{
+    //  std::cerr << "The number of unique labels in input and reference image are not consistent.\n";
+    //  return returnMap;
+    //}
+    //else
+    //{
+    //  for (size_t i = 0; i < uniqueLabels.size(); i++)
+    //  {
+    //    if (uniqueLabels[i] != uniqueLabelsRef[i])
+    //    {
+    //      std::cerr << "The label values in input and reference image are not consistent.\n";
+    //      return returnMap;
+    //    }
+    //  }
+    //}
 
     // remove background
     uniqueLabels.erase(uniqueLabels.begin());
@@ -1788,14 +1827,14 @@ namespace cbica
     std::vector< int > missingLabels, missingLabelsRef;
 
     // check brats labels and populate missing labels to 
-    for (size_t i = 0; i < uniqueLabels.size(); i++)
+    for (size_t i = 0; i < bratsValues.size(); i++)
     {
-      if (uniqueLabels[i] != bratsValues[i])
+      if (std::find(uniqueLabels.begin(), uniqueLabels.end(), bratsValues[i]) == uniqueLabels.end())
       {
         std::cerr << "Missing BraTS label in Label_1: " << bratsValues[i] << "\n";
         missingLabels.push_back(bratsValues[i]);
       }
-      if (uniqueLabelsRef[i] != bratsValues[i])
+      if (std::find(uniqueLabelsRef.begin(), uniqueLabelsRef.end(), bratsValues[i]) == uniqueLabelsRef.end())
       {
         std::cerr << "Missing BraTS label in Label_2: " << bratsValues[i] << "\n";
         missingLabelsRef.push_back(bratsValues[i]);
@@ -1881,21 +1920,22 @@ namespace cbica
       similarityFilter->SetTargetImage(imageToCompare_2);
       similarityFilter->Update();
 
-      returnMap["Overlap_" + labelString] = similarityFilter->GetTotalOverlap();
-      returnMap["Jaccard_" + labelString] = similarityFilter->GetUnionOverlap();
-      returnMap["DICE_" + labelString] = similarityFilter->GetMeanOverlap();
-      returnMap["VolumeSimilarity_" + labelString] = similarityFilter->GetVolumeSimilarity();
-      returnMap["FalseNegativeError_" + labelString] = similarityFilter->GetFalseNegativeError();
-      returnMap["FalsePositiveError_" + labelString] = similarityFilter->GetFalsePositiveError();
+      returnMap[labelString]["Overlap"] = similarityFilter->GetTotalOverlap();
+      returnMap[labelString]["Jaccard"] = similarityFilter->GetUnionOverlap();
+      returnMap[labelString]["DICE"] = similarityFilter->GetMeanOverlap();
+      returnMap[labelString]["VolumeSimilarity"] = similarityFilter->GetVolumeSimilarity();
+      returnMap[labelString]["FalseNegativeError"] = similarityFilter->GetFalseNegativeError();
+      returnMap[labelString]["FalsePositiveError"] = similarityFilter->GetFalsePositiveError();
 
       auto temp_roc = GetSensitivityAndSpecificity< TImageType >(imageToCompare_1, imageToCompare_2);
 
       for (const auto &metric : temp_roc)
       {
-        returnMap[metric.first + "_" + labelString] = metric.second;
+        returnMap[labelString][metric.first] = metric.second;
       }
 
-      returnMap["Hausdorff95_" + labelString] = GetHausdorffDistance< TImageType >(imageToCompare_1, imageToCompare_2, 0.95);
+      //returnMap[labelString]["Hausdorff95"] = GetHausdorffDistance< TImageType >(imageToCompare_1, imageToCompare_2, 0.95);
+      //returnMap[labelString]["Hausdorff99"] = GetHausdorffDistance< TImageType >(imageToCompare_1, imageToCompare_2, 0.99);
     }
 
     return returnMap;
