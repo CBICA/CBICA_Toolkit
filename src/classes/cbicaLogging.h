@@ -3,11 +3,11 @@
 
 \brief Declaration of the Logging class
 
-http://www.med.upenn.edu/sbia/software/ <br>
+https://www.med.upenn.edu/sbia/software// <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or https://www.med.upenn.edu/cbica/software-agreement.html
+See COPYING file or https://www.med.upenn.edu/sbia/software/-agreement.html
 
 */
 #pragma once
