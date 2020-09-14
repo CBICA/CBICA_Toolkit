@@ -1247,7 +1247,7 @@ namespace cbica
 #define PCLOSE pclose
 #define POPEN popen
 #endif
-  std::unique_ptr<FILE, decltype(&PCLOSE)> pipe(POPEN(cmd.c_str(), "r"), PCLOSE);
+  std::unique_ptr<FILE, decltype(&PCLOSE)> pipe(POPEN(command.c_str(), "r"), PCLOSE);
   if (!pipe) 
   {
     throw std::runtime_error("popen() failed!");
@@ -1256,7 +1256,7 @@ namespace cbica
   {
     result += buffer.data();
   }
-  return result
+  return result;
   }
 
   std::vector< std::string > filesInDirectory(const std::string &dirName, bool returnFullPath)
