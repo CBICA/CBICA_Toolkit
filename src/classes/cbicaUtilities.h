@@ -599,7 +599,7 @@ namespace cbica
   \param command The command that will be run on std::systm
   \return String of the buffer output
   */ 
-  std::string getStdoutFromCommand(const std::string command)
+  std::string getStdoutFromCommand(const std::string command);
 
   /**
   \brief Find all files inside a directory
