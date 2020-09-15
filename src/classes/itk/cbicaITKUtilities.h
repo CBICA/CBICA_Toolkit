@@ -50,7 +50,7 @@ See COPYING file or https://www.med.upenn.edu/cbica/software-agreement.html
 
 #include "itkTestingComparisonImageFilter.h"
 
-#include "itkStripTsImageFilter.h"
+// #include "itkStripTsImageFilter.h"
 #include "itkMaskImageFilter.h"
 
 #include "cbicaUtilities.h"
@@ -1043,53 +1043,53 @@ namespace cbica
     return std::make_pair(returnString, outputImage);
   }
 
-  /**
-  \brief Get skull stripped image
+  // /**
+  // \brief Get skull stripped image
 
-  Templated over InputImageType, AtlasImageType and AtlasLabelType
+  // Templated over InputImageType, AtlasImageType and AtlasLabelType
 
-  \param inputImage The input image on which to run the skull stripping
-  \param atlasImage The atlas image
-  \param atlasLabelImage The atlas label
-  */
-  template< class TImageType = ImageTypeFloat3D, class TAtlasImageType = TImageType, class TAtlasLabelType = TImageType >
-  typename TImageType::Pointer GetSkullStrippedImage(const typename TImageType::Pointer inputImage,
-    const typename TAtlasImageType::Pointer atlasImage, const typename TAtlasLabelType::Pointer atlasLabelImage)
-  {
-    // skull stripping initialization
-    auto skullStripper = itk::StripTsImageFilter< TImageType, TAtlasImageType, TAtlasLabelType>::New();
-    skullStripper->SetInput(inputImage);
-    skullStripper->SetAtlasImage(atlasImage);
-    skullStripper->SetAtlasBrainMask(atlasLabelImage);
+  // \param inputImage The input image on which to run the skull stripping
+  // \param atlasImage The atlas image
+  // \param atlasLabelImage The atlas label
+  // */
+  // template< class TImageType = ImageTypeFloat3D, class TAtlasImageType = TImageType, class TAtlasLabelType = TImageType >
+  // typename TImageType::Pointer GetSkullStrippedImage(const typename TImageType::Pointer inputImage,
+  //   const typename TAtlasImageType::Pointer atlasImage, const typename TAtlasLabelType::Pointer atlasLabelImage)
+  // {
+  //   // skull stripping initialization
+  //   auto skullStripper = itk::StripTsImageFilter< TImageType, TAtlasImageType, TAtlasLabelType>::New();
+  //   skullStripper->SetInput(inputImage);
+  //   skullStripper->SetAtlasImage(atlasImage);
+  //   skullStripper->SetAtlasBrainMask(atlasLabelImage);
 
-    // actually do the skull stripping
-    try
-    {
-      skullStripper->Update();
-    }
-    catch (itk::ExceptionObject &exception)
-    {
-      std::cerr << "Exception caught: " << exception << "\n";
-      return inputImage;
-    }
+  //   // actually do the skull stripping
+  //   try
+  //   {
+  //     skullStripper->Update();
+  //   }
+  //   catch (itk::ExceptionObject &exception)
+  //   {
+  //     std::cerr << "Exception caught: " << exception << "\n";
+  //     return inputImage;
+  //   }
 
-    // apply the generated mask
-    auto masker = itk::MaskImageFilter< TImageType, TAtlasLabelType, TImageType >::New();
-    masker->SetInput(inputImage);
-    masker->SetMaskImage(skullStripper->GetOutput());
+  //   // apply the generated mask
+  //   auto masker = itk::MaskImageFilter< TImageType, TAtlasLabelType, TImageType >::New();
+  //   masker->SetInput(inputImage);
+  //   masker->SetMaskImage(skullStripper->GetOutput());
 
-    try
-    {
-      masker->Update();
-    }
-    catch (itk::ExceptionObject &exception)
-    {
-      std::cerr << "Exception caught: " << exception << "\n";
-      return inputImage;
-    }
+  //   try
+  //   {
+  //     masker->Update();
+  //   }
+  //   catch (itk::ExceptionObject &exception)
+  //   {
+  //     std::cerr << "Exception caught: " << exception << "\n";
+  //     return inputImage;
+  //   }
 
-    return masker->GetOutput();
-  }
+  //   return masker->GetOutput();
+  // }
 
   /**
   \brief Get the distance between 2 indeces of an itk::Image
