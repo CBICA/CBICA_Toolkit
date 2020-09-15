@@ -296,7 +296,7 @@ SET( INCLUDE_DIR_CONFIG "\"${PROJECT_SOURCE_DIR}/src/classes\"" )
 SET( LIBRARY_CONFIG "\"${LIBRARY_CONFIG}\"" )
 
 # Building the documentation
-SET( BUILD_DOCUMENTATION ON CACHE BOOL "Do you want to build Documentation (needs Doxygen)?" )
+SET( BUILD_DOCUMENTATION OFF CACHE BOOL "Do you want to build Documentation (needs Doxygen)?" )
 IF( BUILD_DOCUMENTATION )
 
   SET( CBICA_UPDATE_DOCS OFF CACHE BOOL "Do you want to update the documentation for the website?" )
