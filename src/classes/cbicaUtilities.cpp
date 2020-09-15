@@ -5,11 +5,11 @@
 
 Dependecies: OpenMP
 
-https://www.med.upenn.edu/sbia/software/ <br>
+https://www.med.upenn.edu/cbica/captk/ <br>
 software@cbica.upenn.edu
 
 Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
-See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
+See COPYING file or https://www.med.upenn.edu/cbica/software-agreement.html
 
 */
 #if (_WIN32)
@@ -63,6 +63,7 @@ static const char  cSeparator = '/';
 #include <stdexcept>
 #include <algorithm>
 #include <string>
+#include <array>
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -70,14 +71,6 @@ static const char  cSeparator = '/';
 
 #include "cbicaUtilities.h"
 #include "yaml-cpp/yaml.h"
-
-#if __cplusplus <= 201703L
-#include <experimental/filesystem>
-#define NAMESPACE_FS std::experimental::filesystem
-#else
-#include <filesystem>
-#define NAMESPACE_FS std::filesystem
-#endif
 
 namespace cbica
 {
@@ -633,8 +626,11 @@ namespace cbica
     {
       if (!fileExists(filename))
       {
-        std::cerr << "[getFilenameBase()] Supplied file name'" << filename << "'wasn't found.\n";
-        exit(EXIT_FAILURE);
+        if (!isDir(filename))
+        {
+          std::cerr << "[getFilenameBase()] Supplied file name'" << filename << "'wasn't found.\n";
+          exit(EXIT_FAILURE);
+        }
       }
     }
     std::string path, base, ext;
@@ -737,6 +733,7 @@ namespace cbica
 
   std::string getFullPath()
   {
+    std::string return_string;
 #if defined(_WIN32)
     //! Initialize pointers to file and user names
     char path[FILENAME_MAX];
@@ -755,12 +752,15 @@ namespace cbica
 #else
     //! Initialize pointers to file and user names
     char path[PATH_MAX];
-    if (::readlink("/proc/self/exe", path, sizeof(path) - 1) == -1)
-      //path = dirname(path);
+    ssize_t count = readlink("/proc/self/exe", path, PATH_MAX);
+    if (count == -1)
       std::cerr << "[getFullPath()] Error during getting full path..";
+    std::string appPath = std::string(path, (count > 0) ? count : 0);
+    path[0] = '\0';
+    return appPath;
 #endif
 
-    std::string return_string = std::string(path);
+    return_string = std::string(path);
     path[0] = '\0';
 
     return return_string;
@@ -1236,6 +1236,29 @@ namespace cbica
     return returnVector;
   }
 
+  std::string getStdoutFromCommand(const std::string command)
+  {
+  std::array<char, 256> buffer;
+  std::string result;
+#ifdef WIN32
+#define PCLOSE _pclose
+#define POPEN _popen
+#else
+#define PCLOSE pclose
+#define POPEN popen
+#endif
+  std::unique_ptr<FILE, decltype(&PCLOSE)> pipe(POPEN(command.c_str(), "r"), PCLOSE);
+  if (!pipe) 
+  {
+    throw std::runtime_error("popen() failed!");
+  }
+  while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) 
+  {
+    result += buffer.data();
+  }
+  return result;
+  }
+
   std::vector< std::string > filesInDirectory(const std::string &dirName, bool returnFullPath)
   {
     if (!cbica::directoryExists(dirName))
@@ -1315,93 +1338,72 @@ namespace cbica
     }
     std::vector< std::string > allDirectories;
     std::string dirName_wrap = cbica::normPath(dirName);
-
-    for (const auto & entry : NAMESPACE_FS::directory_iterator(dirName_wrap))
+    if (dirName_wrap[dirName_wrap.length() - 1] != '/')
     {
-      auto currentDir = entry.path().string();
-      if (isDir(currentDir))
+      dirName_wrap.append("/");
+    }
+#if defined(_WIN32)
+    dirName_wrap.append("*.*");
+    char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = ::FindFirstFile(search_path, &fd);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+      do
       {
-        if (recursiveSearch)
+        if ((fd.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && (fd.cFileName[0] != '.'))
         {
-          auto tempVector = subdirectoriesInDirectory(currentDir, recursiveSearch, returnFullPath);
-          allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
+          if (returnFullPath)
+          {
+            allDirectories.push_back(dirName + "/" + std::string(fd.cFileName));
+          }
+          else
+          {
+            allDirectories.push_back(std::string(fd.cFileName));
+          }
+          if (recursiveSearch)
+          {
+            std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + std::string(fd.cFileName), true, returnFullPath);
+            allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
+          }
         }
+      } while (FindNextFile(hFind, &fd) != 0);
+      ::FindClose(hFind);
+    }
+#else
+    DIR *dp;
+    struct dirent *dirp;
+    if ((dp = opendir(dirName.c_str())) == NULL)
+    {
+      std::cerr << "Error(" << errno << ") occurred while opening directory '" << dirName << "'\n";
+    }
+
+    while ((dirp = readdir(dp)) != NULL)
+    {
+      if (recursiveSearch && (dirp->d_type == DT_DIR) && (dirp->d_name[0] != '.') && (dirp->d_name != std::string(".svn").c_str()))
+      {
+        std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + dirp->d_name, true, returnFullPath);
+        allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
+      }
+
+      if ((strcmp(dirp->d_name, ".") == 0) || (strcmp(dirp->d_name, "..") == 0))
+        continue;
+
+      if (dirp->d_type == DT_DIR)
+      {
+        allDirectories.push_back(dirName + "/" + dirp->d_name);
         if (returnFullPath)
         {
-          allDirectories.push_back(currentDir);
+          allDirectories.push_back(dirName + "/" + dirp->d_name);
         }
         else
         {
-          allDirectories.push_back(getFilenameBase(currentDir));
+          allDirectories.push_back(dirp->d_name);
         }
       }
     }
-//    if (dirName_wrap[dirName_wrap.length() - 1] != '/')
-//    {
-//      dirName_wrap.append("/");
-//    }
-//#if defined(_WIN32)
-//    dirName_wrap.append("*.*");
-//    char* search_path = cbica::constCharToChar(dirName_wrap.c_str());
-//    WIN32_FIND_DATA fd;
-//    HANDLE hFind = ::FindFirstFile(search_path, &fd);
-//    if (hFind != INVALID_HANDLE_VALUE)
-//    {
-//      do
-//      {
-//        if ((fd.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY && (fd.cFileName[0] != '.'))
-//        {
-//          if (returnFullPath)
-//          {
-//            allDirectories.push_back(dirName + "/" + std::string(fd.cFileName));
-//          }
-//          else
-//          {
-//            allDirectories.push_back(std::string(fd.cFileName));
-//          }
-//          if (recursiveSearch)
-//          {
-//            std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + std::string(fd.cFileName), true, returnFullPath);
-//            allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
-//          }
-//        }
-//      } while (FindNextFile(hFind, &fd) != 0);
-//      ::FindClose(hFind);
-//    }
-//#else
-//    DIR *dp;
-//    struct dirent *dirp;
-//    if ((dp = opendir(dirName.c_str())) == NULL)
-//    {
-//      std::cerr << "Error(" << errno << ") occurred while opening directory '" << dirName << "'\n";
-//    }
-//
-//    while ((dirp = readdir(dp)) != NULL)
-//    {
-//      if (recursiveSearch && (dirp->d_type == DT_DIR) && (dirp->d_name[0] != '.') && (dirp->d_name != std::string(".svn").c_str()))
-//      {
-//        std::vector<std::string> tempVector = subdirectoriesInDirectory(dirName + "/" + dirp->d_name, true, returnFullPath);
-//        allDirectories.insert(allDirectories.end(), tempVector.begin(), tempVector.end());
-//      }
-//
-//      if ((strcmp(dirp->d_name, ".") == 0) || (strcmp(dirp->d_name, "..") == 0))
-//        continue;
-//
-//      if (dirp->d_type == DT_DIR)
-//      {
-//        allDirectories.push_back(dirName + "/" + dirp->d_name);
-//        if (returnFullPath)
-//        {
-//          allDirectories.push_back(dirName + "/" + dirp->d_name);
-//        }
-//        else
-//        {
-//          allDirectories.push_back(dirp->d_name);
-//        }
-//      }
-//    }
-//    closedir(dp);
-//#endif
+    closedir(dp);
+#endif
     return allDirectories;
   }
 
