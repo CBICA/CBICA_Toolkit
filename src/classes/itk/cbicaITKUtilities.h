@@ -364,6 +364,33 @@ namespace cbica
     return returnVector;
   }
 
+  //! Function that does "soft" threshold checking of 2 numbers - only used for imaging characteristics check
+  inline float ImagePropertyDifference(float input_1, float input_2, float threshold = 10e-5)
+  {
+    auto percentageDifference = std::abs(input_1 - input_2);
+    // perform an absolute check when either of the direction cosine location is zero
+    if ((input_1 == 0) || (input_2 == 0))
+    {
+      if (percentageDifference <= threshold)
+      {
+        percentageDifference = 0;
+      }
+      else
+      {
+        // otherwise, calculate the percentage based on the non-zero cosine
+        if (input_2 != 0)
+        {
+          percentageDifference /= std::abs(input_2);
+        }
+        else if (input_1 != 0)
+        {
+          percentageDifference /= std::abs(input_1);
+        }
+      }
+    }
+    return percentageDifference * 100;
+  }
+
   /**
   \brief Wrap of GetPixelValues
   */
@@ -381,7 +408,8 @@ namespace cbica
     const typename TImageType::Pointer image1, 
     const typename TImageType::Pointer image2,
     const float nifti2dicomTolerance = 0.0,
-    const float nifti2dicomOriginTolerance = 0.0)
+    const float nifti2dicomOriginTolerance = 0.0,
+    const float nifti2dicomSpacingTolerance = 0.0)
   {
     auto size_1 = image1->GetLargestPossibleRegion().GetSize();
     auto size_2 = image2->GetLargestPossibleRegion().GetSize();
@@ -412,7 +440,11 @@ namespace cbica
       {
         if (directions_1[i][j] != directions_2[i][j])
         {
-          auto percentageDifference = std::abs(directions_1[i][j] - directions_2[i][j]) * 100 / std::abs(directions_1[i][j]);
+          auto percentageDifference = ImagePropertyDifference(directions_1[i][j], directions_2[i][j]);
+          if (std::isinf(percentageDifference)
+          {
+
+          }
           if (percentageDifference > nifti2dicomTolerance)
           {
             std::cerr << "Direction mismatch > " << nifti2dicomTolerance << 
@@ -422,7 +454,7 @@ namespace cbica
               "Direction matrix for input 2:\n" << directions_2 << "\n";
             return false;
           }
-          else
+          else if (percentageDifference != 0)
           {
             std::cout << "Ignoring direction difference of '" <<
               percentageDifference << "%' in location '[" <<
@@ -441,7 +473,7 @@ namespace cbica
       }
       if (origin_1[d] != origin_2[d])
       {
-        auto percentageDifference = std::abs(origin_1[d] - origin_2[d]) * 100 / std::abs(origin_1[d]);
+        auto percentageDifference = ImagePropertyDifference(origin_1[d], origin_2[d]);
         if (percentageDifference > nifti2dicomOriginTolerance)
         {
           std::cerr << "Origin mismatch > " << percentageDifference <<
@@ -459,9 +491,8 @@ namespace cbica
       }
       if (spacing_1[d] != spacing_2[d])
       {
-        auto percentageDifference = std::abs(spacing_1[d] - spacing_2[d]) * 100;
-        percentageDifference /= spacing_1[d];
-        if (percentageDifference > 0.0001)
+        auto percentageDifference = ImagePropertyDifference(spacing_1[d], spacing_2[d]);
+        if (percentageDifference > nifti2dicomSpacingTolerance)
         {
           std::cerr << "Spacing mismatch at dimension '" << d << "'\n";
           return false;
@@ -526,8 +557,7 @@ namespace cbica
       }
       if (imageSpacing1[d] != imageSpacing2[d])
       {
-        auto percentageDifference = std::abs(imageSpacing1[d] - imageSpacing2[d]) * 100;
-        percentageDifference /= imageSpacing1[d];
+        auto percentageDifference = ImagePropertyDifference(imageSpacing1[d], imageSpacing2[d]);
         if (percentageDifference > 0.0001)
         {
           std::cerr << "Spacing mismatch at dimension '" << d << "'\n";
@@ -557,13 +587,13 @@ namespace cbica
         {
           if (imageDirs1[d][i] != imageDirs2[d][i])
           {
-            auto percentageDifference = std::abs(imageDirs1[d][i] - imageDirs2[d][i]) * 100 / imageDirs1[d][i];
+            auto percentageDifference = ImagePropertyDifference(imageDirs1[d][i], imageDirs2[d][i]);
             if (percentageDifference > 0.0001)
             {
               std::cerr << "Direction mismatch at dimension '" << d << "'\n";
               return false;
             }
-            else
+            else if (percentageDifference != 0)
             {
               std::cout << "Ignoring direction difference of '" <<
                 percentageDifference << "%' in dimension '" <<
@@ -584,9 +614,10 @@ namespace cbica
 
   \param inputImage The vector of images from which the larger image is to be extracted
   \param newSpacing The spacing in the new dimension
+  \param spacingTolerance The spacing tolerance when processing individual images
   */
   template< class TInputImageType, class TOutputImageType >
-  typename TOutputImageType::Pointer GetJoinedImage(std::vector< typename TInputImageType::Pointer > &inputImages, double newSpacing = 1.0)
+  typename TOutputImageType::Pointer GetJoinedImage(std::vector< typename TInputImageType::Pointer > &inputImages, double newSpacing = 1.0, double spacingTolerance = 5.0)
   {
     if (TOutputImageType::ImageDimension - 1 != TInputImageType::ImageDimension)
     {
@@ -599,7 +630,7 @@ namespace cbica
 
     for (size_t N = 0; N < inputImages.size(); N++)
     {
-      if (!ImageSanityCheck< TInputImageType >(inputImages[0], inputImages[N]))
+      if (!ImageSanityCheck< TInputImageType >(inputImages[0], inputImages[N], 0, 0, spacingTolerance))
       {
         std::cerr << "Image Sanity check failed in index '" << N << "'\n";
         //return typename TOutputImageType::New();
@@ -1449,16 +1480,17 @@ namespace cbica
   \param inputImage The input image to process
   \param outputSpacing The desired output spacing
   \param interpolator The type of interpolator to use; can be Linear, BSpline or NearestNeighbor
+  \param sampleTime This parameter samples across the time series
   \return The resized image
   */
   template< class TImageType = ImageTypeFloat3D >
   typename TImageType::Pointer ResampleImage(const typename TImageType::Pointer inputImage,
     const itk::Vector< double, TImageType::ImageDimension > outputSpacing,
-    const std::string interpolator = "Linear")
+    const std::string interpolator = "Linear", const bool sampleTime = false)
   {
     auto outputSize = inputImage->GetLargestPossibleRegion().GetSize();
     auto inputSpacing = inputImage->GetSpacing();
-    if (TImageType::ImageDimension != 4)
+    if ((TImageType::ImageDimension != 4) || sampleTime)
     {
       for (size_t i = 0; i < TImageType::ImageDimension; i++)
       {
@@ -1848,12 +1880,12 @@ namespace cbica
     {
       if (std::find(uniqueLabels.begin(), uniqueLabels.end(), bratsValues[i]) == uniqueLabels.end())
       {
-        std::cerr << "Missing BraTS label in Label_1: " << bratsValues[i] << "\n";
+        // std::cerr << "Missing BraTS label in Label_1: " << bratsValues[i] << "\n";
         missingLabels.push_back(bratsValues[i]);
       }
       if (std::find(uniqueLabelsRef.begin(), uniqueLabelsRef.end(), bratsValues[i]) == uniqueLabelsRef.end())
       {
-        std::cerr << "Missing BraTS label in Label_2: " << bratsValues[i] << "\n";
+        // std::cerr << "Missing BraTS label in Label_2: " << bratsValues[i] << "\n";
         missingLabelsRef.push_back(bratsValues[i]);
       }
     }
