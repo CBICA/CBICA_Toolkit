@@ -1732,6 +1732,24 @@ namespace cbica
     return returnStatistics;
   }
 
+  float area_under_curve(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels)
+  {
+    area_under_curve(ROC_Values(inputRealLabels, inputPredictedLabels));
+  }
+
+  float area_under_curve(const std::map< std::string, float > &roc_values)
+  {
+    float auc = 0.0;
+    for (size_t i = 0; i < roc_values.size() - 1; i++)
+    {
+      auc += roc_values[i + 1]["FPR"]
+    }
+    for (int i = 0; i<int(roc.size()) - 1; i++) {
+      _auc += (roc[i + 1].y + roc[i].y) * (roc[i + 1].x - roc[i].x);
+    }
+    return _auc * 0.5f;
+  }
+
   //inline std::string iterateOverStringAndSeparators(const std::string &inputString, size_t &count, int enum_separator = 10)
   //{
   //  std::string returnString = "";

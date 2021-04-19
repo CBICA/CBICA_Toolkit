@@ -989,6 +989,24 @@ namespace cbica
   std::map< std::string, float > ROC_Values(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
 
   /**
+  
+  \param inputRealLabels Vector structure containing real labels
+  \param inputPredictedLabels Vector structure containing predicted labels
+
+  \return A float denoting the area under the curve
+  */
+  float area_under_curve(const std::vector< float > &inputRealLabels, const std::vector< float > &inputPredictedLabels);
+
+  /**
+
+  \param inputRealLabels Vector structure containing real labels
+  \param inputPredictedLabels Vector structure containing predicted labels
+
+  \return A float denoting the area under the curve
+  */
+  float area_under_curve(const std::map< std::string, float > &roc_values);
+
+  /**
   \brief A good random number generator using c++11 that gives a random value within a range
 
   \param start Start value of range; defaults to 0
